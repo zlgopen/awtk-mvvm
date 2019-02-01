@@ -1,0 +1,8 @@
+import os
+
+LIB_DIR=os.environ['LIB_DIR'];
+
+sources= Glob('mvvm/base/*.c') +  Glob('mvvm/awtk/*.c')
+
+env=DefaultEnvironment().Clone()
+env.Library(os.path.join(LIB_DIR, 'mvvm'), sources)

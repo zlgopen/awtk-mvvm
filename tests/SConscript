@@ -1,0 +1,33 @@
+import os
+import sys
+
+BIN_DIR=os.environ['BIN_DIR'];
+TK_ROOT=os.environ['TK_ROOT'];
+TK_3RD_ROOT=os.environ['TK_3RD_ROOT'];
+GTEST_ROOT=os.environ['GTEST_ROOT'];
+APP_SRC=os.environ['APP_SRC'];
+
+env=DefaultEnvironment().Clone();
+
+INCLUDE_PATH = [TK_ROOT, 
+  GTEST_ROOT,
+  APP_SRC,
+  os.path.join(TK_ROOT, 'src'),  
+  os.path.join(TK_3RD_ROOT, 'SDL/src'), 
+  os.path.join(TK_3RD_ROOT, 'SDL/include'), 
+  os.path.join(TK_ROOT, 'src/ext_widgets'),  
+  os.path.join(TK_ROOT, '3rd/libunibreak'),
+  os.path.join(GTEST_ROOT, 'src'),
+  os.path.join(GTEST_ROOT, 'include'),
+  os.path.join(GTEST_ROOT, 'make')]
+
+env['CPPPATH'] = INCLUDE_PATH
+env['LIBS'] = ['assets', 'image_gen', 'theme_gen', 'font_gen', 'str_gen', 'common'] + env['LIBS']
+
+SOURCES = [
+ os.path.join(GTEST_ROOT, 'src/gtest-all.cc'),
+] + Glob('*.cc') + Glob('*.c')
+
+env.Program(os.path.join(BIN_DIR, 'runTest'), SOURCES);
+
+

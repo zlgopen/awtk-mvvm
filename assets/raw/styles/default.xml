@@ -1,0 +1,288 @@
+<window>
+  <style name="default">
+    <normal bg_color="#f0f0f0"/>
+  </style>
+</window>
+
+<popup>
+  <style name="default" border_color="#a0a0a0">
+    <normal bg_color="#f0f0f0"/>
+  </style>
+</popup>
+
+<button>
+  <style name="default" border_color="#a0a0a0"  text_color="black">
+    <normal     bg_color="#f0f0f0" />
+    <pressed    bg_color="#c0c0c0" />
+    <over       bg_color="#e0e0e0" />
+    <disable    bg_color="gray" text_color="#d0d0d0" />
+  </style>
+  
+  <style name="combobox_down" border_color="#a0a0a0">
+    <normal     bg_color="#f0f0f0" icon="arrow_down_n"/>
+    <pressed    bg_color="#c0c0c0" icon="arrow_down_p"/>
+    <over       bg_color="#e0e0e0" icon="arrow_down_o"/>
+  </style>
+  
+  <style name="spinbox_down" border_color="#a0a0a0">
+    <normal     bg_color="#f0f0f0" icon="arrow_down_n"/>
+    <pressed    bg_color="#c0c0c0" icon="arrow_down_p"/>
+    <over       bg_color="#e0e0e0" icon="arrow_down_o"/>
+  </style>
+
+  <style name="spinbox_up" border_color="#a0a0a0">
+    <normal     bg_color="#f0f0f0" icon="arrow_up_n"/>
+    <pressed    bg_color="#c0c0c0" icon="arrow_up_p"/>
+    <over       bg_color="#e0e0e0" icon="arrow_up_o"/>
+  </style>
+  
+  <style name="spinbox_left" border_color="#a0a0a0">
+    <normal     bg_color="#f0f0f0" icon="arrow_left_n"/>
+    <pressed    bg_color="#c0c0c0" icon="arrow_left_p"/>
+    <over       bg_color="#e0e0e0" icon="arrow_left_o"/>
+  </style>
+  
+  <style name="spinbox_right" border_color="#a0a0a0">
+    <normal     bg_color="#f0f0f0" icon="arrow_right_n"/>
+    <pressed    bg_color="#c0c0c0" icon="arrow_right_p"/>
+    <over       bg_color="#e0e0e0" icon="arrow_right_o"/>
+  </style>
+
+  <style name="edit_clear">
+    <normal     icon="edit_clear_n"/>
+    <pressed    icon="edit_clear_p"/>
+    <over       icon="edit_clear_o"/>
+  </style>
+
+  <style name="grid_item" border_color="#a0a0a0"  text_color="black">
+    <pressed    bg_color="#c0c0c0" />
+  </style>
+  
+  <style name="scroll_down" border_color="#a0a0a0">
+    <normal     bg_color="#f0f0f0" icon="arrow_down_n"/>
+    <pressed    bg_color="#c0c0c0" icon="arrow_down_p"/>
+    <over       bg_color="#e0e0e0" icon="arrow_down_o"/>
+  </style>
+
+  <style name="scroll_up" border_color="#a0a0a0">
+    <normal     bg_color="#f0f0f0" icon="arrow_up_n"/>
+    <pressed    bg_color="#c0c0c0" icon="arrow_up_p"/>
+    <over       bg_color="#e0e0e0" icon="arrow_up_o"/>
+  </style>
+  
+  <style name="scroll_left" border_color="#a0a0a0">
+    <normal     bg_color="#f0f0f0" icon="arrow_left_n"/>
+    <pressed    bg_color="#c0c0c0" icon="arrow_left_p"/>
+    <over       bg_color="#e0e0e0" icon="arrow_left_o"/>
+  </style>
+  
+  <style name="scroll_right" border_color="#a0a0a0">
+    <normal     bg_color="#f0f0f0" icon="arrow_right_n"/>
+    <pressed    bg_color="#c0c0c0" icon="arrow_right_p"/>
+    <over       bg_color="#e0e0e0" icon="arrow_right_o"/>
+  </style>
+</button>
+
+<edit>
+  <style name="default" border_color="#a0a0a0"  text_color="black" text_align_h="left">
+    <normal     bg_color="#f0f0f0" />
+    <focused    bg_color="#f0f0f0" border_color="black"/>
+    <disable    bg_color="gray" text_color="#d0d0d0" />
+    <error      bg_color="#f0f0f0" text_color="red" />
+    <empty      bg_color="#f0f0f0" text_color="#a0a0a0" />
+  </style>
+  <style name="line" border="bottom" border_color="#a0a0a0"  text_color="black" text_align_h="left" text_align_v="bottom">
+    <normal     bg_color="#f0f0f0" />
+    <focused    bg_color="#f0f0f0" border_color="black"/>
+    <disable    bg_color="gray" text_color="#d0d0d0" />
+    <error      bg_color="#f0f0f0" text_color="red" />
+    <empty      bg_color="#f0f0f0" text_color="#a0a0a0" />
+  </style>
+</edit>
+
+<spin_box>
+  <style name="default" border_color="#a0a0a0"  text_color="black" text_align_h="left">
+    <normal     bg_color="#f0f0f0" />
+    <focused    bg_color="#f0f0f0" border_color="black"/>
+    <disable    bg_color="gray" text_color="#d0d0d0" />
+    <error      bg_color="#f0f0f0" text_color="red" />
+    <empty      bg_color="#f0f0f0" text_color="#a0a0a0" />
+  </style>
+</spin_box>
+
+<label>
+  <style name="default">
+    <normal text_color="black" />
+  </style>
+</label>
+
+<progress_bar>
+  <style>
+    <normal bg_color="#f0f0f0" text_color="gold" fg_color="#c0c0c0" border_color="#a0a0a0" />
+  </style>
+</progress_bar>
+
+<slider>
+  <style>
+    <normal bg_color="#a0a0a0" fg_color="blue" border_color="#ffd700"/>
+    <pressed bg_color="#a0a0a0" fg_color="blue" border_color="#ffa700"/>
+    <over bg_color="#a0a0a0" fg_color="blue" border_color="#ffe700"/>
+  </style>
+</slider>
+
+<group_box>
+  <style>
+    <normal />
+  </style>
+</group_box>
+
+<check_button bg_color="#f0f0f0" text_color="black">
+  <style name="default">
+    <normal  icon="unchecked" />
+    <pressed icon="unchecked" />
+    <over    icon="unchecked" text_color="green"/>
+    <normal_of_checked icon="checked" text_color="blue"/>
+    <pressed_of_checked icon="checked" text_color="blue"/>
+    <over_of_checked icon="checked" text_color="green"/>
+  </style>
+</check_button>
+
+<radio_button>
+  <style name="default" bg_color="#f0f0f0" text_color="black">
+    <normal  icon="radio_unchecked" />
+    <pressed icon="radio_unchecked" />
+    <over    icon="radio_unchecked" text_color="green"/>
+    <normal_of_checked icon="radio_checked" text_color="red"/>
+    <pressed_of_checked icon="radio_checked" text_color="red"/>
+    <over_of_checked icon="radio_checked" text_color="green"/>
+  </style>
+</radio_button>
+
+<image>
+  <style name="border">
+    <normal border_color="#000000" bg_color="#e0e0e0" text_color="black"/>
+  </style>
+  <style name="selectable">
+    <normal text_color="black"/>
+    <pressed border_color="#000000" bg_color="#e0e0e0" text_color="black"/>
+    <selected icon="check" border_color="#000000" bg_color="#e0e0e0" text_color="black"/>
+  </style>
+</image>
+
+<dialog>
+  <style name="default">
+    <normal border_color="#606060" />
+  </style>
+</dialog>
+
+<dialog_title icon="info" text_color="black">
+  <style name="default">
+    <normal bg_color="#a9a9a0" />
+  </style>
+</dialog_title>
+
+<dialog_title>
+  <style name="empty">
+    <normal bg_color="#a9a9a0" />
+  </style>
+</dialog_title>
+
+<dialog_client>
+  <style name="default">
+    <normal bg_color="#ededed" />
+  </style>
+</dialog_client>
+
+<scroll_bar>
+  <style name="default">
+    <normal bg_color="#c0c0c0" fg_color="#808080"/>
+    <over bg_color="#c0c0c0" fg_color="#808080"/>
+    <pressed bg_color="#c0c0c0" fg_color="#808080"/>
+  </style>
+  <style name="destkop" border_color="gray">
+    <normal bg_color="#f0f0f0"/>
+    <over bg_color="#f0f0f0" />
+    <pressed bg_color="#f0f0f0" />
+  </style>
+</scroll_bar>
+
+<dragger>
+  <style name="scroll_bar" >
+    <normal     bg_color="#d0d0d0" />
+    <pressed    bg_color="#c0c0c0" />
+    <over       bg_color="#c0c0c0" />
+  </style>
+</dragger>
+
+<list_item>
+  <style name="default" border_color="#a0a0a0"  border="bottom" text_color="black">
+    <normal     bg_color="#f0f0f0" />
+    <pressed    bg_color="#c0c0c0" />
+    <over       bg_color="#f0f0f0" />
+  </style>
+  <style name="odd_clickable" border_color="#a0a0a0"  border="bottom" text_color="black">
+    <normal     bg_color="#f5f5f5" />
+    <pressed    bg_color="#c0c0c0" />
+    <over       bg_color="#f5f5f5" />
+  </style>
+  <style name="even_clickable" border_color="#a0a0a0"  border="bottom" text_color="black">
+    <normal     bg_color="#eaeaea" />
+    <pressed    bg_color="#c0c0c0" />
+    <over       bg_color="#eaeaea" />
+  </style>
+  <style name="odd" border_color="#a0a0a0"  border="bottom" text_color="black">
+    <normal     bg_color="#f5f5f5" />
+    <pressed    bg_color="#f5f5f5" />
+    <over       bg_color="#f5f5f5" />
+  </style>
+  <style name="even" border_color="#a0a0a0"  border="bottom" text_color="black">
+    <normal     bg_color="#eaeaea" />
+    <pressed    bg_color="#eaeaea" />
+    <over       bg_color="#eaeaea" />
+  </style>
+  <style name="empty" >
+    <normal  />
+    <pressed />
+    <over  />
+  </style>
+</list_item>
+
+<tab_button>
+  <style name="default" border_color="#a0a0a0"  text_color="black">
+    <normal     bg_color="#d0d0d0" />
+    <pressed    bg_color="#f0f0f0" />
+    <over       bg_color="#e0e0e0" />
+    <normal_of_active     bg_color="#f0f0f0" />
+    <pressed_of_active    bg_color="#f0f0f0" />
+    <over_of_active       bg_color="#f0f0f0" />
+  </style>
+</tab_button>
+
+
+<tab_button_group>
+  <style name="default">
+    <normal/>
+  </style>
+</tab_button_group>
+
+<combo_box>
+  <style name="default" border_color="#a0a0a0"  text_color="black" text_align_h="left">
+    <normal     bg_color="#f0f0f0" />
+    <focused    bg_color="#f0f0f0" border_color="black"/>
+    <disable    bg_color="gray" text_color="#d0d0d0" />
+    <error      bg_color="#f0f0f0" text_color="red" />
+    <empty      bg_color="#f0f0f0" text_color="#a0a0a0" />
+  </style>
+</combo_box>
+
+
+<combo_box_item>
+  <style name="default" icon_at="left" text_color="black" bg_color="#f0f0f0">
+    <normal  icon="empty"/>
+    <pressed icon="empty" bg_color="#1296db" text_color="white" />
+    <over    icon="empty" bg_color="#1296db" text_color="white" />
+    <normal_of_checked  icon="check"/>
+    <pressed_of_checked icon="check" bg_color="#1296db" text_color="white" />
+    <over_of_checked    icon="check" bg_color="#1296db" text_color="white" />
+  </style>
+</combo_box_item>

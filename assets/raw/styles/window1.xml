@@ -1,0 +1,15 @@
+
+<label>
+  <style name="big_green">
+    <normal text_color="green" font_size="24" text_align_h="center" border_color="#a0a0a0"/>
+  </style>
+  <style name="led">
+    <normal text_color="green" font_name="mono" font_size="18" text_align_h="center" border_color="#a0a0a0"/>
+  </style>
+  <style name="italic">
+   <normal text_color="green" font_name="italic" font_size="32" text_align_h="center" border_color="#a0a0a0"/>
+  </style>
+  <style name="bold">
+   <normal text_color="green" font_name="bold" font_size="32" text_align_h="center" border_color="#a0a0a0"/>
+  </style>
+</label>
