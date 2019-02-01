@@ -15,7 +15,7 @@ TEST(BindingContextAwtk, data_two_way) {
   view_model_t* vm = test_obj_create_view_model();
 
   widget_set_prop_str(slider, "v-data:value", "{i32}");
-  binding_context_bind_simple(vm, win);
+  binding_context_bind_view_model(vm, win);
 
   widget_set_value(slider, 99);
   ASSERT_EQ(view_model_get_prop(vm, "i32", &v), RET_OK);
@@ -38,7 +38,7 @@ TEST(BindingContextAwtk, data_once) {
   view_model_set_prop(vm, "i32", &v);
 
   widget_set_prop_str(slider, "v-data:value", "{i32, Mode=Once}");
-  binding_context_bind_simple(vm, win);
+  binding_context_bind_view_model(vm, win);
 
   widget_set_value(slider, 99);
   ASSERT_EQ(view_model_get_prop(vm, "i32", &v), RET_OK);
@@ -57,7 +57,7 @@ TEST(BindingContextAwtk, data_one_way) {
   view_model_set_prop(vm, "i32", &v);
 
   widget_set_prop_str(slider, "v-data:value", "{i32, Mode=OneWay}");
-  binding_context_bind_simple(vm, win);
+  binding_context_bind_view_model(vm, win);
   ASSERT_EQ(widget_get_value(slider), 66);
 
   widget_set_value(slider, 99);
@@ -81,7 +81,7 @@ TEST(BindingContextAwtk, data_changed) {
   view_model_set_prop(vm, "i32", &v);
 
   widget_set_prop_str(slider, "v-data:value", "{i32, Mode=TwoWay, Trigger=Changed}");
-  binding_context_bind_simple(vm, win);
+  binding_context_bind_view_model(vm, win);
   ASSERT_EQ(widget_get_value(slider), 66);
 
   widget_set_value(slider, 99);
@@ -105,7 +105,7 @@ TEST(BindingContextAwtk, data_changing) {
   view_model_set_prop(vm, "i32", &v);
 
   widget_set_prop_str(slider, "v-data:value", "{i32, Mode=TwoWay, Trigger=Changing}");
-  binding_context_bind_simple(vm, win);
+  binding_context_bind_view_model(vm, win);
   ASSERT_EQ(widget_get_value(slider), 66);
 
   widget_set_value(slider, 99);
@@ -129,7 +129,7 @@ TEST(BindingContextAwtk, data_explicit) {
   view_model_set_prop(vm, "i32", &v);
 
   widget_set_prop_str(slider, "v-data:value", "{i32, Mode=TwoWay, Trigger=Explicit}");
-  binding_context_bind_simple(vm, win);
+  binding_context_bind_view_model(vm, win);
   ASSERT_EQ(widget_get_value(slider), 66);
 
   widget_set_value(slider, 99);
@@ -155,7 +155,7 @@ TEST(BindingContextAwtk, command_update_to_model) {
 
   widget_set_prop_str(slider, "v-data:value", "{i32, Mode=TwoWay, Trigger=Explicit}");
   widget_set_prop_str(slider, "v-command:on_pointer_down", "{save, Args=2, UpdateModel=True}");
-  binding_context_bind_simple(vm, win);
+  binding_context_bind_view_model(vm, win);
   ASSERT_EQ(widget_get_value(slider), 66);
 
   widget_set_value(slider, 99);
@@ -186,7 +186,7 @@ TEST(BindingContextAwtk, command_close_window) {
   view_model_t* vm = test_obj_create_view_model();
 
   widget_set_prop_str(slider, "v-command:on_pointer_down", "{save, Args=2, CloseWindow=True}");
-  binding_context_bind_simple(vm, win);
+  binding_context_bind_view_model(vm, win);
 
   e.e = event_init(EVT_POINTER_DOWN, slider);
   e.x = 30;

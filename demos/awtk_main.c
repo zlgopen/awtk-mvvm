@@ -19,8 +19,6 @@
  *
  */
 
-#include "awtk.h"
-
 extern ret_t assets_init(void);
 extern ret_t application_init(void);
 

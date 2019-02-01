@@ -27,6 +27,7 @@
 #include "widgets/window.h"
 #include "mvvm/base/data_binding.h"
 #include "mvvm/base/command_binding.h"
+#include "mvvm/base/view_model_normal.h"
 #include "mvvm/base/binding_rule_parser.h"
 #include "mvvm/awtk/binding_context_awtk.h"
 
@@ -251,7 +252,7 @@ static ret_t on_widget_destroy(void* ctx, event_t* e) {
   return RET_REMOVE;
 }
 
-ret_t binding_context_bind_simple(view_model_t* vm, widget_t* widget) {
+ret_t binding_context_bind_view_model(view_model_t* vm, widget_t* widget) {
   binding_context_t* ctx = NULL;
   return_value_if_fail(vm != NULL && widget != NULL, RET_BAD_PARAMS);
 
@@ -266,4 +267,20 @@ error:
   binding_context_destroy(ctx);
 
   return RET_FAIL;
+}
+
+ret_t binding_context_bind_model(model_t* model, widget_t* widget) {
+  view_model_t* vm = NULL;
+  return_value_if_fail(model != NULL && widget != NULL, RET_BAD_PARAMS);
+
+  vm = view_model_normal_create(model);
+  return_value_if_fail(vm != NULL, RET_OOM);
+
+  return binding_context_bind_view_model(vm, widget);
+}
+
+ret_t vm_open_window(const char* name, model_t* model) {
+  widget_t* win = window_open(name);
+
+  return binding_context_bind_model(model, win);
 }

@@ -29,8 +29,6 @@ BEGIN_C_DECLS
 
 binding_context_t* binding_context_create(void);
 
-ret_t binding_context_bind_simple(view_model_t* vm, widget_t* widget);
-
 END_C_DECLS
 
 #endif /*TK_BINDING_CONTEXT_AWTK_H*/

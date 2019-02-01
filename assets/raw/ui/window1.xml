@@ -1,7 +1,0 @@
-<window anim_hint="htranslate">
-    <label style="led" text="20180818" x="center" y="middle" w="50%" h="40"/>
-    <label style="big_green" text="Hello AWTK" x="center" y="middle:40" w="50%" h="30"/>
-    <label style="italic" text="Hello AWTK" x="center" y="middle:80" w="50%" h="30"/>
-    <label style="bold" text="Hello AWTK" x="center" y="middle:120" w="50%" h="30"/>
-    <button name="close" text="Close" x="center" y="bottom:10" w="80%" h="30"/>
-</window>

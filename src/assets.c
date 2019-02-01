@@ -8,7 +8,6 @@
 #include "assets/inc/styles/window1.data"
 #include "assets/inc/ui/main.data"
 #include "assets/inc/ui/window1.data"
-#include "assets/inc/ui/temperature.data"
 #ifdef WITH_STB_IMAGE
 #include "assets/inc/images/checked.res"
 #include "assets/inc/images/earth.res"
@@ -77,7 +76,6 @@ ret_t assets_init(void) {
 #else
   assets_manager_add(rm, ui_main);
   assets_manager_add(rm, ui_window1);
-  assets_manager_add(rm, ui_temperature);
   assets_manager_add(rm, strings_zh_CN);
   assets_manager_add(rm, strings_en_US);
   assets_manager_add(rm, image_arrow_right_o);

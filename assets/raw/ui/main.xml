@@ -1,4 +1,0 @@
-<window theme="main">
-    <button style="icon" name="window1" text="Open Window1" x="center" y="middle" w="50%" h="30"/>
-    <button style="led" name="window1" text="Open Window1" x="center" y="middle:50" w="50%" h="30"/>
-</window>

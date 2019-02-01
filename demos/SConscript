@@ -4,4 +4,4 @@ import sys
 env=DefaultEnvironment().Clone()
 BIN_DIR=os.environ['BIN_DIR'];
 
-env.Program(os.path.join(BIN_DIR, 'hello_awtk'), Glob('*.c'))
+env.Program(os.path.join(BIN_DIR, 'demo1'), Glob('demo1/*.c') + ["assets.c"])

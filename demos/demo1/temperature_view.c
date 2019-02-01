@@ -1,9 +1,9 @@
 /**
- * File:   window1.h
+ * File:   temperature_view.c
  * Author: AWTK Develop Team
- * Brief:  window1 source
+ * Brief:  temperature view
  *
- * Copyright (c) 2018 - 2018  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2019  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -15,19 +15,18 @@
 /**
  * History:
  * ================================================================
- * 2018-08-19 Li XianJing <xianjimli@hotmail.com> created
+ * 2019-02-02 Li XianJing <xianjimli@hotmail.com> created
  *
  */
 
-#ifndef WINDOW1_H
-#define WINDOW1_H
-
 #include "awtk.h"
+#include "temperature.h"
+#include "mvvm/base/binding_context.h"
 
-BEGIN_C_DECLS
+ret_t application_init() {
+  vm_open_window("temperature1", temperature_create());
 
-ret_t window1_open(void);
+  return RET_OK;
+}
 
-END_C_DECLS
-
-#endif /*WINDOW1_H*/
+#include "../awtk_main.c"

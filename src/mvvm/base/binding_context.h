@@ -114,6 +114,11 @@ ret_t binding_context_update_to_model(binding_context_t* ctx);
  */
 ret_t binding_context_destroy(binding_context_t* ctx);
 
+/*wrapper*/
+ret_t vm_open_window(const char* name, model_t* model);
+ret_t binding_context_bind_model(model_t* model, widget_t* widget);
+ret_t binding_context_bind_view_model(view_model_t* vm, widget_t* widget);
+
 END_C_DECLS
 
 #endif /*TK_BINDING_CONTEXT_H*/
