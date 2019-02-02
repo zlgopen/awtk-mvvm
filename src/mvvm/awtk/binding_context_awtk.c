@@ -19,6 +19,7 @@
  *
  */
 
+#include "tkc/str.h"
 #include "tkc/mem.h"
 #include "tkc/utils.h"
 #include "tkc/int_str.h"
@@ -27,18 +28,46 @@
 #include "base/widget.h"
 #include "widgets/window.h"
 #include "mvvm/base/data_binding.h"
+#include "mvvm/base/binding_context.h"
 #include "mvvm/base/command_binding.h"
 #include "mvvm/base/view_model_normal.h"
 #include "mvvm/base/binding_rule_parser.h"
 #include "mvvm/awtk/binding_context_awtk.h"
 
+static ret_t visit_data_binding_update_error_of(void* ctx, const void* data) {
+  data_binding_t* rule = DATA_BINDING(data);
+  data_binding_t* trigger_rule = DATA_BINDING(ctx);
+
+  if(tk_str_start_with(rule->path, DATA_BINDING_ERROR_OF)) {
+    const char* path = rule->path + sizeof(DATA_BINDING_ERROR_OF)-1;
+    if(tk_str_eq(path, trigger_rule->path)) {
+      widget_t* widget = WIDGET(BINDING_RULE(rule)->widget);
+      binding_context_t* bctx = BINDING_RULE(rule)->binding_context;
+      widget_set_tr_text(widget, bctx->vm->last_error.str);
+    }
+  }
+
+  return RET_OK;
+}
+
+static ret_t binding_context_update_error_of(data_binding_t* rule) {
+  binding_context_t* ctx = BINDING_RULE(rule)->binding_context;
+  str_t* last_error = &(ctx->vm->last_error);
+
+  if(last_error->size > 0) {
+    darray_foreach(&(ctx->data_bindings), visit_data_binding_update_error_of, rule);
+  }
+
+  return RET_OK;
+}
+
 static ret_t on_widget_prop_change(void* ctx, event_t* e) {
   data_binding_t* rule = DATA_BINDING(ctx);
   prop_change_event_t* evt = prop_change_event_cast(e);
 
-  data_binding_set_prop(rule, evt->value);
-
-  /*TODO: check error*/
+  if(data_binding_set_prop(rule, evt->value) != RET_OK) {
+    binding_context_update_error_of(rule);
+  }
 
   return RET_OK;
 }
@@ -49,8 +78,9 @@ static ret_t on_widget_value_change(void* ctx, event_t* e) {
   data_binding_t* rule = DATA_BINDING(ctx);
   return_value_if_fail(widget_get_prop(widget, WIDGET_PROP_VALUE, &v) == RET_OK, RET_OK);
 
-  data_binding_set_prop(rule, &v);
-  /*TODO: check error*/
+  if(data_binding_set_prop(rule, &v) != RET_OK) {
+    binding_context_update_error_of(rule);
+  }
 
   return RET_OK;
 }
@@ -180,6 +210,10 @@ static ret_t visit_data_binding_update_to_view(void* ctx, const void* data) {
   data_binding_t* rule = DATA_BINDING(data);
   widget_t* widget = WIDGET(BINDING_RULE(rule)->widget);
   binding_context_t* bctx = BINDING_RULE(rule)->binding_context;
+
+  if(tk_str_start_with(rule->path, DATA_BINDING_ERROR_OF)) {
+    return RET_OK;
+  }
 
   if ((rule->mode == BINDING_ONCE && !(bctx->bound)) || rule->mode == BINDING_ONE_WAY ||
       rule->mode == BINDING_TWO_WAY) {

@@ -161,6 +161,7 @@ ret_t data_binding_set_prop(data_binding_t* rule, const value_t* v);
 #define DATA_BINDING_TRIGGER "Trigger"
 #define DATA_BINDING_CONVERTER "Converter"
 #define DATA_BINDING_VALIDATOR "Validator"
+#define DATA_BINDING_ERROR_OF "error.of."
 
 END_C_DECLS
 

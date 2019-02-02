@@ -8,6 +8,7 @@
 #include "assets/inc/styles/window1.data"
 #include "assets/inc/ui/temperature1.data"
 #include "assets/inc/ui/temperature4.data"
+#include "assets/inc/ui/temperature5.data"
 #include "assets/inc/ui/temperature2.data"
 #include "assets/inc/ui/temperature3.data"
 #ifdef WITH_STB_IMAGE
@@ -56,18 +57,18 @@
 #include "assets/inc/images/arrow_down_n.data"
 #include "assets/inc/images/arrow_left_n.data"
 #include "assets/inc/images/edit_clear_p.data"
-#endif /*WITH_STB_IMAGE*/
+#endif/*WITH_STB_IMAGE*/
 #ifdef WITH_VGCANVAS
-#endif /*WITH_VGCANVAS*/
+#endif/*WITH_VGCANVAS*/
 #if defined(WITH_STB_FONT) || defined(WITH_FT_FONT)
 #ifdef WITH_MINI_FONT
 #include "assets/inc/fonts/default.mini.res"
-#else /*WITH_MINI_FONT*/
+#else/*WITH_MINI_FONT*/
 #include "assets/inc/fonts/default.res"
-#endif /*WITH_MINI_FONT*/
-#else  /*WITH_STB_FONT or WITH_FT_FONT*/
-#endif /*WITH_STB_FONT or WITH_FT_FONT*/
-#endif /*WITH_FS_RES*/
+#endif/*WITH_MINI_FONT*/
+#else/*WITH_STB_FONT or WITH_FT_FONT*/
+#endif/*WITH_STB_FONT or WITH_FT_FONT*/
+#endif/*WITH_FS_RES*/
 
 ret_t assets_init(void) {
   assets_manager_t* rm = assets_manager();
@@ -78,6 +79,7 @@ ret_t assets_init(void) {
 #else
   assets_manager_add(rm, ui_temperature1);
   assets_manager_add(rm, ui_temperature4);
+  assets_manager_add(rm, ui_temperature5);
   assets_manager_add(rm, ui_temperature2);
   assets_manager_add(rm, ui_temperature3);
   assets_manager_add(rm, strings_zh_CN);
@@ -108,7 +110,7 @@ ret_t assets_init(void) {
   assets_manager_add(rm, style_default);
   assets_manager_add(rm, style_window1);
 #ifdef WITH_VGCANVAS
-#endif /*WITH_VGCANVAS*/
+#endif/*WITH_VGCANVAS*/
 #endif
 
   tk_init_assets();

@@ -1,9 +1,9 @@
-﻿/**
- * File:   temperature_converter.h
+/**
+ * File:   temperature_view.c
  * Author: AWTK Develop Team
- * Brief:  temperature converter
+ * Brief:  temperature view
  *
- * Copyright (c) 2019 - 2019  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2018 - 2019  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -19,15 +19,17 @@
  *
  */
 
-#ifndef TK_TEMPERATURE_CONVERTER_H
-#define TK_TEMPERATURE_CONVERTER_H
+#include "awtk.h"
+#include "temperature.h"
+#include "temperature_validator.h"
+#include "mvvm/base/binding_context.h"
 
-#include "mvvm/base/model.h"
+ret_t application_init() {
+  temperature_validator_init();
 
-BEGIN_C_DECLS
+  vm_open_window("temperature5", temperature_create());
 
-ret_t temperature_converter_init(void);
+  return RET_OK;
+}
 
-END_C_DECLS
-
-#endif /*TK_TEMPERATURE_CONVERTER_H*/
+#include "../awtk_main.c"

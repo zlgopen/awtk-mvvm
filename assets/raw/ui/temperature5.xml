@@ -1,0 +1,5 @@
+<window anim_hint="htranslate">
+  <label text="1" x="0" y="middle" w="40%" h="40" v-data:text="{temp}"/>
+  <label x="right" y="middle" w="40%" h="40" v-data:text="{error.of.temp}"/>
+  <slider x="center" y="middle:40" w="80%" h="20" v-data:value="{temp, validator=water_temp}"/>
+</window>

@@ -1,7 +1,7 @@
 ﻿/**
- * File:   temperature_converter.h
+ * File:   temperature.h
  * Author: AWTK Develop Team
- * Brief:  temperature converter
+ * Brief:  temperature
  *
  * Copyright (c) 2019 - 2019  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
@@ -19,15 +19,37 @@
  *
  */
 
-#ifndef TK_TEMPERATURE_CONVERTER_H
-#define TK_TEMPERATURE_CONVERTER_H
+#ifndef TK_TEMPERATURE_H
+#define TK_TEMPERATURE_H
 
 #include "mvvm/base/model.h"
 
 BEGIN_C_DECLS
 
-ret_t temperature_converter_init(void);
+/**
+ * @class temperature_t
+ *
+ * 温度对象。
+ *
+ */
+typedef struct _temperature_t {
+  model_t model;
+
+  double value;
+} temperature_t;
+
+/**
+ * @method temperature_create
+ * 创建temperature对象。
+ *
+ * @annotation ["constructor"]
+ *
+ * @return {model_t} 返回model_t对象。
+ */
+model_t* temperature_create(void);
+
+#define TEMPERATURE(t) ((temperature_t*)(t))
 
 END_C_DECLS
 
-#endif /*TK_TEMPERATURE_CONVERTER_H*/
+#endif /*TK_TEMPERATURE_H*/

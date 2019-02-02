@@ -1,7 +1,7 @@
 ﻿/**
  * File:   temperature_converter.c
  * Author: AWTK Develop Team
- * Brief:  temperature
+ * Brief:  temperature converter
  *
  * Copyright (c) 2019 - 2019  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *

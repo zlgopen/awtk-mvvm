@@ -1,7 +1,7 @@
 ﻿/**
- * File:   temperature_converter.h
+ * File:   temperature_validator.h
  * Author: AWTK Develop Team
- * Brief:  temperature converter
+ * Brief:  temperature validator
  *
  * Copyright (c) 2019 - 2019  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
@@ -19,15 +19,15 @@
  *
  */
 
-#ifndef TK_TEMPERATURE_CONVERTER_H
-#define TK_TEMPERATURE_CONVERTER_H
+#ifndef TK_TEMPERATURE_VALIDATOR_H
+#define TK_TEMPERATURE_VALIDATOR_H
 
 #include "mvvm/base/model.h"
 
 BEGIN_C_DECLS
 
-ret_t temperature_converter_init(void);
+ret_t temperature_validator_init(void);
 
 END_C_DECLS
 
-#endif /*TK_TEMPERATURE_CONVERTER_H*/
+#endif /*TK_TEMPERATURE_VALIDATOR_H*/
