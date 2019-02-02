@@ -118,7 +118,7 @@ bool_t command_binding_can_exec(command_binding_t* rule) {
   ctx = BINDING_RULE(rule)->binding_context;
   return_value_if_fail(ctx != NULL && ctx->vm != NULL, FALSE);
 
-  if(tk_str_ieq(rule->command, COMMAND_BINDING_NOTHING)) {
+  if (tk_str_ieq(rule->command, COMMAND_BINDING_NOTHING)) {
     return TRUE;
   }
 
@@ -130,8 +130,8 @@ ret_t command_binding_exec(command_binding_t* rule) {
   return_value_if_fail(rule != NULL, RET_BAD_PARAMS);
   ctx = BINDING_RULE(rule)->binding_context;
   return_value_if_fail(ctx != NULL && ctx->vm != NULL, RET_BAD_PARAMS);
-  
-  if(tk_str_ieq(rule->command, COMMAND_BINDING_NOTHING)) {
+
+  if (tk_str_ieq(rule->command, COMMAND_BINDING_NOTHING)) {
     return RET_OK;
   }
 

@@ -23,13 +23,13 @@
 #include "mvvm/base/value_converter_delegate.h"
 
 static ret_t to_temp_f(const value_t* from, value_t* to) {
-  value_set_double(to, value_int(from) * 1.8+32); 
+  value_set_double(to, value_int(from) * 1.8 + 32);
 
   return RET_OK;
 }
 
 static ret_t to_temp_c(const value_t* from, value_t* to) {
-  value_set_double(to, (value_int(from)-32)/1.8);
+  value_set_double(to, (value_int(from) - 32) / 1.8);
 
   return RET_OK;
 }
@@ -43,4 +43,3 @@ ret_t temperature_converter_init(void) {
 
   return RET_OK;
 }
-

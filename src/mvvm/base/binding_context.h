@@ -55,6 +55,8 @@ struct _binding_context_t {
   bool_t bound;
   bool_t updating_view;
   bool_t updating_model;
+
+  int32_t need_updating_view;
   const binding_context_vtable_t* vt;
 };
 
@@ -118,6 +120,8 @@ ret_t binding_context_destroy(binding_context_t* ctx);
 ret_t vm_open_window(const char* name, model_t* model);
 ret_t binding_context_bind_model(model_t* model, widget_t* widget);
 ret_t binding_context_bind_view_model(view_model_t* vm, widget_t* widget);
+
+#define BINDING_CONTEXT(ctx) ((binding_context_t*)(ctx))
 
 END_C_DECLS
 

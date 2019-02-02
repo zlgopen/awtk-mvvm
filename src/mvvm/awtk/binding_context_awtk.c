@@ -23,6 +23,7 @@
 #include "tkc/utils.h"
 #include "tkc/int_str.h"
 #include "tkc/darray.h"
+#include "base/idle.h"
 #include "base/widget.h"
 #include "widgets/window.h"
 #include "mvvm/base/data_binding.h"
@@ -189,10 +190,33 @@ static ret_t visit_data_binding_update_to_view(void* ctx, const void* data) {
   return RET_OK;
 }
 
+static ret_t binding_context_awtk_update_to_view_sync(binding_context_t* ctx) {
+  darray_foreach(&(ctx->data_bindings), visit_data_binding_update_to_view, ctx);
+  ctx->need_updating_view = 0;
+
+  return RET_OK;
+}
+
+static ret_t idle_update_to_view(const idle_info_t* info) {
+  binding_context_t* ctx = BINDING_CONTEXT(info->ctx);
+  return_value_if_fail(ctx != NULL, RET_BAD_PARAMS);
+
+  binding_context_awtk_update_to_view_sync(ctx);
+
+  return RET_OK;
+}
+
 static ret_t binding_context_awtk_update_to_view(binding_context_t* ctx) {
   return_value_if_fail(ctx != NULL, RET_BAD_PARAMS);
 
-  darray_foreach(&(ctx->data_bindings), visit_data_binding_update_to_view, ctx);
+  if(ctx->bound) {
+    if (!ctx->need_updating_view) {
+      idle_add(idle_update_to_view, ctx);
+    }
+    ctx->need_updating_view++;
+  } else {
+    binding_context_awtk_update_to_view_sync(ctx);
+  }
 
   return RET_OK;
 }
@@ -202,7 +226,7 @@ static ret_t visit_data_binding_update_to_model(void* ctx, const void* data) {
   data_binding_t* rule = DATA_BINDING(data);
   widget_t* widget = WIDGET(BINDING_RULE(rule)->widget);
 
-  if(rule->trigger == UPDATE_WHEN_EXPLICIT) {
+  if (rule->trigger == UPDATE_WHEN_EXPLICIT) {
     if (rule->mode == BINDING_TWO_WAY || rule->mode == BINDING_ONE_WAY_TO_MODEL) {
       return_value_if_fail(widget_get_prop(widget, rule->prop, &v) == RET_OK, RET_OK);
       return_value_if_fail(data_binding_set_prop(rule, &v) == RET_OK, RET_OK);
