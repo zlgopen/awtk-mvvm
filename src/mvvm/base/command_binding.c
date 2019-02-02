@@ -25,6 +25,8 @@
 #include "mvvm/base/binding_context.h"
 #include "mvvm/base/command_binding.h"
 
+#define equal tk_str_ieq
+
 static command_binding_t* command_binding_cast(void* rule);
 
 static ret_t command_binding_on_destroy(object_t* obj) {
@@ -47,17 +49,17 @@ static ret_t command_binding_set_prop(object_t* obj, const char* name, const val
   if (rule->command == NULL && value == NULL) {
     value = name;
     rule->command = tk_str_copy(rule->command, value);
-  } else if (tk_str_eq(COMMAND_BINDING_COMMAND, name)) {
+  } else if (equal(COMMAND_BINDING_COMMAND, name)) {
     rule->command = tk_str_copy(rule->command, value);
-  } else if (tk_str_eq(COMMAND_BINDING_ARGS, name)) {
+  } else if (equal(COMMAND_BINDING_ARGS, name)) {
     rule->args = tk_str_copy(rule->args, value);
-  } else if (tk_str_eq(COMMAND_BINDING_EVENT, name)) {
+  } else if (equal(COMMAND_BINDING_EVENT, name)) {
     rule->event = tk_str_copy(rule->event, value);
-  } else if (tk_str_eq(COMMAND_BINDING_EVENT_ARGS, name)) {
+  } else if (equal(COMMAND_BINDING_EVENT_ARGS, name)) {
     rule->event_args = tk_str_copy(rule->event_args, value);
-  } else if (tk_str_eq(COMMAND_BINDING_CLOSE_WINDOW, name)) {
+  } else if (equal(COMMAND_BINDING_CLOSE_WINDOW, name)) {
     rule->close_window = value != NULL ? tk_atob(value) : TRUE;
-  } else if (tk_str_eq(COMMAND_BINDING_UPDATE_MODEL, name)) {
+  } else if (equal(COMMAND_BINDING_UPDATE_MODEL, name)) {
     rule->update_model = value != NULL ? tk_atob(value) : TRUE;
   } else {
     if (rule->props == NULL) {
@@ -74,15 +76,15 @@ static ret_t command_binding_get_prop(object_t* obj, const char* name, value_t* 
   command_binding_t* rule = command_binding_cast(obj);
   return_value_if_fail(rule != NULL, RET_BAD_PARAMS);
 
-  if (tk_str_eq(COMMAND_BINDING_COMMAND, name)) {
+  if (equal(COMMAND_BINDING_COMMAND, name)) {
     value_set_str(v, rule->command);
-  } else if (tk_str_eq(COMMAND_BINDING_ARGS, name)) {
+  } else if (equal(COMMAND_BINDING_ARGS, name)) {
     value_set_str(v, rule->args);
-  } else if (tk_str_eq(COMMAND_BINDING_EVENT, name)) {
+  } else if (equal(COMMAND_BINDING_EVENT, name)) {
     value_set_str(v, rule->event);
-  } else if (tk_str_eq(COMMAND_BINDING_CLOSE_WINDOW, name)) {
+  } else if (equal(COMMAND_BINDING_CLOSE_WINDOW, name)) {
     value_set_bool(v, rule->close_window);
-  } else if (tk_str_eq(COMMAND_BINDING_UPDATE_MODEL, name)) {
+  } else if (equal(COMMAND_BINDING_UPDATE_MODEL, name)) {
     value_set_bool(v, rule->update_model);
   } else {
     ret = object_get_prop(rule->props, name, v);

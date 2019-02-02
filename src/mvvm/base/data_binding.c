@@ -35,6 +35,8 @@
 #define STR_CHANGING "Changing"
 #define STR_EXPLICIT "Explicit"
 
+#define equal tk_str_ieq
+
 static data_binding_t* data_binding_cast(void* rule);
 
 static ret_t data_binding_on_destroy(object_t* obj) {
@@ -56,41 +58,41 @@ static ret_t data_binding_object_set_prop(object_t* obj, const char* name, const
   if (rule->path == NULL && value == NULL) {
     value = name;
     rule->path = tk_str_copy(rule->path, value);
-  } else if (tk_str_eq(DATA_BINDING_MODE, name)) {
+  } else if (equal(DATA_BINDING_MODE, name)) {
     binding_mode_t mode = BINDING_TWO_WAY;
 
-    if (tk_str_eq(value, STR_ONCE)) {
+    if (equal(value, STR_ONCE)) {
       mode = BINDING_ONCE;
-    } else if (tk_str_eq(value, STR_ONCE)) {
+    } else if (equal(value, STR_ONCE)) {
       mode = BINDING_ONCE;
-    } else if (tk_str_eq(value, STR_TWO_WAY)) {
+    } else if (equal(value, STR_TWO_WAY)) {
       mode = BINDING_TWO_WAY;
-    } else if (tk_str_eq(value, STR_ONE_WAY)) {
+    } else if (equal(value, STR_ONE_WAY)) {
       mode = BINDING_ONE_WAY;
-    } else if (tk_str_eq(value, STR_ONE_WAY_TO_MODEL)) {
+    } else if (equal(value, STR_ONE_WAY_TO_MODEL)) {
       mode = BINDING_ONE_WAY_TO_MODEL;
     }
 
     rule->mode = mode;
-  } else if (tk_str_eq(DATA_BINDING_TRIGGER, name)) {
+  } else if (equal(DATA_BINDING_TRIGGER, name)) {
     update_model_trigger_t trigger = UPDATE_WHEN_CHANGED;
 
-    if (tk_str_eq(value, STR_CHANGED)) {
+    if (equal(value, STR_CHANGED)) {
       trigger = UPDATE_WHEN_CHANGED;
-    } else if (tk_str_eq(value, STR_CHANGING)) {
+    } else if (equal(value, STR_CHANGING)) {
       trigger = UPDATE_WHEN_CHANGING;
-    } else if (tk_str_eq(value, STR_EXPLICIT)) {
+    } else if (equal(value, STR_EXPLICIT)) {
       trigger = UPDATE_WHEN_EXPLICIT;
     }
 
     rule->trigger = trigger;
-  } else if (tk_str_eq(DATA_BINDING_PATH, name)) {
+  } else if (equal(DATA_BINDING_PATH, name)) {
     rule->path = tk_str_copy(rule->path, value);
-  } else if (tk_str_eq(DATA_BINDING_PROP, name)) {
+  } else if (equal(DATA_BINDING_PROP, name)) {
     rule->prop = tk_str_copy(rule->prop, value);
-  } else if (tk_str_eq(DATA_BINDING_CONVERTER, name)) {
+  } else if (equal(DATA_BINDING_CONVERTER, name)) {
     rule->converter = tk_str_copy(rule->converter, value);
-  } else if (tk_str_eq(DATA_BINDING_VALIDATOR, name)) {
+  } else if (equal(DATA_BINDING_VALIDATOR, name)) {
     rule->validator = tk_str_copy(rule->validator, value);
   } else {
     if (rule->props == NULL) {
@@ -107,17 +109,17 @@ static ret_t data_binding_object_get_prop(object_t* obj, const char* name, value
   data_binding_t* rule = data_binding_cast(obj);
   return_value_if_fail(rule != NULL, RET_BAD_PARAMS);
 
-  if (tk_str_eq(DATA_BINDING_MODE, name)) {
+  if (equal(DATA_BINDING_MODE, name)) {
     value_set_int(v, rule->mode);
-  } else if (tk_str_eq(DATA_BINDING_TRIGGER, name)) {
+  } else if (equal(DATA_BINDING_TRIGGER, name)) {
     value_set_int(v, rule->trigger);
-  } else if (tk_str_eq(DATA_BINDING_PATH, name)) {
+  } else if (equal(DATA_BINDING_PATH, name)) {
     value_set_str(v, rule->path);
-  } else if (tk_str_eq(DATA_BINDING_PROP, name)) {
+  } else if (equal(DATA_BINDING_PROP, name)) {
     value_set_str(v, rule->prop);
-  } else if (tk_str_eq(DATA_BINDING_CONVERTER, name)) {
+  } else if (equal(DATA_BINDING_CONVERTER, name)) {
     value_set_str(v, rule->converter);
-  } else if (tk_str_eq(DATA_BINDING_VALIDATOR, name)) {
+  } else if (equal(DATA_BINDING_VALIDATOR, name)) {
     value_set_str(v, rule->validator);
   } else {
     ret = object_get_prop(rule->props, name, v);

@@ -79,6 +79,18 @@ TEST(CommandBindingParser, event_args) {
   object_unref(OBJECT(rule));
 }
 
+TEST(CommandBindingParser, ievent_args) {
+  binding_rule_t* rule =
+      binding_rule_parse("v-command:on_keydown:ctrl_a", "{Save, updateModel=false}");
+  command_binding_t* cmd = (command_binding_t*)rule;
+
+  ASSERT_EQ(cmd->update_model, FALSE);
+  ASSERT_EQ(string(cmd->event), string("on_keydown"));
+  ASSERT_EQ(string(cmd->event_args), string("ctrl_a"));
+
+  object_unref(OBJECT(rule));
+}
+
 TEST(DataBindingParser, basic) {
   binding_rule_t* rule = binding_rule_parse("v-data:text", "{Name}");
   data_binding_t* data = (data_binding_t*)rule;
@@ -100,12 +112,30 @@ TEST(DataBindingParser, mode) {
   object_unref(OBJECT(rule));
 }
 
+TEST(DataBindingParser, imode) {
+  binding_rule_t* rule = binding_rule_parse("v-data:text", "{Name, mode=twoWay}");
+  data_binding_t* data = (data_binding_t*)rule;
+
+  ASSERT_EQ(data->mode, BINDING_TWO_WAY);
+
+  object_unref(OBJECT(rule));
+}
+
 TEST(DataBindingParser, trigger) {
   binding_rule_t* rule = binding_rule_parse("v-data:text", "{Name, Trigger=Explicit}");
   data_binding_t* data = (data_binding_t*)rule;
 
   ASSERT_EQ(string(data->path), string("Name"));
   ASSERT_EQ(string(data->prop), string("text"));
+  ASSERT_EQ(data->trigger, UPDATE_WHEN_EXPLICIT);
+
+  object_unref(OBJECT(rule));
+}
+
+TEST(DataBindingParser, itrigger) {
+  binding_rule_t* rule = binding_rule_parse("v-data:text", "{Name, trigger=explicit}");
+  data_binding_t* data = (data_binding_t*)rule;
+
   ASSERT_EQ(data->trigger, UPDATE_WHEN_EXPLICIT);
 
   object_unref(OBJECT(rule));
@@ -122,12 +152,30 @@ TEST(DataBindingParser, converter) {
   object_unref(OBJECT(rule));
 }
 
+TEST(DataBindingParser, iconverter) {
+  binding_rule_t* rule = binding_rule_parse("v-data:text", "{Name, converter=converter}");
+  data_binding_t* data = (data_binding_t*)rule;
+
+  ASSERT_EQ(string(data->converter), string("converter"));
+
+  object_unref(OBJECT(rule));
+}
+
 TEST(DataBindingParser, validator) {
   binding_rule_t* rule = binding_rule_parse("v-data:text", "{Name, Validator=validator}");
   data_binding_t* data = (data_binding_t*)rule;
 
   ASSERT_EQ(string(data->path), string("Name"));
   ASSERT_EQ(string(data->prop), string("text"));
+  ASSERT_EQ(string(data->validator), string("validator"));
+
+  object_unref(OBJECT(rule));
+}
+
+TEST(DataBindingParser, ivalidator) {
+  binding_rule_t* rule = binding_rule_parse("v-data:text", "{Name, validator=validator}");
+  data_binding_t* data = (data_binding_t*)rule;
+
   ASSERT_EQ(string(data->validator), string("validator"));
 
   object_unref(OBJECT(rule));
