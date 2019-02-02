@@ -202,10 +202,21 @@ static ret_t visit_data_binding_update_to_model(void* ctx, const void* data) {
   data_binding_t* rule = DATA_BINDING(data);
   widget_t* widget = WIDGET(BINDING_RULE(rule)->widget);
 
-  if (rule->mode == BINDING_TWO_WAY || rule->mode == BINDING_ONE_WAY_TO_MODEL) {
-    return_value_if_fail(widget_get_prop(widget, rule->prop, &v) == RET_OK, RET_OK);
-    return_value_if_fail(data_binding_set_prop(rule, &v) == RET_OK, RET_OK);
+  if(rule->trigger == UPDATE_WHEN_EXPLICIT) {
+    if (rule->mode == BINDING_TWO_WAY || rule->mode == BINDING_ONE_WAY_TO_MODEL) {
+      return_value_if_fail(widget_get_prop(widget, rule->prop, &v) == RET_OK, RET_OK);
+      return_value_if_fail(data_binding_set_prop(rule, &v) == RET_OK, RET_OK);
+    }
   }
+
+  return RET_OK;
+}
+
+static ret_t visit_command_binding(void* ctx, const void* data) {
+  command_binding_t* rule = COMMAND_BINDING(data);
+  widget_t* widget = WIDGET(BINDING_RULE(rule)->widget);
+
+  widget_set_enable(widget, command_binding_can_exec(rule));
 
   return RET_OK;
 }
@@ -214,6 +225,7 @@ static ret_t binding_context_awtk_update_to_model(binding_context_t* ctx) {
   return_value_if_fail(ctx != NULL, RET_BAD_PARAMS);
 
   darray_foreach(&(ctx->data_bindings), visit_data_binding_update_to_model, ctx);
+  darray_foreach(&(ctx->command_bindings), visit_command_binding, ctx);
 
   return RET_OK;
 }

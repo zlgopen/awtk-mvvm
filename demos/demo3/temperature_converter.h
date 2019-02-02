@@ -19,37 +19,15 @@
  *
  */
 
-#ifndef TK_TEMPERATURE_H
-#define TK_TEMPERATURE_H
+#ifndef TK_TEMPERATURE_CONVERTER_H
+#define TK_TEMPERATURE_CONVERTER_H
 
 #include "mvvm/base/model.h"
 
 BEGIN_C_DECLS
 
-/**
- * @class temperature_t
- *
- * 温度对象。
- *
- */
-typedef struct _temperature_t {
-  model_t model;
-
-  double value;
-} temperature_t;
-
-/**
- * @method temperature_create
- * 创建temperature对象。
- *
- * @annotation ["constructor"]
- *
- * @return {model_t} 返回model_t对象。
- */
-model_t* temperature_create(void);
-
-#define TEMPERATURE(t) ((temperature_t*)(t))
+ret_t temperature_converter_init(void);
 
 END_C_DECLS
 
-#endif /*TK_TEMPERATURE_H*/
+#endif /*TK_TEMPERATURE_CONVERTER_H*/

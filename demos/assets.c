@@ -7,6 +7,9 @@
 #include "assets/inc/styles/default.data"
 #include "assets/inc/styles/window1.data"
 #include "assets/inc/ui/temperature1.data"
+#include "assets/inc/ui/temperature4.data"
+#include "assets/inc/ui/temperature2.data"
+#include "assets/inc/ui/temperature3.data"
 #ifdef WITH_STB_IMAGE
 #include "assets/inc/images/checked.res"
 #include "assets/inc/images/earth.res"
@@ -74,6 +77,9 @@ ret_t assets_init(void) {
   assets_manager_load(rm, ASSET_TYPE_FONT, "default");
 #else
   assets_manager_add(rm, ui_temperature1);
+  assets_manager_add(rm, ui_temperature4);
+  assets_manager_add(rm, ui_temperature2);
+  assets_manager_add(rm, ui_temperature3);
   assets_manager_add(rm, strings_zh_CN);
   assets_manager_add(rm, strings_en_US);
   assets_manager_add(rm, image_arrow_right_o);
