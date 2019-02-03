@@ -1,4 +1,4 @@
-AWUI介绍 
+MVVM(Model-View-ViewModel)介绍
 
 一、分离用户界面和业务逻辑
 
