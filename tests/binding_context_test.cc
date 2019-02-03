@@ -23,6 +23,7 @@ TEST(BindingContextAwtk, data_two_way) {
 
   value_set_int(&v, 66);
   view_model_set_prop(vm, "i32", &v);
+  idle_dispatch();
   ASSERT_EQ(widget_get_value(slider), value_int(&v));
 
   widget_destroy(win);
@@ -66,6 +67,7 @@ TEST(BindingContextAwtk, data_one_way) {
 
   value_set_int(&v, 88);
   view_model_set_prop(vm, "i32", &v);
+  idle_dispatch();
   ASSERT_EQ(widget_get_value(slider), 88);
 
   widget_destroy(win);

@@ -23,12 +23,19 @@
 #include "mvvm/base/value_validator.h"
 
 bool_t value_validator_is_valid(value_validator_t* validator, const value_t* value, str_t* msg) {
-  return_value_if_fail(validator != NULL && validator->object.vt != NULL, RET_BAD_PARAMS);
-  return_value_if_fail(validator->is_valid != NULL && validator->object.ref_count > 0,
-                       RET_BAD_PARAMS);
-  return_value_if_fail(value != NULL && msg != NULL, RET_BAD_PARAMS);
+  return_value_if_fail(validator != NULL && validator->object.vt != NULL, FALSE);
+  return_value_if_fail(validator->is_valid != NULL && validator->object.ref_count > 0, FALSE);
+  return_value_if_fail(value != NULL && msg != NULL, FALSE);
 
   return validator->is_valid(validator, value, msg);
+}
+
+ret_t value_validator_fix(value_validator_t* validator, value_t* value) {
+  return_value_if_fail(validator != NULL && validator->object.vt != NULL, RET_BAD_PARAMS);
+  return_value_if_fail(validator->fix != NULL && validator->object.ref_count > 0, RET_BAD_PARAMS);
+  return_value_if_fail(value != NULL, RET_BAD_PARAMS);
+
+  return validator->fix(validator, value);
 }
 
 static object_t* s_value_validator_creators;

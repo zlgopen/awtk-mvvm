@@ -222,6 +222,25 @@ static bool_t value_is_valid(const char* name, const value_t* value, str_t* msg)
   return ret;
 }
 
+static ret_t value_fix(const char* name, value_t* value) {
+  ret_t ret = RET_OK;
+  value_validator_t* validator = NULL;
+
+  if (name == NULL) {
+    return RET_OK;
+  }
+
+  validator = value_validator_create(name);
+  if (validator != NULL) {
+    ret = value_validator_fix(validator, value);
+    object_unref(OBJECT(validator));
+  } else {
+    log_debug("not found validator\n");
+  }
+
+  return ret;
+}
+
 ret_t data_binding_get_prop(data_binding_t* rule, value_t* v) {
   value_t raw;
   binding_context_t* ctx = NULL;
@@ -235,8 +254,21 @@ ret_t data_binding_get_prop(data_binding_t* rule, value_t* v) {
   return value_to_view(rule->converter, &raw, v);
 }
 
+static ret_t vm_set_prop(view_model_t* vm, const char* converter, const char* path,
+                         const value_t* raw) {
+  if (converter == NULL) {
+    return view_model_set_prop(vm, path, raw);
+  } else {
+    value_t v;
+    if (value_to_model(converter, raw, &v) == RET_OK) {
+      return view_model_set_prop(vm, path, &v);
+    } else {
+      return RET_FAIL;
+    }
+  }
+}
+
 ret_t data_binding_set_prop(data_binding_t* rule, const value_t* raw) {
-  value_t v;
   binding_context_t* ctx = NULL;
   return_value_if_fail(rule != NULL && raw != NULL, RET_BAD_PARAMS);
 
@@ -245,10 +277,19 @@ ret_t data_binding_set_prop(data_binding_t* rule, const value_t* raw) {
 
   str_clear(&(ctx->vm->last_error));
   if (!value_is_valid(rule->validator, raw, &(ctx->vm->last_error))) {
+    value_t fix_value;
+    value_set_int(&fix_value, 0);
+    value_deep_copy(&fix_value, raw);
+
+    if (value_fix(rule->validator, &fix_value) == RET_OK) {
+      ret_t ret = vm_set_prop(ctx->vm, rule->converter, rule->path, &fix_value);
+      value_reset(&fix_value);
+
+      return ret;
+    }
+
     return RET_BAD_PARAMS;
   }
 
-  return_value_if_fail(value_to_model(rule->converter, raw, &v) == RET_OK, RET_FAIL);
-
-  return view_model_set_prop(ctx->vm, rule->path, &v);
+  return vm_set_prop(ctx->vm, rule->converter, rule->path, raw);
 }

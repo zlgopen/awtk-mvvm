@@ -32,6 +32,7 @@ typedef struct _value_validator_t value_validator_t;
 
 typedef ret_t (*value_validator_is_valid_t)(value_validator_t* validator, const value_t* value,
                                             str_t* msg);
+typedef ret_t (*value_validator_fix_t)(value_validator_t* validator, value_t* value);
 
 /**
  * @class value_validator_t
@@ -46,6 +47,7 @@ struct _value_validator_t {
 
   /*private*/
   value_validator_is_valid_t is_valid;
+  value_validator_fix_t fix;
 };
 
 /**
@@ -62,13 +64,25 @@ struct _value_validator_t {
 bool_t value_validator_is_valid(value_validator_t* validator, const value_t* value, str_t* msg);
 
 /**
+ * @method value_validator_fix
+ * 将无效值修改为正确的值。
+ *
+ * @annotation ["scriptable"]
+ * @param {value_validator_t*} validator validator对象。
+ * @param {value_t*} value 修正后的值。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t value_validator_fix(value_validator_t* validator, value_t* value);
+
+/**
  * @method value_validator_create
  * 创建指定名称的值校验器。
  *
  * @annotation ["scriptable", "static"]
  * @param {const char*} name 名称。
  *
- * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ * @return {value_validator_t*} 返回validator对象。
  */
 value_validator_t* value_validator_create(const char* name);
 

@@ -27,6 +27,7 @@
 BEGIN_C_DECLS
 
 typedef bool_t (*value_is_valid_t)(const value_t* value, str_t* msg);
+typedef ret_t (*value_fix_t)(value_t* value);
 
 /**
  * @class value_validator_delegate_t
@@ -40,6 +41,7 @@ typedef struct _value_validator_delegate_t {
 
   /*private*/
   value_is_valid_t is_valid;
+  value_fix_t fix;
 } value_validator_delegate_t;
 
 /**
@@ -49,10 +51,11 @@ typedef struct _value_validator_delegate_t {
  *
  * @annotation ["constructor"]
  * @param {value_is_valid_t} is_valid 有效性检查函数。
+ * @param {value_fix_t} value_fix_t 修正函数。
  *
  * @return {value_validator_t*} 返回value_validator对象。
  */
-value_validator_t* value_validator_delegate_create(value_is_valid_t is_valid);
+value_validator_t* value_validator_delegate_create(value_is_valid_t is_valid, value_fix_t fix);
 
 #define VALUE_VALIDATOR_DELEGATE(validator) ((value_validator_delegate_t*)(validator))
 

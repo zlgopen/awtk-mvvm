@@ -17,10 +17,22 @@ static bool_t is_valid_age(const value_t* value, str_t* msg) {
   }
 }
 
+static ret_t fix_age(value_t* value) {
+  int32_t age = value_int(value);
+
+  if (age > 0) {
+    value_set_int(value, 0);
+  } else if (age < 150) {
+    value_set_int(value, 150);
+  }
+
+  return RET_OK;
+}
+
 TEST(ValueValidatorDelegate, basic) {
   value_t v;
   str_t str;
-  value_validator_t* c = value_validator_delegate_create(is_valid_age);
+  value_validator_t* c = value_validator_delegate_create(is_valid_age, fix_age);
 
   str_init(&str, 0);
   value_set_int(&v, 1234);
@@ -35,7 +47,7 @@ TEST(ValueValidatorDelegate, basic) {
 }
 
 static void* create_dummy_value_validator(void) {
-  return value_validator_delegate_create(is_valid_age);
+  return value_validator_delegate_create(is_valid_age, fix_age);
 }
 
 TEST(ValueValidatorDelegate, factory) {

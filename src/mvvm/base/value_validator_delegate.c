@@ -34,7 +34,17 @@ static ret_t value_validator_delegate_is_valid(value_validator_t* c, const value
   return value_convert_delegate->is_valid(value, msg);
 }
 
-value_validator_t* value_validator_delegate_create(value_is_valid_t is_valid) {
+static ret_t value_validator_delegate_fix(value_validator_t* c, value_t* value) {
+  value_validator_delegate_t* value_convert_delegate = VALUE_VALIDATOR_DELEGATE(c);
+
+  return value_convert_delegate->fix(value);
+}
+
+static ret_t value_validator_fix_default(value_t* value) {
+  return RET_FAIL;
+}
+
+value_validator_t* value_validator_delegate_create(value_is_valid_t is_valid, value_fix_t fix) {
   object_t* obj = NULL;
   value_validator_t* value_convert = NULL;
   return_value_if_fail(is_valid != NULL, NULL);
@@ -44,10 +54,16 @@ value_validator_t* value_validator_delegate_create(value_is_valid_t is_valid) {
   return_value_if_fail(obj != NULL, NULL);
 
   value_convert = VALUE_VALIDATOR(obj);
+  value_convert->fix = value_validator_delegate_fix;
   value_convert->is_valid = value_validator_delegate_is_valid;
 
   value_convert_delegate = VALUE_VALIDATOR_DELEGATE(obj);
+  value_convert_delegate->fix = fix;
   value_convert_delegate->is_valid = is_valid;
+
+  if (fix == NULL) {
+    value_convert_delegate->fix = value_validator_fix_default;
+  }
 
   return value_convert;
 }
