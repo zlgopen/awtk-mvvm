@@ -1,6 +1,6 @@
 # 本示例展示了MVVM trigger参数的用法。
 
-界面上有一个label控件和一个slider控件，两者都绑定到**温度(temp)**变量上，当slide拖动时，其修改模型temperature对象的value属性，temperature对象的value属性自动更新到label上。
+界面上有一个label控件和一个slider控件，两者都绑定到**温度(temp)**变量上，当slider拖动时，其修改模型temperature对象的value属性，temperature对象的value属性自动更新到label上。
 
 ```
   <label text="1" x="center" y="middle" w="50%" h="40" v-data:text="{temp}"/>

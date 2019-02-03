@@ -38,15 +38,15 @@ static bool_t is_valid_water_temp(const value_t* value, str_t* msg) {
 }
 
 static ret_t fix_water_temp(value_t* value) {
-/*
-  int32_t temp = value_int(value);
+  /*
+    int32_t temp = value_int(value);
 
-  if (temp <= 20) {
-    value_set_int(value, 20);
-  } else if (temp >= 60) {
-    value_set_int(value, 60);
-  }
-*/
+    if (temp <= 20) {
+      value_set_int(value, 20);
+    } else if (temp >= 60) {
+      value_set_int(value, 60);
+    }
+  */
   return RET_OK;
 }
 

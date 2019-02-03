@@ -53,7 +53,7 @@ TEST(ValueValidatorDelegate, fix) {
   value_set_int(&v, -10);
   ASSERT_EQ(value_validator_fix(c, &v), RET_OK);
   ASSERT_EQ(value_int(&v), 0);
-  
+
   value_set_int(&v, 1000);
   ASSERT_EQ(value_validator_fix(c, &v), RET_OK);
   ASSERT_EQ(value_int(&v), 150);

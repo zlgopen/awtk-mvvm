@@ -58,6 +58,9 @@ static ret_t data_binding_object_set_prop(object_t* obj, const char* name, const
   if (rule->path == NULL && value == NULL) {
     value = name;
     rule->path = tk_str_copy(rule->path, value);
+    if (tk_str_start_with(value, DATA_BINDING_ERROR_OF)) {
+      rule->mode = BINDING_ONE_WAY;
+    }
   } else if (equal(DATA_BINDING_MODE, name)) {
     binding_mode_t mode = BINDING_TWO_WAY;
 
@@ -88,6 +91,9 @@ static ret_t data_binding_object_set_prop(object_t* obj, const char* name, const
     rule->trigger = trigger;
   } else if (equal(DATA_BINDING_PATH, name)) {
     rule->path = tk_str_copy(rule->path, value);
+    if (tk_str_start_with(value, DATA_BINDING_ERROR_OF)) {
+      rule->mode = BINDING_ONE_WAY;
+    }
   } else if (equal(DATA_BINDING_PROP, name)) {
     rule->prop = tk_str_copy(rule->prop, value);
   } else if (equal(DATA_BINDING_CONVERTER, name)) {
