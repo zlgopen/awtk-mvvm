@@ -20,9 +20,9 @@ static bool_t is_valid_age(const value_t* value, str_t* msg) {
 static ret_t fix_age(value_t* value) {
   int32_t age = value_int(value);
 
-  if (age > 0) {
+  if (age < 0) {
     value_set_int(value, 0);
-  } else if (age < 150) {
+  } else if (age > 150) {
     value_set_int(value, 150);
   }
 
@@ -43,6 +43,21 @@ TEST(ValueValidatorDelegate, basic) {
   ASSERT_EQ(value_validator_is_valid(c, &v, &str), TRUE);
 
   str_reset(&str);
+  object_unref(OBJECT(c));
+}
+
+TEST(ValueValidatorDelegate, fix) {
+  value_t v;
+  value_validator_t* c = value_validator_delegate_create(is_valid_age, fix_age);
+
+  value_set_int(&v, -10);
+  ASSERT_EQ(value_validator_fix(c, &v), RET_OK);
+  ASSERT_EQ(value_int(&v), 0);
+  
+  value_set_int(&v, 1000);
+  ASSERT_EQ(value_validator_fix(c, &v), RET_OK);
+  ASSERT_EQ(value_int(&v), 150);
+
   object_unref(OBJECT(c));
 }
 
