@@ -26,9 +26,9 @@
 #include "mvvm/base/binding_rule_parser.h"
 
 /*
- * v-command:on_click=
- * v-command:on_pointer_down=
- * v-command:on_key_down:ctrl_a
+ * v-on:click=
+ * v-on:pointer_down=
+ * v-on:key_down:ctrl_a
  * v-data:visible=
  */
 

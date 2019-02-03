@@ -1,0 +1,5 @@
+<window anim_hint="htranslate">
+  <label text="1" x="center" y="middle:-40" w="80%" h="40" v-data:text="{temp}"/>
+  <slider x="center" y="middle" w="90%" h="20" v-data:value="{temp}"/>
+  <button text="Save" x="center" y="middle:40" w="40%" h="40" v-on:click="{save}"/>
+</window>

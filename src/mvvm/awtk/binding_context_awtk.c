@@ -115,9 +115,9 @@ error:
 
 /*TODO: add more event*/
 static int_str_t s_event_map[] = {
-    {EVT_CLICK, "on_click"},           {EVT_POINTER_DOWN, "on_pointer_down"},
-    {EVT_POINTER_UP, "on_pointer_up"}, {EVT_KEY_DOWN, "on_key_down"},
-    {EVT_KEY_UP, "on_key_up"},         {EVT_NONE, NULL}};
+    {EVT_CLICK, "click"},           {EVT_POINTER_DOWN, "pointer_down"},
+    {EVT_POINTER_UP, "pointer_up"}, {EVT_KEY_DOWN, "key_down"},
+    {EVT_KEY_UP, "key_up"},         {EVT_NONE, NULL}};
 
 static ret_t on_widget_event(void* ctx, event_t* e) {
   command_binding_t* rule = COMMAND_BINDING(ctx);
@@ -133,6 +133,8 @@ static ret_t on_widget_event(void* ctx, event_t* e) {
       widget_t* win = widget_get_window(BINDING_RULE(rule)->widget);
       window_close(win);
     }
+  } else {
+    log_debug("%s cannot exec\n", rule->command);
   }
 
   return RET_OK;
@@ -198,6 +200,7 @@ static ret_t binding_context_awtk_bind(binding_context_t* ctx, view_model_t* vm,
 
   return_value_if_fail(binding_context_update_to_view(ctx) == RET_OK, RET_FAIL);
   emitter_on(EMITTER(vm), EVT_PROP_CHANGED, on_view_model_prop_change, ctx);
+  emitter_on(EMITTER(vm), EVT_PROPS_CHANGED, on_view_model_prop_change, ctx);
   ctx->bound = TRUE;
 
   return RET_OK;
@@ -222,8 +225,20 @@ static ret_t visit_data_binding_update_to_view(void* ctx, const void* data) {
   return RET_OK;
 }
 
+static ret_t visit_command_binding(void* ctx, const void* data) {
+  command_binding_t* rule = COMMAND_BINDING(data);
+  widget_t* widget = WIDGET(BINDING_RULE(rule)->widget);
+  bool_t can_exec = command_binding_can_exec(rule);
+
+  widget_set_enable(widget, can_exec);
+
+  return RET_OK;
+}
+
 static ret_t binding_context_awtk_update_to_view_sync(binding_context_t* ctx) {
   darray_foreach(&(ctx->data_bindings), visit_data_binding_update_to_view, ctx);
+  darray_foreach(&(ctx->command_bindings), visit_command_binding, ctx);
+
   ctx->need_updating_view = 0;
 
   return RET_OK;
@@ -268,20 +283,10 @@ static ret_t visit_data_binding_update_to_model(void* ctx, const void* data) {
   return RET_OK;
 }
 
-static ret_t visit_command_binding(void* ctx, const void* data) {
-  command_binding_t* rule = COMMAND_BINDING(data);
-  widget_t* widget = WIDGET(BINDING_RULE(rule)->widget);
-
-  widget_set_enable(widget, command_binding_can_exec(rule));
-
-  return RET_OK;
-}
-
 static ret_t binding_context_awtk_update_to_model(binding_context_t* ctx) {
   return_value_if_fail(ctx != NULL, RET_BAD_PARAMS);
 
   darray_foreach(&(ctx->data_bindings), visit_data_binding_update_to_model, ctx);
-  darray_foreach(&(ctx->command_bindings), visit_command_binding, ctx);
 
   return RET_OK;
 }

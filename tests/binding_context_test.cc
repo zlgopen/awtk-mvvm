@@ -156,7 +156,7 @@ TEST(BindingContextAwtk, command_update_to_model) {
   view_model_set_prop(vm, "i32", &v);
 
   widget_set_prop_str(slider, "v-data:value", "{i32, Mode=TwoWay, Trigger=Explicit}");
-  widget_set_prop_str(slider, "v-command:on_pointer_down", "{save, Args=2, UpdateModel=True}");
+  widget_set_prop_str(slider, "v-on:pointer_down", "{save, Args=2, UpdateModel=True}");
   binding_context_bind_view_model(vm, win);
   ASSERT_EQ(widget_get_value(slider), 66);
 
@@ -187,7 +187,7 @@ TEST(BindingContextAwtk, command_close_window) {
   widget_t* slider = slider_create(win, 0, 0, 128, 30);
   view_model_t* vm = test_obj_create_view_model();
 
-  widget_set_prop_str(slider, "v-command:on_pointer_down", "{save, Args=2, CloseWindow=True}");
+  widget_set_prop_str(slider, "v-on:pointer_down", "{save, Args=2, CloseWindow=True}");
   binding_context_bind_view_model(vm, win);
 
   e.e = event_init(EVT_POINTER_DOWN, slider);

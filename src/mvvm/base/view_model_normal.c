@@ -47,13 +47,13 @@ static ret_t view_model_normal_get_prop(object_t* obj, const char* name, value_t
 }
 
 static bool_t view_model_normal_can_exec(object_t* obj, const char* name, const char* args) {
-  return_value_if_fail(obj != NULL && name != NULL && args != NULL, FALSE);
+  return_value_if_fail(obj != NULL && name != NULL, FALSE);
 
   return FALSE;
 }
 
 static ret_t view_model_normal_exec(object_t* obj, const char* name, const char* args) {
-  return_value_if_fail(obj != NULL && name != NULL && args != NULL, RET_BAD_PARAMS);
+  return_value_if_fail(obj != NULL && name != NULL, RET_BAD_PARAMS);
 
   return RET_NOT_FOUND;
 }

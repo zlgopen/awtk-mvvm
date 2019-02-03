@@ -38,6 +38,7 @@ view_model_t* view_model_init(view_model_t* vm, view_model_type_t type, model_t*
   vm->model = model;
 
   emitter_on(EMITTER(vm->model), EVT_PROP_CHANGED, model_on_event, vm);
+  emitter_on(EMITTER(vm->model), EVT_PROPS_CHANGED, model_on_event, vm);
 
   return vm;
 }
@@ -150,7 +151,7 @@ ret_t view_model_eval(view_model_t* vm, const char* expr, value_t* v) {
 ret_t view_model_deinit(view_model_t* vm) {
   return_value_if_fail(vm != NULL, RET_BAD_PARAMS);
 
-  emitter_off_by_func(EMITTER(vm->model), EVT_PROP_CHANGED, model_on_event, vm);
+  emitter_off_by_ctx(EMITTER(vm->model), vm);
   object_unref(OBJECT(vm->model));
 
   return RET_OK;

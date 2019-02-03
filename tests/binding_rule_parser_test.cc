@@ -7,85 +7,83 @@
 using std::string;
 
 TEST(CommandBindingParser, close_window) {
-  binding_rule_t* rule = binding_rule_parse("v-command:on_click", "{Save, CloseWindow}");
+  binding_rule_t* rule = binding_rule_parse("v-on:click", "{Save, CloseWindow}");
   command_binding_t* cmd = (command_binding_t*)rule;
 
   ASSERT_EQ(cmd->close_window, TRUE);
   ASSERT_EQ(string(cmd->command), string("Save"));
-  ASSERT_EQ(string(cmd->event), string("on_click"));
+  ASSERT_EQ(string(cmd->event), string("click"));
 
   object_unref(OBJECT(rule));
 }
 
 TEST(CommandBindingParser, close_window_true) {
-  binding_rule_t* rule = binding_rule_parse("v-command:on_click", "{Save, CloseWindow=True}");
+  binding_rule_t* rule = binding_rule_parse("v-on:click", "{Save, CloseWindow=True}");
   command_binding_t* cmd = (command_binding_t*)rule;
 
   ASSERT_EQ(cmd->close_window, TRUE);
-  ASSERT_EQ(string(cmd->event), string("on_click"));
+  ASSERT_EQ(string(cmd->event), string("click"));
 
   object_unref(OBJECT(rule));
 }
 
 TEST(CommandBindingParser, close_window_false) {
-  binding_rule_t* rule = binding_rule_parse("v-command:on_click", "{Save, CloseWindow=False}");
+  binding_rule_t* rule = binding_rule_parse("v-on:click", "{Save, CloseWindow=False}");
   command_binding_t* cmd = (command_binding_t*)rule;
 
   ASSERT_EQ(cmd->close_window, FALSE);
-  ASSERT_EQ(string(cmd->event), string("on_click"));
+  ASSERT_EQ(string(cmd->event), string("click"));
 
   object_unref(OBJECT(rule));
 }
 
 TEST(CommandBindingParser, update_model) {
-  binding_rule_t* rule = binding_rule_parse("v-command:on_click", "{Save, UpdateModel}");
+  binding_rule_t* rule = binding_rule_parse("v-on:click", "{Save, UpdateModel}");
   command_binding_t* cmd = (command_binding_t*)rule;
 
   ASSERT_EQ(cmd->update_model, TRUE);
-  ASSERT_EQ(string(cmd->event), string("on_click"));
+  ASSERT_EQ(string(cmd->event), string("click"));
 
   object_unref(OBJECT(rule));
 }
 
 TEST(CommandBindingParser, update_model_true) {
-  binding_rule_t* rule = binding_rule_parse("v-command:on_click", "{Save, UpdateModel=True}");
+  binding_rule_t* rule = binding_rule_parse("v-on:click", "{Save, UpdateModel=True}");
   command_binding_t* cmd = (command_binding_t*)rule;
 
   ASSERT_EQ(cmd->update_model, TRUE);
-  ASSERT_EQ(string(cmd->event), string("on_click"));
+  ASSERT_EQ(string(cmd->event), string("click"));
 
   object_unref(OBJECT(rule));
 }
 
 TEST(CommandBindingParser, update_model_false) {
-  binding_rule_t* rule = binding_rule_parse("v-command:on_click", "{Save, UpdateModel=False}");
+  binding_rule_t* rule = binding_rule_parse("v-on:click", "{Save, UpdateModel=False}");
   command_binding_t* cmd = (command_binding_t*)rule;
 
   ASSERT_EQ(cmd->update_model, FALSE);
-  ASSERT_EQ(string(cmd->event), string("on_click"));
+  ASSERT_EQ(string(cmd->event), string("click"));
 
   object_unref(OBJECT(rule));
 }
 
 TEST(CommandBindingParser, event_args) {
-  binding_rule_t* rule =
-      binding_rule_parse("v-command:on_keydown:ctrl_a", "{Save, UpdateModel=False}");
+  binding_rule_t* rule = binding_rule_parse("v-on:keydown:ctrl_a", "{Save, UpdateModel=False}");
   command_binding_t* cmd = (command_binding_t*)rule;
 
   ASSERT_EQ(cmd->update_model, FALSE);
-  ASSERT_EQ(string(cmd->event), string("on_keydown"));
+  ASSERT_EQ(string(cmd->event), string("keydown"));
   ASSERT_EQ(string(cmd->event_args), string("ctrl_a"));
 
   object_unref(OBJECT(rule));
 }
 
 TEST(CommandBindingParser, ievent_args) {
-  binding_rule_t* rule =
-      binding_rule_parse("v-command:on_keydown:ctrl_a", "{Save, updateModel=false}");
+  binding_rule_t* rule = binding_rule_parse("v-on:keydown:ctrl_a", "{Save, updateModel=false}");
   command_binding_t* cmd = (command_binding_t*)rule;
 
   ASSERT_EQ(cmd->update_model, FALSE);
-  ASSERT_EQ(string(cmd->event), string("on_keydown"));
+  ASSERT_EQ(string(cmd->event), string("keydown"));
   ASSERT_EQ(string(cmd->event_args), string("ctrl_a"));
 
   object_unref(OBJECT(rule));
