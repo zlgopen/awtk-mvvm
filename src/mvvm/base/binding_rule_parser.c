@@ -107,22 +107,27 @@ binding_rule_t* binding_rule_parse(const char* name, const char* value) {
     return NULL;
   }
 
-  while (tokenizer_has_more(&t)) {
-    k = tokenizer_next(&t);
-    while (k && *k == ',' && tokenizer_has_more(&t)) {
+  k = tokenizer_next_until(&t, ",}");
+  if (k != NULL) {
+    ENSURE(object_set_prop_str(OBJECT(rule), k, NULL) == RET_OK);
+    while (tokenizer_has_more(&t)) {
       k = tokenizer_next(&t);
+      while (k && *k == ',' && tokenizer_has_more(&t)) {
+        k = tokenizer_next(&t);
+      }
+
+      tk_strncpy(key, k, TK_NAME_LEN);
+      key[TK_NAME_LEN] = '\0';
+
+      v = tokenizer_next(&t);
+      if (v != NULL && *v == ',') {
+        v = NULL;
+      }
+
+      ENSURE(object_set_prop_str(OBJECT(rule), key, v) == RET_OK);
     }
-
-    tk_strncpy(key, k, TK_NAME_LEN);
-    key[TK_NAME_LEN] = '\0';
-
-    v = tokenizer_next(&t);
-    if (v != NULL && *v == ',') {
-      v = NULL;
-    }
-
-    ENSURE(object_set_prop_str(OBJECT(rule), key, v) == RET_OK);
   }
+
   tokenizer_deinit(&t);
 
   return rule;

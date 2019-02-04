@@ -58,7 +58,7 @@ static ret_t data_binding_object_set_prop(object_t* obj, const char* name, const
   if (rule->path == NULL && value == NULL) {
     value = name;
     rule->path = tk_str_copy(rule->path, value);
-    if (tk_str_start_with(value, DATA_BINDING_ERROR_OF)) {
+    if (tk_str_start_with(value, DATA_BINDING_ERROR_OF) || !tk_is_valid_name(value)) {
       rule->mode = BINDING_ONE_WAY;
     }
   } else if (equal(DATA_BINDING_MODE, name)) {
@@ -91,7 +91,7 @@ static ret_t data_binding_object_set_prop(object_t* obj, const char* name, const
     rule->trigger = trigger;
   } else if (equal(DATA_BINDING_PATH, name)) {
     rule->path = tk_str_copy(rule->path, value);
-    if (tk_str_start_with(value, DATA_BINDING_ERROR_OF)) {
+    if (tk_str_start_with(value, DATA_BINDING_ERROR_OF) || !tk_is_valid_name(value)) {
       rule->mode = BINDING_ONE_WAY;
     }
   } else if (equal(DATA_BINDING_PROP, name)) {
@@ -255,7 +255,7 @@ ret_t data_binding_get_prop(data_binding_t* rule, value_t* v) {
   ctx = BINDING_RULE(rule)->binding_context;
   return_value_if_fail(ctx != NULL && ctx->vm != NULL, RET_BAD_PARAMS);
 
-  return_value_if_fail(view_model_get_prop(ctx->vm, rule->path, &raw) == RET_OK, RET_FAIL);
+  return_value_if_fail(view_model_eval(ctx->vm, rule->path, &raw) == RET_OK, RET_FAIL);
 
   return value_to_view(rule->converter, &raw, v);
 }

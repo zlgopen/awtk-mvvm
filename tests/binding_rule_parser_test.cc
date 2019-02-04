@@ -178,3 +178,12 @@ TEST(DataBindingParser, ivalidator) {
 
   object_unref(OBJECT(rule));
 }
+
+TEST(DataBindingParser, expr) {
+  binding_rule_t* rule = binding_rule_parse("v-data:text", "{$type==1}");
+  data_binding_t* data = (data_binding_t*)rule;
+
+  ASSERT_EQ(string(data->path), string("$type==1"));
+
+  object_unref(OBJECT(rule));
+}

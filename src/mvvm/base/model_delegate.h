@@ -22,6 +22,7 @@
 #ifndef TK_MODEL_DELEGATE_H
 #define TK_MODEL_DELEGATE_H
 
+#include "tkc/str.h"
 #include "mvvm/base/model.h"
 
 BEGIN_C_DECLS
@@ -50,6 +51,8 @@ struct _model_delegate_t {
 
   object_t* props;
   object_t* commands;
+
+  str_t temp;
 };
 
 /**

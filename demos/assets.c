@@ -7,6 +7,7 @@
 #include "assets/inc/styles/default.data"
 #include "assets/inc/styles/window1.data"
 #include "assets/inc/ui/temperature1.data"
+#include "assets/inc/ui/shape.data"
 #include "assets/inc/ui/temperature6.data"
 #include "assets/inc/ui/temperature7.data"
 #include "assets/inc/ui/temperature4.data"
@@ -80,6 +81,7 @@ ret_t assets_init(void) {
   assets_manager_load(rm, ASSET_TYPE_FONT, "default");
 #else
   assets_manager_add(rm, ui_temperature1);
+  assets_manager_add(rm, ui_shape);
   assets_manager_add(rm, ui_temperature6);
   assets_manager_add(rm, ui_temperature7);
   assets_manager_add(rm, ui_temperature4);

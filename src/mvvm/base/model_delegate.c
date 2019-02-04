@@ -72,8 +72,9 @@ static prop_desc_t* prop_desc_create(value_type_t type, void* addr, model_get_pr
   return prop_desc_init(desc, type, addr, get, set);
 }
 
-static ret_t prop_desc_set_value(void* obj, prop_desc_t* desc, const value_t* v) {
+static ret_t prop_desc_set_value(model_delegate_t* model, prop_desc_t* desc, const value_t* v) {
   ret_t ret = RET_OK;
+  void* obj = model->obj;
   if (desc->set != NULL) {
     ret = desc->set(obj, v);
   } else if (desc->addr != NULL) {
@@ -140,7 +141,11 @@ static ret_t prop_desc_set_value(void* obj, prop_desc_t* desc, const value_t* v)
       }
       case VALUE_TYPE_STRING: {
         char** str = (char**)desc->addr;
-        *str = tk_str_copy(*str, value_str(v));
+        if (str_from_value(&(model->temp), v) == RET_OK) {
+          *str = tk_str_copy(*str, model->temp.str);
+        } else {
+          ret = RET_FAIL;
+        }
         break;
       }
       default: {
@@ -242,6 +247,7 @@ static ret_t model_delegate_on_destroy(object_t* obj) {
     model->obj_destroy(model->obj);
   }
 
+  str_reset(&(model->temp));
   object_foreach_prop(model->props, tk_visit_free, NULL);
   object_foreach_prop(model->commands, tk_visit_free, NULL);
   object_unref(model->props);
@@ -275,7 +281,7 @@ static ret_t model_delegate_set_prop(object_t* obj, const char* name, const valu
   model_delegate_t* model = MODEL_DELEGATE(obj);
   return_value_if_fail(desc != NULL, RET_NOT_FOUND);
 
-  return prop_desc_set_value(model->obj, desc, v);
+  return prop_desc_set_value(model, desc, v);
 }
 
 static ret_t model_delegate_get_prop(object_t* obj, const char* name, value_t* v) {
@@ -301,15 +307,21 @@ static bool_t model_delegate_can_exec(object_t* obj, const char* name, const cha
   model_delegate_t* model = MODEL_DELEGATE(obj);
   return_value_if_fail(desc != NULL, FALSE);
 
-  return desc->can_exec(model->obj, args);
+  return desc->can_exec != NULL ? desc->can_exec(model->obj, args) : TRUE;
 }
 
 static ret_t model_delegate_exec(object_t* obj, const char* name, const char* args) {
+  ret_t ret = RET_OK;
   command_desc_t* desc = model_delegate_get_command_desc(obj, name);
   model_delegate_t* model = MODEL_DELEGATE(obj);
   return_value_if_fail(desc != NULL, RET_NOT_FOUND);
 
-  return desc->exec(model->obj, args);
+  ret = desc->exec(model->obj, args);
+  if (ret == RET_OBJECT_CHANGED) {
+    object_notify_changed(OBJECT(obj));
+  }
+
+  return ret;
 }
 
 static const object_vtable_t s_model_delegate_vtable = {
@@ -336,6 +348,7 @@ model_t* model_delegate_create(void* obj, tk_destroy_t obj_destroy) {
   model->obj_destroy = obj_destroy;
   model->props = object_default_create();
   model->commands = object_default_create();
+  str_init(&(model->temp), 0);
 
   return MODEL(o);
 }

@@ -114,10 +114,13 @@ error:
 }
 
 /*TODO: add more event*/
-static int_str_t s_event_map[] = {
-    {EVT_CLICK, "click"},           {EVT_POINTER_DOWN, "pointer_down"},
-    {EVT_POINTER_UP, "pointer_up"}, {EVT_KEY_DOWN, "key_down"},
-    {EVT_KEY_UP, "key_up"},         {EVT_NONE, NULL}};
+static int_str_t s_event_map[] = {{EVT_CLICK, "click"},
+                                  {EVT_POINTER_DOWN, "pointer_down"},
+                                  {EVT_POINTER_UP, "pointer_up"},
+                                  {EVT_KEY_DOWN, "key_down"},
+                                  {EVT_KEY_UP, "key_up"},
+                                  {EVT_VALUE_CHANGED, "value_changed"},
+                                  {EVT_NONE, NULL}};
 
 static ret_t on_widget_event(void* ctx, event_t* e) {
   command_binding_t* rule = COMMAND_BINDING(ctx);
