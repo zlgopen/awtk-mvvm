@@ -1,7 +1,7 @@
 ﻿/**
  * File:   jsobj.h
  * Author: AWTK Develop Team
- * Brief:  jerryscript implemented model
+ * Brief:  jerryscript wrapper
  *
  * Copyright (c) 2019 - 2019  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *

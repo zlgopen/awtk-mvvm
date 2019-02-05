@@ -1,7 +1,7 @@
 ﻿/**
  * File:   jsobj.h
  * Author: AWTK Develop Team
- * Brief:  jerryscript implemented model
+ * Brief:  jerryscript wrapper
  *
  * Copyright (c) 2019 - 2019  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
@@ -28,9 +28,7 @@
 BEGIN_C_DECLS
 
 ret_t jerry_value_check(jerry_value_t value);
-
 jerry_value_t jsobj_get_model(const char* name);
-
 bool_t jsobj_has_prop(jerry_value_t obj, const char* name);
 bool_t jsobj_has_prop_func(jerry_value_t obj, const char* name);
 ret_t jsobj_get_prop(jerry_value_t obj, const char* name, value_t* v, str_t* temp);
