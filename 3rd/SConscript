@@ -1,0 +1,39 @@
+import os
+import copy
+
+BIN_DIR=os.environ['BIN_DIR'];
+LIB_DIR=os.environ['LIB_DIR'];
+
+sources= [
+  "jerry-all-in.c",
+  "jerryscript/jerry-port/default/default-date.c",
+  "jerryscript/jerry-port/default/default-debugger.c",
+  "jerryscript/jerry-port/default/default-external-context.c",
+  "jerryscript/jerry-port/default/default-fatal.c",
+  "jerryscript/jerry-port/default/default-io.c",
+  "jerryscript/jerry-port/default/defaultx-handler.c",
+  "jerryscript/jerry-port/default/default-date.c",
+  "jerryscript/jerry-port/default/default-debugger.c",
+  "jerryscript/jerry-port/default/default-external-context.c",
+  "jerryscript/jerry-port/default/default-fatal.c",
+  "jerryscript/jerry-port/default/default-io.c",
+  "jerryscript/jerry-port/default/defaultx-handler.c",
+  "jerryscript/jerry-ext/arg/arg-js-iterator-helper.c",
+  "jerryscript/jerry-ext/arg/arg-transform-functions.c",
+  "jerryscript/jerry-ext/arg/arg.c",
+  "jerryscript/jerry-ext/debugger/debugger-common.c",
+  "jerryscript/jerry-ext/debugger/debugger-sha1.c",
+  "jerryscript/jerry-ext/debugger/debugger-tcp.c",
+  "jerryscript/jerry-ext/debugger/debugger-ws.c",
+  "jerryscript/jerry-ext/handler/handler-assert.c",
+  "jerryscript/jerry-ext/handler/handler-gc.c",
+  "jerryscript/jerry-ext/handler/handler-print.c",
+  "jerryscript/jerry-ext/handler/handler-register.c",
+  "jerryscript/jerry-ext/module/module.c",
+]
+
+env=DefaultEnvironment().Clone()
+
+env['CCFLAGS'] = env['CCFLAGS'] + ' -DCONFIG_DISABLE_ES2015 -DCONFIG_MEM_HEAP_AREA_SIZE=2097152 -DJERRY_CPOINTER_32_BIT -DJERRY_ENABLE_ERROR_MESSAGES -DJERRY_ENABLE_LOGGING ';
+
+env.Library(os.path.join(LIB_DIR, 'jerryscript'), sources)

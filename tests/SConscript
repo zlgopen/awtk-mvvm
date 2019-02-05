@@ -19,10 +19,10 @@ INCLUDE_PATH = [TK_ROOT,
   os.path.join(TK_ROOT, '3rd/libunibreak'),
   os.path.join(GTEST_ROOT, 'src'),
   os.path.join(GTEST_ROOT, 'include'),
-  os.path.join(GTEST_ROOT, 'make')]
+  os.path.join(GTEST_ROOT, 'make')] 
 
-env['CPPPATH'] = INCLUDE_PATH
-env['LIBS'] = ['assets', 'image_gen', 'theme_gen', 'font_gen', 'str_gen', 'common'] + env['LIBS']
+env['CPPPATH'] = env['CPPPATH'] + INCLUDE_PATH
+env['LIBS'] = ['assets', 'jerryscript'] + env['LIBS']
 
 SOURCES = [
  os.path.join(GTEST_ROOT, 'src/gtest-all.cc'),

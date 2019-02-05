@@ -7,6 +7,7 @@ APP_SRC= os.path.join(APP_ROOT, 'src')
 APP_3RD_ROOT = os.path.join(APP_ROOT, '3rd')
 APP_BIN_DIR=os.path.join(APP_ROOT, 'bin')
 APP_LIB_DIR=os.path.join(APP_ROOT, 'lib')
+TK_JS_3RD_ROOT = APP_3RD_ROOT
 
 TK_ROOT = os.path.normpath(os.getcwd()+'/../awtk')
 TK_SRC = os.path.join(TK_ROOT, 'src')
@@ -60,6 +61,34 @@ LIBS=['mvvm', 'awtk', 'gpinyin', 'awtk', 'linebreak', 'nanovg', 'SDL2', 'glad'] 
 
 CCFLAGS=OS_FLAGS + COMMON_CCFLAGS 
 
+TK_JS_JERRYSCRIPT_DIRS = [
+  os.path.join(TK_JS_3RD_ROOT, 'jerryscript/jerry-ext/include'),
+  os.path.join(TK_JS_3RD_ROOT, 'jerryscript/jerry-ext/arg'),
+  os.path.join(TK_JS_3RD_ROOT, 'jerryscript/jerry-ext/common'),
+  os.path.join(TK_JS_3RD_ROOT, 'jerryscript/jerry-ext/debugger'),
+  os.path.join(TK_JS_3RD_ROOT, 'jerryscript/jerry-ext/handler'),
+  os.path.join(TK_JS_3RD_ROOT, 'jerryscript/jerry-ext/module'),
+  os.path.join(TK_JS_3RD_ROOT, 'jerryscript/jerry-core/include'),
+  os.path.join(TK_JS_3RD_ROOT, 'jerryscript/jerry-core/'),
+  os.path.join(TK_JS_3RD_ROOT, 'jerryscript/jerry-core/ecma'),
+  os.path.join(TK_JS_3RD_ROOT, 'jerryscript/jerry-core/ecma/base'),
+  os.path.join(TK_JS_3RD_ROOT, 'jerryscript/jerry-core/ecma/builtin-objects'),
+  os.path.join(TK_JS_3RD_ROOT, 'jerryscript/jerry-core/ecma/operations'),
+  os.path.join(TK_JS_3RD_ROOT, 'jerryscript/jerry-core/jcontext'),
+  os.path.join(TK_JS_3RD_ROOT, 'jerryscript/jerry-core/jrt'),
+  os.path.join(TK_JS_3RD_ROOT, 'jerryscript/jerry-core/parser'),
+  os.path.join(TK_JS_3RD_ROOT, 'jerryscript/jerry-core/parser/js'),
+  os.path.join(TK_JS_3RD_ROOT, 'jerryscript/jerry-core/parser/regexp'),
+  os.path.join(TK_JS_3RD_ROOT, 'jerryscript/jerry-core/vm'),
+  os.path.join(TK_JS_3RD_ROOT, 'jerryscript/jerry-core/api'),
+  os.path.join(TK_JS_3RD_ROOT, 'jerryscript/jerry-core/debugger'),
+  os.path.join(TK_JS_3RD_ROOT, 'jerryscript/jerry-core/lit'),
+  os.path.join(TK_JS_3RD_ROOT, 'jerryscript/jerry-core/jmem'),
+  os.path.join(TK_JS_3RD_ROOT, 'jerryscript/jerry-core/profiles'),
+  os.path.join(TK_JS_3RD_ROOT, 'jerryscript/jerry-port/default/include'),
+  os.path.join(TK_JS_3RD_ROOT, 'jerryscript/jerry-core/ecma/builtin-objects/typedarray'),
+]
+
 CPPPATH=[
   APP_ROOT,
   TK_ROOT, 
@@ -67,7 +96,7 @@ CPPPATH=[
   TK_3RD_ROOT, 
   APP_SRC,
   APP_3RD_ROOT,
-  os.path.join(TK_SRC, 'ext_widgets')]
+  os.path.join(TK_SRC, 'ext_widgets')] + TK_JS_JERRYSCRIPT_DIRS;
 
 LIBPATH = [TK_LIB_DIR, APP_LIB_DIR]
 
@@ -79,5 +108,5 @@ DefaultEnvironment(CCFLAGS = CCFLAGS,
   OS_SUBSYSTEM_WINDOWS=OS_SUBSYSTEM_WINDOWS,
   LIBPATH=LIBPATH + OS_LIBPATH)
 
-SConscript(['src/SConscript', 'demos/SConscript', 'tests/SConscript'])
+SConscript(['3rd/SConscript', 'src/SConscript', 'demos/SConscript', 'tests/SConscript'])
 

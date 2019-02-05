@@ -15,3 +15,4 @@ bin/demo*
 bin/run*
 .vscode
 .vs
+3rd/jerryscript

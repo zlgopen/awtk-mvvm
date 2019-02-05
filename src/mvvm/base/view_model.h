@@ -34,6 +34,7 @@ typedef enum _view_model_type_t {
   VIEW_MODEL_NORMAL = 0,
   VIEW_MODEL_ARRAY,
   VIEW_MODEL_ITEM,
+  VIEW_MODEL_SCRIPT,
   VIEW_MODEL_TREE
 } view_model_type_t;
 
