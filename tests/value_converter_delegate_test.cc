@@ -47,7 +47,7 @@ TEST(ValueConverterDelegate, factory) {
   value_t v;
   value_t v_view;
   value_t v_model;
-  value_converter_init(NULL);
+
   ASSERT_EQ(value_converter_register("dummy", create_dummy_value_converter), RET_OK);
   value_converter_t* c = value_converter_create("dummy");
 
@@ -63,5 +63,4 @@ TEST(ValueConverterDelegate, factory) {
   value_reset(&v_model);
 
   object_unref(OBJECT(c));
-  value_converter_deinit();
 }

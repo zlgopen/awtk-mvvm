@@ -4,19 +4,6 @@
 #include <string>
 using std::string;
 
-class JerryscriptObj {
- public:
-  JerryscriptObj() {
-    model_jerryscript_init();
-  }
-
-  ~JerryscriptObj() {
-    model_jerryscript_deinit();
-  }
-};
-
-static JerryscriptObj sJerryscriptObj;
-
 TEST(ModelJerryScript, get_prop) {
   const char* code = "var test = {a:1, b:true, name:'awtk'};";
   model_t* model = model_jerryscript_create("test", code, strlen(code));

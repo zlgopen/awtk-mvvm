@@ -38,7 +38,6 @@ typedef ret_t (*value_converter_to_view_t)(value_converter_t* converter, const v
 /**
  * @class value_converter_t
  * @parent object_t
- * @annotation ["scriptable"]
  *
  * 值转换器。
  *
@@ -55,7 +54,6 @@ struct _value_converter_t {
  * @method value_converter_to_model
  * 将value转换成适合model存储的格式。
  *
- * @annotation ["scriptable"]
  * @param {value_converter_t*} converter converter对象。
  * @param {value_t*} from 源value。
  * @param {value_t*} to 转换结果。
@@ -68,7 +66,6 @@ ret_t value_converter_to_model(value_converter_t* converter, const value_t* from
  * @method value_converter_to_view
  * 将value转换成适合view显示的格式。
  *
- * @annotation ["scriptable"]
  * @param {value_converter_t*} converter converter对象。
  * @param {value_t*} from 源value。
  * @param {value_t*} to 转换结果。
@@ -81,7 +78,7 @@ ret_t value_converter_to_view(value_converter_t* converter, const value_t* from,
  * @method value_converter_create
  * 创建指定名称的值转换器。
  *
- * @annotation ["scriptable", "static"]
+ * @annotation ["static"]
  * @param {const char*} name 名称。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
@@ -92,7 +89,7 @@ value_converter_t* value_converter_create(const char* name);
  * @method value_converter_register
  *
  * 注册值转换器的创建函数。
- * @annotation ["scriptable", "static"]
+ * @annotation [ "static"]
  * @param {const char*} name 名称。
  * @param {tk_create_t} create 创建函数。
  *
@@ -101,20 +98,31 @@ value_converter_t* value_converter_create(const char* name);
 ret_t value_converter_register(const char* name, tk_create_t create);
 
 /**
- * @method value_converter_init
+ * @method value_converter_register_generic
  *
- * 初始化值转换器的全局对象。
- * @annotation ["scriptable", "static"]
+ * 注册值转换器的通用创建函数。
+ * @annotation [ "static"]
+ * @param {value_converter_create_t} create 创建函数。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
-ret_t value_converter_init(value_converter_create_t default_creator);
+ret_t value_converter_register_generic(value_converter_create_t create);
+
+/**
+ * @method value_converter_init
+ *
+ * 初始化值转换器的全局对象。
+ * @annotation [ "static"]
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t value_converter_init(void);
 
 /**
  * @method value_converter_deinit
  *
  * 释放值转换器的全局对象。
- * @annotation ["scriptable", "static"]
+ * @annotation [ "static"]
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */

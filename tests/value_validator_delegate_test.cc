@@ -68,7 +68,6 @@ static void* create_dummy_value_validator(void) {
 TEST(ValueValidatorDelegate, factory) {
   value_t v;
   str_t str;
-  value_validator_init();
   ASSERT_EQ(value_validator_register("dummy", create_dummy_value_validator), RET_OK);
   value_validator_t* c = value_validator_create("dummy");
 
@@ -83,5 +82,4 @@ TEST(ValueValidatorDelegate, factory) {
   ASSERT_EQ(value_validator_is_valid(c, &v, &str), TRUE);
 
   object_unref(OBJECT(c));
-  value_validator_deinit();
 }

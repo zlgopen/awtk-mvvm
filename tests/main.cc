@@ -31,6 +31,7 @@
 
 #include "awtk.h"
 #include "tkc/mem.h"
+#include "mvvm/mvvm.h"
 #include "base/idle.h"
 #include "base/system_info.h"
 #include "gtest/gtest.h"
@@ -43,10 +44,12 @@ GTEST_API_ int main(int argc, char** argv) {
   system_info_init(APP_SIMULATOR, NULL, "./demos");
   tk_init_internal();
 
+  mvvm_init();
   assets_init();
   tk_init_assets();
   RUN_ALL_TESTS();
 
+  mvvm_deinit();
   tk_deinit_internal();
 
   return 0;

@@ -19,6 +19,8 @@
  *
  */
 
+#include "tkc/mem.h"
+#include "tkc/slist.h"
 #include "tkc/object_default.h"
 #include "mvvm/base/value_converter.h"
 
@@ -40,50 +42,121 @@ ret_t value_converter_to_model(value_converter_t* converter, const value_t* from
   return converter->to_model(converter, from, to);
 }
 
-static object_t* s_value_converter_creators;
-static value_converter_create_t s_default_creator;
+typedef struct _value_converter_factory_t {
+  object_t* cache;
+  object_t* creators;
+  slist_t generic_creators;
+} value_converter_factory_t;
 
-value_converter_t* value_converter_create(const char* name) {
-  tk_create_t create = NULL;
-  return_value_if_fail(name != NULL, NULL);
-  return_value_if_fail(value_converter_init(NULL) == RET_OK, NULL);
+static value_converter_factory_t* s_factory;
 
-  create = (tk_create_t)object_get_prop_pointer(s_value_converter_creators, name);
-  if (create != NULL) {
-    return (value_converter_t*)create();
-  }
-  if (s_default_creator != NULL) {
-    return s_default_creator(name);
+static value_converter_factory_t* value_converter_factory_create(void) {
+  value_converter_factory_t* factory = TKMEM_ZALLOC(value_converter_factory_t);
+  return_value_if_fail(factory != NULL, NULL);
+
+  factory->cache = object_default_create();
+  factory->creators = object_default_create();
+  slist_init(&(factory->generic_creators), NULL, NULL);
+
+  return factory;
+}
+
+static ret_t value_converter_factory_destroy(value_converter_factory_t* factory) {
+  return_value_if_fail(factory != NULL, RET_BAD_PARAMS);
+
+  object_unref(factory->cache);
+  object_unref(factory->creators);
+  slist_deinit(&(factory->generic_creators));
+
+  return RET_OK;
+}
+
+static value_converter_t* value_converter_generic_create(const char* name) {
+  slist_node_t* iter = s_factory->generic_creators.first;
+  while (iter != NULL) {
+    value_converter_create_t create = (value_converter_create_t)iter->data;
+    value_converter_t* c = create(name);
+    if (c != NULL) {
+      return c;
+    }
+    iter = iter->next;
   }
 
   return NULL;
 }
 
+value_converter_t* value_converter_do_create(const char* name) {
+  tk_create_t create = NULL;
+  return_value_if_fail(name != NULL && s_factory != NULL, NULL);
+
+  create = (tk_create_t)object_get_prop_pointer(s_factory->creators, name);
+  if (create != NULL) {
+    return (value_converter_t*)create();
+  } else {
+    return value_converter_generic_create(name);
+  }
+}
+
+static value_converter_t* value_converter_get(const char* name) {
+  object_t* obj = object_get_prop_object(s_factory->cache, name);
+
+  if (obj != NULL) {
+    object_ref(obj);
+  }
+
+  return VALUE_CONVERTER(obj);
+}
+
+static ret_t value_converter_put(const char* name, value_converter_t* c) {
+  return_value_if_fail(name != NULL && c != NULL, RET_BAD_PARAMS);
+
+  return object_set_prop_object(s_factory->cache, name, OBJECT(c));
+}
+
+value_converter_t* value_converter_create(const char* name) {
+  value_converter_t* c = NULL;
+  return_value_if_fail(name != NULL, NULL);
+
+  c = value_converter_get(name);
+  if (c != NULL) {
+    return c;
+  }
+
+  c = value_converter_do_create(name);
+  if (c != NULL) {
+    value_converter_put(name, c);
+  }
+
+  return c;
+}
+
 ret_t value_converter_register(const char* name, tk_create_t create) {
   return_value_if_fail(name != NULL, RET_BAD_PARAMS);
-  return_value_if_fail(create != NULL, RET_BAD_PARAMS);
-  return_value_if_fail(value_converter_init(NULL) == RET_OK, RET_BAD_PARAMS);
+  return_value_if_fail(create != NULL && s_factory != NULL, RET_BAD_PARAMS);
 
-  return object_set_prop_pointer(s_value_converter_creators, name, create);
+  return object_set_prop_pointer(s_factory->creators, name, create);
 }
 
-ret_t value_converter_init(value_converter_create_t default_creator) {
-  if (s_value_converter_creators == NULL) {
-    s_value_converter_creators = object_default_create();
-  }
+ret_t value_converter_register_generic(value_converter_create_t create) {
+  return_value_if_fail(create != NULL && s_factory != NULL, RET_BAD_PARAMS);
 
-  if (default_creator != NULL) {
-    s_default_creator = default_creator;
-  }
-
-  return s_value_converter_creators != NULL ? RET_OK : RET_FAIL;
+  return slist_append(&(s_factory->generic_creators), create);
 }
 
-ret_t value_converter_deinit(void) {
-  return_value_if_fail(s_value_converter_creators != NULL, RET_BAD_PARAMS);
-
-  object_unref(s_value_converter_creators);
-  s_value_converter_creators = NULL;
+ret_t value_converter_init(void) {
+  if (s_factory == NULL) {
+    s_factory = value_converter_factory_create();
+  }
 
   return RET_OK;
 }
+
+ret_t value_converter_deinit(void) {
+  return_value_if_fail(s_factory != NULL, RET_BAD_PARAMS);
+
+  value_converter_factory_destroy(s_factory);
+  s_factory = NULL;
+
+  return RET_OK;
+}
+

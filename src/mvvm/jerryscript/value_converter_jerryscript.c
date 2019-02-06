@@ -78,9 +78,9 @@ static value_converter_t* value_converter_jerryscript_create(const char* name) {
 }
 
 ret_t value_converter_jerryscript_init(void) {
-  return value_converter_init(value_converter_jerryscript_create);
+  return value_converter_register_generic(value_converter_jerryscript_create);
 }
 
 ret_t value_converter_jerryscript_deinit(void) {
-  return value_converter_deinit();
+  return RET_OK;
 }
