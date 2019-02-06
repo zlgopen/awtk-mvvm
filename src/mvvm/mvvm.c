@@ -20,14 +20,13 @@
  */
 
 #include "mvvm/mvvm.h"
+#include "mvvm/jerryscript/mvvm_jerryscript.h"
 
 ret_t mvvm_init(void) {
   return_value_if_fail(value_converter_init() == RET_OK, RET_FAIL);
   return_value_if_fail(value_validator_init() == RET_OK, RET_FAIL);
 #ifdef WITH_JERRYSCRIPT
-  return_value_if_fail(model_jerryscript_init() == RET_OK, RET_FAIL);
-  return_value_if_fail(value_validator_jerryscript_init() == RET_OK, RET_FAIL);
-  return_value_if_fail(value_converter_jerryscript_init() == RET_OK, RET_FAIL);
+  return_value_if_fail(mvvm_jerryscript_init() == RET_OK, RET_FAIL);
 #endif /*WITH_JERRYSCRIPT*/
 
   return RET_OK;
@@ -37,9 +36,7 @@ ret_t mvvm_deinit(void) {
   value_converter_deinit();
   value_validator_deinit();
 #ifdef WITH_JERRYSCRIPT
-  model_jerryscript_deinit();
-  value_converter_jerryscript_deinit();
-  value_validator_jerryscript_deinit();
+  mvvm_jerryscript_deinit();
 #endif /*WITH_JERRYSCRIPT*/
 
   return RET_OK;
