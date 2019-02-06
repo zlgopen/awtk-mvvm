@@ -13,6 +13,7 @@ lua/lftk_run
 tags
 bin/demo*
 bin/run*
+bin/js*
 .vscode
 .vs
 3rd/jerryscript

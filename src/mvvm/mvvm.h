@@ -41,8 +41,7 @@
 #include "mvvm/base/value_converter_delegate.h"
 
 #ifdef WITH_JERRYSCRIPT
-#include "mvvm/jerryscript/model_jerryscript.h"
-#include "mvvm/jerryscript/value_converter_jerryscript.h"
+#include "mvvm/jerryscript/mvvm_jerryscript.h"
 #endif /*WITH_JERRYSCRIPT*/
 
 BEGIN_C_DECLS

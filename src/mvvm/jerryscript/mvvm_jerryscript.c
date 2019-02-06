@@ -19,7 +19,9 @@
  *
  */
 
-#include "mvvm/mvvm.h"
+#include "widgets/window.h"
+#include "mvvm/jerryscript/jsobj.h"
+#include "mvvm/jerryscript/mvvm_jerryscript.h"
 
 ret_t mvvm_jerryscript_init(void) {
   return_value_if_fail(model_jerryscript_init() == RET_OK, RET_FAIL);
@@ -52,4 +54,27 @@ ret_t mvvm_jerryscript_deinit(void) {
   value_validator_jerryscript_deinit();
 
   return RET_OK;
+}
+
+ret_t vm_open_window_jerryscript(const char* name) {
+  widget_t* win = NULL;
+  model_t* model = NULL;
+  const char* script = NULL;
+  const asset_info_t* asset = NULL;
+  return_value_if_fail(name != NULL, RET_BAD_PARAMS);
+
+  win = window_open(name);
+  return_value_if_fail(win != NULL, RET_NOT_FOUND);
+
+  script = widget_get_prop_str(win, WIDGET_PROP_SCRIPT, NULL);
+  return_value_if_fail(script != NULL, RET_FAIL);
+
+  asset = widget_load_asset(win, ASSET_TYPE_SCRIPT, script);
+  return_value_if_fail(asset != NULL, RET_NOT_FOUND);
+
+  model = model_jerryscript_create(script, (const char*)(asset->data), asset->size);
+  widget_unload_asset(win, asset);
+  return_value_if_fail(model != NULL, RET_FAIL);
+
+  return binding_context_bind_model(model, win);
 }

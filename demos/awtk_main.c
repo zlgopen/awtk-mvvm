@@ -19,6 +19,7 @@
  *
  */
 
+#include "mvvm/mvvm.h"
 extern ret_t assets_init(void);
 extern ret_t application_init(void);
 
@@ -55,9 +56,12 @@ int main(void) {
   tk_ext_widgets_init();
 
   assets_init();
+  mvvm_init();
   application_init();
 
   tk_run();
+
+  mvvm_deinit();
 
   return 0;
 }

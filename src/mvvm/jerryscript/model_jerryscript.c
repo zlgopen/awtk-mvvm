@@ -25,6 +25,8 @@
 #include "jerryscript-ext/handler.h"
 #include "mvvm/jerryscript/jsobj.h"
 #include "mvvm/jerryscript/model_jerryscript.h"
+#include "mvvm/jerryscript/value_converter_jerryscript.h"
+#include "mvvm/jerryscript/value_validator_jerryscript.h"
 
 static ret_t model_jerryscript_on_destroy(object_t* obj) {
   model_jerryscript_t* modeljs = MODEL_JERRYSCRIPT(obj);
