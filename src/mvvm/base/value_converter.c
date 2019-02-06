@@ -41,29 +41,39 @@ ret_t value_converter_to_model(value_converter_t* converter, const value_t* from
 }
 
 static object_t* s_value_converter_creators;
+static value_converter_create_t s_default_creator;
 
 value_converter_t* value_converter_create(const char* name) {
   tk_create_t create = NULL;
   return_value_if_fail(name != NULL, NULL);
-  return_value_if_fail(value_converter_init() == RET_OK, NULL);
+  return_value_if_fail(value_converter_init(NULL) == RET_OK, NULL);
 
   create = (tk_create_t)object_get_prop_pointer(s_value_converter_creators, name);
-  return_value_if_fail(create != NULL, NULL);
+  if (create != NULL) {
+    return (value_converter_t*)create();
+  }
+  if (s_default_creator != NULL) {
+    return s_default_creator(name);
+  }
 
-  return (value_converter_t*)create();
+  return NULL;
 }
 
 ret_t value_converter_register(const char* name, tk_create_t create) {
   return_value_if_fail(name != NULL, RET_BAD_PARAMS);
   return_value_if_fail(create != NULL, RET_BAD_PARAMS);
-  return_value_if_fail(value_converter_init() == RET_OK, RET_BAD_PARAMS);
+  return_value_if_fail(value_converter_init(NULL) == RET_OK, RET_BAD_PARAMS);
 
   return object_set_prop_pointer(s_value_converter_creators, name, create);
 }
 
-ret_t value_converter_init(void) {
+ret_t value_converter_init(value_converter_create_t default_creator) {
   if (s_value_converter_creators == NULL) {
     s_value_converter_creators = object_default_create();
+  }
+
+  if (default_creator != NULL) {
+    s_default_creator = default_creator;
   }
 
   return s_value_converter_creators != NULL ? RET_OK : RET_FAIL;

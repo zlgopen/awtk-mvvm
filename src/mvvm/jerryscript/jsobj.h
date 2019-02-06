@@ -45,6 +45,10 @@ void* jerry_value_to_pointer(jerry_value_t value);
 jerry_value_t jerry_value_from_pointer(void* ptr);
 ret_t jerry_value_check(jerry_value_t value);
 
+bool_t jsvalue_converter_exist(const char* name);
+ret_t jsvalue_converter_to_view(const char* name, const value_t* from, value_t* to, str_t* temp);
+ret_t jsvalue_converter_to_model(const char* name, const value_t* from, value_t* to, str_t* temp);
+
 END_C_DECLS
 
 #endif /*TK_JSOBJ_H*/

@@ -29,6 +29,7 @@ BEGIN_C_DECLS
 struct _value_converter_t;
 typedef struct _value_converter_t value_converter_t;
 
+typedef value_converter_t* (*value_converter_create_t)(const char* name);
 typedef ret_t (*value_converter_to_model_t)(value_converter_t* converter, const value_t* from,
                                             value_t* to);
 typedef ret_t (*value_converter_to_view_t)(value_converter_t* converter, const value_t* from,
@@ -107,7 +108,7 @@ ret_t value_converter_register(const char* name, tk_create_t create);
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
-ret_t value_converter_init(void);
+ret_t value_converter_init(value_converter_create_t default_creator);
 
 /**
  * @method value_converter_deinit

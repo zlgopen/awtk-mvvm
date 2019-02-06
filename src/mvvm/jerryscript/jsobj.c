@@ -200,7 +200,7 @@ bool_t jsobj_has_prop(jerry_value_t obj, const char* name) {
   return has_prop;
 }
 
-jerry_value_t jsobj_get_model(const char* name) {
+jerry_value_t jsobj_get_global(const char* name) {
   jerry_value_t global_obj = jerry_get_global_object();
   jerry_value_t prop_name = jerry_create_string((const jerry_char_t*)name);
   jerry_value_t prop_value = jerry_get_property(global_obj, prop_name);
@@ -213,6 +213,10 @@ jerry_value_t jsobj_get_model(const char* name) {
     jerry_release_value(global_obj);
     return prop_value;
   }
+}
+
+jerry_value_t jsobj_get_model(const char* name) {
+  return jsobj_get_global(name);
 }
 
 jerry_value_t jsobj_get_prop_value(jerry_value_t obj, const char* name) {
@@ -399,4 +403,47 @@ ret_t jsobj_set_prop_pointer(jerry_value_t obj, const char* name, void* ptr) {
   value_set_pointer(&v, ptr);
 
   return jsobj_set_prop(obj, name, &v, NULL);
+}
+
+static jerry_value_t jsobj_get_converter(const char* name) {
+  jerry_value_t factory = jsobj_get_global("ValueConverters");
+  jerry_value_t converter = jsobj_get_prop_value(factory, name);
+  jerry_release_value(factory);
+
+  return converter;
+}
+
+bool_t jsvalue_converter_exist(const char* name) {
+  jerry_value_t factory = jsobj_get_global("ValueConverters");
+  bool_t exist = jsobj_has_prop(factory, name);
+  jerry_release_value(factory);
+
+  return exist;
+}
+
+static ret_t value_convert(const char* converter_name, const char* func_name, const value_t* from,
+                           value_t* to, str_t* temp) {
+  ret_t ret = RET_OK;
+  jerry_value_t converter = jsobj_get_converter(converter_name);
+  jerry_value_t func = jsobj_get_prop_value(converter, func_name);
+
+  if (jerry_value_is_function(func)) {
+    jerry_value_t jsfrom = jerry_value_from_value(from, temp);
+    jerry_value_t jsret = jerry_call_function(func, converter, &jsfrom, 1);
+    ret = jerry_value_to_value(jsret, to, temp);
+    jerry_release_value(jsret);
+  }
+
+  jerry_release_value(func);
+  jerry_release_value(converter);
+
+  return ret;
+}
+
+ret_t jsvalue_converter_to_view(const char* name, const value_t* from, value_t* to, str_t* temp) {
+  return value_convert(name, "toView", from, to, temp);
+}
+
+ret_t jsvalue_converter_to_model(const char* name, const value_t* from, value_t* to, str_t* temp) {
+  return value_convert(name, "toModel", from, to, temp);
 }

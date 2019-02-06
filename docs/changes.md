@@ -3,6 +3,7 @@
   * 重构
   * 增加测试
   * 支持js通知c属性有变化。
+  * 增加value\_converter\_jerryscript
 
 * 2019/02/05
   * 增加model\_jerryscript
