@@ -26,6 +26,7 @@ ret_t mvvm_init(void) {
   return_value_if_fail(value_validator_init() == RET_OK, RET_FAIL);
 #ifdef WITH_JERRYSCRIPT
   return_value_if_fail(model_jerryscript_init() == RET_OK, RET_FAIL);
+  return_value_if_fail(value_validator_jerryscript_init() == RET_OK, RET_FAIL);
   return_value_if_fail(value_converter_jerryscript_init() == RET_OK, RET_FAIL);
 #endif /*WITH_JERRYSCRIPT*/
 
@@ -38,6 +39,7 @@ ret_t mvvm_deinit(void) {
 #ifdef WITH_JERRYSCRIPT
   model_jerryscript_deinit();
   value_converter_jerryscript_deinit();
+  value_validator_jerryscript_deinit();
 #endif /*WITH_JERRYSCRIPT*/
 
   return RET_OK;

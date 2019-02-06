@@ -159,4 +159,3 @@ ret_t value_converter_deinit(void) {
 
   return RET_OK;
 }
-

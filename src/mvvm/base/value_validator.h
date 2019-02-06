@@ -30,8 +30,9 @@ BEGIN_C_DECLS
 struct _value_validator_t;
 typedef struct _value_validator_t value_validator_t;
 
-typedef ret_t (*value_validator_is_valid_t)(value_validator_t* validator, const value_t* value,
-                                            str_t* msg);
+typedef value_validator_t* (*value_validator_create_t)(const char* name);
+typedef bool_t (*value_validator_is_valid_t)(value_validator_t* validator, const value_t* value,
+                                             str_t* msg);
 typedef ret_t (*value_validator_fix_t)(value_validator_t* validator, value_t* value);
 
 /**
@@ -97,6 +98,17 @@ value_validator_t* value_validator_create(const char* name);
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
 ret_t value_validator_register(const char* name, tk_create_t create);
+
+/**
+ * @method value_validator_register_generic
+ *
+ * 注册值转换器的通用创建函数。
+ * @annotation [ "static"]
+ * @param {value_validator_create_t} create 创建函数。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t value_validator_register_generic(value_validator_create_t create);
 
 /**
  * @method value_validator_init

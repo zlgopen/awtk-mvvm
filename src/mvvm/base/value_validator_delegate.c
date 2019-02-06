@@ -27,8 +27,8 @@ static const object_vtable_t s_value_validator_delegate_vtable = {
     .size = sizeof(value_validator_delegate_t),
     .is_collection = FALSE};
 
-static ret_t value_validator_delegate_is_valid(value_validator_t* c, const value_t* value,
-                                               str_t* msg) {
+static bool_t value_validator_delegate_is_valid(value_validator_t* c, const value_t* value,
+                                                str_t* msg) {
   value_validator_delegate_t* value_convert_delegate = VALUE_VALIDATOR_DELEGATE(c);
 
   return value_convert_delegate->is_valid(value, msg);

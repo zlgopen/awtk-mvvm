@@ -406,7 +406,7 @@ ret_t jsobj_set_prop_pointer(jerry_value_t obj, const char* name, void* ptr) {
 }
 
 static jerry_value_t jsobj_get_converter(const char* name) {
-  jerry_value_t factory = jsobj_get_global("ValueConverters");
+  jerry_value_t factory = jsobj_get_global(JSOBJ_VALUE_CONVERTERS);
   jerry_value_t converter = jsobj_get_prop_value(factory, name);
   jerry_release_value(factory);
 
@@ -414,7 +414,7 @@ static jerry_value_t jsobj_get_converter(const char* name) {
 }
 
 bool_t jsvalue_converter_exist(const char* name) {
-  jerry_value_t factory = jsobj_get_global("ValueConverters");
+  jerry_value_t factory = jsobj_get_global(JSOBJ_VALUE_CONVERTERS);
   bool_t exist = jsobj_has_prop(factory, name);
   jerry_release_value(factory);
 
@@ -441,9 +441,58 @@ static ret_t value_convert(const char* converter_name, const char* func_name, co
 }
 
 ret_t jsvalue_converter_to_view(const char* name, const value_t* from, value_t* to, str_t* temp) {
-  return value_convert(name, "toView", from, to, temp);
+  return value_convert(name, JSOBJ_VALUE_CONVERTER_TO_VIEW, from, to, temp);
 }
 
 ret_t jsvalue_converter_to_model(const char* name, const value_t* from, value_t* to, str_t* temp) {
-  return value_convert(name, "toModel", from, to, temp);
+  return value_convert(name, JSOBJ_VALUE_CONVERTER_TO_MODEL, from, to, temp);
+}
+
+static jerry_value_t jsobj_get_validator(const char* name) {
+  jerry_value_t factory = jsobj_get_global(JSOBJ_VALUE_VALIDATORS);
+  jerry_value_t validator = jsobj_get_prop_value(factory, name);
+  jerry_release_value(factory);
+
+  return validator;
+}
+
+bool_t jsvalue_validator_exist(const char* name) {
+  jerry_value_t factory = jsobj_get_global(JSOBJ_VALUE_VALIDATORS);
+  bool_t exist = jsobj_has_prop(factory, name);
+  jerry_release_value(factory);
+
+  return exist;
+}
+
+ret_t jsvalue_validator_is_valid(const char* name, const value_t* value, str_t* msg) {
+  ret_t ret = RET_OK;
+  jerry_value_t validator = jsobj_get_validator(name);
+  jerry_value_t func = jsobj_get_prop_value(validator, JSOBJ_VALUE_VALIDATOR_IS_VALID);
+
+  if (jerry_value_is_function(func)) {
+    jerry_value_t jsvalue = jerry_value_from_value(value, msg);
+    jerry_value_t jsret = jerry_call_function(func, validator, &jsvalue, 1);
+
+    if (jerry_value_is_boolean(jsret)) {
+      ret = jerry_value_to_boolean(jsret) ? RET_OK : RET_FAIL;
+      str_set(msg, "");
+    } else if (jerry_value_is_object(jsret)) {
+      value_t r;
+      value_set_int(&r, 0);
+      if (jsobj_has_prop(jsret, JSOBJ_VALUE_VALIDATOR_RESULT)) {
+        jsobj_get_prop(jsret, JSOBJ_VALUE_VALIDATOR_RESULT, &r, msg);
+        ret = value_bool(&r) ? RET_OK : RET_FAIL;
+      }
+
+      if (jsobj_has_prop(jsret, JSOBJ_VALUE_VALIDATOR_MESSAGE)) {
+        jsobj_get_prop(jsret, JSOBJ_VALUE_VALIDATOR_MESSAGE, &r, msg);
+      }
+    }
+    jerry_release_value(jsret);
+  }
+
+  jerry_release_value(func);
+  jerry_release_value(validator);
+
+  return ret;
 }

@@ -49,6 +49,9 @@ bool_t jsvalue_converter_exist(const char* name);
 ret_t jsvalue_converter_to_view(const char* name, const value_t* from, value_t* to, str_t* temp);
 ret_t jsvalue_converter_to_model(const char* name, const value_t* from, value_t* to, str_t* temp);
 
+bool_t jsvalue_validator_exist(const char* name);
+ret_t jsvalue_validator_is_valid(const char* name, const value_t* v, str_t* msg);
+
 END_C_DECLS
 
 #endif /*TK_JSOBJ_H*/
