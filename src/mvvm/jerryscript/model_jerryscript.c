@@ -41,83 +41,51 @@ static int32_t model_jerryscript_compare(object_t* obj, object_t* other) {
 }
 
 static ret_t model_jerryscript_set_prop(object_t* obj, const char* name, const value_t* v) {
-  jerry_value_t global_object;
   model_jerryscript_t* modeljs = MODEL_JERRYSCRIPT(obj);
   return_value_if_fail(obj != NULL && name != NULL && v != NULL, RET_BAD_PARAMS);
 
-  if (jsobj_has_prop(modeljs->jsobj, name)) {
-    return jsobj_set_prop(modeljs->jsobj, name, v);
-  }
-
-  global_object = jerry_get_global_object();
-  if (jsobj_has_prop(global_object, name)) {
-    ret_t ret = jsobj_set_prop(global_object, name, v);
-    jerry_release_value(global_object);
-
-    return ret;
-  }
-
-  return jsobj_set_prop(modeljs->jsobj, name, v);
+  return jsobj_set_prop(modeljs->jsobj, name, v, &(modeljs->temp));
 }
 
 static ret_t model_jerryscript_get_prop(object_t* obj, const char* name, value_t* v) {
-  jerry_value_t global_object;
   model_jerryscript_t* modeljs = MODEL_JERRYSCRIPT(obj);
   return_value_if_fail(obj != NULL && name != NULL && v != NULL, RET_BAD_PARAMS);
 
+  value_set_int(v, 0);
   if (jsobj_has_prop(modeljs->jsobj, name)) {
     return jsobj_get_prop(modeljs->jsobj, name, v, &(modeljs->temp));
-  }
-
-  global_object = jerry_get_global_object();
-  if (jsobj_has_prop(global_object, name)) {
-    ret_t ret = jsobj_get_prop(global_object, name, v, &(modeljs->temp));
-    jerry_release_value(global_object);
-
-    return ret;
   }
 
   return RET_NOT_FOUND;
 }
 
 static bool_t model_jerryscript_can_exec(object_t* obj, const char* name, const char* args) {
-  jerry_value_t global_object;
   model_jerryscript_t* modeljs = MODEL_JERRYSCRIPT(obj);
-  return_value_if_fail(obj != NULL && name != NULL && args != NULL, RET_BAD_PARAMS);
+  return_value_if_fail(obj != NULL && name != NULL, RET_BAD_PARAMS);
 
-  if (jsobj_can_exec(modeljs->jsobj, name, args)) {
-    return TRUE;
-  }
-
-  global_object = jerry_get_global_object();
-  if (jsobj_can_exec(global_object, name, args)) {
-    jerry_release_value(global_object);
-    return TRUE;
-  }
-
-  jerry_release_value(global_object);
-
-  return FALSE;
+  return jsobj_can_exec(modeljs->jsobj, name, args);
 }
 
 static ret_t model_jerryscript_exec(object_t* obj, const char* name, const char* args) {
-  ret_t ret = RET_OK;
-  jerry_value_t global_object;
   model_jerryscript_t* modeljs = MODEL_JERRYSCRIPT(obj);
-  return_value_if_fail(obj != NULL && name != NULL && args != NULL, RET_BAD_PARAMS);
+  return_value_if_fail(obj != NULL && name != NULL, RET_BAD_PARAMS);
 
-  ret = jsobj_exec(modeljs->jsobj, name, args);
-  if (ret != RET_NOT_IMPL) {
-    return ret;
+  return jsobj_exec(modeljs->jsobj, name, args);
+}
+
+jerry_value_t wrap_notify_props_changed(const jerry_value_t func_obj_val,
+                                        const jerry_value_t this_p, const jerry_value_t args_p[],
+                                        const jerry_length_t args_cnt) {
+  object_t* obj = NULL;
+
+  if (args_cnt > 0) {
+    jerry_value_t native_obj = args_p[0];
+    obj = OBJECT(jerry_value_to_pointer(native_obj));
+  } else {
+    log_warn("wrap_notify_props_changed no nativeModel\n");
   }
 
-  global_object = jerry_get_global_object();
-  ret = jsobj_exec(global_object, name, args);
-  if (ret != RET_NOT_IMPL) {
-    return ret;
-  }
-
-  return RET_NOT_FOUND;
+  return jerry_create_number(object_notify_changed(obj));
 }
 
 static const object_vtable_t s_model_jerryscript_vtable = {
@@ -135,7 +103,10 @@ static const object_vtable_t s_model_jerryscript_vtable = {
 
 ret_t model_jerryscript_init(void) {
   jerry_init(JERRY_INIT_EMPTY);
+
   jerryx_handler_register_global((const jerry_char_t*)"print", jerryx_handler_print);
+  jerryx_handler_register_global((const jerry_char_t*)"notifyPropsChanged",
+                                 wrap_notify_props_changed);
 
   return RET_OK;
 }
@@ -147,7 +118,7 @@ ret_t model_jerryscript_deinit(void) {
 }
 
 model_t* model_jerryscript_create(const char* name, const char* code, uint32_t code_size) {
-  jerry_value_t jsret;
+  jerry_value_t jsret = 0;
   object_t* obj = NULL;
   model_jerryscript_t* modeljs = NULL;
   return_value_if_fail(name != NULL && code != NULL && code_size > 0, NULL);
@@ -169,7 +140,9 @@ model_t* model_jerryscript_create(const char* name, const char* code, uint32_t c
   goto_error_if_fail(jerry_value_check(modeljs->jsobj) == RET_OK);
 
   str_init(&(modeljs->temp), 0);
+  jsobj_set_prop_pointer(modeljs->jsobj, "nativeModel", modeljs);
 
+  jerry_release_value(jsret);
   return MODEL(obj);
 error:
   object_unref(obj);

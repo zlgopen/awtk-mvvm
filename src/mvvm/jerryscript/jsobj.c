@@ -201,12 +201,18 @@ bool_t jsobj_has_prop(jerry_value_t obj, const char* name) {
 }
 
 jerry_value_t jsobj_get_model(const char* name) {
-  jerry_value_t obj = jerry_get_global_object();
+  jerry_value_t global_obj = jerry_get_global_object();
   jerry_value_t prop_name = jerry_create_string((const jerry_char_t*)name);
-  jerry_value_t prop_value = jerry_get_property(obj, prop_name);
+  jerry_value_t prop_value = jerry_get_property(global_obj, prop_name);
   jerry_release_value(prop_name);
 
-  return prop_value;
+  if (jerry_value_is_null(prop_value) || jerry_value_is_error(prop_value)) {
+    jerry_release_value(prop_value);
+    return global_obj;
+  } else {
+    jerry_release_value(global_obj);
+    return prop_value;
+  }
 }
 
 jerry_value_t jsobj_get_prop_value(jerry_value_t obj, const char* name) {
@@ -218,30 +224,16 @@ jerry_value_t jsobj_get_prop_value(jerry_value_t obj, const char* name) {
   return prop_value;
 }
 
-ret_t jsobj_set_prop(jerry_value_t obj, const char* name, const value_t* v) {
-  ret_t ret = RET_OK;
-  jerry_value_t prop_value;
+ret_t jsobj_set_prop(jerry_value_t obj, const char* name, const value_t* v, str_t* temp) {
+  jerry_value_t prop_value = jerry_value_from_value(v, temp);
   jerry_value_t prop_name = jerry_create_string((const jerry_char_t*)name);
 
-  if (v->type == VALUE_TYPE_STRING) {
-    prop_value = jerry_create_string((const jerry_char_t*)value_str(v));
-    jerry_set_property(obj, prop_name, prop_value);
-  } else if (v->type == VALUE_TYPE_WSTRING) {
-    str_t str;
-    str_init(&str, 0);
-    str_from_value(&str, v);
-    prop_value = jerry_create_string((const jerry_char_t*)str.str);
-    jerry_set_property(obj, prop_name, prop_value);
-    str_reset(&str);
-  } else {
-    prop_value = jerry_create_number(value_float(v));
-    jerry_set_property(obj, prop_name, prop_value);
-  }
+  jerry_set_property(obj, prop_name, prop_value);
 
   jerry_release_value(prop_name);
   jerry_release_value(prop_value);
 
-  return ret;
+  return RET_OK;
 }
 
 char* jerry_get_utf8_value(jerry_value_t value, str_t* temp) {
@@ -258,34 +250,7 @@ char* jerry_get_utf8_value(jerry_value_t value, str_t* temp) {
 ret_t jsobj_get_prop(jerry_value_t obj, const char* name, value_t* v, str_t* temp) {
   ret_t ret = RET_FAIL;
   jerry_value_t prop_value = jsobj_get_prop_value(obj, name);
-
-  if (!jerry_value_is_error(prop_value)) {
-    if (jerry_value_is_string(prop_value)) {
-      char* str = jerry_get_utf8_value(prop_value, temp);
-      if (str != NULL) {
-        value_set_str(v, str);
-        v->free_handle = TRUE;
-
-        ret = RET_OK;
-      }
-    } else if (jerry_value_is_number(prop_value)) {
-      double raw_value = jerry_get_number_value(prop_value);
-
-      if (floor(raw_value) == (int32_t)raw_value) {
-        value_set_int32(v, (int32_t)raw_value);
-      } else {
-        value_set_double(v, raw_value);
-      }
-      ret = RET_OK;
-    } else if (jerry_value_is_boolean(prop_value)) {
-      bool_t raw_value = jerry_get_boolean_value(prop_value);
-      value_set_bool(v, raw_value);
-      ret = RET_OK;
-    } else {
-      log_debug("not supported yet.\n");
-    }
-  }
-
+  ret = jerry_value_to_value(prop_value, v, temp);
   jerry_release_value(prop_value);
 
   return ret;
@@ -351,4 +316,87 @@ bool_t jsobj_has_prop_func(jerry_value_t obj, const char* name) {
   jerry_release_value(value);
 
   return ret;
+}
+
+ret_t jerry_value_to_value(jerry_value_t value, value_t* v, str_t* temp) {
+  ret_t ret = RET_NOT_IMPL;
+
+  if (!jerry_value_is_error(value)) {
+    if (jerry_value_is_string(value)) {
+      char* str = jerry_get_utf8_value(value, temp);
+      if (str != NULL) {
+        value_set_str(v, str);
+        ret = RET_OK;
+      } else {
+        ret = RET_OOM;
+      }
+    } else if (jerry_value_is_number(value)) {
+      double raw_value = jerry_get_number_value(value);
+
+      if (floor(raw_value) == (int32_t)raw_value) {
+        value_set_int32(v, (int32_t)raw_value);
+      } else {
+        value_set_double(v, raw_value);
+      }
+      ret = RET_OK;
+    } else if (jerry_value_is_boolean(value)) {
+      bool_t raw_value = jerry_get_boolean_value(value);
+      value_set_bool(v, raw_value);
+      ret = RET_OK;
+    } else {
+      void* p = NULL;
+      if (jerry_get_object_native_pointer(value, &p, NULL)) {
+        value_set_pointer(v, p);
+        ret = RET_OK;
+      } else {
+        log_debug("not supported yet.\n");
+      }
+    }
+  }
+
+  return ret;
+}
+
+jerry_value_t jerry_value_from_value(const value_t* v, str_t* temp) {
+  jerry_value_t value;
+
+  if (v->type == VALUE_TYPE_STRING) {
+    value = jerry_create_string((const jerry_char_t*)value_str(v));
+  } else if (v->type == VALUE_TYPE_WSTRING) {
+    if (temp != NULL) {
+      str_from_value(temp, v);
+      value = jerry_create_string((const jerry_char_t*)temp->str);
+    } else {
+      value = jerry_create_string((const jerry_char_t*)"");
+    }
+  } else if (v->type == VALUE_TYPE_POINTER) {
+    value = jerry_create_object();
+    jerry_set_object_native_pointer(value, (void*)value_pointer(v), NULL);
+  } else {
+    value = jerry_create_number(value_float(v));
+  }
+
+  return value;
+}
+
+void* jerry_value_to_pointer(jerry_value_t value) {
+  value_t v;
+  value_set_pointer(&v, NULL);
+  jerry_value_to_value(value, &v, NULL);
+
+  return value_pointer(&v);
+}
+
+jerry_value_t jerry_value_from_pointer(void* ptr) {
+  value_t v;
+  value_set_pointer(&v, ptr);
+
+  return jerry_value_from_value(&v, NULL);
+}
+
+ret_t jsobj_set_prop_pointer(jerry_value_t obj, const char* name, void* ptr) {
+  value_t v;
+  value_set_pointer(&v, ptr);
+
+  return jsobj_set_prop(obj, name, &v, NULL);
 }

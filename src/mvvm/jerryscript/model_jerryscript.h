@@ -45,6 +45,7 @@ struct _model_jerryscript_t {
   jerry_value_t jscode;
   jerry_value_t jsobj;
 
+  /*避免每次动态分配内存*/
   str_t temp;
 };
 

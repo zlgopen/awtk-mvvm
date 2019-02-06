@@ -120,3 +120,35 @@ TEST(ModelJerryScript, exec_global) {
 
   object_unref(OBJECT(model));
 }
+
+static ret_t on_model_changed(void* ctx, event_t* e) {
+  int* n = (int*)ctx;
+
+  *n = *n + 1;
+  log_debug("on_model_changed\n");
+
+  return RET_OK;
+}
+
+TEST(ModelJerryScript, notifyPropsChanged) {
+  int n = 0;
+  const char* code =
+      "var test = {save: function(args) {print(args); test.count++; "
+      "notifyPropsChanged(test.nativeModel);return 0;}, count:0}";
+  model_t* model = model_jerryscript_create("test", code, strlen(code));
+  object_t* obj = OBJECT(model);
+  ASSERT_NE(obj, OBJECT(NULL));
+
+  emitter_on(EMITTER(obj), EVT_PROPS_CHANGED, on_model_changed, &n);
+
+  ASSERT_EQ(object_can_exec(obj, "save", "awtk\n"), TRUE);
+  ASSERT_EQ(object_exec(obj, "save", "awtk\n"), RET_OK);
+  ASSERT_EQ(object_get_prop_int(obj, "count", 0), 1);
+  ASSERT_EQ(n, 1);
+
+  ASSERT_EQ(object_exec(obj, "save", "awtk\n"), RET_OK);
+  ASSERT_EQ(object_get_prop_int(obj, "count", 0), 2);
+  ASSERT_EQ(n, 2);
+
+  object_unref(OBJECT(model));
+}

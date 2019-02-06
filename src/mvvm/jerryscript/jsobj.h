@@ -27,14 +27,23 @@
 
 BEGIN_C_DECLS
 
-ret_t jerry_value_check(jerry_value_t value);
 jerry_value_t jsobj_get_model(const char* name);
+
 bool_t jsobj_has_prop(jerry_value_t obj, const char* name);
 bool_t jsobj_has_prop_func(jerry_value_t obj, const char* name);
+
 ret_t jsobj_get_prop(jerry_value_t obj, const char* name, value_t* v, str_t* temp);
-ret_t jsobj_set_prop(jerry_value_t obj, const char* name, const value_t* v);
+ret_t jsobj_set_prop(jerry_value_t obj, const char* name, const value_t* v, str_t* temp);
+ret_t jsobj_set_prop_pointer(jerry_value_t obj, const char* name, void* p);
+
 ret_t jsobj_exec(jerry_value_t obj, const char* name, const char* args);
 bool_t jsobj_can_exec(jerry_value_t obj, const char* name, const char* args);
+
+ret_t jerry_value_to_value(jerry_value_t value, value_t* v, str_t* temp);
+jerry_value_t jerry_value_from_value(const value_t* v, str_t* temp);
+void* jerry_value_to_pointer(jerry_value_t value);
+jerry_value_t jerry_value_from_pointer(void* ptr);
+ret_t jerry_value_check(jerry_value_t value);
 
 END_C_DECLS
 
