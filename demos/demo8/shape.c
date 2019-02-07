@@ -47,7 +47,7 @@ static bool_t shape_can_save(shape_t* t, const char* args) {
 
 static ret_t shape_get_overview(shape_t* t, value_t* v) {
   char str[128];
-  tk_snprintf(str, sizeof(str) - 1, "%s type=%d align=%d x=%d y=%d w=%d h=%d opacity=%d",
+  tk_snprintf(str, sizeof(str) - 1, "%s type=%d align=%d opacity=%d (%d %d %d %d)",
               t->name ? t->name : "(noname)", t->type, t->align, t->x, t->y, t->w, t->h,
               t->opacity);
 

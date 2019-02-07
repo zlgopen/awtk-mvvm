@@ -19,3 +19,4 @@ env.Program(os.path.join(BIN_DIR, 'jsdemo3'), Glob('jsdemo3/*.c') + ["assets.c"]
 env.Program(os.path.join(BIN_DIR, 'jsdemo4'), Glob('jsdemo4/*.c') + ["assets.c"])
 env.Program(os.path.join(BIN_DIR, 'jsdemo5'), Glob('jsdemo5/*.c') + ["assets.c"])
 env.Program(os.path.join(BIN_DIR, 'jsdemo6'), Glob('jsdemo6/*.c') + ["assets.c"])
+env.Program(os.path.join(BIN_DIR, 'jsdemo8'), Glob('jsdemo8/*.c') + ["assets.c"])
