@@ -34,10 +34,13 @@ bool_t value_validator_is_valid(value_validator_t* validator, const value_t* val
 
 ret_t value_validator_fix(value_validator_t* validator, value_t* value) {
   return_value_if_fail(validator != NULL && validator->object.vt != NULL, RET_BAD_PARAMS);
-  return_value_if_fail(validator->fix != NULL && validator->object.ref_count > 0, RET_BAD_PARAMS);
-  return_value_if_fail(value != NULL, RET_BAD_PARAMS);
+  return_value_if_fail(value != NULL && validator->object.ref_count > 0, RET_BAD_PARAMS);
 
-  return validator->fix(validator, value);
+  if (validator->fix != NULL) {
+    return validator->fix(validator, value);
+  } else {
+    return RET_OK;
+  }
 }
 
 typedef struct _value_validator_factory_t {

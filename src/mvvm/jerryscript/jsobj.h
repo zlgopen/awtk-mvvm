@@ -51,11 +51,13 @@ ret_t jsvalue_converter_to_model(const char* name, const value_t* from, value_t*
 
 bool_t jsvalue_validator_exist(const char* name);
 ret_t jsvalue_validator_is_valid(const char* name, const value_t* v, str_t* msg);
+ret_t jsvalue_validator_fix(const char* name, value_t* v);
 
 #define JSOBJ_VALUE_CONVERTERS "ValueConverters"
 #define JSOBJ_VALUE_CONVERTER_TO_VIEW "toView"
 #define JSOBJ_VALUE_CONVERTER_TO_MODEL "toModel"
 #define JSOBJ_VALUE_VALIDATORS "ValueValidators"
+#define JSOBJ_VALUE_VALIDATOR_FIX "fix"
 #define JSOBJ_VALUE_VALIDATOR_IS_VALID "isValid"
 #define JSOBJ_VALUE_VALIDATOR_RESULT "result"
 #define JSOBJ_VALUE_VALIDATOR_MESSAGE "message"

@@ -36,7 +36,12 @@ static bool_t value_validator_jerryscript_is_valid(value_validator_t* c, const v
   object_t* obj = OBJECT(c);
 
   return jsvalue_validator_is_valid(obj->name, v, msg) == RET_OK;
-  ;
+}
+
+static ret_t value_validator_jerryscript_fix(value_validator_t* c, value_t* v) {
+  object_t* obj = OBJECT(c);
+
+  return jsvalue_validator_fix(obj->name, v);
 }
 
 static value_validator_t* value_validator_jerryscript_create(const char* name) {
@@ -49,6 +54,7 @@ static value_validator_t* value_validator_jerryscript_create(const char* name) {
 
   validator = VALUE_VALIDATOR(obj);
   validator->is_valid = value_validator_jerryscript_is_valid;
+  validator->fix = value_validator_jerryscript_fix;
   object_set_name(obj, name);
 
   return validator;

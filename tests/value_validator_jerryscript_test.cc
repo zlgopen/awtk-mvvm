@@ -36,6 +36,34 @@ TEST(ValueValidatorJerryScript, basic) {
   object_unref(OBJECT(model));
 }
 
+TEST(ValueValidatorJerryScript, fix) {
+  const char* code =
+      "var ValueValidators = {}; \
+        ValueValidators.jsdummy = {\
+          fix:function(v) {return 10;} \
+        }";
+  value_t value;
+  model_t* model = model_jerryscript_create("test", code, strlen(code));
+
+  value_validator_t* c = value_validator_create("jsdummy");
+  ASSERT_NE(c, VALUE_VALIDATOR(NULL));
+
+  value_set_int(&value, 10);
+  ASSERT_EQ(value_validator_fix(c, &value), RET_OK);
+  ASSERT_EQ(value_int(&value), 10);
+
+  value_set_int(&value, 100);
+  ASSERT_EQ(value_validator_fix(c, &value), RET_OK);
+  ASSERT_EQ(value_int(&value), 10);
+
+  value_set_int(&value, 1);
+  ASSERT_EQ(value_validator_fix(c, &value), RET_OK);
+  ASSERT_EQ(value_int(&value), 10);
+
+  object_unref(OBJECT(c));
+  object_unref(OBJECT(model));
+}
+
 TEST(ValueValidatorJerryScript, message) {
   const char* code =
       "var ValueValidators = {}; \

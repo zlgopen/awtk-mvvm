@@ -1,4 +1,4 @@
-# 本示例展示了MVVM converter的用法。
+# 本示例展示了MVVM converter的用法(JS)。
 
 ## 一、视图
 
@@ -15,11 +15,20 @@
 
 ## 二、模型
 
-模型temperature里仅一个temp属性表示温度。
+模型temperature里仅一个temp属性表示温度，同时实现一个名为fahrenheit的ValueConverter。
 
 ```
-var temperature = { 
+var temperature_ex = { 
   temp : 20
+}
+
+ValueConverters.fahrenheit = { 
+  toView: function(v) {
+    return v * 1.8 + 32; 
+  },  
+  toModel: function(v) {
+    return (v - 32) / 1.8;
+  }
 }
 ```
 

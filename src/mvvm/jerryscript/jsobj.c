@@ -496,3 +496,23 @@ ret_t jsvalue_validator_is_valid(const char* name, const value_t* value, str_t* 
 
   return ret;
 }
+
+ret_t jsvalue_validator_fix(const char* name, value_t* v) {
+  ret_t ret = RET_OK;
+  jerry_value_t validator = jsobj_get_validator(name);
+  jerry_value_t func = jsobj_get_prop_value(validator, JSOBJ_VALUE_VALIDATOR_FIX);
+
+  if (jerry_value_is_function(func)) {
+    jerry_value_t jsfrom = jerry_value_from_value(v, NULL);
+    jerry_value_t jsret = jerry_call_function(func, validator, &jsfrom, 1);
+    ret = jerry_value_to_value(jsret, v, NULL);
+    jerry_release_value(jsret);
+  } else {
+    ret = RET_OK;
+  }
+
+  jerry_release_value(func);
+  jerry_release_value(validator);
+
+  return ret;
+}
