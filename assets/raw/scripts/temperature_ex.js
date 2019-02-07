@@ -1,5 +1,15 @@
 var temperature_ex = {
-  temp : 20
+  temp : 20,
+  saved_temp : 20,
+  save: function(v) {
+    this.saved_temp = this.temp;
+
+    notifyPropsChanged(this.nativeModel);
+    return true;
+  },
+  canSave: function(v) {
+    return this.saved_temp != this.temp;
+  }
 }
 
 ValueConverters.fahrenheit = {

@@ -260,13 +260,17 @@ ret_t jsobj_get_prop(jerry_value_t obj, const char* name, value_t* v, str_t* tem
   return ret;
 }
 
+static jerry_value_t jerry_create_str(const char* str) {
+  return str != NULL ? jerry_create_string((const jerry_char_t*)str) : jerry_create_null();
+}
+
 ret_t jsobj_exec(jerry_value_t obj, const char* name, const char* args) {
   ret_t ret = RET_FAIL;
 
   if (jsobj_has_prop(obj, name)) {
     jerry_value_t func = jsobj_get_prop_value(obj, name);
     if (jerry_value_is_function(func)) {
-      jerry_value_t jsargs = jerry_create_string((const jerry_char_t*)args);
+      jerry_value_t jsargs = jerry_create_str(args);
       jerry_value_t jsret = jerry_call_function(func, obj, &jsargs, 1);
       ret = (ret_t)jerry_value_to_number(jsret);
       jerry_release_value(func);
@@ -295,7 +299,7 @@ bool_t jsobj_can_exec(jerry_value_t obj, const char* name, const char* args) {
     jerry_value_t func = jsobj_get_prop_value(obj, jsname);
 
     if (jerry_value_is_function(func)) {
-      jerry_value_t jsargs = jerry_create_string((const jerry_char_t*)args);
+      jerry_value_t jsargs = jerry_create_str(args);
       jerry_value_t jsret = jerry_call_function(func, obj, &jsargs, 1);
       ret = jerry_value_to_boolean(jsret);
       jerry_release_value(func);
