@@ -1,4 +1,4 @@
-<window anim_hint="htranslate">
+<window anim_hint="htranslate" script="temperature_ex">
   <label text="C" x="0" y="middle:-40" w="40%" h="40"/>
   <label text="F" x="right" y="middle:-40" w="40%" h="40"/>
   <label text="1" x="0" y="middle" w="40%" h="40" v-data:text="{temp}"/>
