@@ -23,10 +23,22 @@
 #include "mvvm/jerryscript/jsobj.h"
 #include "mvvm/jerryscript/mvvm_jerryscript.h"
 
+const char* s_boot_code = "var ValueConverters = {};\n \
+                           var ValueValidators = {};\n \
+                           var console = { \n \
+                            log: function(args) { \n \
+                              print(args); \n \
+                            } \n \
+                           }; \n \
+                           console.log('hello awtk'); \n \
+                           ";
+
 ret_t mvvm_jerryscript_init(void) {
   return_value_if_fail(model_jerryscript_init() == RET_OK, RET_FAIL);
   return_value_if_fail(value_validator_jerryscript_init() == RET_OK, RET_FAIL);
   return_value_if_fail(value_converter_jerryscript_init() == RET_OK, RET_FAIL);
+
+  jerryscript_run("boot", s_boot_code, strlen(s_boot_code));
 
   return RET_OK;
 }
