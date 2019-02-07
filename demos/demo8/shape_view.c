@@ -20,8 +20,9 @@
  */
 
 #include "awtk.h"
+#include "mvvm/mvvm.h"
+
 #include "shape.h"
-#include "mvvm/base/binding_context.h"
 
 ret_t application_init() {
   vm_open_window("shape", shape_create());

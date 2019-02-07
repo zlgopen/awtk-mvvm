@@ -20,9 +20,9 @@
  */
 
 #include "awtk.h"
+#include "mvvm/mvvm.h"
 #include "temperature.h"
 #include "temperature_converter.h"
-#include "mvvm/base/binding_context.h"
 
 ret_t application_init() {
   temperature_converter_init();

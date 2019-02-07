@@ -20,8 +20,8 @@
  */
 
 #include "awtk.h"
+#include "mvvm/mvvm.h"
 #include "temperature.h"
-#include "mvvm/base/binding_context.h"
 
 ret_t application_init() {
   vm_open_window("temperature2", temperature_create());
