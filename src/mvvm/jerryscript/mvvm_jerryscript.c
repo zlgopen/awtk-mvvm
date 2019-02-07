@@ -23,7 +23,8 @@
 #include "mvvm/jerryscript/jsobj.h"
 #include "mvvm/jerryscript/mvvm_jerryscript.h"
 
-const char* s_boot_code = "var ValueConverters = {};\n \
+const char* s_boot_code =
+    "var ValueConverters = {};\n \
                            var ValueValidators = {};\n \
                            var console = { \n \
                             log: function(args) { \n \
