@@ -24,7 +24,9 @@
 #include "temperature.h"
 
 ret_t application_init() {
-  vm_open_window("temperature1", temperature_create());
+  NAVIGATOR_HANDLER_WRAP("temperature1", temperature_create);
+
+  navigator_to("temperature1");
 
   return RET_OK;
 }

@@ -39,6 +39,7 @@
 #include "mvvm/base/model_delegate.h"
 #include "mvvm/base/value_validator_delegate.h"
 #include "mvvm/base/value_converter_delegate.h"
+#include "mvvm/awtk/mvvm_awtk.h"
 
 #ifdef WITH_JERRYSCRIPT
 #include "mvvm/jerryscript/mvvm_jerryscript.h"
@@ -61,6 +62,9 @@ ret_t mvvm_init(void);
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
 ret_t mvvm_deinit(void);
+
+#define NAVIGATOR_HANDLER_WRAP(name, model_create) \
+  navigator_register_handler(navigator(), name, navigator_handler_awtk_create(model_create, NULL))
 
 END_C_DECLS
 

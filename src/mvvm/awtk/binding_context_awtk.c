@@ -355,8 +355,32 @@ ret_t binding_context_bind_model(model_t* model, widget_t* widget) {
   return binding_context_bind_view_model(vm, widget);
 }
 
-ret_t vm_open_window(const char* name, model_t* model) {
-  widget_t* win = window_open(name);
+static ret_t model_on_window_close(void* ctx, event_t* e) {
+  model_on_will_unmount(MODEL(ctx));
 
-  return binding_context_bind_model(model, win);
+  return RET_OK;
+}
+
+static ret_t model_on_window_destroy(void* ctx, event_t* e) {
+  model_on_unmount(MODEL(ctx));
+
+  return RET_OK;
+}
+
+ret_t vm_open_window(const char* name, model_t* model) {
+  ret_t ret = RET_FAIL;
+  widget_t* win = NULL;
+  return_value_if_fail(name != NULL && model != NULL, RET_BAD_PARAMS);
+
+  win = window_open(name);
+  return_value_if_fail(win != NULL, RET_NOT_FOUND);
+
+  ret = binding_context_bind_model(model, win);
+  if (ret == RET_OK) {
+    model_on_mount(model);
+    widget_on(win, EVT_DESTROY, model_on_window_destroy, model);
+    widget_on(win, EVT_WINDOW_CLOSE, model_on_window_close, model);
+  }
+
+  return ret;
 }

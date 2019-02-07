@@ -1,4 +1,9 @@
 # 最新动态
+* 2019/02/08
+  * 重构
+  * 增加navigator\_handle\r_awtk
+  * 增加model事件
+
 * 2019/02/07
   * 重构
   * 增加value\_validator\_jerryscript
