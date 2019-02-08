@@ -1,7 +1,7 @@
 /**
- * File:   temperature_view.c
+ * File:   application.c
  * Author: AWTK Develop Team
- * Brief:  temperature view
+ * Brief:  application
  *
  * Copyright (c) 2018 - 2019  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
@@ -21,12 +21,12 @@
 
 #include "awtk.h"
 #include "mvvm/mvvm.h"
-#include "temperature.h"
+#include "shape.h"
 
 ret_t application_init() {
-  vm_open_window("temperature6", temperature_create());
+  NAVIGATOR_ADD_HANDLER("shape", shape_create);
 
-  return RET_OK;
+  return navigator_to("shape");
 }
 
 #include "../awtk_main.c"

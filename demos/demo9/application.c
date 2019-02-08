@@ -30,9 +30,7 @@ ret_t application_init() {
   NAVIGATOR_ADD_HANDLER("humidity", humidity_create);
   NAVIGATOR_ADD_HANDLER("temperature9", temperature_create);
 
-  navigator_to("demo9_main");
-
-  return RET_OK;
+  return navigator_to("demo9_main");
 }
 
 #include "../awtk_main.c"

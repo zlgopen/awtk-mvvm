@@ -37,7 +37,7 @@ static bool_t temperature_can_save(temperature_t* t, const char* args) {
   return t->value != t->saved_value;
 }
 
-model_t* temperature_create(void) {
+model_t* temperature_create(void* args) {
   temperature_t* t = TKMEM_ZALLOC(temperature_t);
   model_t* model = model_delegate_create(t, default_destroy);
 

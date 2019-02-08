@@ -45,10 +45,11 @@ typedef struct _temperature_t {
  * 创建temperature对象。
  *
  * @annotation ["constructor"]
+ * @param {void*} args 参数(目前没用，仅仅为了与model_create_t保持一致)
  *
  * @return {model_t} 返回model_t对象。
  */
-model_t* temperature_create(void);
+model_t* temperature_create(void* args);
 
 #define TEMPERATURE(t) ((temperature_t*)(t))
 

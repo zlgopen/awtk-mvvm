@@ -1,7 +1,7 @@
 /**
- * File:   shape_view.c
+ * File:   application.c
  * Author: AWTK Develop Team
- * Brief:  shape view
+ * Brief:  application
  *
  * Copyright (c) 2018 - 2019  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
@@ -15,19 +15,18 @@
 /**
  * History:
  * ================================================================
- * 2019-02-04 Li XianJing <xianjimli@hotmail.com> created
+ * 2019-02-02 Li XianJing <xianjimli@hotmail.com> created
  *
  */
 
 #include "awtk.h"
 #include "mvvm/mvvm.h"
-
-#include "shape.h"
+#include "temperature.h"
 
 ret_t application_init() {
-  vm_open_window("shape", shape_create());
+  NAVIGATOR_ADD_HANDLER("temperature4", temperature_create);
 
-  return RET_OK;
+  return navigator_to("temperature4");
 }
 
 #include "../awtk_main.c"

@@ -1,4 +1,5 @@
 <window anim_hint="htranslate" script="temperature">
+  <label text="1" x="center" y="30" w="90%" h="40" text="temperature"/>
   <label text="1" x="center" y="middle" w="50%" h="40" v-data:text="{temp}"/>
   <slider value="1" x="center" y="middle:40" w="80%" h="20" v-data:value="{temp, Trigger=Explicit}"/>
   <button name="apply" text="Apply" x="center" y="bottom:10" w="80%" h="30" 
