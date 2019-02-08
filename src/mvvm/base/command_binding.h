@@ -96,6 +96,9 @@ ret_t command_binding_exec(command_binding_t* rule);
 #define COMMAND_BINDING(rule) ((command_binding_t*)rule);
 
 #define COMMAND_BINDING_NOTHING "nothing"
+#define COMMAND_BINDING_CLOSE "close"
+#define COMMAND_BINDING_NAVIGATE "navigate"
+
 #define COMMAND_BINDING_ARGS "Args"
 #define COMMAND_BINDING_EVENT "Event"
 #define COMMAND_BINDING_EVENT_ARGS "EventArgs"

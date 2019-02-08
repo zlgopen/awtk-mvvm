@@ -74,3 +74,17 @@ ret_t model_on_unmount(model_t* model) {
 
   return RET_OK;
 }
+
+typedef struct _model_dummy_t {
+  model_t model;
+} model_dummy_t;
+
+static const object_vtable_t s_model_dummy_vtable = {
+    .type = "model_dummy", .desc = "model_dummy", .size = sizeof(model_dummy_t)};
+
+model_t* model_dummy_create(void* args) {
+  object_t* o = object_create(&s_model_dummy_vtable);
+  return_value_if_fail(o != NULL, NULL);
+
+  return MODEL(o);
+}

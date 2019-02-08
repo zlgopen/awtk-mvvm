@@ -76,6 +76,8 @@ typedef struct _model_will_mount_event_t {
 
 #define MODEL(model) ((model_t*)(model))
 
+model_t* model_dummy_create(void* args);
+
 END_C_DECLS
 
 #endif /*TK_MODEL_H*/

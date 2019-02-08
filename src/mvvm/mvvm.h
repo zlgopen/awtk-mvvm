@@ -63,8 +63,10 @@ ret_t mvvm_init(void);
  */
 ret_t mvvm_deinit(void);
 
-#define NAVIGATOR_HANDLER_WRAP(name, model_create) \
-  navigator_register_handler(navigator(), name, navigator_handler_awtk_create(model_create, NULL))
+#define NAVIGATOR_ADD_HANDLER(name, model_create)           \
+  navigator_register_handler(navigator(), name,             \
+                             navigator_handler_awtk_create( \
+                                 model_create != NULL ? model_create : model_dummy_create, NULL))
 
 END_C_DECLS
 

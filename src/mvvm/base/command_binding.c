@@ -118,7 +118,8 @@ bool_t command_binding_can_exec(command_binding_t* rule) {
   ctx = BINDING_RULE(rule)->binding_context;
   return_value_if_fail(ctx != NULL && ctx->vm != NULL, FALSE);
 
-  if (tk_str_ieq(rule->command, COMMAND_BINDING_NOTHING)) {
+  if (tk_str_ieq(rule->command, COMMAND_BINDING_NOTHING) ||
+      tk_str_ieq(rule->command, COMMAND_BINDING_NAVIGATE)) {
     return TRUE;
   }
 
@@ -133,6 +134,10 @@ ret_t command_binding_exec(command_binding_t* rule) {
 
   if (tk_str_ieq(rule->command, COMMAND_BINDING_NOTHING)) {
     return RET_OK;
+  }
+
+  if (tk_str_ieq(rule->command, COMMAND_BINDING_NAVIGATE)) {
+    return navigator_to(rule->args);
   }
 
   return view_model_exec(ctx->vm, rule->command, rule->args);

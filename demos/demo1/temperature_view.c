@@ -24,7 +24,7 @@
 #include "temperature.h"
 
 ret_t application_init() {
-  NAVIGATOR_HANDLER_WRAP("temperature1", temperature_create);
+  NAVIGATOR_ADD_HANDLER("temperature1", temperature_create);
 
   navigator_to("temperature1");
 
