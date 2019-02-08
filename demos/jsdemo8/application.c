@@ -1,7 +1,7 @@
 /**
- * File:   temperature_view.c
+ * File:   application.c
  * Author: AWTK Develop Team
- * Brief:  temperature view
+ * Brief:  application
  *
  * Copyright (c) 2018 - 2019  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
@@ -23,7 +23,7 @@
 #include "mvvm/mvvm.h"
 
 ret_t application_init() {
-  vm_open_window_jerryscript("temperature2");
+  vm_open_window_jerryscript("shape");
 
   return RET_OK;
 }
