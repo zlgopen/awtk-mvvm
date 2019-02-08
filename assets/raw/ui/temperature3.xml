@@ -1,4 +1,4 @@
-<window anim_hint="htranslate" script="temperature_ex">
+<window anim_hint="htranslate" script="temperature_ex.js">
   <label text="1" x="center" y="30" w="90%" h="40" text="temperature"/>
   <label text="C" x="0" y="middle:-40" w="40%" h="40"/>
   <label text="F" x="right" y="middle:-40" w="40%" h="40"/>

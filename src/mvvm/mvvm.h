@@ -22,24 +22,8 @@
 #ifndef TK_MVVM_H
 #define TK_MVVM_H
 
-#include "mvvm/base/model.h"
-#include "mvvm/awtk/binding_context_awtk.h"
-#include "mvvm/base/binding_rule_parser.h"
-#include "mvvm/base/navigator_request.h"
-#include "mvvm/base/view_model_normal.h"
-#include "mvvm/base/data_binding.h"
-#include "mvvm/base/view_model.h"
-#include "mvvm/base/binding_rule.h"
-#include "mvvm/base/navigator_handler.h"
-#include "mvvm/base/value_validator.h"
-#include "mvvm/base/binding_context.h"
-#include "mvvm/base/value_converter.h"
-#include "mvvm/base/command_binding.h"
-#include "mvvm/base/navigator.h"
-#include "mvvm/base/model_delegate.h"
-#include "mvvm/base/value_validator_delegate.h"
-#include "mvvm/base/value_converter_delegate.h"
 #include "mvvm/awtk/mvvm_awtk.h"
+#include "mvvm/awtk/binding_context_awtk.h"
 
 #ifdef WITH_JERRYSCRIPT
 #include "mvvm/jerryscript/mvvm_jerryscript.h"
@@ -63,10 +47,8 @@ ret_t mvvm_init(void);
  */
 ret_t mvvm_deinit(void);
 
-#define NAVIGATOR_ADD_HANDLER(name, model_create)           \
-  navigator_register_handler(navigator(), name,             \
-                             navigator_handler_awtk_create( \
-                                 model_create != NULL ? model_create : model_dummy_create, NULL))
+#define NAVIGATOR_ADD_HANDLER(name, model_create) \
+  navigator_register_handler(navigator(), name, navigator_handler_awtk_create(model_create, NULL))
 
 END_C_DECLS
 

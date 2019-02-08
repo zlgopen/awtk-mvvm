@@ -35,6 +35,7 @@ typedef struct _navigator_handler_awtk_t {
 
 navigator_handler_t* navigator_handler_awtk_create(model_create_t model_create,
                                                    void* model_create_args);
+navigator_handler_t* navigator_handler_awtk_default_create(void);
 
 #define NAVIGATOR_HANDLER_AWTK(h) ((navigator_handler_awtk_t*)h)
 

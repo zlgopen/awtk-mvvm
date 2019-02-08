@@ -23,7 +23,7 @@
 #include "mvvm/mvvm.h"
 
 ret_t application_init() {
-  vm_open_window_jerryscript("shape");
+  navigator_to("shape");
 
   return RET_OK;
 }

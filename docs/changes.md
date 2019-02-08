@@ -4,6 +4,7 @@
   * 增加navigator\_handle\r_awtk
   * 增加model事件
   * 增加demo7/demo9
+  * 增加model\_factory
 
 * 2019/02/07
   * 重构

@@ -242,6 +242,8 @@ ret_t navigator_pick_file(const char* title, const char* mimetype, bool_t for_sa
 ret_t navigator_pick_color(const char* title, str_t* result);
 #define NAVIGATOR(nav) ((navigator_t*)(nav))
 
+#define NAVIGATOR_DEFAULT_HANDLER "default_handler"
+
 END_C_DECLS
 
 #endif /*TK_NAVIGATOR_H*/

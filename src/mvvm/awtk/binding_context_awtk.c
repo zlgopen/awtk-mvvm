@@ -28,6 +28,7 @@
 #include "base/widget.h"
 #include "widgets/window.h"
 #include "mvvm/base/data_binding.h"
+#include "mvvm/base/model_factory.h"
 #include "mvvm/base/binding_context.h"
 #include "mvvm/base/command_binding.h"
 #include "mvvm/base/view_model_normal.h"
@@ -367,14 +368,36 @@ static ret_t model_on_window_destroy(void* ctx, event_t* e) {
   return RET_OK;
 }
 
-ret_t vm_open_window(const char* name, model_t* model) {
+static model_t* default_create_model(widget_t* win) {
+  model_t* model = NULL;
+  const char* ext_name = NULL;
+  const char* script = widget_get_prop_str(win, WIDGET_PROP_SCRIPT, NULL);
+  return_value_if_fail(script != NULL, NULL);
+
+  ext_name = strrchr(script, '.');
+  return_value_if_fail(ext_name != NULL, NULL);
+
+  model = model_factory_create(ext_name + 1, win);
+  if (model == NULL) {
+    model = model_dummy_create(win);
+  }
+
+  return model;
+}
+
+ret_t vm_open_window(const char* name, model_t* model, navigator_request_t* req) {
   ret_t ret = RET_FAIL;
   widget_t* win = NULL;
-  return_value_if_fail(name != NULL && model != NULL, RET_BAD_PARAMS);
+  return_value_if_fail(name != NULL, RET_BAD_PARAMS);
 
   win = window_open(name);
   return_value_if_fail(win != NULL, RET_NOT_FOUND);
 
+  if (model == NULL) {
+    model = default_create_model(win);
+  }
+
+  model_on_will_mount(model, req);
   ret = binding_context_bind_model(model, win);
   if (ret == RET_OK) {
     model_on_mount(model);

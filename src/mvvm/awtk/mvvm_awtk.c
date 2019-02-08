@@ -22,6 +22,8 @@
 #include "mvvm/awtk/mvvm_awtk.h"
 
 ret_t mvvm_awtk_init(void) {
+  navigator_register_handler(navigator(), NAVIGATOR_DEFAULT_HANDLER,
+                             navigator_handler_awtk_default_create());
   return RET_OK;
 }
 

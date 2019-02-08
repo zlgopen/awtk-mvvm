@@ -19,7 +19,9 @@
  *
  */
 
+#include "tkc/utils.h"
 #include "widgets/window.h"
+#include "mvvm/base/model_factory.h"
 #include "mvvm/jerryscript/jsobj.h"
 #include "mvvm/jerryscript/mvvm_jerryscript.h"
 
@@ -34,11 +36,39 @@ const char* s_boot_code =
                            console.log('hello awtk'); \n \
                            ";
 
+static model_t* model_jerryscript_create_with_window(void* args) {
+  char* p = NULL;
+  model_t* model = NULL;
+  const char* script = NULL;
+  char name[TK_NAME_LEN + 5];
+  widget_t* win = WIDGET(args);
+  const asset_info_t* asset = NULL;
+  return_value_if_fail(win != NULL, NULL);
+
+  script = widget_get_prop_str(win, WIDGET_PROP_SCRIPT, NULL);
+  return_value_if_fail(script != NULL, NULL);
+
+  tk_strncpy(name, script, sizeof(name) - 1);
+  p = strrchr(name, '.');
+  if (p != NULL) {
+    *p = '\0';
+  }
+
+  asset = widget_load_asset(win, ASSET_TYPE_SCRIPT, name);
+  return_value_if_fail(asset != NULL, NULL);
+
+  model = model_jerryscript_create(name, (const char*)(asset->data), asset->size);
+  widget_unload_asset(win, asset);
+
+  return model;
+}
+
 ret_t mvvm_jerryscript_init(void) {
   return_value_if_fail(model_jerryscript_init() == RET_OK, RET_FAIL);
   return_value_if_fail(value_validator_jerryscript_init() == RET_OK, RET_FAIL);
   return_value_if_fail(value_converter_jerryscript_init() == RET_OK, RET_FAIL);
 
+  model_factory_register("js", model_jerryscript_create_with_window);
   jerryscript_run("boot", s_boot_code, strlen(s_boot_code));
 
   return RET_OK;

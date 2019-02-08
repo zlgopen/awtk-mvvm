@@ -23,7 +23,7 @@
 #include "mvvm/mvvm.h"
 
 ret_t application_init() {
-  vm_open_window_jerryscript("temperature5");
+  navigator_to("temperature5");
 
   return RET_OK;
 }

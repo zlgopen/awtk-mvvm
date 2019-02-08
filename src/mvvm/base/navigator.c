@@ -73,6 +73,11 @@ ret_t navigator_handle_request(navigator_t* nav, navigator_request_t* req) {
 
   handler = navigator_find_handler(nav, req->target);
   if (handler == NULL) {
+    handler = navigator_find_handler(nav, NAVIGATOR_DEFAULT_HANDLER);
+  }
+
+  if (handler == NULL) {
+    handler = navigator_find_handler(nav, req->target);
     log_warn("not found %s\n", req->target);
   }
   return_value_if_fail(handler != NULL, RET_NOT_FOUND);

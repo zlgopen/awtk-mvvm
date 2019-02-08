@@ -20,28 +20,25 @@
  */
 
 #include "mvvm/mvvm.h"
+#include "mvvm/base/mvvm_base.h"
 
 ret_t mvvm_init(void) {
-  return_value_if_fail(value_converter_init() == RET_OK, RET_FAIL);
-  return_value_if_fail(value_validator_init() == RET_OK, RET_FAIL);
+  mvvm_base_init();
+
 #ifdef WITH_JERRYSCRIPT
   return_value_if_fail(mvvm_jerryscript_init() == RET_OK, RET_FAIL);
 #endif /*WITH_JERRYSCRIPT*/
   return_value_if_fail(mvvm_awtk_init() == RET_OK, RET_FAIL);
-  navigator_set(navigator_create());
 
   return RET_OK;
 }
 
 ret_t mvvm_deinit(void) {
-  value_converter_deinit();
-  value_validator_deinit();
 #ifdef WITH_JERRYSCRIPT
   mvvm_jerryscript_deinit();
 #endif /*WITH_JERRYSCRIPT*/
   mvvm_awtk_deinit();
-  object_unref(OBJECT(navigator()));
-  navigator_set(NULL);
+  mvvm_base_deinit();
 
   return RET_OK;
 }
