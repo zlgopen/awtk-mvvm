@@ -1,4 +1,4 @@
-<window anim_hint="htranslate" script="temperature_ex">
+<window anim_hint="htranslate">
   <button text="Temperature" x="center" y="middle:-40" w="40%" h="40" 
     v-on:click="{navigate, args=temperature9}"/>
   <button text="Humidity" x="center" y="middle:40" w="40%" h="40" 

@@ -370,14 +370,16 @@ static ret_t model_on_window_destroy(void* ctx, event_t* e) {
 
 static model_t* default_create_model(widget_t* win) {
   model_t* model = NULL;
-  const char* ext_name = NULL;
   const char* script = widget_get_prop_str(win, WIDGET_PROP_SCRIPT, NULL);
-  return_value_if_fail(script != NULL, NULL);
 
-  ext_name = strrchr(script, '.');
-  return_value_if_fail(ext_name != NULL, NULL);
+  if (script != NULL) {
+    const char* ext_name = strrchr(script, '.');
+    return_value_if_fail(ext_name != NULL, NULL);
 
-  model = model_factory_create(ext_name + 1, win);
+    model = model_factory_create(ext_name + 1, win);
+    return_value_if_fail(model != NULL, NULL);
+  }
+
   if (model == NULL) {
     model = model_dummy_create(win);
   }
