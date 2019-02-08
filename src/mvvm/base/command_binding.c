@@ -22,6 +22,7 @@
 #include "tkc/mem.h"
 #include "tkc/utils.h"
 #include "tkc/object_default.h"
+#include "mvvm/base/navigator.h"
 #include "mvvm/base/binding_context.h"
 #include "mvvm/base/command_binding.h"
 

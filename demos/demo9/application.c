@@ -22,7 +22,6 @@
 #include "awtk.h"
 #include "mvvm/mvvm.h"
 
-#include "main.h"
 #include "humidity.h"
 #include "temperature.h"
 
