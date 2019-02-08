@@ -139,3 +139,75 @@ TEST(ModelJerryScript, notifyPropsChanged) {
 
   object_unref(OBJECT(model));
 }
+
+TEST(ModelJerryScript, onMount) {
+  const char* code =
+      "var test = {onMount: function(args) {print('onMount js'); test.count++; "
+      "notifyPropsChanged(test.nativeModel);return 0;}, count:0}";
+  model_t* model = model_jerryscript_create("test", code, strlen(code));
+  object_t* obj = OBJECT(model);
+  ASSERT_NE(obj, OBJECT(NULL));
+
+  ASSERT_EQ(model_on_mount(model), RET_OK);
+  ASSERT_EQ(object_get_prop_int(obj, "count", 0), 1);
+
+  ASSERT_EQ(model_on_mount(model), RET_OK);
+  ASSERT_EQ(object_get_prop_int(obj, "count", 0), 2);
+
+  object_unref(OBJECT(model));
+}
+
+TEST(ModelJerryScript, onWillUnmount) {
+  const char* code =
+      "var test = {onWillUnmount: function(args) {print('onWillUnmount js'); test.count++; "
+      "notifyPropsChanged(test.nativeModel);return 0;}, count:0}";
+  model_t* model = model_jerryscript_create("test", code, strlen(code));
+  object_t* obj = OBJECT(model);
+  ASSERT_NE(obj, OBJECT(NULL));
+
+  ASSERT_EQ(model_on_will_unmount(model), RET_OK);
+  ASSERT_EQ(object_get_prop_int(obj, "count", 0), 1);
+
+  ASSERT_EQ(model_on_will_unmount(model), RET_OK);
+  ASSERT_EQ(object_get_prop_int(obj, "count", 0), 2);
+
+  object_unref(OBJECT(model));
+}
+
+TEST(ModelJerryScript, onUnmount) {
+  const char* code =
+      "var test = {onUnmount: function(args) {print('onUnmount js'); test.count++; "
+      "notifyPropsChanged(test.nativeModel);return 0;}, count:0}";
+  model_t* model = model_jerryscript_create("test", code, strlen(code));
+  object_t* obj = OBJECT(model);
+  ASSERT_NE(obj, OBJECT(NULL));
+
+  ASSERT_EQ(model_on_unmount(model), RET_OK);
+  ASSERT_EQ(object_get_prop_int(obj, "count", 0), 1);
+
+  ASSERT_EQ(model_on_unmount(model), RET_OK);
+  ASSERT_EQ(object_get_prop_int(obj, "count", 0), 2);
+
+  object_unref(OBJECT(model));
+}
+
+TEST(ModelJerryScript, onWillmount) {
+  const char* code =
+      "var test = {onWillMount: function(args) {print('onWillMount js'); test.count = args.count; "
+      "this.name = args.name;"
+      "notifyPropsChanged(test.nativeModel);return 0;}, count:0}";
+  model_t* model = model_jerryscript_create("test", code, strlen(code));
+  navigator_request_t* req = navigator_request_create("test", NULL);
+  object_t* obj = OBJECT(model);
+  ASSERT_NE(obj, OBJECT(NULL));
+
+  object_set_prop_int(OBJECT(req), "count", 100);
+  object_set_prop_str(OBJECT(req), "name", "abc");
+
+  ASSERT_EQ(model_on_will_mount(model, req), RET_OK);
+  ASSERT_EQ(object_get_prop_int(obj, "count", 0), 100);
+  ASSERT_EQ(string(object_get_prop_str(obj, "name")), "abc");
+
+  object_unref(OBJECT(req));
+  object_unref(OBJECT(model));
+}

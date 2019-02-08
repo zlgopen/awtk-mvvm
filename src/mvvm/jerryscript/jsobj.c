@@ -1,4 +1,4 @@
-﻿/**
+﻿/*
  * File:   jsobj.h
  * Author: AWTK Develop Team
  * Brief:  jerryscript wrapper
@@ -21,6 +21,7 @@
 
 #include "jsobj.h"
 #include "tkc/utils.h"
+#include "tkc/named_value.h"
 #include "jerryscript-port.h"
 #include "jerryscript-ext/handler.h"
 
@@ -228,16 +229,22 @@ jerry_value_t jsobj_get_prop_value(jerry_value_t obj, const char* name) {
   return prop_value;
 }
 
-ret_t jsobj_set_prop(jerry_value_t obj, const char* name, const value_t* v, str_t* temp) {
-  jerry_value_t prop_value = jerry_value_from_value(v, temp);
+ret_t jsobj_set_prop_value(jerry_value_t obj, const char* name, jerry_value_t prop_value) {
   jerry_value_t prop_name = jerry_create_string((const jerry_char_t*)name);
 
   jerry_set_property(obj, prop_name, prop_value);
 
   jerry_release_value(prop_name);
-  jerry_release_value(prop_value);
 
   return RET_OK;
+}
+
+ret_t jsobj_set_prop(jerry_value_t obj, const char* name, const value_t* v, str_t* temp) {
+  jerry_value_t prop_value = jerry_value_from_value(v, temp);
+  ret_t ret = jsobj_set_prop_value(obj, name, prop_value);
+  jerry_release_value(prop_value);
+
+  return ret;
 }
 
 char* jerry_get_utf8_value(jerry_value_t value, str_t* temp) {
@@ -265,17 +272,23 @@ static jerry_value_t jerry_create_str(const char* str) {
 }
 
 ret_t jsobj_exec(jerry_value_t obj, const char* name, const char* args) {
+  jerry_value_t jsargs = jerry_create_str(args);
+  ret_t ret = jsobj_exec_ex(obj, name, jsargs);
+  jerry_release_value(jsargs);
+
+  return ret;
+}
+
+ret_t jsobj_exec_ex(jerry_value_t obj, const char* name, jerry_value_t jsargs) {
   ret_t ret = RET_FAIL;
 
   if (jsobj_has_prop(obj, name)) {
     jerry_value_t func = jsobj_get_prop_value(obj, name);
     if (jerry_value_is_function(func)) {
-      jerry_value_t jsargs = jerry_create_str(args);
       jerry_value_t jsret = jerry_call_function(func, obj, &jsargs, 1);
       ret = (ret_t)jerry_value_to_number(jsret);
       jerry_release_value(func);
       jerry_release_value(jsret);
-      jerry_release_value(jsargs);
     } else {
       ret = RET_NOT_IMPL;
       log_debug("not function %s\n", name);
@@ -519,4 +532,53 @@ ret_t jsvalue_validator_fix(const char* name, value_t* v) {
   jerry_release_value(validator);
 
   return ret;
+}
+
+typedef struct _tk_visit_from_req_info_t {
+  jerry_value_t obj;
+  str_t* str;
+} tk_visit_from_req_info_t;
+
+static ret_t tk_visit_from_req(void* ctx, const void* data) {
+  named_value_t* nv = (named_value_t*)data;
+  tk_visit_from_req_info_t* info = (tk_visit_from_req_info_t*)ctx;
+
+  jsobj_set_prop(info->obj, nv->name, &(nv->value), info->str);
+
+  return RET_OK;
+}
+
+jerry_value_t js_return_result(const jerry_value_t func_obj_val,
+                                        const jerry_value_t this_p, const jerry_value_t args_p[],
+                                        const jerry_length_t args_cnt) {
+  object_t* obj = NULL;
+
+  if (args_cnt > 1) {
+    jerry_value_t native_obj = args_p[0];
+    jerry_value_t result = args_p[1];
+    /*TODO*/
+  } else {
+    log_warn("wrap_notify_props_changed no nativeModel\n");
+  }
+
+  return jerry_create_number(0);
+}
+
+jerry_value_t jerry_value_from_navigator_request(navigator_request_t* req) {
+  value_t v;
+  str_t str;
+  tk_visit_from_req_info_t info;
+  jerry_value_t obj = jerry_create_object();
+  jerry_value_t on_result = jerry_create_external_function(js_return_result);
+
+  str_init(&str, 0);
+
+  info.obj = obj;
+  info.str = &str;
+  object_foreach_prop(req->args, tk_visit_from_req, &info);
+  
+  jsobj_set_prop(obj, "target", &v, &str);
+  jsobj_set_prop_value(obj, "onResult", on_result);
+
+  return obj;
 }

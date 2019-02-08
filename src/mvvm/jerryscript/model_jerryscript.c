@@ -90,7 +90,7 @@ jerry_value_t wrap_notify_props_changed(const jerry_value_t func_obj_val,
   return jerry_create_number(object_notify_changed(obj));
 }
 
-static const object_vtable_t s_model_jerryscript_vtable = {
+static const object_vtable_t s_model_jerryscript_obj_vtable = {
     .type = "model_jerryscript",
     .desc = "model_jerryscript",
     .size = sizeof(model_jerryscript_t),
@@ -119,13 +119,44 @@ ret_t model_jerryscript_deinit(void) {
   return RET_OK;
 }
 
+static ret_t model_jerryscript_on_will_mount(model_t* model, navigator_request_t* req) {
+  model_jerryscript_t* modeljs = MODEL_JERRYSCRIPT(model);
+  jerry_value_t jsargs = jerry_value_from_navigator_request(req);
+
+  return jsobj_exec_ex(modeljs->jsobj, "onWillMount", jsargs);
+}
+
+static ret_t model_jerryscript_on_mount(model_t* model) {
+  model_jerryscript_t* modeljs = MODEL_JERRYSCRIPT(model);
+
+  return jsobj_exec(modeljs->jsobj, "onMount", NULL);
+}
+
+static ret_t model_jerryscript_on_will_unmount(model_t* model) {
+  model_jerryscript_t* modeljs = MODEL_JERRYSCRIPT(model);
+
+  return jsobj_exec(modeljs->jsobj, "onWillUnmount", NULL);
+}
+
+static ret_t model_jerryscript_on_unmount(model_t* model) {
+  model_jerryscript_t* modeljs = MODEL_JERRYSCRIPT(model);
+
+  return jsobj_exec(modeljs->jsobj, "onUnmount", NULL);
+}
+
+const static model_vtable_t s_model_jerryscript_model_vtable = {
+    .on_will_mount = model_jerryscript_on_will_mount,
+    .on_mount = model_jerryscript_on_mount,
+    .on_will_unmount = model_jerryscript_on_will_unmount,
+    .on_unmount = model_jerryscript_on_unmount};
+
 model_t* model_jerryscript_create(const char* name, const char* code, uint32_t code_size) {
   jerry_value_t jsret = 0;
   object_t* obj = NULL;
   model_jerryscript_t* modeljs = NULL;
   return_value_if_fail(name != NULL && code != NULL && code_size > 0, NULL);
 
-  obj = object_create(&s_model_jerryscript_vtable);
+  obj = object_create(&s_model_jerryscript_obj_vtable);
   modeljs = MODEL_JERRYSCRIPT(obj);
   return_value_if_fail(obj != NULL, NULL);
 
@@ -145,6 +176,8 @@ model_t* model_jerryscript_create(const char* name, const char* code, uint32_t c
   jsobj_set_prop_pointer(modeljs->jsobj, "nativeModel", modeljs);
 
   jerry_release_value(jsret);
+  MODEL(obj)->vt = &s_model_jerryscript_model_vtable;
+
   return MODEL(obj);
 error:
   object_unref(obj);
