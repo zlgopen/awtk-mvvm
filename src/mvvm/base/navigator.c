@@ -72,6 +72,9 @@ ret_t navigator_handle_request(navigator_t* nav, navigator_request_t* req) {
   return_value_if_fail(nav != NULL && req != NULL, RET_BAD_PARAMS);
 
   handler = navigator_find_handler(nav, req->target);
+  if (handler == NULL) {
+    log_warn("not found %s\n", req->target);
+  }
   return_value_if_fail(handler != NULL, RET_NOT_FOUND);
 
   return navigator_handler_on_request(handler, req);
@@ -82,10 +85,10 @@ ret_t navigator_register_handler(navigator_t* nav, const char* name, navigator_h
   return_value_if_fail(nav != NULL && name != NULL && handler != NULL, RET_BAD_PARAMS);
 
   ret = object_set_prop_object(nav->handlers, name, OBJECT(handler));
-  if (ret == RET_OK) {
-    assert(OBJECT(handler)->ref_count > 1);
-    object_unref(OBJECT(handler));
-  }
+  assert(OBJECT(handler)->ref_count > 1);
+  object_unref(OBJECT(handler));
+
+  log_debug("navigator_register_handler ret=%d : %s\n", ret, name);
 
   return ret;
 }

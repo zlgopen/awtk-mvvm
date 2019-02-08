@@ -1,0 +1,5 @@
+<window anim_hint="htranslate" script="humidity">
+  <label text="1" x="center" y="middle" w="50%" h="40" v-data:text="{humidity}"/>
+  <slider value="1" x="center" y="middle:40" w="80%" h="20" v-data:value="{humidity}"/>
+  <button text="Close" x="center" y="bottom:40" w="40%" h="40" v-on:click="{nothing, CloseWindow=True}"/>
+</window>
