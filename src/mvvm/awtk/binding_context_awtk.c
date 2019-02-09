@@ -53,9 +53,9 @@ static ret_t visit_data_binding_update_error_of(void* ctx, const void* data) {
 
 static ret_t binding_context_update_error_of(data_binding_t* rule) {
   binding_context_t* ctx = BINDING_RULE(rule)->binding_context;
-  str_t* last_error = &(ctx->vm->last_error);
+  return_value_if_fail(ctx != NULL, RET_BAD_PARAMS);
 
-  if (last_error->size > 0) {
+  if (ctx->vm->last_error.size > 0) {
     darray_foreach(&(ctx->data_bindings), visit_data_binding_update_error_of, rule);
   }
 
@@ -320,7 +320,7 @@ binding_context_t* binding_context_create(void) {
   return ctx;
 }
 
-static ret_t on_widget_destroy(void* ctx, event_t* e) {
+static ret_t binding_context_on_widget_destroy(void* ctx, event_t* e) {
   binding_context_t* bctx = (binding_context_t*)ctx;
 
   emitter_off_by_ctx(EMITTER(bctx->vm), bctx);
@@ -337,7 +337,7 @@ ret_t binding_context_bind_view_model(view_model_t* vm, widget_t* widget) {
   return_value_if_fail(ctx != NULL, RET_BAD_PARAMS);
 
   goto_error_if_fail(binding_context_bind(ctx, vm, widget) == RET_OK);
-  widget_on(widget, EVT_DESTROY, on_widget_destroy, ctx);
+  widget_on(widget, EVT_DESTROY, binding_context_on_widget_destroy, ctx);
 
   return RET_OK;
 error:
@@ -390,7 +390,7 @@ static model_t* default_create_model(widget_t* win) {
 ret_t vm_open_window(const char* name, model_t* model, navigator_request_t* req) {
   ret_t ret = RET_FAIL;
   widget_t* win = NULL;
-  return_value_if_fail(name != NULL, RET_BAD_PARAMS);
+  return_value_if_fail(name != NULL && req != NULL, RET_BAD_PARAMS);
 
   win = window_open(name);
   return_value_if_fail(win != NULL, RET_NOT_FOUND);
@@ -398,6 +398,7 @@ ret_t vm_open_window(const char* name, model_t* model, navigator_request_t* req)
   if (model == NULL) {
     model = default_create_model(win);
   }
+  return_value_if_fail(model != NULL, RET_FAIL);
 
   model_on_will_mount(model, req);
   ret = binding_context_bind_model(model, win);
@@ -405,6 +406,8 @@ ret_t vm_open_window(const char* name, model_t* model, navigator_request_t* req)
     model_on_mount(model);
     widget_on(win, EVT_DESTROY, model_on_window_destroy, model);
     widget_on(win, EVT_WINDOW_CLOSE, model_on_window_close, model);
+  } else {
+    log_debug("vm_open_window bind failed\n");
   }
 
   return ret;

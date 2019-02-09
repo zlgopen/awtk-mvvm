@@ -64,11 +64,9 @@ navigator_handler_t* navigator_handler_awtk_create(model_create_t model_create,
 navigator_handler_t* navigator_handler_awtk_default_create(void) {
   object_t* obj = NULL;
   navigator_handler_t* handler = NULL;
-  navigator_handler_awtk_t* handler_awtk = NULL;
 
   obj = object_create(&s_navigator_handler_awtk_vtable);
   handler = NAVIGATOR_HANDLER(obj);
-  handler_awtk = NAVIGATOR_HANDLER_AWTK(obj);
   return_value_if_fail(handler != NULL, NULL);
 
   handler->on_request = navigator_handler_awtk_on_request;
