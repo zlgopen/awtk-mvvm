@@ -72,7 +72,7 @@ ret_t mvvm_jerryscript_init(void) {
   return_value_if_fail(value_validator_jerryscript_init() == RET_OK, RET_FAIL);
   return_value_if_fail(value_converter_jerryscript_init() == RET_OK, RET_FAIL);
 
-  model_factory_register("js", model_jerryscript_create_with_window);
+  model_factory_register(".js", model_jerryscript_create_with_window);
   jerryscript_run("boot", s_boot_code, strlen(s_boot_code));
 
   return RET_OK;

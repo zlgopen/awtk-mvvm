@@ -373,11 +373,23 @@ static model_t* default_create_model(widget_t* win) {
   const char* script = widget_get_prop_str(win, WIDGET_PROP_SCRIPT, NULL);
 
   if (script != NULL) {
-    const char* ext_name = strrchr(script, '.');
-    return_value_if_fail(ext_name != NULL, NULL);
+    char name[TK_NAME_LEN + 1];
+    char* ext_name = NULL;
+    tk_strncpy(name, script, TK_NAME_LEN);
 
-    model = model_factory_create(ext_name + 1, win);
-    return_value_if_fail(model != NULL, NULL);
+    ext_name = strrchr(name, '.');
+    if (ext_name != NULL) {
+      *ext_name = '\0';
+      model = model_factory_create(name, win);
+      if (model == NULL) {
+        *ext_name = '.';
+        model = model_factory_create(ext_name, win);
+      }
+      return_value_if_fail(model != NULL, NULL);
+    } else {
+      model = model_factory_create(name, win);
+      return_value_if_fail(model != NULL, NULL);
+    }
   }
 
   if (model == NULL) {

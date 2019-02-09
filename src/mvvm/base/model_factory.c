@@ -68,21 +68,6 @@ model_t* model_factory_create(const char* type, void* args) {
   return create(args);
 }
 
-model_t* model_factory_create_with_filename(const char* filename) {
-  char name[MAX_PATH + 1];
-  char* ext_name = NULL;
-  return_value_if_fail(filename != NULL, NULL);
-  tk_strncpy(name, filename, MAX_PATH);
-
-  ext_name = strrchr(name, '.');
-  return_value_if_fail(ext_name != NULL, NULL);
-
-  *ext_name = '\0';
-  ext_name++;
-
-  return model_factory_create(ext_name, name);
-}
-
 ret_t model_factory_deinit(void) {
   return_value_if_fail(s_model_factory != NULL && s_model_factory->creators != NULL,
                        RET_BAD_PARAMS);

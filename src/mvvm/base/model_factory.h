@@ -43,7 +43,6 @@ ret_t model_factory_unregister(const char* type);
 ret_t model_factory_register(const char* type, model_create_t create);
 
 model_t* model_factory_create(const char* type, void* args);
-model_t* model_factory_create_with_filename(const char* filename);
 
 ret_t model_factory_deinit(void);
 
