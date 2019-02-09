@@ -370,12 +370,12 @@ static ret_t model_on_window_destroy(void* ctx, event_t* e) {
 
 static model_t* default_create_model(widget_t* win) {
   model_t* model = NULL;
-  const char* script = widget_get_prop_str(win, WIDGET_PROP_SCRIPT, NULL);
+  const char* vmodel = widget_get_prop_str(win, WIDGET_PROP_V_MODEL, NULL);
 
-  if (script != NULL) {
+  if (vmodel != NULL) {
     char name[TK_NAME_LEN + 1];
     char* ext_name = NULL;
-    tk_strncpy(name, script, TK_NAME_LEN);
+    tk_strncpy(name, vmodel, TK_NAME_LEN);
 
     ext_name = strrchr(name, '.');
     if (ext_name != NULL) {

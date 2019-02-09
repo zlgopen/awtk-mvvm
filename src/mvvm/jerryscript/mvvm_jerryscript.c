@@ -41,16 +41,16 @@ const char* s_boot_code =
 static model_t* model_jerryscript_create_with_window(void* args) {
   char* p = NULL;
   model_t* model = NULL;
-  const char* script = NULL;
+  const char* vmodel = NULL;
   char name[TK_NAME_LEN + 5];
   widget_t* win = WIDGET(args);
   const asset_info_t* asset = NULL;
   return_value_if_fail(win != NULL, NULL);
 
-  script = widget_get_prop_str(win, WIDGET_PROP_SCRIPT, NULL);
-  return_value_if_fail(script != NULL, NULL);
+  vmodel = widget_get_prop_str(win, WIDGET_PROP_V_MODEL, NULL);
+  return_value_if_fail(vmodel != NULL, NULL);
 
-  tk_strncpy(name, script, sizeof(name) - 1);
+  tk_strncpy(name, vmodel, sizeof(name) - 1);
   p = strrchr(name, '.');
   if (p != NULL) {
     *p = '\0';

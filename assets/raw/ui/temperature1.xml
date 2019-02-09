@@ -1,4 +1,4 @@
-<window anim_hint="htranslate" script="temperature.js">
+<window anim_hint="htranslate" v-model="temperature.js">
   <label text="1" x="center" y="30" w="90%" h="40" text="temperature"/>
   <label text="1" x="center" y="middle" w="50%" h="40" v-data:text="{temp}"/>
   <slider value="1" x="center" y="middle:40" w="80%" h="20" v-data:value="{temp}"/>
