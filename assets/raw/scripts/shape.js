@@ -22,7 +22,7 @@ Shape.prototype.canSave = function(args) {
 Shape.prototype.setType = function(args) {
   this.type = parseInt(args);
   console.log("setType:" + this.type);
-  notifyPropsChanged(this.nativeModel);
+  this.notifyPropsChanged();
 
   return true;
 }

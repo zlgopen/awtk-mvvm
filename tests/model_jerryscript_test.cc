@@ -121,7 +121,7 @@ TEST(ModelJerryScript, notifyPropsChanged) {
   int n = 0;
   const char* code =
       "var test = {save: function(args) {print(args); test.count++; "
-      "notifyPropsChanged(test.nativeModel);return 0;}, count:0}";
+      "this.notifyPropsChanged();return 0;}, count:0}";
   model_t* model = model_jerryscript_create("test", code, strlen(code));
   object_t* obj = OBJECT(model);
   ASSERT_NE(obj, OBJECT(NULL));
@@ -143,7 +143,7 @@ TEST(ModelJerryScript, notifyPropsChanged) {
 TEST(ModelJerryScript, onMount) {
   const char* code =
       "var test = {onMount: function(args) {print('onMount js'); test.count++; "
-      "notifyPropsChanged(test.nativeModel);return 0;}, count:0}";
+      "this.notifyPropsChanged();return 0;}, count:0}";
   model_t* model = model_jerryscript_create("test", code, strlen(code));
   object_t* obj = OBJECT(model);
   ASSERT_NE(obj, OBJECT(NULL));
@@ -160,7 +160,7 @@ TEST(ModelJerryScript, onMount) {
 TEST(ModelJerryScript, onWillUnmount) {
   const char* code =
       "var test = {onWillUnmount: function(args) {print('onWillUnmount js'); test.count++; "
-      "notifyPropsChanged(test.nativeModel);return 0;}, count:0}";
+      "this.notifyPropsChanged();return 0;}, count:0}";
   model_t* model = model_jerryscript_create("test", code, strlen(code));
   object_t* obj = OBJECT(model);
   ASSERT_NE(obj, OBJECT(NULL));
@@ -177,7 +177,7 @@ TEST(ModelJerryScript, onWillUnmount) {
 TEST(ModelJerryScript, onUnmount) {
   const char* code =
       "var test = {onUnmount: function(args) {print('onUnmount js'); test.count++; "
-      "notifyPropsChanged(test.nativeModel);return 0;}, count:0}";
+      "this.notifyPropsChanged();return 0;}, count:0}";
   model_t* model = model_jerryscript_create("test", code, strlen(code));
   object_t* obj = OBJECT(model);
   ASSERT_NE(obj, OBJECT(NULL));
@@ -191,13 +191,22 @@ TEST(ModelJerryScript, onUnmount) {
   object_unref(OBJECT(model));
 }
 
+static ret_t dummy_on_result(navigator_request_t* req, const value_t* result) {
+  value_copy(&(req->result), result);
+
+  return RET_OK;
+}
+
 TEST(ModelJerryScript, onWillmount) {
   const char* code =
-      "var test = {onWillMount: function(args) {print('onWillMount js'); test.count = args.count; "
-      "this.name = args.name;"
-      "notifyPropsChanged(test.nativeModel);return 0;}, count:0}";
+      "var test = {onWillMount: function(req) {print('onWillMount js'); test.count = req.count; "
+      "this.name = req.name;"
+      "this.notifyPropsChanged();"
+      "print('xxxxxxxxxxx:' + req.onResult);"
+      "req.onResult(req.count);"
+      "return 0;}, count:0}";
   model_t* model = model_jerryscript_create("test", code, strlen(code));
-  navigator_request_t* req = navigator_request_create("test", NULL);
+  navigator_request_t* req = navigator_request_create("test", dummy_on_result);
   object_t* obj = OBJECT(model);
   ASSERT_NE(obj, OBJECT(NULL));
 
@@ -207,6 +216,7 @@ TEST(ModelJerryScript, onWillmount) {
   ASSERT_EQ(model_on_will_mount(model, req), RET_OK);
   ASSERT_EQ(object_get_prop_int(obj, "count", 0), 100);
   ASSERT_EQ(string(object_get_prop_str(obj, "name")), "abc");
+  ASSERT_EQ(value_int(&(req->result)), 100);
 
   object_unref(OBJECT(req));
   object_unref(OBJECT(model));

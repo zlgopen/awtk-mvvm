@@ -36,6 +36,9 @@ bool_t jsobj_has_prop_func(jerry_value_t obj, const char* name);
 ret_t jsobj_get_prop(jerry_value_t obj, const char* name, value_t* v, str_t* temp);
 ret_t jsobj_set_prop(jerry_value_t obj, const char* name, const value_t* v, str_t* temp);
 ret_t jsobj_set_prop_pointer(jerry_value_t obj, const char* name, void* p);
+ret_t jsobj_set_prop_func(jerry_value_t obj, const char* name, jerry_external_handler_t handler_p);
+object_t* jsobj_get_prop_object(jerry_value_t obj, const char* name);
+ret_t jsobj_set_prop_object(jerry_value_t obj, const char* name, object_t* ptr);
 
 ret_t jsobj_exec(jerry_value_t obj, const char* name, const char* args);
 ret_t jsobj_exec_ex(jerry_value_t obj, const char* name, jerry_value_t args);
@@ -65,6 +68,7 @@ ret_t jsvalue_validator_fix(const char* name, value_t* v);
 #define JSOBJ_VALUE_VALIDATOR_IS_VALID "isValid"
 #define JSOBJ_VALUE_VALIDATOR_RESULT "result"
 #define JSOBJ_VALUE_VALIDATOR_MESSAGE "message"
+#define JSOBJ_ON_RESULT "onResult"
 
 END_C_DECLS
 

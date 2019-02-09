@@ -4,7 +4,7 @@ var temperature_ex = {
   save: function(v) {
     this.saved_temp = this.temp;
 
-    notifyPropsChanged(this.nativeModel);
+    this.notifyPropsChanged();
     return true;
   },
   canSave: function(v) {

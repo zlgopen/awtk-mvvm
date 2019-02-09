@@ -75,17 +75,12 @@ static ret_t model_jerryscript_exec(object_t* obj, const char* name, const char*
   return jsobj_exec(modeljs->jsobj, name, args);
 }
 
+#define STR_NATIVE_MODEL "nativeModel"
+
 jerry_value_t wrap_notify_props_changed(const jerry_value_t func_obj_val,
                                         const jerry_value_t this_p, const jerry_value_t args_p[],
                                         const jerry_length_t args_cnt) {
-  object_t* obj = NULL;
-
-  if (args_cnt > 0) {
-    jerry_value_t native_obj = args_p[0];
-    obj = OBJECT(jerry_value_to_pointer(native_obj));
-  } else {
-    log_warn("wrap_notify_props_changed no nativeModel\n");
-  }
+  object_t* obj = jsobj_get_prop_object(this_p, STR_NATIVE_MODEL);
 
   return jerry_create_number(object_notify_changed(obj));
 }
@@ -107,8 +102,6 @@ ret_t model_jerryscript_init(void) {
   jerry_init(JERRY_INIT_EMPTY);
 
   jerryx_handler_register_global((const jerry_char_t*)"print", jerryx_handler_print);
-  jerryx_handler_register_global((const jerry_char_t*)"notifyPropsChanged",
-                                 wrap_notify_props_changed);
 
   return RET_OK;
 }
@@ -173,7 +166,8 @@ model_t* model_jerryscript_create(const char* name, const char* code, uint32_t c
   goto_error_if_fail(jerry_value_check(modeljs->jsobj) == RET_OK);
 
   str_init(&(modeljs->temp), 0);
-  jsobj_set_prop_pointer(modeljs->jsobj, "nativeModel", modeljs);
+  jsobj_set_prop_object(modeljs->jsobj, STR_NATIVE_MODEL, OBJECT(modeljs));
+  jsobj_set_prop_func(modeljs->jsobj, "notifyPropsChanged", wrap_notify_props_changed);
 
   jerry_release_value(jsret);
   MODEL(obj)->vt = &s_model_jerryscript_model_vtable;

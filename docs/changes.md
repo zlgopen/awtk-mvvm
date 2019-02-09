@@ -2,10 +2,11 @@
 * 2019/02/09
   * 重构
   * 增加jsdemo9
+  * js支持传递参数并返回值。
 
 * 2019/02/08
   * 重构
-  * 增加navigator\_handle\r_awtk
+  * 增加navigator\_handler\_awtk
   * 增加model事件
   * 增加demo7/demo9
   * 增加model\_factory
