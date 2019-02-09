@@ -31,7 +31,9 @@ BEGIN_C_DECLS
  * @class value_validator_jerryscript_t
  * @parent value_validator_t
  *
- * jerry script implemented value_validator
+ * 将jerryscript包装成值校验对象。
+ *
+ * JS的全局对象ValueValidators，记录了所有的ValueValidator。
  *
  */
 typedef struct _value_validator_jerryscript_t {
@@ -40,8 +42,20 @@ typedef struct _value_validator_jerryscript_t {
 
 #define VALUE_VALIDATOR_JERRYSCRIPT(c) ((value_validator_jerryscript_t*)c)
 
+/**
+ * @method value_validator_jerryscript_init
+ * 初始化jerryscript value validator，注册相应的工厂函数。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
 ret_t value_validator_jerryscript_init(void);
 
+/**
+ * @method value_validator_jerryscript_deinit
+ * ~初始化jerryscript value validator。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
 ret_t value_validator_jerryscript_deinit(void);
 
 END_C_DECLS

@@ -21,6 +21,8 @@
 
 #include "tkc/utils.h"
 #include "widgets/window.h"
+#include "jerryscript-port.h"
+#include "jerryscript-ext/handler.h"
 #include "mvvm/base/model_factory.h"
 #include "mvvm/jerryscript/jsobj.h"
 #include "mvvm/jerryscript/mvvm_jerryscript.h"
@@ -64,7 +66,9 @@ static model_t* model_jerryscript_create_with_window(void* args) {
 }
 
 ret_t mvvm_jerryscript_init(void) {
-  return_value_if_fail(model_jerryscript_init() == RET_OK, RET_FAIL);
+  jerry_init(JERRY_INIT_EMPTY);
+  jerryx_handler_register_global((const jerry_char_t*)"print", jerryx_handler_print);
+
   return_value_if_fail(value_validator_jerryscript_init() == RET_OK, RET_FAIL);
   return_value_if_fail(value_converter_jerryscript_init() == RET_OK, RET_FAIL);
 
@@ -92,32 +96,9 @@ ret_t jerryscript_run(const char* name, const char* code, uint32_t code_size) {
 }
 
 ret_t mvvm_jerryscript_deinit(void) {
-  model_jerryscript_deinit();
   value_converter_jerryscript_deinit();
   value_validator_jerryscript_deinit();
+  jerry_cleanup();
 
   return RET_OK;
-}
-
-ret_t vm_open_window_jerryscript(const char* name) {
-  widget_t* win = NULL;
-  model_t* model = NULL;
-  const char* script = NULL;
-  const asset_info_t* asset = NULL;
-  return_value_if_fail(name != NULL, RET_BAD_PARAMS);
-
-  win = window_open(name);
-  return_value_if_fail(win != NULL, RET_NOT_FOUND);
-
-  script = widget_get_prop_str(win, WIDGET_PROP_SCRIPT, NULL);
-  return_value_if_fail(script != NULL, RET_FAIL);
-
-  asset = widget_load_asset(win, ASSET_TYPE_SCRIPT, script);
-  return_value_if_fail(asset != NULL, RET_NOT_FOUND);
-
-  model = model_jerryscript_create(script, (const char*)(asset->data), asset->size);
-  widget_unload_asset(win, asset);
-  return_value_if_fail(model != NULL, RET_FAIL);
-
-  return binding_context_bind_model(model, win);
 }

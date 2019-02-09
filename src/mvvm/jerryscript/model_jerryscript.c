@@ -21,8 +21,6 @@
 
 #include "tkc/mem.h"
 #include "tkc/utils.h"
-#include "jerryscript-port.h"
-#include "jerryscript-ext/handler.h"
 #include "mvvm/jerryscript/jsobj.h"
 #include "mvvm/jerryscript/model_jerryscript.h"
 #include "mvvm/jerryscript/value_converter_jerryscript.h"
@@ -32,7 +30,6 @@ static ret_t model_jerryscript_on_destroy(object_t* obj) {
   model_jerryscript_t* modeljs = MODEL_JERRYSCRIPT(obj);
 
   str_reset(&(modeljs->temp));
-  jerry_release_value(modeljs->jscode);
   jerry_release_value(modeljs->jsobj);
 
   return RET_OK;
@@ -98,20 +95,6 @@ static const object_vtable_t s_model_jerryscript_obj_vtable = {
     .can_exec = model_jerryscript_can_exec,
     .exec = model_jerryscript_exec};
 
-ret_t model_jerryscript_init(void) {
-  jerry_init(JERRY_INIT_EMPTY);
-
-  jerryx_handler_register_global((const jerry_char_t*)"print", jerryx_handler_print);
-
-  return RET_OK;
-}
-
-ret_t model_jerryscript_deinit(void) {
-  jerry_cleanup();
-
-  return RET_OK;
-}
-
 static ret_t model_jerryscript_on_will_mount(model_t* model, navigator_request_t* req) {
   model_jerryscript_t* modeljs = MODEL_JERRYSCRIPT(model);
   jerry_value_t jsargs = jerry_value_from_navigator_request(req);
@@ -144,8 +127,9 @@ const static model_vtable_t s_model_jerryscript_model_vtable = {
     .on_unmount = model_jerryscript_on_unmount};
 
 model_t* model_jerryscript_create(const char* name, const char* code, uint32_t code_size) {
-  jerry_value_t jsret = 0;
   object_t* obj = NULL;
+  jerry_value_t jsret = 0;
+  jerry_value_t jscode = 0;
   model_jerryscript_t* modeljs = NULL;
   return_value_if_fail(name != NULL && code != NULL && code_size > 0, NULL);
 
@@ -154,12 +138,13 @@ model_t* model_jerryscript_create(const char* name, const char* code, uint32_t c
   return_value_if_fail(obj != NULL, NULL);
 
   object_set_name(obj, name);
-  modeljs->jscode = jerry_parse((const jerry_char_t*)name, strlen(name), (const jerry_char_t*)code,
-                                code_size, JERRY_PARSE_NO_OPTS);
+  jscode = jerry_parse((const jerry_char_t*)name, strlen(name), (const jerry_char_t*)code,
+                       code_size, JERRY_PARSE_NO_OPTS);
 
-  goto_error_if_fail(jerry_value_check(modeljs->jscode) == RET_OK);
+  goto_error_if_fail(jerry_value_check(jscode) == RET_OK);
 
-  jsret = jerry_run(modeljs->jscode);
+  jsret = jerry_run(jscode);
+  jerry_release_value(jscode);
   goto_error_if_fail(jerry_value_check(jsret) == RET_OK);
 
   modeljs->jsobj = jsobj_get_model(name);

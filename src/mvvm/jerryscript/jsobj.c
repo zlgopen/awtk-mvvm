@@ -455,7 +455,7 @@ ret_t jsobj_set_prop_func(jerry_value_t obj, const char* name, jerry_external_ha
   ret_t ret = jsobj_set_prop_value(obj, name, func);
   jerry_release_value(func);
 
-  return RET_OK;
+  return ret;
 }
 
 ret_t jsobj_set_prop_str(jerry_value_t obj, const char* name, const char* value) {

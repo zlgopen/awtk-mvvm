@@ -34,23 +34,26 @@ bool_t jsobj_has_prop(jerry_value_t obj, const char* name);
 bool_t jsobj_has_prop_func(jerry_value_t obj, const char* name);
 
 ret_t jsobj_get_prop(jerry_value_t obj, const char* name, value_t* v, str_t* temp);
-ret_t jsobj_set_prop(jerry_value_t obj, const char* name, const value_t* v, str_t* temp);
-ret_t jsobj_set_prop_pointer(jerry_value_t obj, const char* name, void* p);
-ret_t jsobj_set_prop_func(jerry_value_t obj, const char* name, jerry_external_handler_t handler_p);
+jerry_value_t jsobj_get_prop_value(jerry_value_t obj, const char* name);
 object_t* jsobj_get_prop_object(jerry_value_t obj, const char* name);
+
+ret_t jsobj_set_prop_pointer(jerry_value_t obj, const char* name, void* p);
 ret_t jsobj_set_prop_object(jerry_value_t obj, const char* name, object_t* ptr);
+ret_t jsobj_set_prop_str(jerry_value_t obj, const char* name, const char* value);
+ret_t jsobj_set_prop_value(jerry_value_t obj, const char* name, jerry_value_t prop_value);
+ret_t jsobj_set_prop(jerry_value_t obj, const char* name, const value_t* v, str_t* temp);
+ret_t jsobj_set_prop_func(jerry_value_t obj, const char* name, jerry_external_handler_t handler_p);
 
 ret_t jsobj_exec(jerry_value_t obj, const char* name, const char* args);
 ret_t jsobj_exec_ex(jerry_value_t obj, const char* name, jerry_value_t args);
 bool_t jsobj_can_exec(jerry_value_t obj, const char* name, const char* args);
 
+jerry_value_t jerry_value_from_navigator_request(navigator_request_t* req);
 ret_t jerry_value_to_value(jerry_value_t value, value_t* v, str_t* temp);
 jerry_value_t jerry_value_from_value(const value_t* v, str_t* temp);
 void* jerry_value_to_pointer(jerry_value_t value);
 jerry_value_t jerry_value_from_pointer(void* ptr);
 ret_t jerry_value_check(jerry_value_t value);
-
-jerry_value_t jerry_value_from_navigator_request(navigator_request_t* req);
 
 bool_t jsvalue_converter_exist(const char* name);
 ret_t jsvalue_converter_to_view(const char* name, const value_t* from, value_t* to, str_t* temp);

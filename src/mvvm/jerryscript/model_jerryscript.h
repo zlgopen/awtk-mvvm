@@ -34,7 +34,6 @@ typedef struct _model_jerryscript_t model_jerryscript_t;
 /**
  * @class model_jerryscript_t
  * @parent model_t
- * @annotation ["scriptable"]
  *
  * wrap jerryscript code to a model
  *
@@ -42,16 +41,23 @@ typedef struct _model_jerryscript_t model_jerryscript_t;
 struct _model_jerryscript_t {
   model_t model;
 
-  jerry_value_t jscode;
+  /*private*/
   jerry_value_t jsobj;
 
   /*避免每次动态分配内存*/
   str_t temp;
 };
 
-ret_t model_jerryscript_init(void);
-ret_t model_jerryscript_deinit(void);
-
+/**
+ * @method model_jerryscript_create
+ * 通过一段JS代码创建一个model对象。
+ *
+ * @param {const char*} name 名称(通常是文件名)。
+ * @param {const char*} code 代码字符字符串(UTF8)。
+ * @param {uint32_t} code_size 代码的长度。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
 model_t* model_jerryscript_create(const char* name, const char* code, uint32_t code_size);
 
 #define MODEL_JERRYSCRIPT(model) ((model_jerryscript_t*)(model))

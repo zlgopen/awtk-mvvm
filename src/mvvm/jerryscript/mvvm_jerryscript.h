@@ -49,15 +49,6 @@ ret_t mvvm_jerryscript_init(void);
 ret_t jerryscript_run(const char* name, const char* code, uint32_t code_size);
 
 /**
- * @method vm_open_window_jerryscript
- * 打开指定的窗口并绑定js代码。
- * @param {const char*} name 窗口名称。
- *
- * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
- */
-ret_t vm_open_window_jerryscript(const char* name);
-
-/**
  * @method mvvm_jerryscript_deinit
  * ~初始化MVVM jerryscript。
  *

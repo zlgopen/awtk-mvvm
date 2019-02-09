@@ -32,7 +32,9 @@ BEGIN_C_DECLS
  * @class value_converter_jerryscript_t
  * @parent value_converter_t
  *
- * jerry script implemented value_converter
+ * 将jerryscript包装成值转换对象。
+ *
+ * JS的全局对象ValueConverters，记录了所有的ValueConverter。
  *
  */
 typedef struct _value_converter_jerryscript_t {
@@ -44,8 +46,20 @@ typedef struct _value_converter_jerryscript_t {
 
 #define VALUE_CONVERTER_JERRYSCRIPT(c) ((value_converter_jerryscript_t*)c)
 
+/**
+ * @method value_converter_jerryscript_init
+ * 初始化jerryscript value converter，注册相应的工厂函数。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
 ret_t value_converter_jerryscript_init(void);
 
+/**
+ * @method value_converter_jerryscript_deinit
+ * ~初始化jerryscript value converter。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
 ret_t value_converter_jerryscript_deinit(void);
 
 END_C_DECLS
