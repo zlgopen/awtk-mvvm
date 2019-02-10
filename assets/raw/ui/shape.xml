@@ -1,4 +1,4 @@
-<window anim_hint="htranslate" v-model="shape.js" children_layout="default(h=30,col=1,s=10, m=5)">
+<window anim_hint="htranslate" v-model="shape" children_layout="default(h=30,col=1,s=10, m=5)">
   <column children_layout="default(row=1,col=2)">
     <label text="Name:" />
     <edit v-data:value="{name, Trigger=Changing}"/>

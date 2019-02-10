@@ -24,7 +24,7 @@
 #include "shape.h"
 
 ret_t application_init() {
-  NAVIGATOR_ADD_HANDLER("shape", shape_create);
+  model_factory_register("shape", shape_create);
 
   return navigator_to("shape");
 }

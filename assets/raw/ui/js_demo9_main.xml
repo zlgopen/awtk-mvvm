@@ -1,0 +1,6 @@
+<window anim_hint="htranslate">
+  <button text="Temperature" x="center" y="middle:-40" w="40%" h="40" 
+    v-on:click="{navigate, args=js_temperature9}"/>
+  <button text="Humidity" x="center" y="middle:40" w="40%" h="40" 
+    v-on:click="{navigate, args=js_humidity}"/>
+</window>

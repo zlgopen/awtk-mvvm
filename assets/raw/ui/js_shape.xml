@@ -1,0 +1,49 @@
+<window anim_hint="htranslate" v-model="shape.js" children_layout="default(h=30,col=1,s=10, m=5)">
+  <column children_layout="default(row=1,col=2)">
+    <label text="Name:" />
+    <edit v-data:value="{name, Trigger=Changing}"/>
+  </column>
+  
+  <column children_layout="default(row=1,col=2)">
+    <label text="Alignment:" />
+    <combo_box left_margin="6" options="0:left;1:center;2:right;" v-data:value="{align}"/>
+  </column>
+
+  <column children_layout="default(row=1,col=2)">
+    <label text="X:" />
+    <spin_box input_type="uint" min="0" max="150" step="1" v-data:value="{x}"/>
+  </column>
+
+  <column children_layout="default(row=1,col=2)">
+    <label text="Y:" />
+    <spin_box input_type="uint" min="0" max="150" step="1" v-data:value="{y}"/>
+  </column>
+
+  <column children_layout="default(row=1,col=2)">
+    <label text="W:" />
+    <spin_box input_type="uint" min="0" max="150" step="1" v-data:value="{w}"/>
+  </column>
+
+  <column children_layout="default(row=1,col=2)">
+    <label text="H:" />
+    <spin_box input_type="uint" min="0" max="150" step="1" v-data:value="{h}"/>
+  </column>
+  
+  <column children_layout="default(row=1,col=2)">
+    <label text="Opacity:" />
+    <slider v-data:value="{opacity}"/>
+  </column>
+  
+  <column children_layout="default(row=1,col=3)">
+    <radio_button text="Rect" v-data:value="{$type==1}" v-on:click="{setType, args=1}"/>
+    <radio_button text="Circle" v-data:value="{$type==2}" v-on:click="{setType, args=2}" />
+    <radio_button text="Line" v-data:value="{$type==3}" v-on:click="{setType, args=3}"/>
+  </column>
+  
+  <column children_layout="default(row=1,col=1)">
+    <label text="overview" v-data:text="{overview}"/>
+  </column>
+  
+  <button text="Save" floating="true" self_layout="default(x=c, y=b:30, w=80, h=30)" v-on:click="{save}"/>
+
+</window>

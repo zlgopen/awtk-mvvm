@@ -23,7 +23,7 @@
 #include "mvvm/mvvm.h"
 
 ret_t application_init() {
-  navigator_to("temperature3");
+  navigator_to("js_temperature3");
 
   return RET_OK;
 }

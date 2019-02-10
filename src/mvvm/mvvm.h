@@ -22,6 +22,7 @@
 #ifndef TK_MVVM_H
 #define TK_MVVM_H
 
+#include "mvvm/base/mvvm_base.h"
 #include "mvvm/awtk/mvvm_awtk.h"
 #include "mvvm/awtk/binding_context_awtk.h"
 
@@ -46,9 +47,6 @@ ret_t mvvm_init(void);
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
 ret_t mvvm_deinit(void);
-
-#define NAVIGATOR_ADD_HANDLER(name, model_create) \
-  navigator_register_handler(navigator(), name, navigator_handler_awtk_create(model_create, NULL))
 
 END_C_DECLS
 

@@ -26,7 +26,7 @@
 
 ret_t application_init() {
   temperature_converter_init();
-  NAVIGATOR_ADD_HANDLER("temperature3", temperature_create);
+  model_factory_register("temperature", temperature_create);
 
   return navigator_to("temperature3");
 }

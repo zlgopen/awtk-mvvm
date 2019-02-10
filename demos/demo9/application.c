@@ -26,9 +26,8 @@
 #include "temperature.h"
 
 ret_t application_init() {
-  NAVIGATOR_ADD_HANDLER("demo9_main", NULL);
-  NAVIGATOR_ADD_HANDLER("humidity", humidity_create);
-  NAVIGATOR_ADD_HANDLER("temperature9", temperature_create);
+  model_factory_register("humidity", humidity_create);
+  model_factory_register("temperature", temperature_create);
 
   return navigator_to("demo9_main");
 }

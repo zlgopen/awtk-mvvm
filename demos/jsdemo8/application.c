@@ -23,7 +23,7 @@
 #include "mvvm/mvvm.h"
 
 ret_t application_init() {
-  navigator_to("shape");
+  navigator_to("js_shape");
 
   return RET_OK;
 }
