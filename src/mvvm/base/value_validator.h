@@ -38,9 +38,10 @@ typedef ret_t (*value_validator_fix_t)(value_validator_t* validator, value_t* va
 /**
  * @class value_validator_t
  * @parent object_t
- * @annotation ["scriptable"]
  *
  * 值校验器。
+ *
+ * 用户在界面上输入的类型可能是无效的，value_validator负责将检查用户输入的有效性。
  *
  */
 struct _value_validator_t {
@@ -55,7 +56,6 @@ struct _value_validator_t {
  * @method value_validator_is_valid
  * 检查值是否有效。
  *
- * @annotation ["scriptable"]
  * @param {value_validator_t*} validator validator对象。
  * @param {value_t*} value 待验证的值。
  * @param {str_t*} str 返回错误信息。
@@ -68,7 +68,6 @@ bool_t value_validator_is_valid(value_validator_t* validator, const value_t* val
  * @method value_validator_fix
  * 将无效值修改为正确的值。
  *
- * @annotation ["scriptable"]
  * @param {value_validator_t*} validator validator对象。
  * @param {value_t*} value 修正后的值。
  *
@@ -80,7 +79,7 @@ ret_t value_validator_fix(value_validator_t* validator, value_t* value);
  * @method value_validator_create
  * 创建指定名称的值校验器。
  *
- * @annotation ["scriptable", "static"]
+ * @annotation ["static"]
  * @param {const char*} name 名称。
  *
  * @return {value_validator_t*} 返回validator对象。
@@ -91,7 +90,7 @@ value_validator_t* value_validator_create(const char* name);
  * @method value_validator_register
  *
  * 注册值校验器的创建函数。
- * @annotation ["scriptable", "static"]
+ * @annotation ["static"]
  * @param {const char*} name 名称。
  * @param {tk_create_t} create 创建函数。
  *
@@ -102,8 +101,8 @@ ret_t value_validator_register(const char* name, tk_create_t create);
 /**
  * @method value_validator_register_generic
  *
- * 注册值转换器的通用创建函数。
- * @annotation [ "static"]
+ * 注册值转换器的通用创建函数(主要用于脚本语言)。
+ * @annotation ["static"]
  * @param {value_validator_create_t} create 创建函数。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
@@ -114,7 +113,7 @@ ret_t value_validator_register_generic(value_validator_create_t create);
  * @method value_validator_init
  *
  * 初始化值校验器的全局对象。
- * @annotation ["scriptable", "static"]
+ * @annotation ["static"]
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
@@ -124,7 +123,7 @@ ret_t value_validator_init(void);
  * @method value_validator_deinit
  *
  * 释放值校验器的全局对象。
- * @annotation ["scriptable", "static"]
+ * @annotation ["static"]
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */

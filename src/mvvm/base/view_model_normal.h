@@ -32,7 +32,6 @@ typedef struct _view_model_normal_t view_model_normal_t;
 /**
  * @class view_model_normal_t
  * @parent view_model_t
- * @annotation ["scriptable"]
  *
  * normal view model。
  *
@@ -41,6 +40,14 @@ struct _view_model_normal_t {
   view_model_t view_model;
 };
 
+/**
+ * @method view_model_normal_create
+ * 创建view_model对象。
+ *
+ * @param {model_t*} model model对象。
+ *
+ * @return {view_model_t*} 返回view_model对象。
+ */
 view_model_t* view_model_normal_create(model_t* model);
 
 #define VIEW_MODEL_NORMAL(view_model) ((view_model_normal_t*)(view_model))

@@ -83,7 +83,7 @@ ret_t value_converter_to_view(value_converter_t* converter, const value_t* from,
  * @annotation ["static"]
  * @param {const char*} name 名称。
  *
- * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ * @return {value_converter_t*} 返回value_converter对象。
  */
 value_converter_t* value_converter_create(const char* name);
 
@@ -102,7 +102,7 @@ ret_t value_converter_register(const char* name, tk_create_t create);
 /**
  * @method value_converter_register_generic
  *
- * 注册值转换器的通用创建函数。
+ * 注册值转换器的通用创建函数(主要给脚本语言使用)。
  * @annotation ["static"]
  * @param {value_converter_create_t} create 创建函数。
  *
