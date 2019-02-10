@@ -35,9 +35,8 @@ typedef ret_t (*navigator_handler_on_request_t)(navigator_handler_t* handler,
 /**
  * @class navigator_handler_t
  * @parent object_t
- * @annotation ["scriptable"]
  *
- * 处理导航请求
+ * 处理导航请求。
  *
  */
 struct _navigator_handler_t {
@@ -51,7 +50,7 @@ struct _navigator_handler_t {
  * @method navigator_handler_create
  * 创建handler对象。
  *
- * @annotation ["scriptable:custom", "constructor"]
+ * @annotation ["constructor"]
  *
  * @param {const char*} target 目标窗口的名称。
  * @param {navigator_handler_on_request_t} on_request 用于非模态窗口返回结果的回调函数。

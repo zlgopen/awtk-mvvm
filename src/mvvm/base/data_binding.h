@@ -30,7 +30,6 @@ BEGIN_C_DECLS
 
 /**
  * @enum update_model_trigger_t
- * @annotation ["scriptable", "string"]
  * @prefix UPDATE_WHEN_
  * 更新模型的时机。
  */
@@ -129,7 +128,7 @@ typedef struct _data_binding_t {
   /**
    * @property {binding_mode_t} mode
    * @annotation ["readable"]
-   * 绑定模式
+   * 绑定模式。
    */
   binding_mode_t mode;
 
@@ -144,13 +143,32 @@ typedef struct _data_binding_t {
 /**
  * @method data_binding_create
  * 创建数据绑定对象。
- * @annotation ["constructor", "scriptable"]
+ * @annotation ["constructor"]
  *
  * @return {binding_rule_t*} 返回数据绑定对象。
  */
 data_binding_t* data_binding_create(void);
 
+/**
+ * @method data_binding_get_prop
+ * 从模型中获取属性值。
+ *
+ * @param {data_binding_t*} rule 绑定规则对象。
+ * @param {value_t*} v 值对象。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
 ret_t data_binding_get_prop(data_binding_t* rule, value_t* v);
+
+/**
+ * @method data_binding_set_prop
+ * 设置属性值到模型。
+ *
+ * @param {data_binding_t*} rule 绑定规则对象。
+ * @param {const value_t*} v 值对象。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
 ret_t data_binding_set_prop(data_binding_t* rule, const value_t* v);
 
 #define DATA_BINDING(rule) ((data_binding_t*)rule);

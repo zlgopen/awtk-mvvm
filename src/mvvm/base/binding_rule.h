@@ -28,35 +28,24 @@
 BEGIN_C_DECLS
 
 /**
- * @enum binding_rule_type_t
- * @annotation ["scriptable", "string"]
- * @prefix BINDING_RULE_
- * 绑定规则类型。
- */
-
-/**
- * @const BINDING_RULE_DATA
- * 数据绑定规则。
- */
-#define BINDING_RULE_DATA "data"
-
-/**
- * @const BINDING_RULE_COMMAND
- * 命令绑定规则。
- */
-#define BINDING_RULE_COMMAND "command"
-
-/**
  * @class binding_rule_t
  * @parent object_t
- * @annotation ["scriptable"]
- * 绑定规则。
  *
+ * 绑定规则基类。
  */
 typedef struct _binding_rule_t {
   object_t object;
-
+  /**
+   * @property {void*} widget
+   * @annotation ["readable"]
+   * 绑定的控件。
+   */
   void* widget;
+  /**
+   * @property {binding_context_t*} binding_context
+   * @annotation ["readable"]
+   * 绑定的上下文。
+   */
   binding_context_t* binding_context;
 } binding_rule_t;
 

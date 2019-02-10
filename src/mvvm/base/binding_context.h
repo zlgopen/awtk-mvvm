@@ -42,21 +42,67 @@ typedef struct _binding_context_vtable_t {
 
 /**
  * @class binding_context_t
- * @annotation ["scriptable"]
+ * 主要负责绑定规则的管理。
  *
  */
 struct _binding_context_t {
-  darray_t command_bindings;
-  darray_t data_bindings;
+  /**
+   * @property {view_model_t*} vm
+   * @annotation ["readable"]
+   * ViewModel
+   */
   view_model_t* vm;
+  /**
+   * @property {widget_t*} widget
+   * @annotation ["readable"]
+   * 绑定的根控件(通常是窗口)
+   */
   widget_t* widget;
+  /**
+   * @property {darray_t*} command_bindings
+   * @annotation ["readable"]
+   * 命令绑定规则集合。
+   */
+  darray_t command_bindings;
+  /**
+   * @property {darray_t*} data_bindings
+   * @annotation ["readable"]
+   * 数据绑定规则集合。
+   */
+  darray_t data_bindings;
+  /**
+   * @property {widget_t*} current_widget
+   * @annotation ["readable"]
+   * 当前真正绑定的控件。
+   */
   widget_t* current_widget;
-
+  /**
+   * @property {bool_t} bound
+   * @annotation ["readable"]
+   * 已经完成绑定。
+   */
   bool_t bound;
+  /**
+   * @property {bool_t} updating_view
+   * @annotation ["readable"]
+   * 正在更新视图。
+   */
   bool_t updating_view;
+  /**
+   * @property {bool_t} updating_model
+   * @annotation ["readable"]
+   * 正在更新模型。
+   */
   bool_t updating_model;
+  /**
+   * @property {int32_t} request_update_view
+   * @annotation ["readable"]
+   * 请求更新视图的次数（真正更新在idle中完成）。
+   *
+   */
+  int32_t request_update_view;
 
-  int32_t need_updating_view;
+  /*private*/
   const binding_context_vtable_t* vt;
 };
 
@@ -64,7 +110,7 @@ struct _binding_context_t {
  * @method binding_context_init
  * 初始化。
  *
- * @param {binding_context_t*} ctx ctx对象。
+ * @param {binding_context_t*} ctx binding_context对象。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
@@ -72,11 +118,10 @@ ret_t binding_context_init(binding_context_t* ctx);
 
 /**
  * @method binding_context_bind
- * 绑定vm与widget
+ * 绑定ViewModel与widget
  *
- * @annotation ["scriptable"]
- * @param {binding_context_t*} ctx ctx对象。
- * @param {view_model_t*} vm view model对象。
+ * @param {binding_context_t*} ctx binding_context对象。
+ * @param {view_model_t*} vm view_model对象。
  * @param {void*} widget widget对象。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
@@ -87,8 +132,7 @@ ret_t binding_context_bind(binding_context_t* ctx, view_model_t* vm, void* widge
  * @method binding_context_update_to_view
  * 更新数据到视图。
  *
- * @annotation ["scriptable"]
- * @param {binding_context_t*} ctx ctx对象。
+ * @param {binding_context_t*} ctx binding_context对象。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
@@ -99,7 +143,7 @@ ret_t binding_context_update_to_view(binding_context_t* ctx);
  * 更新数据到模型。
  *
  * @annotation ["scriptable"]
- * @param {binding_context_t*} ctx ctx对象。
+ * @param {binding_context_t*} ctx binding_context对象。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
@@ -110,16 +154,16 @@ ret_t binding_context_update_to_model(binding_context_t* ctx);
  * 销毁binding context对象。
  *
  * @annotation ["scriptable"]
- * @param {binding_context_t*} ctx ctx对象。
+ * @param {binding_context_t*} ctx binding_context对象。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
 ret_t binding_context_destroy(binding_context_t* ctx);
 
 /*wrapper*/
-ret_t vm_open_window(const char* name, model_t* model, navigator_request_t* req);
 ret_t binding_context_bind_model(model_t* model, widget_t* widget);
 ret_t binding_context_bind_view_model(view_model_t* vm, widget_t* widget);
+ret_t vm_open_window(const char* win_name, model_t* model, navigator_request_t* req);
 
 #define BINDING_CONTEXT(ctx) ((binding_context_t*)(ctx))
 

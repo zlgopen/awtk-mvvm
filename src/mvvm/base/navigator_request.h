@@ -34,9 +34,9 @@ typedef ret_t (*navigator_request_on_result_t)(navigator_request_t* req, const v
 /**
  * @class navigator_request_t
  * @parent object_t
- * @annotation ["scriptable"]
  *
  * 导航请求，请求打开指定的窗口。
+ *
  * 如果需要传递参数给要打开的窗口或需要返回结果给调用者时，才需要本类，否则指定窗口的名字就行了。
  *
  */
@@ -73,12 +73,12 @@ struct _navigator_request_t {
  * @method navigator_request_create
  * 创建request对象。
  *
- * @annotation ["scriptable:custom", "constructor"]
+ * @annotation ["constructor"]
  *
  * @param {const char*} target 目标窗口的名称。
  * @param {navigator_request_on_result_t} on_result 用于非模态窗口返回结果的回调函数。
  *
- * @return {ret_t} 返回request对象。
+ * @return {navigator_request_t*} 返回request对象。
  */
 navigator_request_t* navigator_request_create(const char* target,
                                               navigator_request_on_result_t on_result);

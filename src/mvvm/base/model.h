@@ -156,7 +156,7 @@ typedef struct _model_will_mount_event_t {
 
   /**
    * @property {navigator_request_t*} req
-   * 请求对象
+   * 请求对象。
    */
   navigator_request_t* req;
 } model_will_mount_event_t;

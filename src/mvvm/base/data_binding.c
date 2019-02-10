@@ -293,6 +293,7 @@ ret_t data_binding_set_prop(data_binding_t* rule, const value_t* raw) {
 
       return ret;
     }
+    value_reset(&fix_value);
 
     return RET_BAD_PARAMS;
   }

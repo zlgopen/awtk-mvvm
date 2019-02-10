@@ -41,6 +41,8 @@ typedef ret_t (*value_converter_to_view_t)(value_converter_t* converter, const v
  *
  * 值转换器。
  *
+ * 如果数据在View上显示的格式和在Model中保存的格式不一样，value_converter负责在两者之间转换。
+ *
  */
 struct _value_converter_t {
   object_t object;
@@ -89,7 +91,7 @@ value_converter_t* value_converter_create(const char* name);
  * @method value_converter_register
  *
  * 注册值转换器的创建函数。
- * @annotation [ "static"]
+ * @annotation ["static"]
  * @param {const char*} name 名称。
  * @param {tk_create_t} create 创建函数。
  *
@@ -101,7 +103,7 @@ ret_t value_converter_register(const char* name, tk_create_t create);
  * @method value_converter_register_generic
  *
  * 注册值转换器的通用创建函数。
- * @annotation [ "static"]
+ * @annotation ["static"]
  * @param {value_converter_create_t} create 创建函数。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
@@ -112,7 +114,7 @@ ret_t value_converter_register_generic(value_converter_create_t create);
  * @method value_converter_init
  *
  * 初始化值转换器的全局对象。
- * @annotation [ "static"]
+ * @annotation ["static"]
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
@@ -122,7 +124,7 @@ ret_t value_converter_init(void);
  * @method value_converter_deinit
  *
  * 释放值转换器的全局对象。
- * @annotation [ "static"]
+ * @annotation ["static"]
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */

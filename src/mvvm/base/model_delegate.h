@@ -39,7 +39,7 @@ typedef bool_t (*model_can_exec_t)(void* obj, const char* args);
  * @class model_delegate_t
  * @parent model_t
  *
- * 将简单对象包装成model接口。
+ * 将简单对象包装成model对象。
  *
  */
 struct _model_delegate_t {
@@ -59,7 +59,6 @@ struct _model_delegate_t {
  * @method model_delegate_create
  * 创建model_delegate对象。
  *
- * @annotation ["scriptable"]
  * @param {void*} obj 被包装的对象。
  * @param {tk_destroy_t} obj_destroy 被包装的对象的析构函数。
  *

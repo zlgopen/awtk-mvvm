@@ -29,8 +29,7 @@ BEGIN_C_DECLS
 /**
  * @class command_binding_t
  * @parent binding_rule_t
- * @annotation ["scriptable"]
- * 命令绑定。
+ * 命令绑定规则。
  *
  */
 typedef struct _command_binding_t {
@@ -75,7 +74,7 @@ typedef struct _command_binding_t {
   /**
    * @property {char*} event_args
    * @annotation ["readable"]
-   * 事件参数。
+   * 事件参数(主要用于按键事件)。
    */
   char* event_args;
 } command_binding_t;
@@ -83,26 +82,41 @@ typedef struct _command_binding_t {
 /**
  * @method command_binding_create
  * 创建数据绑定对象。
- * @annotation ["constructor", "scriptable"]
+ * @annotation ["constructor"]
  *
  * @return {binding_rule_t*} 返回数据绑定对象。
  */
 command_binding_t* command_binding_create(void);
 
+/**
+ * @method command_binding_can_exec
+ * 检查当前的命令是否可以执行。
+ *
+ * @param {command_binding_t*} rule 绑定规则对象。
+ *
+ * @return {bool_t} 返回TRUE表示可以执行，否则表示不可以执行。
+ */
 bool_t command_binding_can_exec(command_binding_t* rule);
 
+/**
+ * @method command_binding_exec
+ * 执行当前的命令。
+ *
+ * @param {command_binding_t*} rule 绑定规则对象。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
 ret_t command_binding_exec(command_binding_t* rule);
 
 #define COMMAND_BINDING(rule) ((command_binding_t*)rule);
 
-#define COMMAND_BINDING_NOTHING "nothing"
-#define COMMAND_BINDING_CLOSE "close"
-#define COMMAND_BINDING_NAVIGATE "navigate"
+#define COMMAND_BINDING_CMD_NOTHING "nothing"
+#define COMMAND_BINDING_CMD_NAVIGATE "navigate"
 
 #define COMMAND_BINDING_ARGS "Args"
 #define COMMAND_BINDING_EVENT "Event"
-#define COMMAND_BINDING_EVENT_ARGS "EventArgs"
 #define COMMAND_BINDING_COMMAND "Command"
+#define COMMAND_BINDING_EVENT_ARGS "EventArgs"
 #define COMMAND_BINDING_CLOSE_WINDOW "CloseWindow"
 #define COMMAND_BINDING_UPDATE_MODEL "UpdateModel"
 

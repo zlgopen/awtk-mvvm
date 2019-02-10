@@ -36,7 +36,6 @@ typedef ret_t (*navigator_on_result_t)(navigator_t* nav, const value_t* result);
 /**
  * @class navigator_t
  * @parent object_t
- * @annotation ["scriptable"]
  *
  * 导航器。负责打开指定的窗口。
  *
@@ -62,7 +61,7 @@ navigator_t* navigator_create(void);
  * @method navigator
  * 获取缺省的navigator对象。
  *
- * @annotation ["scriptable", "constructor"]
+ * @annotation ["constructor"]
  *
  * @return {ret_t} 返回navigator对象。
  */
@@ -128,7 +127,7 @@ ret_t navigator_unregister_handler(navigator_t* nav, const char* target);
  * @method navigator_to
  * 请求打开指定的窗口。
  *
- * @annotation ["scriptable", "static"]
+ * @annotation ["static"]
  *
  * @param {const char*} target 目标窗口的名称。
  *
@@ -140,7 +139,7 @@ ret_t navigator_to(const char* target);
  * @method navigator_to_ex
  * 请求打开指定的窗口，并可传递参数和返回结果。
  *
- * @annotation ["scriptable", "static"]
+ * @annotation ["static"]
  *
  * @param {navigator_request_t*} req request对象。
  *
@@ -152,7 +151,7 @@ ret_t navigator_to_ex(navigator_request_t* req);
  * @method navigator_toast
  * 显示toast信息。
  *
- * @annotation ["scriptable", "static"]
+ * @annotation ["static"]
  *
  * @param {const char*} content 信息内容。
  * @param {uint32_t} timeout 显示时间。
@@ -165,7 +164,7 @@ ret_t navigator_toast(const char* content, uint32_t timeout);
  * @method navigator_info
  * 显示信息。
  *
- * @annotation ["scriptable", "static"]
+ * @annotation ["static"]
  *
  * @param {const char*} title 标题。
  * @param {const char*} content 内容。
@@ -178,7 +177,7 @@ ret_t navigator_info(const char* title, const char* content);
  * @method navigator_warn
  * 显示警告信息。
  *
- * @annotation ["scriptable", "static"]
+ * @annotation ["static"]
  *
  * @param {const char*} title 标题。
  * @param {const char*} content 内容。
@@ -191,7 +190,7 @@ ret_t navigator_warn(const char* title, const char* content);
  * @method navigator_confirm
  * 显示确认信息。
  *
- * @annotation ["scriptable", "static"]
+ * @annotation ["static"]
  *
  * @param {const char*} title 标题。
  * @param {const char*} content 内容。
@@ -204,7 +203,7 @@ ret_t navigator_confirm(const char* title, const char* content);
  * @method navigator_pick_dir
  * 选择目录。
  *
- * @annotation ["scriptable", "static"]
+ * @annotation ["static"]
  *
  * @param {const char*} title 标题。
  * @param {str_t*} result 用于传递缺省值和返回结果。
@@ -217,7 +216,7 @@ ret_t navigator_pick_dir(const char* title, str_t* result);
  * @method navigator_pick_file
  * 选择文件。
  *
- * @annotation ["scriptable", "static"]
+ * @annotation ["static"]
  *
  * @param {const char*} title 标题。
  * @param {const char*} mimetype 文件类型。
@@ -232,7 +231,7 @@ ret_t navigator_pick_file(const char* title, const char* mimetype, bool_t for_sa
  * @method navigator_pick_color
  * 选择颜色。
  *
- * @annotation ["scriptable", "static"]
+ * @annotation ["static"]
  *
  * @param {const char*} title 标题。
  * @param {str_t*} result 用于传递缺省值和返回结果。
@@ -240,8 +239,8 @@ ret_t navigator_pick_file(const char* title, const char* mimetype, bool_t for_sa
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
 ret_t navigator_pick_color(const char* title, str_t* result);
-#define NAVIGATOR(nav) ((navigator_t*)(nav))
 
+#define NAVIGATOR(nav) ((navigator_t*)(nav))
 #define NAVIGATOR_DEFAULT_HANDLER "default_handler"
 
 END_C_DECLS

@@ -59,7 +59,7 @@ static ret_t command_binding_init(command_binding_t* rule, tokenizer_t* t) {
   return RET_FAIL;
 }
 
-binding_rule_t* binding_rule_create(const char* name) {
+static binding_rule_t* binding_rule_create(const char* name) {
   tokenizer_t t;
   binding_rule_t* rule = NULL;
   return_value_if_fail(tokenizer_init(&t, name, -1, ":") != NULL, NULL);
@@ -75,7 +75,6 @@ binding_rule_t* binding_rule_create(const char* name) {
           rule = NULL;
         }
       }
-
     } else if (tk_str_ieq(type, BINDING_RULE_COMMAND_PREFIX)) {
       rule = BINDING_RULE(command_binding_create());
       if (rule != NULL) {

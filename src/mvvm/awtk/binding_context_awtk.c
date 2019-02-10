@@ -243,7 +243,7 @@ static ret_t binding_context_awtk_update_to_view_sync(binding_context_t* ctx) {
   darray_foreach(&(ctx->data_bindings), visit_data_binding_update_to_view, ctx);
   darray_foreach(&(ctx->command_bindings), visit_command_binding, ctx);
 
-  ctx->need_updating_view = 0;
+  ctx->request_update_view = 0;
 
   return RET_OK;
 }
@@ -261,10 +261,10 @@ static ret_t binding_context_awtk_update_to_view(binding_context_t* ctx) {
   return_value_if_fail(ctx != NULL, RET_BAD_PARAMS);
 
   if (ctx->bound) {
-    if (!ctx->need_updating_view) {
+    if (!ctx->request_update_view) {
       idle_add(idle_update_to_view, ctx);
     }
-    ctx->need_updating_view++;
+    ctx->request_update_view++;
   } else {
     binding_context_awtk_update_to_view_sync(ctx);
   }
@@ -380,14 +380,14 @@ static model_t* default_create_model(widget_t* win) {
     ext_name = strrchr(name, '.');
     if (ext_name != NULL) {
       *ext_name = '\0';
-      model = model_factory_create(name, win);
+      model = model_factory_create_model(name, win);
       if (model == NULL) {
         *ext_name = '.';
-        model = model_factory_create(ext_name, win);
+        model = model_factory_create_model(ext_name, win);
       }
       return_value_if_fail(model != NULL, NULL);
     } else {
-      model = model_factory_create(name, win);
+      model = model_factory_create_model(name, win);
       return_value_if_fail(model != NULL, NULL);
     }
   }
