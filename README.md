@@ -31,6 +31,8 @@ AWTK-MVVM是一套为[AWTK](https://github.com/zlgopen/awtk)用C语言开发，�
 * 可移植到其它GUI。
 * 支持多种编程语言(目前支持C/JS)。
 
+> 目前还不成熟，API可能会有较大变化，请不要在产品中使用。
+
 ## 三、使用方法
 
 * 获取awtk并编译。
