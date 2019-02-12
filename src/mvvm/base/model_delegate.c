@@ -277,19 +277,19 @@ static prop_desc_t* model_delegate_get_prop_desc(object_t* obj, const char* name
 }
 
 static ret_t model_delegate_set_prop(object_t* obj, const char* name, const value_t* v) {
-  prop_desc_t* desc = model_delegate_get_prop_desc(obj, name);
+  prop_desc_t* prop_desc = model_delegate_get_prop_desc(obj, name);
   model_delegate_t* model = MODEL_DELEGATE(obj);
-  return_value_if_fail(desc != NULL, RET_NOT_FOUND);
+  return_value_if_fail(prop_desc != NULL, RET_NOT_FOUND);
 
-  return prop_desc_set_value(model, desc, v);
+  return prop_desc_set_value(model, prop_desc, v);
 }
 
 static ret_t model_delegate_get_prop(object_t* obj, const char* name, value_t* v) {
-  prop_desc_t* desc = model_delegate_get_prop_desc(obj, name);
+  prop_desc_t* prop_desc = model_delegate_get_prop_desc(obj, name);
   model_delegate_t* model = MODEL_DELEGATE(obj);
-  return_value_if_fail(desc != NULL, RET_NOT_FOUND);
+  return_value_if_fail(prop_desc != NULL, RET_NOT_FOUND);
 
-  return prop_desc_get_value(model->obj, desc, v);
+  return prop_desc_get_value(model->obj, prop_desc, v);
 }
 
 static command_desc_t* model_delegate_get_command_desc(object_t* obj, const char* name) {
@@ -303,20 +303,20 @@ static command_desc_t* model_delegate_get_command_desc(object_t* obj, const char
 }
 
 static bool_t model_delegate_can_exec(object_t* obj, const char* name, const char* args) {
-  command_desc_t* desc = model_delegate_get_command_desc(obj, name);
+  command_desc_t* command_desc = model_delegate_get_command_desc(obj, name);
   model_delegate_t* model = MODEL_DELEGATE(obj);
-  return_value_if_fail(desc != NULL, FALSE);
+  return_value_if_fail(command_desc != NULL, FALSE);
 
-  return desc->can_exec != NULL ? desc->can_exec(model->obj, args) : TRUE;
+  return command_desc->can_exec != NULL ? command_desc->can_exec(model->obj, args) : TRUE;
 }
 
 static ret_t model_delegate_exec(object_t* obj, const char* name, const char* args) {
   ret_t ret = RET_OK;
-  command_desc_t* desc = model_delegate_get_command_desc(obj, name);
+  command_desc_t* command_desc = model_delegate_get_command_desc(obj, name);
   model_delegate_t* model = MODEL_DELEGATE(obj);
-  return_value_if_fail(desc != NULL, RET_NOT_FOUND);
+  return_value_if_fail(command_desc != NULL, RET_NOT_FOUND);
 
-  ret = desc->exec(model->obj, args);
+  ret = command_desc->exec(model->obj, args);
   if (ret == RET_OBJECT_CHANGED) {
     object_notify_changed(OBJECT(obj));
   }
