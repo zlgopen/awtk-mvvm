@@ -13,7 +13,7 @@ TEST(ValueValidatorJerryScript, basic) {
         }";
   str_t str;
   value_t value;
-  model_t* model = model_jerryscript_create("test", code, strlen(code));
+  model_t* model = model_jerryscript_create("test", code, strlen(code), NULL);
 
   str_init(&str, 0);
   value_validator_t* c = value_validator_create("jsdummy");
@@ -43,7 +43,7 @@ TEST(ValueValidatorJerryScript, fix) {
           fix:function(v) {return 10;} \
         }";
   value_t value;
-  model_t* model = model_jerryscript_create("test", code, strlen(code));
+  model_t* model = model_jerryscript_create("test", code, strlen(code), NULL);
 
   value_validator_t* c = value_validator_create("jsdummy");
   ASSERT_NE(c, VALUE_VALIDATOR(NULL));
@@ -74,7 +74,7 @@ TEST(ValueValidatorJerryScript, message) {
         }";
   str_t str;
   value_t value;
-  model_t* model = model_jerryscript_create("test", code, strlen(code));
+  model_t* model = model_jerryscript_create("test", code, strlen(code), NULL);
 
   str_init(&str, 0);
   value_validator_t* c = value_validator_create("jsdummy");
@@ -103,7 +103,7 @@ TEST(ValueValidatorJerryScript, message) {
 TEST(ValueValidatorJerryScript, not_exist) {
   const char* code = "var ValueValidators = {};";
 
-  model_t* model = model_jerryscript_create("test", code, strlen(code));
+  model_t* model = model_jerryscript_create("test", code, strlen(code), NULL);
 
   value_validator_t* c = value_validator_create("notexist");
   ASSERT_EQ(c, VALUE_VALIDATOR(NULL));
@@ -119,7 +119,7 @@ TEST(ValueValidatorJerryScript, no_isValid) {
         }";
   str_t str;
   value_t value;
-  model_t* model = model_jerryscript_create("test", code, strlen(code));
+  model_t* model = model_jerryscript_create("test", code, strlen(code), NULL);
   value_validator_t* c = value_validator_create("notexist");
 
   str_init(&str, 0);

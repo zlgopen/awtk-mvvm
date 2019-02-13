@@ -55,10 +55,12 @@ struct _model_jerryscript_t {
  * @param {const char*} name 名称(通常是文件名)。
  * @param {const char*} code 代码字符字符串(UTF8)。
  * @param {uint32_t} code_size 代码的长度。
+ * @param {navigator_request_t*} req 请求的参数(可选)。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
-model_t* model_jerryscript_create(const char* name, const char* code, uint32_t code_size);
+model_t* model_jerryscript_create(const char* name, const char* code, uint32_t code_size,
+                                  navigator_request_t* req);
 
 #define MODEL_JERRYSCRIPT(model) ((model_jerryscript_t*)(model))
 

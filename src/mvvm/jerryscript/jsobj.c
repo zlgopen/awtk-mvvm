@@ -219,9 +219,7 @@ jerry_value_t jsobj_get_global(const char* name) {
 jerry_value_t jsobj_get_model(const char* name) {
   jerry_value_t model = jsobj_get_global(name);
   jerry_value_check(model);
-  if (jerry_value_is_null(model) || jerry_value_is_undefined(model)) {
-    log_warn("XXX: %s: not found model %s\n", __FUNCTION__, name);
-  }
+
   return model;
 }
 
@@ -635,8 +633,11 @@ jerry_value_t jerry_value_from_navigator_request(navigator_request_t* req) {
   info.obj = obj;
   info.str = &str;
 
-  ENSURE(object_foreach_prop(req->args, prop_to_jsobj, &info) == RET_OK);
-  ENSURE(jsobj_set_prop_object(obj, STR_NATIVE_REQ, OBJECT(req)) == RET_OK);
+  if (req != NULL) {
+    ENSURE(object_foreach_prop(req->args, prop_to_jsobj, &info) == RET_OK);
+    ENSURE(jsobj_set_prop_object(obj, STR_NATIVE_REQ, OBJECT(req)) == RET_OK);
+  }
+
   ENSURE(jsobj_set_prop_func(obj, JSOBJ_ON_RESULT, js_return_result) == RET_OK);
 
   str_reset(&str);

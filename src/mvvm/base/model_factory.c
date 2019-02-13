@@ -63,9 +63,11 @@ model_t* model_factory_create_model(const char* type, void* args) {
   model_create_t create = NULL;
   return_value_if_fail(s_model_factory != NULL && type != NULL && args != NULL, NULL);
   create = (model_create_t)object_get_prop_pointer(s_model_factory->creators, type);
-  return_value_if_fail(create != NULL, NULL);
-
-  return create(args);
+  if (create != NULL) {
+    return create(args);
+  } else {
+    return NULL;
+  }
 }
 
 ret_t model_factory_deinit(void) {

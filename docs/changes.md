@@ -1,7 +1,10 @@
 # 最新动态
 * 2019/02/13
   * 增加timer。
-  * 增加demo10/jsdemo10
+  * 增加demo10/jsdemo10。
+  * javascript model支持多实例。
+  * 增加文档。
+  * 更新示例。
 
 * 2019/02/12
   * 重构

@@ -14,7 +14,7 @@ TEST(ValueConverterJerryScript, basic) {
         }";
   value_t from;
   value_t to;
-  model_t* model = model_jerryscript_create("test", code, strlen(code));
+  model_t* model = model_jerryscript_create("test", code, strlen(code), NULL);
 
   value_set_int(&from, 100);
   value_converter_t* c = value_converter_create("jsdummy");
@@ -34,7 +34,7 @@ TEST(ValueConverterJerryScript, basic) {
 TEST(ValueConverterJerryScript, not_exist) {
   const char* code = "var ValueConverters = {};";
 
-  model_t* model = model_jerryscript_create("test", code, strlen(code));
+  model_t* model = model_jerryscript_create("test", code, strlen(code), NULL);
 
   value_converter_t* c = value_converter_create("notexist");
   ASSERT_EQ(c, VALUE_CONVERTER(NULL));

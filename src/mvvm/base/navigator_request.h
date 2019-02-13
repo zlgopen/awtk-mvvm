@@ -121,6 +121,8 @@ ret_t navigator_request_on_result(navigator_request_t* req, const value_t* resul
 #define NAVIGATOR_ARG_FOR_SAVE "for_save"
 #define NAVIGATOR_ARG_MINE_TYPES "mime_types"
 
+#define NAVIGATOR_REQUEST_PROP "navigator_request_t"
+
 END_C_DECLS
 
 #endif /*TK_NAVIGATOR_REQUEST_H*/

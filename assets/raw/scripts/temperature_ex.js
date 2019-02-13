@@ -1,17 +1,26 @@
-var temperature_ex = {
-  temp : 20,
-  saved_temp : 20,
-  save: function(v) {
-    this.saved_temp = this.temp;
-
-    this.notifyPropsChanged();
-    return true;
-  },
-  canSave: function(v) {
-    return this.saved_temp != this.temp;
-  }
+// Model
+function Temperature (req) {
+  this.temp = req.temp || 20;
+  this.saved_temp = 20;
 }
 
+Temperature.prototype.save = function(args) {
+  this.saved_temp = this.temp;
+
+  this.notifyPropsChanged();
+  return true;
+}
+
+Temperature.prototype.canSave = function(args) {
+  return this.saved_temp != this.temp;
+}
+
+// Model creator
+function createTemperatureEx(req) {
+  return new Temperature(req);
+}
+
+// ValueValidators
 ValueConverters.fahrenheit = {
   toView: function(v) {
     return v * 1.8 + 32;
@@ -21,6 +30,7 @@ ValueConverters.fahrenheit = {
   }
 }
 
+// ValueValidators
 ValueValidators.water_temp = {
   isValid: function(v) {
     if (v <= 20) {

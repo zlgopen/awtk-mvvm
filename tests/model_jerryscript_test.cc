@@ -6,7 +6,7 @@ using std::string;
 
 TEST(ModelJerryScript, get_prop) {
   const char* code = "var test = {a:1, b:true, name:'awtk'};";
-  model_t* model = model_jerryscript_create("test", code, strlen(code));
+  model_t* model = model_jerryscript_create("test", code, strlen(code), NULL);
   object_t* obj = OBJECT(model);
   ASSERT_NE(obj, OBJECT(NULL));
 
@@ -20,7 +20,7 @@ TEST(ModelJerryScript, get_prop) {
 
 TEST(ModelJerryScript, get_prop_global) {
   const char* code = "var a=1; var b = true; var name ='awtk';";
-  model_t* model = model_jerryscript_create("test", code, strlen(code));
+  model_t* model = model_jerryscript_create("test", code, strlen(code), NULL);
   object_t* obj = OBJECT(model);
   ASSERT_NE(obj, OBJECT(NULL));
 
@@ -34,7 +34,7 @@ TEST(ModelJerryScript, get_prop_global) {
 
 TEST(ModelJerryScript, set_prop) {
   const char* code = "var test = {a:1, b:true, name:'awtk'};";
-  model_t* model = model_jerryscript_create("test", code, strlen(code));
+  model_t* model = model_jerryscript_create("test", code, strlen(code), NULL);
   object_t* obj = OBJECT(model);
   ASSERT_NE(obj, OBJECT(NULL));
 
@@ -55,7 +55,7 @@ TEST(ModelJerryScript, set_prop) {
 
 TEST(ModelJerryScript, set_prop_global) {
   const char* code = "var a=1; var b = true; var name ='awtk';";
-  model_t* model = model_jerryscript_create("test", code, strlen(code));
+  model_t* model = model_jerryscript_create("test", code, strlen(code), NULL);
   object_t* obj = OBJECT(model);
   ASSERT_NE(obj, OBJECT(NULL));
 
@@ -78,7 +78,7 @@ TEST(ModelJerryScript, exec) {
   const char* code =
       "var test = {save: function(args) {print(args); return 0;}, canSave: function(args) "
       "{print(args); return true;}};";
-  model_t* model = model_jerryscript_create("test", code, strlen(code));
+  model_t* model = model_jerryscript_create("test", code, strlen(code), NULL);
   object_t* obj = OBJECT(model);
   ASSERT_NE(obj, OBJECT(NULL));
 
@@ -95,7 +95,7 @@ TEST(ModelJerryScript, exec_global) {
   const char* code =
       "function save(args) {print(args); return 0;}\nfunction canSave(args) {print(args); return "
       "true;}";
-  model_t* model = model_jerryscript_create("test", code, strlen(code));
+  model_t* model = model_jerryscript_create("test", code, strlen(code), NULL);
   object_t* obj = OBJECT(model);
   ASSERT_NE(obj, OBJECT(NULL));
 
@@ -122,7 +122,7 @@ TEST(ModelJerryScript, notifyPropsChanged) {
   const char* code =
       "var test = {save: function(args) {print(args); test.count++; "
       "this.notifyPropsChanged();return 0;}, count:0}";
-  model_t* model = model_jerryscript_create("test", code, strlen(code));
+  model_t* model = model_jerryscript_create("test", code, strlen(code), NULL);
   object_t* obj = OBJECT(model);
   ASSERT_NE(obj, OBJECT(NULL));
 
@@ -144,7 +144,7 @@ TEST(ModelJerryScript, onMount) {
   const char* code =
       "var test = {onMount: function(args) {print('onMount js'); test.count++; "
       "this.notifyPropsChanged();return 0;}, count:0}";
-  model_t* model = model_jerryscript_create("test", code, strlen(code));
+  model_t* model = model_jerryscript_create("test", code, strlen(code), NULL);
   object_t* obj = OBJECT(model);
   ASSERT_NE(obj, OBJECT(NULL));
 
@@ -161,7 +161,7 @@ TEST(ModelJerryScript, onWillUnmount) {
   const char* code =
       "var test = {onWillUnmount: function(args) {print('onWillUnmount js'); test.count++; "
       "this.notifyPropsChanged();return 0;}, count:0}";
-  model_t* model = model_jerryscript_create("test", code, strlen(code));
+  model_t* model = model_jerryscript_create("test", code, strlen(code), NULL);
   object_t* obj = OBJECT(model);
   ASSERT_NE(obj, OBJECT(NULL));
 
@@ -178,7 +178,7 @@ TEST(ModelJerryScript, onUnmount) {
   const char* code =
       "var test = {onUnmount: function(args) {print('onUnmount js'); test.count++; "
       "this.notifyPropsChanged();return 0;}, count:0}";
-  model_t* model = model_jerryscript_create("test", code, strlen(code));
+  model_t* model = model_jerryscript_create("test", code, strlen(code), NULL);
   object_t* obj = OBJECT(model);
   ASSERT_NE(obj, OBJECT(NULL));
 
@@ -205,13 +205,13 @@ TEST(ModelJerryScript, onWillmount) {
       "print('xxxxxxxxxxx:' + req.onResult);"
       "req.onResult(req.count);"
       "return 0;}, count:0}";
-  model_t* model = model_jerryscript_create("test", code, strlen(code));
   navigator_request_t* req = navigator_request_create("test", dummy_on_result);
-  object_t* obj = OBJECT(model);
-  ASSERT_NE(obj, OBJECT(NULL));
-
   object_set_prop_int(OBJECT(req), "count", 100);
   object_set_prop_str(OBJECT(req), "name", "abc");
+  model_t* model = model_jerryscript_create("test", code, strlen(code), req);
+
+  object_t* obj = OBJECT(model);
+  ASSERT_NE(obj, OBJECT(NULL));
 
   ASSERT_EQ(model_on_will_mount(model, req), RET_OK);
   ASSERT_EQ(object_get_prop_int(obj, "count", 0), 100);
@@ -219,5 +219,55 @@ TEST(ModelJerryScript, onWillmount) {
   ASSERT_EQ(value_int(&(req->result)), 100);
 
   object_unref(OBJECT(req));
+  object_unref(OBJECT(model));
+}
+
+TEST(ModelJerryScript, create1) {
+  const char* code =
+      "function Test1(req) {this.count=req.count}"
+      "function createTest1(req) {return new Test1(req);}";
+
+  navigator_request_t* req = navigator_request_create("test1", dummy_on_result);
+  object_set_prop_int(OBJECT(req), "count", 100);
+  object_set_prop_str(OBJECT(req), "name", "abc");
+  model_t* model = model_jerryscript_create("test1", code, strlen(code), req);
+
+  object_t* obj = OBJECT(model);
+  ASSERT_NE(obj, OBJECT(NULL));
+
+  ASSERT_EQ(object_get_prop_int(obj, "count", 0), 100);
+
+  object_unref(OBJECT(req));
+  object_unref(OBJECT(model));
+}
+
+TEST(ModelJerryScript, create2) {
+  const char* code =
+      "function Test2(req) {this.count=req.count}"
+      "function create_test2(req) {return new Test2(req);}";
+
+  navigator_request_t* req = navigator_request_create("test2", dummy_on_result);
+  object_set_prop_int(OBJECT(req), "count", 1123);
+  object_set_prop_str(OBJECT(req), "name", "abc");
+  model_t* model = model_jerryscript_create("test2", code, strlen(code), req);
+
+  object_t* obj = OBJECT(model);
+  ASSERT_NE(obj, OBJECT(NULL));
+
+  ASSERT_EQ(object_get_prop_int(obj, "count", 0), 1123);
+
+  object_unref(OBJECT(req));
+  object_unref(OBJECT(model));
+}
+
+TEST(ModelJerryScript, invalid) {
+  const char* code = "var a = 1;";
+  model_t* model = model_jerryscript_create("notexist", code, strlen(code), NULL);
+
+  object_t* obj = OBJECT(model);
+  ASSERT_NE(obj, OBJECT(NULL));
+
+  ASSERT_EQ(object_get_prop_int(obj, "count", 0), 0);
+
   object_unref(OBJECT(model));
 }

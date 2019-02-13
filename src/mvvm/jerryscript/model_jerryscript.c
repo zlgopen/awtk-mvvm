@@ -99,7 +99,76 @@ static ret_t model_jerryscript_on_will_mount(model_t* model, navigator_request_t
   model_jerryscript_t* modeljs = MODEL_JERRYSCRIPT(model);
   jerry_value_t jsargs = jerry_value_from_navigator_request(req);
 
-  return jsobj_exec_ex(modeljs->jsobj, "onWillMount", jsargs);
+  ret_t ret = jsobj_exec_ex(modeljs->jsobj, "onWillMount", jsargs);
+  jerry_release_value(jsargs);
+
+  return ret;
+}
+
+static jerry_value_t jsobj_create_model_by_creator(const char* name, navigator_request_t* req) {
+  jerry_value_t func = jsobj_get_model(name);
+  if (jerry_value_is_function(func)) {
+    jerry_value_t global_obj = jerry_get_global_object();
+    jerry_value_t jsargs = jerry_value_from_navigator_request(req);
+    jerry_value_t jsret = jerry_call_function(func, global_obj, &jsargs, 1);
+    jerry_release_value(func);
+    jerry_release_value(jsargs);
+    jerry_release_value(global_obj);
+
+    return jsret;
+  } else {
+    jerry_release_value(func);
+
+    return jerry_create_undefined();
+  }
+}
+
+static jerry_value_t jsobj_create_model(const char* name, navigator_request_t* req) {
+  char camel_name[TK_NAME_LEN * 2 + 1];
+  char underscore_name[TK_NAME_LEN * 2 + 1];
+
+  /*try under score name: test_obj*/
+  jerry_value_t model = jsobj_get_model(name);
+  if (jerry_value_is_object(model)) {
+    return model;
+  } else {
+    log_debug("js create model: try %s failed\n", name);
+    jerry_release_value(model);
+  }
+
+  memset(camel_name, 0x00, sizeof(camel_name));
+  memset(underscore_name, 0x00, sizeof(underscore_name));
+
+  /*try camel name: testObj*/
+  tk_under_score_to_camel(name, camel_name, sizeof(camel_name) - 1);
+  model = jsobj_get_model(camel_name);
+  if (jerry_value_is_object(model)) {
+    return model;
+  } else {
+    log_debug("js create model: try %s failed\n", camel_name);
+    jerry_release_value(model);
+  }
+
+  /*try under score creator: create_test_obj*/
+  tk_snprintf(underscore_name, sizeof(underscore_name) - 1, "create_%s", name);
+  model = jsobj_create_model_by_creator(underscore_name, req);
+  if (jerry_value_is_object(model)) {
+    return model;
+  } else {
+    log_debug("js create model: try %s failed\n", underscore_name);
+    jerry_release_value(model);
+  }
+
+  /*try camel creator: createTestObj*/
+  tk_under_score_to_camel(underscore_name, camel_name, sizeof(camel_name) - 1);
+  model = jsobj_create_model_by_creator(camel_name, req);
+
+  if (!jerry_value_is_object(model)) {
+    log_debug("js create model: try %s failed\n", camel_name);
+    log_warn("%s: not found valid model for %s\n", __FUNCTION__, name);
+  }
+
+  return model;
 }
 
 static ret_t model_jerryscript_on_mount(model_t* model) {
@@ -126,7 +195,8 @@ const static model_vtable_t s_model_jerryscript_model_vtable = {
     .on_will_unmount = model_jerryscript_on_will_unmount,
     .on_unmount = model_jerryscript_on_unmount};
 
-model_t* model_jerryscript_create(const char* name, const char* code, uint32_t code_size) {
+model_t* model_jerryscript_create(const char* name, const char* code, uint32_t code_size,
+                                  navigator_request_t* req) {
   object_t* obj = NULL;
   jerry_value_t jsret = 0;
   jerry_value_t jscode = 0;
@@ -147,7 +217,7 @@ model_t* model_jerryscript_create(const char* name, const char* code, uint32_t c
   jerry_release_value(jscode);
   goto_error_if_fail(jerry_value_check(jsret) == RET_OK);
 
-  modeljs->jsobj = jsobj_get_model(name);
+  modeljs->jsobj = jsobj_create_model(name, req);
   goto_error_if_fail(jerry_value_check(modeljs->jsobj) == RET_OK);
 
   str_init(&(modeljs->temp), 0);

@@ -20,13 +20,20 @@
  */
 
 #include "jerryscript.h"
+#include "jerryscript-port.h"
 #include "jerryscript-ext/handler.h"
 
+#include "tkc/utils.h"
 #include "base/idle.h"
 #include "base/timer.h"
+#include "base/widget.h"
 #include "src/awtk_global.h"
 #include "mvvm/jerryscript/jsobj.h"
 #include "mvvm/jerryscript/jerryscript_awtk.h"
+#include "mvvm/base/model_factory.h"
+#include "mvvm/jerryscript/jsobj.h"
+#include "mvvm/jerryscript/jerryscript_awtk.h"
+#include "mvvm/jerryscript/mvvm_jerryscript.h"
 
 static ret_t ret_t_init(void) {
   jerry_value_t obj = jerry_get_global_object();
@@ -160,6 +167,35 @@ jerry_value_t wrap_quit(const jerry_value_t func_obj_val, const jerry_value_t th
   return jerry_create_number(0);
 }
 
+static model_t* model_jerryscript_create_with_widget(void* args) {
+  char* p = NULL;
+  model_t* model = NULL;
+  const char* vmodel = NULL;
+  char name[TK_NAME_LEN + 5];
+  widget_t* widget = WIDGET(args);
+  const asset_info_t* asset = NULL;
+  return_value_if_fail(widget != NULL, NULL);
+  navigator_request_t* req =
+      (navigator_request_t*)widget_get_prop_pointer(widget, NAVIGATOR_REQUEST_PROP);
+
+  vmodel = widget_get_prop_str(widget, WIDGET_PROP_V_MODEL, NULL);
+  return_value_if_fail(vmodel != NULL, NULL);
+
+  tk_strncpy(name, vmodel, sizeof(name) - 1);
+  p = strrchr(name, '.');
+  if (p != NULL) {
+    *p = '\0';
+  }
+
+  asset = widget_load_asset(widget, ASSET_TYPE_SCRIPT, name);
+  return_value_if_fail(asset != NULL, NULL);
+
+  model = model_jerryscript_create(name, (const char*)(asset->data), asset->size, req);
+  widget_unload_asset(widget, asset);
+
+  return model;
+}
+
 ret_t jerryscript_awtk_init(void) {
   ret_t_init();
   jerryx_handler_register_global((const jerry_char_t*)"exit", wrap_quit);
@@ -169,6 +205,7 @@ ret_t jerryscript_awtk_init(void) {
   jerryx_handler_register_global((const jerry_char_t*)"timerRemove", wrap_timer_remove);
   jerryx_handler_register_global((const jerry_char_t*)"idleAdd", wrap_idle_add);
   jerryx_handler_register_global((const jerry_char_t*)"idleRemove", wrap_idle_remove);
+  model_factory_register(".js", model_jerryscript_create_with_widget);
 
   return RET_OK;
 }

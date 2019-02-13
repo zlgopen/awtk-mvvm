@@ -368,10 +368,11 @@ static ret_t model_on_window_destroy(void* ctx, event_t* e) {
   return RET_OK;
 }
 
-static model_t* default_create_model(widget_t* win) {
+static model_t* default_create_model(widget_t* win, navigator_request_t* req) {
   model_t* model = NULL;
   const char* vmodel = widget_get_prop_str(win, WIDGET_PROP_V_MODEL, NULL);
 
+  widget_set_prop_pointer(win, NAVIGATOR_REQUEST_PROP, req);
   if (vmodel != NULL) {
     char name[TK_NAME_LEN + 1];
     char* ext_name = NULL;
@@ -393,6 +394,9 @@ static model_t* default_create_model(widget_t* win) {
   }
 
   if (model == NULL) {
+    if (vmodel != NULL) {
+      log_warn("%s not found model %s\n", __FUNCTION__, vmodel);
+    }
     model = model_dummy_create(win);
   }
 
@@ -408,7 +412,7 @@ ret_t vm_open_window(const char* name, model_t* model, navigator_request_t* req)
   return_value_if_fail(win != NULL, RET_NOT_FOUND);
 
   if (model == NULL) {
-    model = default_create_model(win);
+    model = default_create_model(win, req);
   }
   return_value_if_fail(model != NULL, RET_FAIL);
 
