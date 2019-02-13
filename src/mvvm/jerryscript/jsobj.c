@@ -217,7 +217,12 @@ jerry_value_t jsobj_get_global(const char* name) {
 }
 
 jerry_value_t jsobj_get_model(const char* name) {
-  return jsobj_get_global(name);
+  jerry_value_t model = jsobj_get_global(name);
+  jerry_value_check(model);
+  if (jerry_value_is_null(model) || jerry_value_is_undefined(model)) {
+    log_warn("XXX: %s: not found model %s\n", __FUNCTION__, name);
+  }
+  return model;
 }
 
 jerry_value_t jsobj_get_prop_value(jerry_value_t obj, const char* name) {
@@ -461,6 +466,13 @@ ret_t jsobj_set_prop_func(jerry_value_t obj, const char* name, jerry_external_ha
 ret_t jsobj_set_prop_str(jerry_value_t obj, const char* name, const char* value) {
   value_t v;
   value_set_str(&v, value);
+
+  return jsobj_set_prop(obj, name, &v, NULL);
+}
+
+ret_t jsobj_set_prop_int(jerry_value_t obj, const char* name, int32_t value) {
+  value_t v;
+  value_set_int(&v, value);
 
   return jsobj_set_prop(obj, name, &v, NULL);
 }

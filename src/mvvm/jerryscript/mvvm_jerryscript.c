@@ -25,6 +25,7 @@
 #include "jerryscript-ext/handler.h"
 #include "mvvm/base/model_factory.h"
 #include "mvvm/jerryscript/jsobj.h"
+#include "mvvm/jerryscript/jerryscript_awtk.h"
 #include "mvvm/jerryscript/mvvm_jerryscript.h"
 
 const char* s_boot_code =
@@ -73,6 +74,8 @@ ret_t mvvm_jerryscript_init(void) {
   return_value_if_fail(value_converter_jerryscript_init() == RET_OK, RET_FAIL);
 
   model_factory_register(".js", model_jerryscript_create_with_window);
+  jerryscript_awtk_init();
+
   jerryscript_run("boot", s_boot_code, strlen(s_boot_code));
 
   return RET_OK;
@@ -98,6 +101,7 @@ ret_t jerryscript_run(const char* name, const char* code, uint32_t code_size) {
 ret_t mvvm_jerryscript_deinit(void) {
   value_converter_jerryscript_deinit();
   value_validator_jerryscript_deinit();
+  jerryscript_awtk_deinit();
   jerry_cleanup();
 
   return RET_OK;

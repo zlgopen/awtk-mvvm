@@ -8,6 +8,7 @@
 #include "assets/inc/styles/window1.data"
 #include "assets/inc/ui/js_temperature1.data"
 #include "assets/inc/ui/js_shape.data"
+#include "assets/inc/ui/js_temperature10.data"
 #include "assets/inc/ui/temperature1.data"
 #include "assets/inc/ui/shape.data"
 #include "assets/inc/ui/temperature6.data"
@@ -22,6 +23,7 @@
 #include "assets/inc/ui/js_temperature4.data"
 #include "assets/inc/ui/temperature9.data"
 #include "assets/inc/ui/temperature5.data"
+#include "assets/inc/ui/temperature10.data"
 #include "assets/inc/ui/js_demo9_main.data"
 #include "assets/inc/ui/js_temperature3.data"
 #include "assets/inc/ui/temperature2.data"
@@ -96,6 +98,7 @@ ret_t assets_init(void) {
 #else
   assets_manager_add(rm, ui_js_temperature1);
   assets_manager_add(rm, ui_js_shape);
+  assets_manager_add(rm, ui_js_temperature10);
   assets_manager_add(rm, ui_temperature1);
   assets_manager_add(rm, ui_shape);
   assets_manager_add(rm, ui_temperature6);
@@ -110,6 +113,7 @@ ret_t assets_init(void) {
   assets_manager_add(rm, ui_js_temperature4);
   assets_manager_add(rm, ui_temperature9);
   assets_manager_add(rm, ui_temperature5);
+  assets_manager_add(rm, ui_temperature10);
   assets_manager_add(rm, ui_js_demo9_main);
   assets_manager_add(rm, ui_js_temperature3);
   assets_manager_add(rm, ui_temperature2);

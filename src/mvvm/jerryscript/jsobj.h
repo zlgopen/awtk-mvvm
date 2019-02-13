@@ -43,6 +43,7 @@ ret_t jsobj_set_prop_str(jerry_value_t obj, const char* name, const char* value)
 ret_t jsobj_set_prop_value(jerry_value_t obj, const char* name, jerry_value_t prop_value);
 ret_t jsobj_set_prop(jerry_value_t obj, const char* name, const value_t* v, str_t* temp);
 ret_t jsobj_set_prop_func(jerry_value_t obj, const char* name, jerry_external_handler_t handler_p);
+ret_t jsobj_set_prop_int(jerry_value_t obj, const char* name, int32_t value);
 
 ret_t jsobj_exec(jerry_value_t obj, const char* name, const char* args);
 ret_t jsobj_exec_ex(jerry_value_t obj, const char* name, jerry_value_t args);

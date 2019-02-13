@@ -13,6 +13,7 @@ env.Program(os.path.join(BIN_DIR, 'demo6'), Glob('demo6/*.c') + ["assets.c"])
 env.Program(os.path.join(BIN_DIR, 'demo7'), Glob('demo7/*.c') + ["assets.c"])
 env.Program(os.path.join(BIN_DIR, 'demo8'), Glob('demo8/*.c') + ["assets.c"])
 env.Program(os.path.join(BIN_DIR, 'demo9'), Glob('demo9/*.c') + ["assets.c"])
+env.Program(os.path.join(BIN_DIR, 'demo10'), Glob('demo10/*.c') + ["assets.c"])
 
 env.Program(os.path.join(BIN_DIR, 'jsdemo1'), Glob('jsdemo1/*.c') + ["assets.c"])
 env.Program(os.path.join(BIN_DIR, 'jsdemo2'), Glob('jsdemo2/*.c') + ["assets.c"])
@@ -22,3 +23,4 @@ env.Program(os.path.join(BIN_DIR, 'jsdemo5'), Glob('jsdemo5/*.c') + ["assets.c"]
 env.Program(os.path.join(BIN_DIR, 'jsdemo6'), Glob('jsdemo6/*.c') + ["assets.c"])
 env.Program(os.path.join(BIN_DIR, 'jsdemo8'), Glob('jsdemo8/*.c') + ["assets.c"])
 env.Program(os.path.join(BIN_DIR, 'jsdemo9'), Glob('jsdemo9/*.c') + ["assets.c"])
+env.Program(os.path.join(BIN_DIR, 'jsdemo10'), Glob('jsdemo10/*.c') + ["assets.c"])
