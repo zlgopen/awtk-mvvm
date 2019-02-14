@@ -48,6 +48,7 @@ scons
 ```
 git clone https://github.com/zlgopen/awtk-mvvm.git
 cd awtk-mvvm
+git clone https://github.com/jerryscript-project/jerryscript.git 3rd/jerryscript
 scons
 ```
 
