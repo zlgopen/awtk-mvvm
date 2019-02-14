@@ -76,11 +76,11 @@ ret_t model_factory_unregister(const char* type);
  * @method model_factory_create_model
  * 创建模型。
  * @param {const char*} type 模型的类型。
- * @param {void*} args 参数。
+ * @param {navigator_request_t*} req 请求参数。
  *
  * @return {model_t*} 返回model对象。
  */
-model_t* model_factory_create_model(const char* type, void* args);
+model_t* model_factory_create_model(const char* type, navigator_request_t* req);
 
 /**
  * @method model_factory_deinit

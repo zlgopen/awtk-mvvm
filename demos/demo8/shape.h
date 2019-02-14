@@ -52,11 +52,11 @@ typedef struct _shape_t {
  * 创建shape对象。
  *
  * @annotation ["constructor"]
- * @param {void*} args 参数(目前没用，仅仅为了与model_create_t保持一致)
+ * @param {navigator_request_t*} req 请求参数。
  *
  * @return {model_t} 返回model_t对象。
  */
-model_t* shape_create(void* args);
+model_t* shape_create(navigator_request_t* req);
 
 #define SHAPE(t) ((shape_t*)(t))
 

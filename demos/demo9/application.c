@@ -22,8 +22,8 @@
 #include "awtk.h"
 #include "mvvm/mvvm.h"
 
-#include "humidity.h"
-#include "temperature.h"
+#include "../common/humidity.h"
+#include "../common/temperature.h"
 
 ret_t application_init() {
   model_factory_register("humidity", humidity_create);

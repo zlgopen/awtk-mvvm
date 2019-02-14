@@ -19,29 +19,29 @@
  *
  */
 
-#ifndef TK_TEMPERATURE_H
-#define TK_TEMPERATURE_H
+#ifndef TK_TEMPERATURE_EX_H
+#define TK_TEMPERATURE_EX_H
 
 #include "mvvm/base/model.h"
 
 BEGIN_C_DECLS
 
 /**
- * @class temperature_t
+ * @class temperature_ex_t
  *
  * 温度对象。
  *
  */
-typedef struct _temperature_t {
+typedef struct _temperature_ex_t {
   model_t model;
 
   double value;
 
   double saved_value;
-} temperature_t;
+} temperature_ex_t;
 
 /**
- * @method temperature_create
+ * @method temperature_ex_create
  * 创建temperature对象。
  *
  * @annotation ["constructor"]
@@ -49,10 +49,10 @@ typedef struct _temperature_t {
  *
  * @return {model_t} 返回model_t对象。
  */
-model_t* temperature_create(void* args);
+model_t* temperature_ex_create(void* args);
 
-#define TEMPERATURE(t) ((temperature_t*)(t))
+#define TEMPERATURE_EX(t) ((temperature_ex_t*)(t))
 
 END_C_DECLS
 
-#endif /*TK_TEMPERATURE_H*/
+#endif /*TK_TEMPERATURE_EX_H*/

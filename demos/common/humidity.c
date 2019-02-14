@@ -55,6 +55,6 @@ static const object_vtable_t s_humidity_vtable = {.type = "humidity",
                                                   .get_prop = humidity_get_prop,
                                                   .set_prop = humidity_set_prop};
 
-model_t* humidity_create(void* args) {
+model_t* humidity_create(navigator_request_t* req) {
   return MODEL(object_create(&s_humidity_vtable));
 }

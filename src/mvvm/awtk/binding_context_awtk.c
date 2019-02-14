@@ -368,11 +368,12 @@ static ret_t model_on_window_destroy(void* ctx, event_t* e) {
   return RET_OK;
 }
 
-static model_t* default_create_model(widget_t* win, navigator_request_t* req) {
+static model_t* default_create_model(widget_t* widget, navigator_request_t* req) {
   model_t* model = NULL;
-  const char* vmodel = widget_get_prop_str(win, WIDGET_PROP_V_MODEL, NULL);
+  const char* vmodel = widget_get_prop_str(widget, WIDGET_PROP_V_MODEL, NULL);
 
-  widget_set_prop_pointer(win, NAVIGATOR_REQUEST_PROP, req);
+  object_set_prop_pointer(OBJECT(req), NAVIGATOR_ARG_VIEW, widget);
+
   if (vmodel != NULL) {
     char name[TK_NAME_LEN + 1];
     char* ext_name = NULL;
@@ -381,14 +382,14 @@ static model_t* default_create_model(widget_t* win, navigator_request_t* req) {
     ext_name = strrchr(name, '.');
     if (ext_name != NULL) {
       *ext_name = '\0';
-      model = model_factory_create_model(name, win);
+      model = model_factory_create_model(name, req);
       if (model == NULL) {
         *ext_name = '.';
-        model = model_factory_create_model(ext_name, win);
+        model = model_factory_create_model(ext_name, req);
       }
       return_value_if_fail(model != NULL, NULL);
     } else {
-      model = model_factory_create_model(name, win);
+      model = model_factory_create_model(name, req);
       return_value_if_fail(model != NULL, NULL);
     }
   }
@@ -397,7 +398,7 @@ static model_t* default_create_model(widget_t* win, navigator_request_t* req) {
     if (vmodel != NULL) {
       log_warn("%s not found model %s\n", __FUNCTION__, vmodel);
     }
-    model = model_dummy_create(win);
+    model = model_dummy_create(req);
   }
 
   return model;

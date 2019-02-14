@@ -21,7 +21,7 @@
 
 #include "awtk.h"
 #include "mvvm/mvvm.h"
-#include "temperature.h"
+#include "../common/temperature.h"
 
 ret_t application_init() {
   model_factory_register("temperature", temperature_create);

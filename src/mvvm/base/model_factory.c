@@ -59,12 +59,12 @@ ret_t model_factory_register(const char* type, model_create_t create) {
   return object_set_prop_pointer(s_model_factory->creators, type, create);
 }
 
-model_t* model_factory_create_model(const char* type, void* args) {
+model_t* model_factory_create_model(const char* type, navigator_request_t* req) {
   model_create_t create = NULL;
-  return_value_if_fail(s_model_factory != NULL && type != NULL && args != NULL, NULL);
+  return_value_if_fail(s_model_factory != NULL && type != NULL && req != NULL, NULL);
   create = (model_create_t)object_get_prop_pointer(s_model_factory->creators, type);
   if (create != NULL) {
-    return create(args);
+    return create(req);
   } else {
     return NULL;
   }

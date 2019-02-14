@@ -120,8 +120,7 @@ ret_t navigator_request_on_result(navigator_request_t* req, const value_t* resul
 #define NAVIGATOR_ARG_CONTENT "content"
 #define NAVIGATOR_ARG_FOR_SAVE "for_save"
 #define NAVIGATOR_ARG_MINE_TYPES "mime_types"
-
-#define NAVIGATOR_REQUEST_PROP "navigator_request_t"
+#define NAVIGATOR_ARG_VIEW "__view__"
 
 END_C_DECLS
 

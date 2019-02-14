@@ -1,7 +1,7 @@
 ﻿/**
- * File:   temperature.h
+ * File:   humidity.h
  * Author: AWTK Develop Team
- * Brief:  temperature
+ * Brief:  humidity
  *
  * Copyright (c) 2019 - 2019  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
@@ -15,42 +15,42 @@
 /**
  * History:
  * ================================================================
- * 2019-02-02 Li XianJing <xianjimli@hotmail.com> created
+ * 2019-02-08 Li XianJing <xianjimli@hotmail.com> created
  *
  */
 
-#ifndef TK_TEMPERATURE_H
-#define TK_TEMPERATURE_H
+#ifndef TK_HUMIDITY_H
+#define TK_HUMIDITY_H
 
 #include "mvvm/base/model.h"
 
 BEGIN_C_DECLS
 
 /**
- * @class temperature_t
+ * @class humidity_t
  *
- * 温度对象。
+ * 湿度对象。
  *
  */
-typedef struct _temperature_t {
+typedef struct _humidity_t {
   model_t model;
 
   double value;
-} temperature_t;
+} humidity_t;
 
 /**
- * @method temperature_create
- * 创建temperature对象。
+ * @method humidity_create
+ * 创建humidity对象。
  *
  * @annotation ["constructor"]
- * @param {void*} args 参数(目前没用，仅仅为了与model_create_t保持一致)
+ * @param {navigator_request_t*} req 请求参数。
  *
  * @return {model_t} 返回model_t对象。
  */
-model_t* temperature_create(void* args);
+model_t* humidity_create(navigator_request_t* req);
 
-#define TEMPERATURE(t) ((temperature_t*)(t))
+#define HUMIDITY(t) ((humidity_t*)(t))
 
 END_C_DECLS
 
-#endif /*TK_TEMPERATURE_H*/
+#endif /*TK_HUMIDITY_H*/

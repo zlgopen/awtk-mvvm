@@ -55,6 +55,6 @@ static const object_vtable_t s_temperature_vtable = {.type = "temperature",
                                                      .get_prop = temperature_get_prop,
                                                      .set_prop = temperature_set_prop};
 
-model_t* temperature_create(void* args) {
+model_t* temperature_create(navigator_request_t* req) {
   return MODEL(object_create(&s_temperature_vtable));
 }

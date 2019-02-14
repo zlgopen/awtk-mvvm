@@ -43,7 +43,7 @@ static ret_t temperature_quit(temperature_t* t, const char* args) {
   return RET_OK;
 }
 
-model_t* temperature_create(void* args) {
+model_t* temperature_create(navigator_request_t* req) {
   temperature_t* t = TKMEM_ZALLOC(temperature_t);
   model_t* model = model_delegate_create(t, default_destroy);
 

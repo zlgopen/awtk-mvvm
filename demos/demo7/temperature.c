@@ -30,18 +30,18 @@ static ret_t temperature_save(temperature_t* t, const char* args) {
   log_debug("save\n");
   t->saved_value = t->value;
 
-  return RET_OK;
+  return RET_OBJECT_CHANGED;
 }
 
 static bool_t temperature_can_save(temperature_t* t, const char* args) {
   return t->value != t->saved_value;
 }
 
-model_t* temperature_create(void* args) {
+model_t* temperature_create(navigator_request_t* req) {
   temperature_t* t = TKMEM_ZALLOC(temperature_t);
   model_t* model = model_delegate_create(t, default_destroy);
 
-  MODEL_SIMPLE_PROP(model, "temp", VALUE_TYPE_DOUBLE, &(t->value));
+  MODEL_SIMPLE_PROP(model, "temp", VALUE_TYPE_INT32, &(t->value));
   MODEL_COMMAND(model, "save", temperature_save, temperature_can_save);
 
   return model;

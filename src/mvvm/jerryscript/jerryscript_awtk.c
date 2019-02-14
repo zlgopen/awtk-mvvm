@@ -167,16 +167,14 @@ jerry_value_t wrap_quit(const jerry_value_t func_obj_val, const jerry_value_t th
   return jerry_create_number(0);
 }
 
-static model_t* model_jerryscript_create_with_widget(void* args) {
+static model_t* model_jerryscript_create_with_widget(navigator_request_t* req) {
   char* p = NULL;
   model_t* model = NULL;
   const char* vmodel = NULL;
   char name[TK_NAME_LEN + 5];
-  widget_t* widget = WIDGET(args);
   const asset_info_t* asset = NULL;
+  widget_t* widget = WIDGET(object_get_prop_pointer(OBJECT(req), NAVIGATOR_ARG_VIEW));
   return_value_if_fail(widget != NULL, NULL);
-  navigator_request_t* req =
-      (navigator_request_t*)widget_get_prop_pointer(widget, NAVIGATOR_REQUEST_PROP);
 
   vmodel = widget_get_prop_str(widget, WIDGET_PROP_V_MODEL, NULL);
   return_value_if_fail(vmodel != NULL, NULL);

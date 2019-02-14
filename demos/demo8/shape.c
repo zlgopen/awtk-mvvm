@@ -64,7 +64,7 @@ static ret_t shape_destroy(shape_t* t) {
   return RET_OK;
 }
 
-model_t* shape_create(void* args) {
+model_t* shape_create(navigator_request_t* req) {
   shape_t* t = TKMEM_ZALLOC(shape_t);
   model_t* model = model_delegate_create(t, (tk_destroy_t)shape_destroy);
 
