@@ -22,6 +22,7 @@
 #ifndef TK_MVVM_AWTK_H
 #define TK_MVVM_AWTK_H
 
+#include "base/types_def.h"
 #include "mvvm/awtk/binding_context_awtk.h"
 #include "mvvm/awtk/navigator_handler_awtk.h"
 

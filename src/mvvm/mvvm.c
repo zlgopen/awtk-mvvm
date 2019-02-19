@@ -18,7 +18,7 @@
  * 2019-02-06 Li XianJing <xianjimli@hotmail.com> created
  *
  */
-
+#include "awtk.h"
 #include "mvvm/mvvm.h"
 #include "mvvm/base/mvvm_base.h"
 
