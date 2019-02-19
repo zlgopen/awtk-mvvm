@@ -28,12 +28,17 @@
 BEGIN_C_DECLS
 
 /**
- * @method binding_context_create
- * 创建binding_context对象，负责绑定AWTK控件于模型。
+ * @method binding_context_awtk_create
+ * 创建binding_context对象。
+ *
+ * @param {navigator_request_t*} req 请求参数。
  *
  * @return {binding_context_t*} 返回binding_context对象。
  */
-binding_context_t* binding_context_create(void);
+binding_context_t* binding_context_awtk_create(navigator_request_t* req);
+
+/*public for test*/
+ret_t binding_context_bind_for_window(widget_t* widget, navigator_request_t* req);
 
 END_C_DECLS
 

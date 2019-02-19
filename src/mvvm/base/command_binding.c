@@ -114,24 +114,24 @@ command_binding_t* command_binding_create(void) {
 }
 
 bool_t command_binding_can_exec(command_binding_t* rule) {
-  binding_context_t* ctx = NULL;
+  view_model_t* view_model = NULL;
   return_value_if_fail(rule != NULL, FALSE);
-  ctx = BINDING_RULE(rule)->binding_context;
-  return_value_if_fail(ctx != NULL && ctx->vm != NULL, FALSE);
+  view_model = BINDING_RULE(rule)->view_model;
+  return_value_if_fail(view_model != NULL, FALSE);
 
   if (tk_str_ieq(rule->command, COMMAND_BINDING_CMD_NOTHING) ||
       tk_str_ieq(rule->command, COMMAND_BINDING_CMD_NAVIGATE)) {
     return TRUE;
   }
 
-  return view_model_can_exec(ctx->vm, rule->command, rule->args);
+  return view_model_can_exec(view_model, rule->command, rule->args);
 }
 
 ret_t command_binding_exec(command_binding_t* rule) {
-  binding_context_t* ctx = NULL;
-  return_value_if_fail(rule != NULL, RET_BAD_PARAMS);
-  ctx = BINDING_RULE(rule)->binding_context;
-  return_value_if_fail(ctx != NULL && ctx->vm != NULL, RET_BAD_PARAMS);
+  view_model_t* view_model = NULL;
+  return_value_if_fail(rule != NULL, FALSE);
+  view_model = BINDING_RULE(rule)->view_model;
+  return_value_if_fail(view_model != NULL, FALSE);
 
   if (tk_str_ieq(rule->command, COMMAND_BINDING_CMD_NOTHING)) {
     return RET_OK;
@@ -141,5 +141,5 @@ ret_t command_binding_exec(command_binding_t* rule) {
     return navigator_to(rule->args);
   }
 
-  return view_model_exec(ctx->vm, rule->command, rule->args);
+  return view_model_exec(view_model, rule->command, rule->args);
 }

@@ -28,13 +28,11 @@
 
 BEGIN_C_DECLS
 
-typedef ret_t (*binding_context_bind_t)(binding_context_t* ctx, view_model_t* vm, void* widget);
 typedef ret_t (*binding_context_update_to_view_t)(binding_context_t* ctx);
 typedef ret_t (*binding_context_update_to_model_t)(binding_context_t* ctx);
 typedef ret_t (*binding_context_destroy_t)(binding_context_t* ctx);
 
 typedef struct _binding_context_vtable_t {
-  binding_context_bind_t bind;
   binding_context_update_to_view_t update_to_view;
   binding_context_update_to_model_t update_to_model;
   binding_context_destroy_t destroy;
@@ -47,18 +45,6 @@ typedef struct _binding_context_vtable_t {
  */
 struct _binding_context_t {
   /**
-   * @property {view_model_t*} vm
-   * @annotation ["readable"]
-   * ViewModel
-   */
-  view_model_t* vm;
-  /**
-   * @property {widget_t*} widget
-   * @annotation ["readable"]
-   * 绑定的根控件(通常是窗口)
-   */
-  widget_t* widget;
-  /**
    * @property {darray_t*} command_bindings
    * @annotation ["readable"]
    * 命令绑定规则集合。
@@ -70,12 +56,6 @@ struct _binding_context_t {
    * 数据绑定规则集合。
    */
   darray_t data_bindings;
-  /**
-   * @property {widget_t*} current_widget
-   * @annotation ["readable"]
-   * 当前真正绑定的控件。
-   */
-  widget_t* current_widget;
   /**
    * @property {bool_t} bound
    * @annotation ["readable"]
@@ -102,7 +82,38 @@ struct _binding_context_t {
    */
   int32_t request_update_view;
 
+  /**
+   * @property {void*} current_widget
+   * @annotation ["readable"]
+   * 当前真正绑定的控件。
+   */
+  void* current_widget;
+
+  /**
+   * @property {view_model_t*} current_view_model
+   * @annotation ["readable"]
+   * 当前的ViewModel
+   */
+  view_model_t* current_view_model;
+
+  /**
+   * @property {void*} widget
+   * @annotation ["readable"]
+   * 绑定的根控件(通常是窗口)
+   */
+  void* widget;
+
+  /**
+   * @property {navigator_request_t*} navigator_request
+   * @annotation ["readable"]
+   * 请求参数。
+   */
+  navigator_request_t* navigator_request;
+
   /*private*/
+  darray_t view_models;
+  darray_t view_models_stack;
+
   const binding_context_vtable_t* vt;
 };
 
@@ -111,22 +122,11 @@ struct _binding_context_t {
  * 初始化。
  *
  * @param {binding_context_t*} ctx binding_context对象。
+ * @param {navigator_request_t*} navigator_request 请求参数对象。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
-ret_t binding_context_init(binding_context_t* ctx);
-
-/**
- * @method binding_context_bind
- * 绑定ViewModel与widget
- *
- * @param {binding_context_t*} ctx binding_context对象。
- * @param {view_model_t*} vm view_model对象。
- * @param {void*} widget widget对象。
- *
- * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
- */
-ret_t binding_context_bind(binding_context_t* ctx, view_model_t* vm, void* widget);
+ret_t binding_context_init(binding_context_t* ctx, navigator_request_t* navigator_request);
 
 /**
  * @method binding_context_update_to_view
@@ -159,11 +159,6 @@ ret_t binding_context_update_to_model(binding_context_t* ctx);
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
 ret_t binding_context_destroy(binding_context_t* ctx);
-
-/*wrapper*/
-ret_t binding_context_bind_model(model_t* model, widget_t* widget);
-ret_t binding_context_bind_view_model(view_model_t* vm, widget_t* widget);
-ret_t vm_open_window(const char* win_name, model_t* model, navigator_request_t* req);
 
 #define BINDING_CONTEXT(ctx) ((binding_context_t*)(ctx))
 

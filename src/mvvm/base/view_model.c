@@ -37,6 +37,7 @@ view_model_t* view_model_init(view_model_t* vm, view_model_type_t type, model_t*
   vm->type = type;
   vm->model = model;
 
+  object_ref(OBJECT(model));
   emitter_on(EMITTER(vm->model), EVT_PROP_CHANGED, model_on_event, vm);
   emitter_on(EMITTER(vm->model), EVT_PROPS_CHANGED, model_on_event, vm);
 

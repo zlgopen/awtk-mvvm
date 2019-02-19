@@ -35,16 +35,18 @@
 #include "mvvm/base/binding_rule_parser.h"
 #include "mvvm/awtk/binding_context_awtk.h"
 
+static model_t* default_create_model(widget_t* widget, navigator_request_t* req);
+
 static ret_t visit_data_binding_update_error_of(void* ctx, const void* data) {
   data_binding_t* rule = DATA_BINDING(data);
   data_binding_t* trigger_rule = DATA_BINDING(ctx);
+  view_model_t* view_model = BINDING_RULE(trigger_rule)->view_model;
 
   if (tk_str_start_with(rule->path, DATA_BINDING_ERROR_OF)) {
     const char* path = rule->path + sizeof(DATA_BINDING_ERROR_OF) - 1;
     if (tk_str_eq(path, trigger_rule->path)) {
       widget_t* widget = WIDGET(BINDING_RULE(rule)->widget);
-      binding_context_t* bctx = BINDING_RULE(rule)->binding_context;
-      widget_set_tr_text(widget, bctx->vm->last_error.str);
+      widget_set_tr_text(widget, view_model->last_error.str);
     }
   }
 
@@ -53,9 +55,10 @@ static ret_t visit_data_binding_update_error_of(void* ctx, const void* data) {
 
 static ret_t binding_context_update_error_of(data_binding_t* rule) {
   binding_context_t* ctx = BINDING_RULE(rule)->binding_context;
-  return_value_if_fail(ctx != NULL, RET_BAD_PARAMS);
+  view_model_t* view_model = BINDING_RULE(rule)->view_model;
+  return_value_if_fail(ctx != NULL && view_model != NULL, RET_BAD_PARAMS);
 
-  if (ctx->vm->last_error.size > 0) {
+  if (view_model->last_error.size > 0) {
     darray_foreach(&(ctx->data_bindings), visit_data_binding_update_error_of, rule);
   }
 
@@ -92,6 +95,7 @@ static ret_t binding_context_bind_data(binding_context_t* ctx, const char* name,
 
   BINDING_RULE(rule)->widget = widget;
   BINDING_RULE(rule)->binding_context = ctx;
+  BINDING_RULE(rule)->view_model = ctx->current_view_model;
   goto_error_if_fail(darray_push(&(ctx->data_bindings), rule) == RET_OK);
 
   if (rule->trigger != UPDATE_WHEN_EXPLICIT) {
@@ -153,6 +157,7 @@ static ret_t binding_context_bind_command(binding_context_t* ctx, const char* na
 
   BINDING_RULE(rule)->widget = widget;
   BINDING_RULE(rule)->binding_context = ctx;
+  BINDING_RULE(rule)->view_model = ctx->current_view_model;
   goto_error_if_fail(darray_push(&(ctx->command_bindings), rule) == RET_OK);
 
   event = int_str_name(s_event_map, rule->event, EVT_NONE);
@@ -180,31 +185,61 @@ static ret_t visit_bind_one_prop(void* ctx, const void* data) {
   return RET_OK;
 }
 
-static ret_t visit_bind_one_widget(void* ctx, const void* data) {
-  widget_t* widget = WIDGET(data);
-  binding_context_t* bctx = (binding_context_t*)(ctx);
-
-  if (widget->custom_props != NULL) {
-    bctx->current_widget = widget;
-    object_foreach_prop(widget->custom_props, visit_bind_one_prop, ctx);
-  }
-
-  return RET_OK;
-}
-
 static ret_t on_view_model_prop_change(void* ctx, event_t* e) {
   binding_context_update_to_view((binding_context_t*)ctx);
 
   return RET_OK;
 }
 
-static ret_t binding_context_awtk_bind(binding_context_t* ctx, view_model_t* vm, void* widget) {
-  return_value_if_fail(widget_foreach(WIDGET(widget), visit_bind_one_widget, ctx) == RET_OK,
-                       RET_FAIL);
+static view_model_t* binding_context_awtk_create_view_model(widget_t* widget,
+                                                            navigator_request_t* req) {
+  model_t* model = default_create_model(widget, req);
+  view_model_t* view_model = view_model_normal_create(model);
+  object_unref(OBJECT(model));
 
+  return view_model;
+}
+
+static ret_t binding_context_awtk_bind_widget(binding_context_t* ctx, widget_t* widget) {
+  view_model_t* view_model = NULL;
+  const char* vmodel = widget_get_prop_str(widget, WIDGET_PROP_V_MODEL, NULL);
+
+  if (vmodel != NULL || ctx->current_view_model == NULL) {
+    view_model = binding_context_awtk_create_view_model(widget, ctx->navigator_request);
+    return_value_if_fail(view_model != NULL, RET_FAIL);
+
+    model_on_will_mount(view_model->model, ctx->navigator_request);
+    darray_push(&(ctx->view_models), view_model);
+    darray_push(&(ctx->view_models_stack), view_model);
+  } else if (ctx->view_models_stack.size > 0) {
+    view_model = VIEW_MODEL(darray_tail(&(ctx->view_models_stack)));
+  }
+
+  ctx->current_view_model = view_model;
+  if (view_model != NULL) {
+    if (widget->custom_props != NULL) {
+      ctx->current_widget = widget;
+      object_foreach_prop(widget->custom_props, visit_bind_one_prop, ctx);
+    }
+  }
+
+  WIDGET_FOR_EACH_CHILD_BEGIN(widget, iter, i)
+  binding_context_awtk_bind_widget(ctx, iter);
+  WIDGET_FOR_EACH_CHILD_END();
+
+  if (vmodel != NULL) {
+    model_on_mount(view_model->model);
+    emitter_on(EMITTER(view_model), EVT_PROP_CHANGED, on_view_model_prop_change, ctx);
+    emitter_on(EMITTER(view_model), EVT_PROPS_CHANGED, on_view_model_prop_change, ctx);
+    darray_pop(&(ctx->view_models_stack));
+  }
+
+  return RET_OK;
+}
+
+static ret_t binding_context_awtk_bind(binding_context_t* ctx, void* widget) {
+  return_value_if_fail(binding_context_awtk_bind_widget(ctx, WIDGET(widget)) == RET_OK, RET_FAIL);
   return_value_if_fail(binding_context_update_to_view(ctx) == RET_OK, RET_FAIL);
-  emitter_on(EMITTER(vm), EVT_PROP_CHANGED, on_view_model_prop_change, ctx);
-  emitter_on(EMITTER(vm), EVT_PROPS_CHANGED, on_view_model_prop_change, ctx);
   ctx->bound = TRUE;
 
   return RET_OK;
@@ -302,17 +337,16 @@ static ret_t binding_context_awtk_destroy(binding_context_t* ctx) {
 }
 
 static const binding_context_vtable_t s_binding_context_vtable = {
-    .bind = binding_context_awtk_bind,
     .update_to_view = binding_context_awtk_update_to_view,
     .update_to_model = binding_context_awtk_update_to_model,
     .destroy = binding_context_awtk_destroy};
 
-binding_context_t* binding_context_create(void) {
+binding_context_t* binding_context_awtk_create(navigator_request_t* req) {
   binding_context_t* ctx = TKMEM_ZALLOC(binding_context_t);
   return_value_if_fail(ctx != NULL, NULL);
 
   ctx->vt = &s_binding_context_vtable;
-  if (binding_context_init(ctx) != RET_OK) {
+  if (binding_context_init(ctx, req) != RET_OK) {
     binding_context_destroy(ctx);
     ctx = NULL;
   }
@@ -321,22 +355,23 @@ binding_context_t* binding_context_create(void) {
 }
 
 static ret_t binding_context_on_widget_destroy(void* ctx, event_t* e) {
-  binding_context_t* bctx = (binding_context_t*)ctx;
-
-  emitter_off_by_ctx(EMITTER(bctx->vm), bctx);
   binding_context_destroy((binding_context_t*)(ctx));
 
   return RET_REMOVE;
 }
 
-ret_t binding_context_bind_view_model(view_model_t* vm, widget_t* widget) {
+ret_t binding_context_bind_for_window(widget_t* widget, navigator_request_t* req) {
   binding_context_t* ctx = NULL;
-  return_value_if_fail(vm != NULL && widget != NULL, RET_BAD_PARAMS);
+  return_value_if_fail(widget != NULL, RET_BAD_PARAMS);
 
-  ctx = binding_context_create();
+  if (req != NULL) {
+    object_set_prop_pointer(OBJECT(req), NAVIGATOR_ARG_VIEW, widget);
+  }
+
+  ctx = binding_context_awtk_create(req);
   return_value_if_fail(ctx != NULL, RET_BAD_PARAMS);
 
-  goto_error_if_fail(binding_context_bind(ctx, vm, widget) == RET_OK);
+  goto_error_if_fail(binding_context_awtk_bind(ctx, widget) == RET_OK);
   widget_on(widget, EVT_DESTROY, binding_context_on_widget_destroy, ctx);
 
   return RET_OK;
@@ -344,16 +379,6 @@ error:
   binding_context_destroy(ctx);
 
   return RET_FAIL;
-}
-
-ret_t binding_context_bind_model(model_t* model, widget_t* widget) {
-  view_model_t* vm = NULL;
-  return_value_if_fail(model != NULL && widget != NULL, RET_BAD_PARAMS);
-
-  vm = view_model_normal_create(model);
-  return_value_if_fail(vm != NULL, RET_OOM);
-
-  return binding_context_bind_view_model(vm, widget);
 }
 
 static ret_t model_on_window_close(void* ctx, event_t* e) {
@@ -370,9 +395,8 @@ static ret_t model_on_window_destroy(void* ctx, event_t* e) {
 
 static model_t* default_create_model(widget_t* widget, navigator_request_t* req) {
   model_t* model = NULL;
+  widget_t* win = widget_get_window(widget);
   const char* vmodel = widget_get_prop_str(widget, WIDGET_PROP_V_MODEL, NULL);
-
-  object_set_prop_pointer(OBJECT(req), NAVIGATOR_ARG_VIEW, widget);
 
   if (vmodel != NULL) {
     char name[TK_NAME_LEN + 1];
@@ -401,31 +425,18 @@ static model_t* default_create_model(widget_t* widget, navigator_request_t* req)
     model = model_dummy_create(req);
   }
 
+  widget_on(win, EVT_DESTROY, model_on_window_destroy, model);
+  widget_on(win, EVT_WINDOW_CLOSE, model_on_window_close, model);
+
   return model;
 }
 
-ret_t vm_open_window(const char* name, model_t* model, navigator_request_t* req) {
-  ret_t ret = RET_FAIL;
+ret_t awtk_open_window(navigator_request_t* req) {
   widget_t* win = NULL;
-  return_value_if_fail(name != NULL && req != NULL, RET_BAD_PARAMS);
+  return_value_if_fail(req != NULL && req->target != NULL, RET_BAD_PARAMS);
 
-  win = window_open(name);
+  win = window_open(req->target);
   return_value_if_fail(win != NULL, RET_NOT_FOUND);
 
-  if (model == NULL) {
-    model = default_create_model(win, req);
-  }
-  return_value_if_fail(model != NULL, RET_FAIL);
-
-  model_on_will_mount(model, req);
-  ret = binding_context_bind_model(model, win);
-  if (ret == RET_OK) {
-    model_on_mount(model);
-    widget_on(win, EVT_DESTROY, model_on_window_destroy, model);
-    widget_on(win, EVT_WINDOW_CLOSE, model_on_window_close, model);
-  } else {
-    log_debug("vm_open_window bind failed\n");
-  }
-
-  return ret;
+  return binding_context_bind_for_window(win, req);
 }
