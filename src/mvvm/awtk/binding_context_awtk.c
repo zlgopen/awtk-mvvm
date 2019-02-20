@@ -378,6 +378,7 @@ ret_t binding_context_bind_for_window(widget_t* widget, navigator_request_t* req
   ctx = binding_context_awtk_create(req);
   return_value_if_fail(ctx != NULL, RET_BAD_PARAMS);
 
+  ctx->widget = widget;
   goto_error_if_fail(binding_context_awtk_bind(ctx, widget) == RET_OK);
   widget_on(widget, EVT_DESTROY, binding_context_on_widget_destroy, ctx);
 

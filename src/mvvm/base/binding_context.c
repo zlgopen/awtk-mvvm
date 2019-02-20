@@ -74,8 +74,11 @@ ret_t binding_context_update_to_model(binding_context_t* ctx) {
 ret_t binding_context_destroy(binding_context_t* ctx) {
   return_value_if_fail(ctx != NULL && ctx->vt != NULL, RET_BAD_PARAMS);
 
-  darray_deinit(&(ctx->command_bindings));
+  darray_deinit(&(ctx->view_models));
   darray_deinit(&(ctx->data_bindings));
+  darray_deinit(&(ctx->command_bindings));
+  darray_deinit(&(ctx->view_models_stack));
+
   if (ctx->navigator_request != NULL) {
     object_unref(OBJECT(ctx->navigator_request));
   }

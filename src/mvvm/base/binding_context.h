@@ -81,28 +81,24 @@ struct _binding_context_t {
    *
    */
   int32_t request_update_view;
-
   /**
    * @property {void*} current_widget
    * @annotation ["readable"]
    * 当前真正绑定的控件。
    */
   void* current_widget;
-
   /**
    * @property {view_model_t*} current_view_model
    * @annotation ["readable"]
    * 当前的ViewModel
    */
   view_model_t* current_view_model;
-
   /**
    * @property {void*} widget
    * @annotation ["readable"]
    * 绑定的根控件(通常是窗口)
    */
   void* widget;
-
   /**
    * @property {navigator_request_t*} navigator_request
    * @annotation ["readable"]
