@@ -200,9 +200,16 @@ static view_model_t* binding_context_awtk_create_view_model(widget_t* widget,
   return view_model;
 }
 
+static const char* widget_get_prop_vmodel(widget_t* widget) {
+  value_t v;
+  value_set_str(&v, NULL);
+
+  return (widget_get_prop(widget, WIDGET_PROP_V_MODEL, &v) == RET_OK) ? value_str(&v) : NULL;
+}
+
 static ret_t binding_context_awtk_bind_widget(binding_context_t* ctx, widget_t* widget) {
   view_model_t* view_model = NULL;
-  const char* vmodel = widget_get_prop_str(widget, WIDGET_PROP_V_MODEL, NULL);
+  const char* vmodel = widget_get_prop_vmodel(widget);
 
   if (vmodel != NULL || ctx->current_view_model == NULL) {
     view_model = binding_context_awtk_create_view_model(widget, ctx->navigator_request);
@@ -396,12 +403,16 @@ static ret_t model_on_window_destroy(void* ctx, event_t* e) {
 static model_t* default_create_model(widget_t* widget, navigator_request_t* req) {
   model_t* model = NULL;
   widget_t* win = widget_get_window(widget);
-  const char* vmodel = widget_get_prop_str(widget, WIDGET_PROP_V_MODEL, NULL);
+  const char* vmodel = widget_get_prop_vmodel(widget);
 
   if (vmodel != NULL) {
     char name[TK_NAME_LEN + 1];
     char* ext_name = NULL;
     tk_strncpy(name, vmodel, TK_NAME_LEN);
+
+    if (req != NULL) {
+      object_set_prop_pointer(OBJECT(req), NAVIGATOR_ARG_VIEW, widget);
+    }
 
     ext_name = strrchr(name, '.');
     if (ext_name != NULL) {

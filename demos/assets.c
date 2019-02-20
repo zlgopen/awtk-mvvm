@@ -20,6 +20,7 @@
 #include "assets/inc/ui/temperature4.data"
 #include "assets/inc/ui/js_temperature9.data"
 #include "assets/inc/ui/js_temperature5.data"
+#include "assets/inc/ui/temperature_humidity.data"
 #include "assets/inc/ui/js_temperature4.data"
 #include "assets/inc/ui/temperature9.data"
 #include "assets/inc/ui/temperature5.data"
@@ -27,6 +28,7 @@
 #include "assets/inc/ui/js_demo9_main.data"
 #include "assets/inc/ui/js_temperature3.data"
 #include "assets/inc/ui/temperature2.data"
+#include "assets/inc/ui/js_temperature_humidity.data"
 #include "assets/inc/ui/temperature3.data"
 #include "assets/inc/ui/js_temperature2.data"
 #include "assets/inc/ui/demo9_main.data"
@@ -110,6 +112,7 @@ ret_t assets_init(void) {
   assets_manager_add(rm, ui_temperature4);
   assets_manager_add(rm, ui_js_temperature9);
   assets_manager_add(rm, ui_js_temperature5);
+  assets_manager_add(rm, ui_temperature_humidity);
   assets_manager_add(rm, ui_js_temperature4);
   assets_manager_add(rm, ui_temperature9);
   assets_manager_add(rm, ui_temperature5);
@@ -117,6 +120,7 @@ ret_t assets_init(void) {
   assets_manager_add(rm, ui_js_demo9_main);
   assets_manager_add(rm, ui_js_temperature3);
   assets_manager_add(rm, ui_temperature2);
+  assets_manager_add(rm, ui_js_temperature_humidity);
   assets_manager_add(rm, ui_temperature3);
   assets_manager_add(rm, ui_js_temperature2);
   assets_manager_add(rm, ui_demo9_main);
