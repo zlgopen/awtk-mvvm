@@ -1,7 +1,7 @@
 ﻿/**
- * File:   temperature.h
+ * File:   room_settings.h
  * Author: AWTK Develop Team
- * Brief:  temperature
+ * Brief:  room_settings
  *
  * Copyright (c) 2019 - 2019  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
@@ -15,44 +15,48 @@
 /**
  * History:
  * ================================================================
- * 2019-02-02 Li XianJing <xianjimli@hotmail.com> created
+ * 2019-02-20 Li XianJing <xianjimli@hotmail.com> created
  *
  */
 
-#ifndef TK_TEMPERATURE_EX_H
-#define TK_TEMPERATURE_EX_H
+#ifndef TK_ROOM_SETTINGS_H
+#define TK_ROOM_SETTINGS_H
 
 #include "mvvm/base/model.h"
+#include "room_settings_defines.h"
 
 BEGIN_C_DECLS
 
 /**
- * @class temperature_ex_t
+ * @class room_settings_t
  *
- * 温度对象。
+ * 空气调节器对象。
  *
  */
-typedef struct _temperature_ex_t {
+typedef struct _room_settings_t {
   model_t model;
 
-  double value;
+  /*房间名称*/
+  char* room;
+  /*温度*/
+  double temp;
+  /*湿度*/
+  double humidity;
 
-  double saved_value;
-} temperature_ex_t;
+  navigator_request_t* req;
+} room_settings_t;
 
 /**
- * @method temperature_create
- * 创建temperature对象。
+ * @method room_settings_create
+ * 创建room_settings对象。
  *
  * @annotation ["constructor"]
  * @param {navigator_request_t*} req 请求参数。
  *
  * @return {model_t} 返回model_t对象。
  */
-model_t* temperature_ex_create(navigator_request_t* req);
-
-#define TEMPERATURE_EX(t) ((temperature_ex_t*)(t))
+model_t* room_settings_create(navigator_request_t* req);
 
 END_C_DECLS
 
-#endif /*TK_TEMPERATURE_EX_H*/
+#endif /*TK_ROOM_SETTINGS_H*/

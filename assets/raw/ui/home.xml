@@ -1,0 +1,12 @@
+<window anim_hint="htranslate" v-model="home">
+  <label text="1" x="center" y="10" w="90%" h="40" v-data:text="{bed_room_info}"/>
+  <label text="1" x="center" y="60" w="90%" h="40" v-data:text="{living_room_info}"/>
+
+  <button text="Adjust BedRoom" x="center" y="middle:-40" w="60%" h="40" 
+    v-on:click="{adjustBedRoom}"/>
+  <button text="Adjust LivingRoom" x="center" y="middle:40" w="60%" h="40" 
+    v-on:click="{adjustLivingRoom}"/>
+  
+  <button text="Quit" x="center" y="bottom:40" w="60%" h="40" 
+    v-on:click="{quit}"/>
+</window>

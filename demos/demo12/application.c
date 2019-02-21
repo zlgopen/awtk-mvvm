@@ -1,0 +1,35 @@
+/**
+ * File:   application.c
+ * Author: AWTK Develop Team
+ * Brief:  application
+ *
+ * Copyright (c) 2018 - 2019  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * License file for more details.
+ *
+ */
+
+/**
+ * History:
+ * ================================================================
+ * 2019-02-02 Li XianJing <xianjimli@hotmail.com> created
+ *
+ */
+
+#include "awtk.h"
+#include "mvvm/mvvm.h"
+
+#include "home.h"
+#include "../common/room_settings.h"
+
+ret_t application_init() {
+  model_factory_register("home", home_create);
+  model_factory_register("room_settings", room_settings_create);
+
+  return navigator_to("home");
+}
+
+#include "../awtk_main.c"

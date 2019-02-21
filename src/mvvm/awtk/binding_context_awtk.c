@@ -361,8 +361,14 @@ binding_context_t* binding_context_awtk_create(navigator_request_t* req) {
   return ctx;
 }
 
+static ret_t binding_context_destroy_async(const idle_info_t* info) {
+  binding_context_destroy((binding_context_t*)(info->ctx));
+
+  return RET_REMOVE;
+}
+
 static ret_t binding_context_on_widget_destroy(void* ctx, event_t* e) {
-  binding_context_destroy((binding_context_t*)(ctx));
+  idle_add(binding_context_destroy_async, ctx);
 
   return RET_REMOVE;
 }

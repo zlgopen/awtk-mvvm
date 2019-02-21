@@ -1,0 +1,21 @@
+<window anim_hint="htranslate" children_layout="default(r=3, c=1)" v-model="room_settings">
+ <label floating="true" x="center" y="10" w="50%" h="40" v-data:text="{room}"/>
+
+  <view>
+    <label text="1" x="center" y="30" w="90%" h="40" text="temperature"/>
+    <label text="1" x="center" y="middle" w="50%" h="40" v-data:text="{temp}"/>
+    <slider value="1" x="center" y="middle:40" w="80%" h="20" v-data:value="{temp, Trigger=Changing}"/>
+  </view>
+
+  <view>
+    <label text="1" x="center" y="30" w="90%" h="40" text="humidity"/>
+    <label text="1" x="center" y="middle" w="50%" h="40" v-data:text="{humidity}"/>
+    <slider value="1" x="center" y="middle:40" w="80%" h="20" v-data:value="{humidity, Trigger=Changing}"/>
+  </view>
+
+  <button text="OK" floating="true" x="center:-90" y="bottom:40" w="100" h="40" 
+    v-on:click="{return, CloseWindow=True}"/>
+
+  <button text="Cancel" floating="true" x="center:90" y="bottom:40" w="100" h="40" 
+    v-on:click="{nothing, CloseWindow=True}"/>
+</window>
