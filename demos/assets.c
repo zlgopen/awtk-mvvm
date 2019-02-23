@@ -10,8 +10,10 @@
 #include "assets/inc/ui/js_shape.data"
 #include "assets/inc/ui/js_temperature10.data"
 #include "assets/inc/ui/temperature1.data"
+#include "assets/inc/ui/js_room_settings.data"
 #include "assets/inc/ui/shape.data"
 #include "assets/inc/ui/temperature6.data"
+#include "assets/inc/ui/js_home.data"
 #include "assets/inc/ui/js_temperature7.data"
 #include "assets/inc/ui/humidity.data"
 #include "assets/inc/ui/js_humidity.data"
@@ -104,8 +106,10 @@ ret_t assets_init(void) {
   assets_manager_add(rm, ui_js_shape);
   assets_manager_add(rm, ui_js_temperature10);
   assets_manager_add(rm, ui_temperature1);
+  assets_manager_add(rm, ui_js_room_settings);
   assets_manager_add(rm, ui_shape);
   assets_manager_add(rm, ui_temperature6);
+  assets_manager_add(rm, ui_js_home);
   assets_manager_add(rm, ui_js_temperature7);
   assets_manager_add(rm, ui_humidity);
   assets_manager_add(rm, ui_js_humidity);

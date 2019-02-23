@@ -77,7 +77,7 @@ static ret_t model_jerryscript_exec(object_t* obj, const char* name, const char*
 jerry_value_t wrap_notify_props_changed(const jerry_value_t func_obj_val,
                                         const jerry_value_t this_p, const jerry_value_t args_p[],
                                         const jerry_length_t args_cnt) {
-  object_t* obj = jsobj_get_prop_object(this_p, STR_NATIVE_MODEL);
+  object_t* obj = OBJECT(jsobj_get_prop_pointer(this_p, STR_NATIVE_MODEL));
 
   return jerry_create_number(object_notify_changed(obj));
 }
@@ -221,7 +221,7 @@ model_t* model_jerryscript_create(const char* name, const char* code, uint32_t c
   goto_error_if_fail(jerry_value_check(modeljs->jsobj) == RET_OK);
 
   str_init(&(modeljs->temp), 0);
-  jsobj_set_prop_object(modeljs->jsobj, STR_NATIVE_MODEL, OBJECT(modeljs));
+  jsobj_set_prop_pointer(modeljs->jsobj, STR_NATIVE_MODEL, OBJECT(modeljs));
   jsobj_set_prop_func(modeljs->jsobj, "notifyPropsChanged", wrap_notify_props_changed);
 
   jerry_release_value(jsret);

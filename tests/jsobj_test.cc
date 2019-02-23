@@ -64,3 +64,18 @@ TEST(JsValue, wstr) {
 
   jerry_release_value(jsvalue);
 }
+
+TEST(JsValue, request) {
+  navigator_request_t* req = navigator_request_create("target", NULL);
+  object_set_prop_int(OBJECT(req), "int", 100);
+  object_set_prop_str(OBJECT(req), "str", "str");
+  jerry_value_t value = jerry_value_from_navigator_request(req);
+  navigator_request_t* req1 = jerry_value_to_navigator_request(value);
+
+  ASSERT_EQ(object_get_prop_int(OBJECT(req), "int", 0),
+            object_get_prop_int(OBJECT(req1), "int", 0));
+  ASSERT_STREQ(object_get_prop_str(OBJECT(req), "str"), object_get_prop_str(OBJECT(req1), "str"));
+
+  jerry_release_value(value);
+  object_unref(OBJECT(req));
+}

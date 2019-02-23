@@ -36,6 +36,7 @@ bool_t jsobj_has_prop_func(jerry_value_t obj, const char* name);
 ret_t jsobj_get_prop(jerry_value_t obj, const char* name, value_t* v, str_t* temp);
 jerry_value_t jsobj_get_prop_value(jerry_value_t obj, const char* name);
 object_t* jsobj_get_prop_object(jerry_value_t obj, const char* name);
+void* jsobj_get_prop_pointer(jerry_value_t obj, const char* name);
 
 ret_t jsobj_set_prop_pointer(jerry_value_t obj, const char* name, void* p);
 ret_t jsobj_set_prop_object(jerry_value_t obj, const char* name, object_t* ptr);
@@ -50,6 +51,8 @@ ret_t jsobj_exec_ex(jerry_value_t obj, const char* name, jerry_value_t args);
 bool_t jsobj_can_exec(jerry_value_t obj, const char* name, const char* args);
 
 jerry_value_t jerry_value_from_navigator_request(navigator_request_t* req);
+navigator_request_t* jerry_value_to_navigator_request(jerry_value_t value);
+
 ret_t jerry_value_to_value(jerry_value_t value, value_t* v, str_t* temp);
 jerry_value_t jerry_value_from_value(const value_t* v, str_t* temp);
 void* jerry_value_to_pointer(jerry_value_t value);

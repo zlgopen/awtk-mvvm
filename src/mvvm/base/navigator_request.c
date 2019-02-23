@@ -50,6 +50,13 @@ static ret_t navigator_request_get_prop(object_t* obj, const char* name, value_t
   return object_get_prop(req->args, name, v);
 }
 
+static ret_t object_default_foreach_prop(object_t* obj, tk_visit_t on_prop, void* ctx) {
+  navigator_request_t* req = NAVIGATOR_REQUEST(obj);
+  return_value_if_fail(obj != NULL && on_prop != NULL, RET_BAD_PARAMS);
+
+  return object_foreach_prop(req->args, on_prop, ctx);
+}
+
 static const object_vtable_t s_navigator_request_vtable = {
     .type = "navigator_request",
     .desc = "navigator_request",
@@ -59,7 +66,8 @@ static const object_vtable_t s_navigator_request_vtable = {
 
     .compare = navigator_request_compare,
     .get_prop = navigator_request_get_prop,
-    .set_prop = navigator_request_set_prop};
+    .set_prop = navigator_request_set_prop,
+    .foreach_prop = object_default_foreach_prop};
 
 navigator_request_t* navigator_request_create(const char* target,
                                               navigator_request_on_result_t on_result) {

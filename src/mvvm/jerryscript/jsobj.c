@@ -23,7 +23,11 @@
 #include "tkc/utils.h"
 #include "tkc/named_value.h"
 #include "jerryscript-port.h"
+#include "tkc/object_default.h"
 #include "jerryscript-ext/handler.h"
+
+static ret_t jerry_value_to_obj(jerry_value_t value, object_t* obj);
+static ret_t jerry_value_from_obj(jerry_value_t value, object_t* obj);
 
 #if !defined(NDEBUG)
 #define JERRY_BUFFER_SIZE (40 * 1024)
@@ -375,14 +379,21 @@ ret_t jerry_value_to_value(jerry_value_t value, value_t* v, str_t* temp) {
       bool_t raw_value = jerry_get_boolean_value(value);
       value_set_bool(v, raw_value);
       ret = RET_OK;
-    } else {
+    } else if (jerry_value_is_object(value)) {
       void* p = NULL;
       if (jerry_get_object_native_pointer(value, &p, NULL)) {
         value_set_pointer(v, p);
         ret = RET_OK;
       } else {
-        log_debug("not supported yet.\n");
+        object_t* obj = object_default_create();
+        jerry_value_to_obj(value, obj);
+        value_set_object(v, obj);
+        v->free_handle = TRUE;
+        ret = RET_OK;
       }
+      /*TODO:*/
+    } else {
+      log_debug("not supported yet.\n");
     }
   }
 
@@ -413,10 +424,10 @@ jerry_value_t jerry_value_from_value(const value_t* v, str_t* temp) {
     jerry_set_object_native_pointer(value, (void*)value_pointer(v), NULL);
   } else if (v->type == VALUE_TYPE_OBJECT) {
     object_t* obj = OBJECT(value_object(v));
-
     value = jerry_create_object();
-    object_ref(obj);
-    jerry_set_object_native_pointer(value, obj, &s_jerry_object_info);
+    jerry_value_from_obj(value, obj);
+    // object_ref(obj);
+    // jerry_set_object_native_pointer(value, obj, &s_jerry_object_info);
   } else {
     value = jerry_create_number(value_float(v));
   }
@@ -437,6 +448,15 @@ jerry_value_t jerry_value_from_pointer(void* ptr) {
   value_set_pointer(&v, ptr);
 
   return jerry_value_from_value(&v, NULL);
+}
+
+void* jsobj_get_prop_pointer(jerry_value_t obj, const char* name) {
+  void* p = NULL;
+  jerry_value_t value = jsobj_get_prop_value(obj, name);
+  jerry_get_object_native_pointer(value, &p, NULL);
+  jerry_release_value(value);
+
+  return p;
 }
 
 ret_t jsobj_set_prop_pointer(jerry_value_t obj, const char* name, void* ptr) {
@@ -587,18 +607,36 @@ ret_t jsvalue_validator_fix(const char* name, value_t* v) {
   return ret;
 }
 
-typedef struct _tk_visit_from_req_info_t {
-  jerry_value_t obj;
+typedef struct _jerry_value_from_obj_ctx_t {
   str_t* str;
-} tk_visit_from_req_info_t;
+  jerry_value_t value;
+} jerry_value_from_obj_ctx_t;
 
-static ret_t prop_to_jsobj(void* ctx, const void* data) {
+static ret_t visit_object_prop(void* ctx, const void* data) {
   named_value_t* nv = (named_value_t*)data;
-  tk_visit_from_req_info_t* info = (tk_visit_from_req_info_t*)ctx;
+  jerry_value_from_obj_ctx_t* info = (jerry_value_from_obj_ctx_t*)ctx;
 
-  jsobj_set_prop(info->obj, nv->name, &(nv->value), info->str);
+  jsobj_set_prop(info->value, nv->name, &(nv->value), info->str);
+  log_debug("visit_object_prop: %s\n", nv->name);
 
   return RET_OK;
+}
+
+static ret_t jerry_value_from_obj(jerry_value_t value, object_t* obj) {
+  str_t str;
+  ret_t ret = RET_OK;
+  jerry_value_from_obj_ctx_t info;
+
+  str_init(&str, 0);
+
+  info.str = &str;
+  info.value = value;
+
+  ret = object_foreach_prop(obj, visit_object_prop, &info);
+
+  str_reset(&str);
+
+  return ret;
 }
 
 #define STR_NATIVE_REQ "nativeRequest"
@@ -609,12 +647,14 @@ jerry_value_t js_return_result(const jerry_value_t func_obj_val, const jerry_val
     value_t v;
     str_t str;
     jerry_value_t result = args_p[0];
-    navigator_request_t* req = NAVIGATOR_REQUEST(jsobj_get_prop_object(this_p, STR_NATIVE_REQ));
+    navigator_request_t* req = NAVIGATOR_REQUEST(jsobj_get_prop_pointer(this_p, STR_NATIVE_REQ));
 
     str_init(&str, 0);
-    if (jerry_value_to_value(result, &v, &str) == RET_OK) {
-      navigator_request_on_result(req, &v);
+    value_set_int(&v, 0);
+    if (jerry_value_to_value(result, &v, &str) != RET_OK) {
+      log_warn("js_return_result: jerry_value_to_value failed\n");
     }
+    navigator_request_on_result(req, &v);
     str_reset(&str);
   } else {
     log_warn("wrap_notify_props_changed no nativeModel\n");
@@ -624,23 +664,115 @@ jerry_value_t js_return_result(const jerry_value_t func_obj_val, const jerry_val
 }
 
 jerry_value_t jerry_value_from_navigator_request(navigator_request_t* req) {
-  str_t str;
-  tk_visit_from_req_info_t info;
   jerry_value_t obj = jerry_create_object();
 
-  str_init(&str, 0);
-
-  info.obj = obj;
-  info.str = &str;
-
   if (req != NULL) {
-    ENSURE(object_foreach_prop(req->args, prop_to_jsobj, &info) == RET_OK);
-    ENSURE(jsobj_set_prop_object(obj, STR_NATIVE_REQ, OBJECT(req)) == RET_OK);
+    log_debug("jerry_value_from_navigator_request{%p\n", req);
+    jerry_value_from_obj(obj, OBJECT(req));
+    log_debug("}jerry_value_from_navigator_request\n");
+    ENSURE(jsobj_set_prop_str(obj, NAVIGATOR_ARG_TARGET, req->target) == RET_OK);
+    ENSURE(jsobj_set_prop_pointer(obj, STR_NATIVE_REQ, OBJECT(req)) == RET_OK);
   }
 
   ENSURE(jsobj_set_prop_func(obj, JSOBJ_ON_RESULT, js_return_result) == RET_OK);
 
-  str_reset(&str);
-
   return obj;
+}
+
+static ret_t jerryscript_on_result(navigator_request_t* req, const value_t* result) {
+  jerry_value_t func = (jerry_value_t)object_get_prop_int(OBJECT(req), JSOBJ_ON_RESULT, 0);
+  if (func && jerry_value_is_function(func)) {
+    str_t str;
+    str_init(&str, 0);
+    jerry_value_t thiz = jerry_create_null();
+    jerry_value_t jsargs = jerry_value_from_value(result, &str);
+    jerry_value_t jsret = jerry_call_function(func, thiz, &jsargs, 1);
+
+    str_reset(&str);
+    jerry_release_value(func);
+    jerry_release_value(thiz);
+    jerry_release_value(jsret);
+    jerry_release_value(jsargs);
+  } else {
+    log_debug("no onResult\n");
+  }
+
+  return RET_OK;
+}
+
+typedef struct _jerry_value_to_obj_ctx_t {
+  str_t* name_str;
+  str_t* value_str;
+  object_t* obj;
+} jerry_value_to_obj_ctx_t;
+
+static bool visit_jerry_object_prop(const jerry_value_t property_name,
+                                    const jerry_value_t property_value, void* user_data_p) {
+  value_t name;
+  value_t value;
+  jerry_value_to_obj_ctx_t* info = (jerry_value_to_obj_ctx_t*)user_data_p;
+
+  jerry_value_to_value(property_name, &name, info->name_str);
+  if (tk_str_eq(value_str(&name), JSOBJ_ON_RESULT)) {
+    jerry_acquire_value(property_value);
+    value_set_int(&value, property_value);
+  } else {
+    jerry_value_to_value(property_value, &value, info->value_str);
+  }
+
+  object_set_prop(OBJECT(info->obj), value_str(&name), &value);
+
+  log_debug("visit_jerry_object_prop: %s\n", value_str(&name));
+
+  value_reset(&name);
+  value_reset(&value);
+
+  return true;
+}
+
+static ret_t jerry_value_to_obj(jerry_value_t value, object_t* obj) {
+  str_t str_name;
+  str_t str_value;
+  jerry_value_to_obj_ctx_t info;
+
+  str_init(&str_name, 0);
+  str_init(&str_value, 0);
+
+  info.obj = obj;
+  info.name_str = &str_name;
+  info.value_str = &str_value;
+
+  jerry_foreach_object_property(value, visit_jerry_object_prop, &info);
+
+  str_reset(&str_name);
+  str_reset(&str_value);
+
+  return RET_OK;
+}
+
+navigator_request_t* jerry_value_to_navigator_request(jerry_value_t obj) {
+  value_t v;
+  str_t str;
+  ret_t ret = RET_OK;
+  const char* target = NULL;
+  navigator_request_t* req = NULL;
+
+  str_init(&str, 0);
+  value_set_str(&v, NULL);
+
+  ret = jsobj_get_prop(obj, NAVIGATOR_ARG_TARGET, &v, &str);
+  goto_error_if_fail(ret == RET_OK);
+
+  target = value_str(&v);
+  goto_error_if_fail(target != NULL);
+
+  req = navigator_request_create(target, jerryscript_on_result);
+  goto_error_if_fail(req != NULL);
+
+  jerry_value_to_obj(obj, OBJECT(req));
+error:
+  str_reset(&str);
+  value_reset(&v);
+
+  return req;
 }

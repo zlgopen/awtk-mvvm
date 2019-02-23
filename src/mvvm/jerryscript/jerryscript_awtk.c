@@ -30,6 +30,7 @@
 #include "src/awtk_global.h"
 #include "mvvm/jerryscript/jsobj.h"
 #include "mvvm/jerryscript/jerryscript_awtk.h"
+#include "mvvm/base/navigator.h"
 #include "mvvm/base/model_factory.h"
 #include "mvvm/jerryscript/jsobj.h"
 #include "mvvm/jerryscript/jerryscript_awtk.h"
@@ -167,6 +168,39 @@ jerry_value_t wrap_quit(const jerry_value_t func_obj_val, const jerry_value_t th
   return jerry_create_number(0);
 }
 
+jerry_value_t wrap_navigate_to(const jerry_value_t func_obj_val, const jerry_value_t this_p,
+                               const jerry_value_t args_p[], const jerry_length_t args_cnt) {
+  str_t str;
+  value_t v;
+  ret_t ret = RET_BAD_PARAMS;
+
+  str_init(&str, 0);
+  value_set_int(&v, 0);
+
+  if (args_cnt == 1) {
+    jerry_value_t req = args_p[0];
+
+    if (jerry_value_is_object(req)) {
+      navigator_request_t* request = jerry_value_to_navigator_request(req);
+      goto_error_if_fail(request != NULL);
+      navigator_to_ex(request);
+      object_unref(OBJECT(request));
+
+    } else if (jerry_value_is_string(req)) {
+      ret = jerry_value_to_value(req, &v, &str);
+      goto_error_if_fail(ret == RET_OK);
+
+      navigator_to(value_str(&v));
+    }
+  }
+
+error:
+  value_reset(&v);
+  str_reset(&str);
+
+  return jerry_create_number(ret);
+}
+
 static model_t* model_jerryscript_create_with_widget(navigator_request_t* req) {
   char* p = NULL;
   model_t* model = NULL;
@@ -203,6 +237,7 @@ ret_t jerryscript_awtk_init(void) {
   jerryx_handler_register_global((const jerry_char_t*)"timerRemove", wrap_timer_remove);
   jerryx_handler_register_global((const jerry_char_t*)"idleAdd", wrap_idle_add);
   jerryx_handler_register_global((const jerry_char_t*)"idleRemove", wrap_idle_remove);
+  jerryx_handler_register_global((const jerry_char_t*)"navigateTo", wrap_navigate_to);
   model_factory_register(".js", model_jerryscript_create_with_widget);
 
   return RET_OK;
