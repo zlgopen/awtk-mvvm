@@ -5,10 +5,6 @@ function Home() {
 }
 
 Home.prototype.onResult = function(args) {
-  console.log('Home.prototype.onResult');
-  console.log(args.room);
-  console.log(args.temp);
-  console.log(args.humidity);
   if(args.room == 'bed_room') {
     this.bed_room.temp = args.temp;
     this.bed_room.humidity = args.humidity;
@@ -17,6 +13,8 @@ Home.prototype.onResult = function(args) {
     this.living_room.humidity = args.humidity;
   }
   this.notifyPropsChanged();
+
+  return true;
 }
 
 Home.prototype.adjustBedRoom = function(args) {
@@ -27,6 +25,7 @@ Home.prototype.adjustBedRoom = function(args) {
     humidity : this.bed_room.humidity,
     onResult : Home.prototype.onResult.bind(this)
   }); 
+
   return true;
 }
 
