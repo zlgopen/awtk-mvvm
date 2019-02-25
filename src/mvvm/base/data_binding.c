@@ -66,8 +66,6 @@ static ret_t data_binding_object_set_prop(object_t* obj, const char* name, const
 
     if (equal(value, STR_ONCE)) {
       mode = BINDING_ONCE;
-    } else if (equal(value, STR_ONCE)) {
-      mode = BINDING_ONCE;
     } else if (equal(value, STR_TWO_WAY)) {
       mode = BINDING_TWO_WAY;
     } else if (equal(value, STR_ONE_WAY)) {
