@@ -28,8 +28,6 @@ ret_t binding_context_init(binding_context_t* ctx, navigator_request_t* navigato
   darray_init(&(ctx->command_bindings), 10, (tk_destroy_t)object_unref,
               (tk_compare_t)object_compare);
   darray_init(&(ctx->data_bindings), 10, (tk_destroy_t)object_unref, (tk_compare_t)object_compare);
-  darray_init(&(ctx->view_models), 10, (tk_destroy_t)object_unref, (tk_compare_t)object_compare);
-  darray_init(&(ctx->view_models_stack), 10, (tk_destroy_t)NULL, (tk_compare_t)object_compare);
 
   if (navigator_request != NULL) {
     ctx->navigator_request = navigator_request;
@@ -74,13 +72,15 @@ ret_t binding_context_update_to_model(binding_context_t* ctx) {
 ret_t binding_context_destroy(binding_context_t* ctx) {
   return_value_if_fail(ctx != NULL && ctx->vt != NULL, RET_BAD_PARAMS);
 
-  darray_deinit(&(ctx->view_models));
   darray_deinit(&(ctx->data_bindings));
   darray_deinit(&(ctx->command_bindings));
-  darray_deinit(&(ctx->view_models_stack));
 
   if (ctx->navigator_request != NULL) {
     object_unref(OBJECT(ctx->navigator_request));
+  }
+  
+  if (ctx->view_model != NULL) {
+    object_unref(OBJECT(ctx->view_model));
   }
 
   if (ctx->vt->destroy != NULL) {

@@ -49,7 +49,7 @@ TK_JS_JERRYSCRIPT_DIRS = [
 APP_LIBS = ['assets', 'jerryscript', 'mvvm']
 APP_LIBPATH = [APP_LIB_DIR]
 APP_CPPPATH = TK_JS_JERRYSCRIPT_DIRS + [APP_SRC]
-APP_CCFLAGS = '-DRES_ROOT=\"\\\"'+RES_ROOT+'\\\"\" '
+APP_CCFLAGS = '-DRES_ROOT=\"\\\"'+RES_ROOT+'\\\"\" -DWITH_JERRYSCRIPT '
 
 DefaultEnvironment(
   CPPPATH   = APP_CPPPATH + awtk.CPPPATH,

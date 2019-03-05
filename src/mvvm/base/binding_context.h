@@ -88,11 +88,11 @@ struct _binding_context_t {
    */
   void* current_widget;
   /**
-   * @property {view_model_t*} current_view_model
+   * @property {view_model_t*} view_model
    * @annotation ["readable"]
-   * 当前的ViewModel
+   * ViewModel
    */
-  view_model_t* current_view_model;
+  view_model_t* view_model;
   /**
    * @property {void*} widget
    * @annotation ["readable"]
@@ -107,9 +107,6 @@ struct _binding_context_t {
   navigator_request_t* navigator_request;
 
   /*private*/
-  darray_t view_models;
-  darray_t view_models_stack;
-
   const binding_context_vtable_t* vt;
 };
 

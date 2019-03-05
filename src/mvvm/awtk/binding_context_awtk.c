@@ -36,6 +36,7 @@
 #include "mvvm/awtk/binding_context_awtk.h"
 
 static model_t* default_create_model(widget_t* widget, navigator_request_t* req);
+static ret_t binding_context_bind_for_widget(widget_t* widget, navigator_request_t* req);
 
 static ret_t visit_data_binding_update_error_of(void* ctx, const void* data) {
   data_binding_t* rule = DATA_BINDING(data);
@@ -95,7 +96,7 @@ static ret_t binding_context_bind_data(binding_context_t* ctx, const char* name,
 
   BINDING_RULE(rule)->widget = widget;
   BINDING_RULE(rule)->binding_context = ctx;
-  BINDING_RULE(rule)->view_model = ctx->current_view_model;
+  BINDING_RULE(rule)->view_model = ctx->view_model;
   goto_error_if_fail(darray_push(&(ctx->data_bindings), rule) == RET_OK);
 
   if (rule->trigger != UPDATE_WHEN_EXPLICIT) {
@@ -157,7 +158,7 @@ static ret_t binding_context_bind_command(binding_context_t* ctx, const char* na
 
   BINDING_RULE(rule)->widget = widget;
   BINDING_RULE(rule)->binding_context = ctx;
-  BINDING_RULE(rule)->view_model = ctx->current_view_model;
+  BINDING_RULE(rule)->view_model = ctx->view_model;
   goto_error_if_fail(darray_push(&(ctx->command_bindings), rule) == RET_OK);
 
   event = int_str_name(s_event_map, rule->event, EVT_NONE);
@@ -211,18 +212,12 @@ static ret_t binding_context_awtk_bind_widget(binding_context_t* ctx, widget_t* 
   view_model_t* view_model = NULL;
   const char* vmodel = widget_get_prop_vmodel(widget);
 
-  if (vmodel != NULL || ctx->current_view_model == NULL) {
-    view_model = binding_context_awtk_create_view_model(widget, ctx->navigator_request);
-    return_value_if_fail(view_model != NULL, RET_FAIL);
-
-    model_on_will_mount(view_model->model, ctx->navigator_request);
-    darray_push(&(ctx->view_models), view_model);
-    darray_push(&(ctx->view_models_stack), view_model);
-  } else if (ctx->view_models_stack.size > 0) {
-    view_model = VIEW_MODEL(darray_tail(&(ctx->view_models_stack)));
+  if (vmodel != NULL && ctx->widget != widget) {
+    return binding_context_bind_for_widget(widget, ctx->navigator_request);
+  } else {
+    view_model = ctx->view_model;
   }
 
-  ctx->current_view_model = view_model;
   if (view_model != NULL) {
     if (widget->custom_props != NULL) {
       ctx->current_widget = widget;
@@ -238,7 +233,6 @@ static ret_t binding_context_awtk_bind_widget(binding_context_t* ctx, widget_t* 
     model_on_mount(view_model->model);
     emitter_on(EMITTER(view_model), EVT_PROP_CHANGED, on_view_model_prop_change, ctx);
     emitter_on(EMITTER(view_model), EVT_PROPS_CHANGED, on_view_model_prop_change, ctx);
-    darray_pop(&(ctx->view_models_stack));
   }
 
   return RET_OK;
@@ -348,12 +342,25 @@ static const binding_context_vtable_t s_binding_context_vtable = {
     .update_to_model = binding_context_awtk_update_to_model,
     .destroy = binding_context_awtk_destroy};
 
-binding_context_t* binding_context_awtk_create(navigator_request_t* req) {
+binding_context_t* binding_context_awtk_create(widget_t* widget, navigator_request_t* req) {
+  view_model_t* view_model = NULL;
   binding_context_t* ctx = TKMEM_ZALLOC(binding_context_t);
   return_value_if_fail(ctx != NULL, NULL);
 
   ctx->vt = &s_binding_context_vtable;
   if (binding_context_init(ctx, req) != RET_OK) {
+    binding_context_destroy(ctx);
+    ctx = NULL;
+  }
+
+  object_set_prop_pointer(OBJECT(req), NAVIGATOR_ARG_VIEW, widget);
+  view_model = binding_context_awtk_create_view_model(widget, ctx->navigator_request);
+
+  if (view_model != NULL) {
+    ctx->widget = widget;
+    ctx->view_model = view_model;
+    model_on_will_mount(view_model->model, ctx->navigator_request);
+  } else {
     binding_context_destroy(ctx);
     ctx = NULL;
   }
@@ -373,18 +380,14 @@ static ret_t binding_context_on_widget_destroy(void* ctx, event_t* e) {
   return RET_REMOVE;
 }
 
-ret_t binding_context_bind_for_window(widget_t* widget, navigator_request_t* req) {
+static ret_t binding_context_bind_for_widget(widget_t* widget, navigator_request_t* req) {
   binding_context_t* ctx = NULL;
-  return_value_if_fail(widget != NULL, RET_BAD_PARAMS);
+  view_model_t* view_model = NULL;
+  return_value_if_fail(widget != NULL && req != NULL, RET_BAD_PARAMS);
 
-  if (req != NULL) {
-    object_set_prop_pointer(OBJECT(req), NAVIGATOR_ARG_VIEW, widget);
-  }
-
-  ctx = binding_context_awtk_create(req);
+  ctx = binding_context_awtk_create(widget, req);
   return_value_if_fail(ctx != NULL, RET_BAD_PARAMS);
 
-  ctx->widget = widget;
   goto_error_if_fail(binding_context_awtk_bind(ctx, widget) == RET_OK);
   widget_on(widget, EVT_DESTROY, binding_context_on_widget_destroy, ctx);
 
@@ -393,6 +396,10 @@ error:
   binding_context_destroy(ctx);
 
   return RET_FAIL;
+}
+
+ret_t binding_context_bind_for_window(widget_t* widget, navigator_request_t* req) {
+  return binding_context_bind_for_widget(widget, req);
 }
 
 static ret_t model_on_window_close(void* ctx, event_t* e) {

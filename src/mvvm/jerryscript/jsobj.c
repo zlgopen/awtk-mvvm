@@ -767,4 +767,3 @@ jerry_value_t jerry_value_from_navigator_request(navigator_request_t* req) {
 
   return obj;
 }
-
