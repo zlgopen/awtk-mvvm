@@ -59,17 +59,6 @@ struct _model_t {
 };
 
 /**
- * @method model_dummy_create
- * 创建dummy模型对象。
- *
- * 对于一些简单的窗口，只需要简单的导航(打开或关闭窗口)，可以不用实现自己的模型，而使用dummy模型。
- * @param {navigator_request_t*} req 请求参数。
- *
- * @return {model_t*} 返回model对象。
- */
-model_t* model_dummy_create(navigator_request_t* req);
-
-/**
  * @method model_on_will_mount
  * 打开视图即将加载模型时通知model。
  *

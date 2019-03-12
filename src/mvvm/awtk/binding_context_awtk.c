@@ -28,6 +28,7 @@
 #include "base/widget.h"
 #include "widgets/window.h"
 #include "mvvm/base/data_binding.h"
+#include "mvvm/base/model_dummy.h"
 #include "mvvm/base/model_factory.h"
 #include "mvvm/base/binding_context.h"
 #include "mvvm/base/command_binding.h"

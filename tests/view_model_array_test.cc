@@ -1,4 +1,5 @@
 ﻿#include "tkc/utils.h"
+#include "mvvm/base/model_dummy.h"
 #include "mvvm/base/view_model_array.h"
 #include "gtest/gtest.h"
 
