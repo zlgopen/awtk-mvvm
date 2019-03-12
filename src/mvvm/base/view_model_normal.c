@@ -35,27 +35,31 @@ static int32_t view_model_normal_compare(object_t* obj, object_t* other) {
 }
 
 static ret_t view_model_normal_set_prop(object_t* obj, const char* name, const value_t* v) {
+  view_model_t* vm = VIEW_MODEL(obj);
   return_value_if_fail(obj != NULL && name != NULL && v != NULL, RET_BAD_PARAMS);
 
-  return RET_NOT_FOUND;
+  return object_set_prop(OBJECT(vm->model), name, v);
 }
 
 static ret_t view_model_normal_get_prop(object_t* obj, const char* name, value_t* v) {
+  view_model_t* vm = VIEW_MODEL(obj);
   return_value_if_fail(obj != NULL && name != NULL && v != NULL, RET_BAD_PARAMS);
 
-  return RET_NOT_FOUND;
+  return object_get_prop(OBJECT(vm->model), name, v);
 }
 
 static bool_t view_model_normal_can_exec(object_t* obj, const char* name, const char* args) {
+  view_model_t* vm = VIEW_MODEL(obj);
   return_value_if_fail(obj != NULL && name != NULL, FALSE);
 
-  return FALSE;
+  return object_can_exec(OBJECT(vm->model), name, args);
 }
 
 static ret_t view_model_normal_exec(object_t* obj, const char* name, const char* args) {
+  view_model_t* vm = VIEW_MODEL(obj);
   return_value_if_fail(obj != NULL && name != NULL, RET_BAD_PARAMS);
 
-  return RET_NOT_FOUND;
+  return object_exec(OBJECT(vm->model), name, args);
 }
 
 static const object_vtable_t s_view_model_normal_vtable = {
