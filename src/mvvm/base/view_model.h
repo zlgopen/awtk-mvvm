@@ -31,6 +31,9 @@ BEGIN_C_DECLS
 struct _view_model_t;
 typedef struct _view_model_t view_model_t;
 
+typedef const char* (*view_model_preprocess_expr_t)(view_model_t* vm, const char* expr);
+typedef const char* (*view_model_preprocess_prop_t)(view_model_t* vm, const char* prop);
+
 typedef enum _view_model_type_t {
   VIEW_MODEL_NORMAL = 0,
   VIEW_MODEL_ARRAY,
@@ -52,6 +55,8 @@ struct _view_model_t {
   model_t* model;
   str_t last_error;
   view_model_type_t type;
+  view_model_preprocess_expr_t preprocess_expr;
+  view_model_preprocess_prop_t preprocess_prop;
 };
 
 /**
@@ -148,6 +153,9 @@ ret_t view_model_exec(view_model_t* vm, const char* name, const char* args);
 ret_t view_model_deinit(view_model_t* vm);
 
 #define VIEW_MODEL(view_model) ((view_model_t*)(view_model))
+
+const char* view_model_preprocess_expr(view_model_t* vm, const char* expr);
+const char* view_model_preprocess_prop(view_model_t* vm, const char* prop);
 
 END_C_DECLS
 
