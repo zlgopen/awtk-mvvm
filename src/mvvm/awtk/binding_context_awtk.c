@@ -32,6 +32,7 @@
 #include "mvvm/base/model_factory.h"
 #include "mvvm/base/binding_context.h"
 #include "mvvm/base/command_binding.h"
+#include "mvvm/base/view_model_array.h"
 #include "mvvm/base/view_model_normal.h"
 #include "mvvm/base/binding_rule_parser.h"
 #include "mvvm/awtk/binding_context_awtk.h"
@@ -98,6 +99,12 @@ static ret_t binding_context_bind_data(binding_context_t* ctx, const char* name,
   BINDING_RULE(rule)->widget = widget;
   BINDING_RULE(rule)->binding_context = ctx;
   BINDING_RULE(rule)->view_model = ctx->view_model;
+  
+  if(object_is_collection(OBJECT(ctx->view_model))) {
+    uint32_t cursor = object_get_prop_int(OBJECT(ctx->view_model), MODEL_PROP_CURSOR, 0);
+    BINDING_RULE(rule)->cursor = cursor;
+  }
+
   goto_error_if_fail(darray_push(&(ctx->data_bindings), rule) == RET_OK);
 
   if (rule->trigger != UPDATE_WHEN_EXPLICIT) {
@@ -195,8 +202,14 @@ static ret_t on_view_model_prop_change(void* ctx, event_t* e) {
 
 static view_model_t* binding_context_awtk_create_view_model(widget_t* widget,
                                                             navigator_request_t* req) {
+  view_model_t* view_model = NULL;
   model_t* model = default_create_model(widget, req);
-  view_model_t* view_model = view_model_normal_create(model);
+
+  if (object_is_collection(OBJECT(model))) {
+    view_model = view_model_array_create(model);
+  } else {
+    view_model = view_model_normal_create(model);
+  }
   object_unref(OBJECT(model));
 
   return view_model;
@@ -239,8 +252,58 @@ static ret_t binding_context_awtk_bind_widget(binding_context_t* ctx, widget_t* 
   return RET_OK;
 }
 
+static ret_t binding_context_awtk_bind_widget_only(binding_context_t* ctx, widget_t* widget) {
+  if (widget->custom_props != NULL) {
+    ctx->current_widget = widget;
+    object_foreach_prop(widget->custom_props, visit_bind_one_prop, ctx);
+  }
+
+  WIDGET_FOR_EACH_CHILD_BEGIN(widget, iter, i)
+  binding_context_awtk_bind_widget_only(ctx, iter);
+  WIDGET_FOR_EACH_CHILD_END();
+
+  return RET_OK;
+}
+
+static ret_t binding_context_awtk_bind_widget_array(binding_context_t* ctx, widget_t* widget) {
+  uint32_t k = 0;
+  uint32_t items = 0;
+  uint32_t children_nr = 0;
+  view_model_t* view_model = ctx->view_model;
+  widget_t* template = widget_get_child(widget, 0);
+  return_value_if_fail(template != NULL, RET_BAD_PARAMS);
+  return_value_if_fail(object_is_collection(OBJECT(view_model)), RET_BAD_PARAMS);
+
+  items = object_get_prop_int(OBJECT(view_model), MODEL_PROP_ITEMS, 0);
+
+  children_nr = widget_count_children(widget);
+  for (k = children_nr; k < items; k++) {
+    widget_clone(template, widget);
+  }
+
+  WIDGET_FOR_EACH_CHILD_BEGIN(widget, iter, i)
+  widget_set_visible(iter, i < items, FALSE);
+  WIDGET_FOR_EACH_CHILD_END();
+
+  view_model_array_set_cursor(view_model, 0);
+  WIDGET_FOR_EACH_CHILD_BEGIN(widget, iter, i)
+  binding_context_awtk_bind_widget_only(ctx, iter);
+  view_model_array_inc_cursor(view_model);
+  WIDGET_FOR_EACH_CHILD_END();
+
+  return RET_OK;
+}
+
 static ret_t binding_context_awtk_bind(binding_context_t* ctx, void* widget) {
-  return_value_if_fail(binding_context_awtk_bind_widget(ctx, WIDGET(widget)) == RET_OK, RET_FAIL);
+  ret_t ret = RET_OK;
+
+  if (object_is_collection(OBJECT(ctx->view_model))) {
+    ret = binding_context_awtk_bind_widget_array(ctx, WIDGET(widget));
+  } else {
+    ret = binding_context_awtk_bind_widget(ctx, WIDGET(widget));
+  }
+
+  return_value_if_fail(ret == RET_OK, RET_FAIL);
   return_value_if_fail(binding_context_update_to_view(ctx) == RET_OK, RET_FAIL);
   ctx->bound = TRUE;
 
@@ -383,7 +446,6 @@ static ret_t binding_context_on_widget_destroy(void* ctx, event_t* e) {
 
 static ret_t binding_context_bind_for_widget(widget_t* widget, navigator_request_t* req) {
   binding_context_t* ctx = NULL;
-  view_model_t* view_model = NULL;
   return_value_if_fail(widget != NULL && req != NULL, RET_BAD_PARAMS);
 
   ctx = binding_context_awtk_create(widget, req);

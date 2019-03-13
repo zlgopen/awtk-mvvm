@@ -41,6 +41,11 @@ static int32_t view_model_array_compare(object_t* obj, object_t* other) {
 static ret_t view_model_array_set_prop(object_t* obj, const char* name, const value_t* v) {
   view_model_t* vm = VIEW_MODEL(obj);
   return_value_if_fail(obj != NULL && name != NULL && v != NULL, RET_BAD_PARAMS);
+  if (tk_str_eq(name, MODEL_PROP_CURSOR)) {
+    VIEW_MODEL_ARRAY(vm)->cursor = value_int(v);
+
+    return RET_OK;
+  }
 
   return object_set_prop(OBJECT(vm->model), name, v);
 }

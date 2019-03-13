@@ -1,16 +1,23 @@
 ﻿#include "mvvm/base/model_factory.h"
+#include "mvvm/base/model_dummy.h"
+#include "mvvm/base/model_array.h"
 #include "mvvm/awtk/binding_context_awtk.h"
 #include "widgets/window.h"
 #include "widgets/slider.h"
 #include "widgets/button.h"
+#include "widgets/label.h"
+#include "ext_widgets/scroll_view/list_view.h"
+#include "ext_widgets/scroll_view/list_item.h"
 #include "base/idle.h"
 #include "gtest/gtest.h"
 #include "test_obj.inc"
 
 static model_t* s_temp_model;
 static model_t* s_humidity_model;
+static model_t* s_persons_model;
 
 #define STR_V_MODEL_TEMP "temp"
+#define STR_V_MODEL_PERSONS "persons"
 #define STR_V_MODEL_HUMIDITY "humidity"
 
 static model_t* test_temp_model_get(navigator_request_t* req) {
@@ -25,6 +32,27 @@ static model_t* test_humidity_model_get(navigator_request_t* req) {
   return s_humidity_model;
 }
 
+static model_t* test_persons_model_get(navigator_request_t* req) {
+  object_ref(OBJECT(s_persons_model));
+
+  return s_persons_model;
+}
+
+static model_t* persons_create_model(void) {
+  uint32_t i = 0;
+  model_t* model = model_array_create(NULL);
+
+  for (i = 0; i < 10; i++) {
+    model_t* submodel = model_dummy_create(NULL);
+    object_set_prop_int(OBJECT(submodel), "a", 100 + i);
+    object_set_prop_int(OBJECT(submodel), "b", 100 + i + 1);
+    object_set_prop_int(OBJECT(submodel), "c", 100 + i + 2);
+    model_array_add(model, submodel);
+  }
+
+  return model;
+}
+
 static void test_model_init(void) {
   s_temp_model = test_obj_create_model();
   model_factory_register(STR_V_MODEL_TEMP, test_temp_model_get);
@@ -32,18 +60,25 @@ static void test_model_init(void) {
   s_humidity_model = test_obj_create_model();
   model_factory_register(STR_V_MODEL_HUMIDITY, test_humidity_model_get);
 
+  s_persons_model = persons_create_model();
+  model_factory_register(STR_V_MODEL_PERSONS, test_persons_model_get);
+
   return;
 }
 
 static ret_t test_model_deinit(void) {
   model_factory_unregister(STR_V_MODEL_TEMP);
   model_factory_unregister(STR_V_MODEL_HUMIDITY);
+  model_factory_unregister(STR_V_MODEL_PERSONS);
 
   object_unref(OBJECT(s_temp_model));
   s_temp_model = NULL;
 
   object_unref(OBJECT(s_humidity_model));
   s_humidity_model = NULL;
+
+  object_unref(OBJECT(s_persons_model));
+  s_persons_model = NULL;
 
   return RET_OK;
 }
@@ -286,5 +321,25 @@ TEST(BindingContextAwtk, command_close_window) {
 
   ASSERT_EQ(win->parent, (widget_t*)NULL);
   idle_dispatch();
+  test_model_deinit();
+}
+
+TEST(BindingContextAwtk, array) {
+  widget_t* win = window_create(NULL, 0, 0, 400, 300);
+  widget_t* list_view = list_view_create(win, 0, 0, 128, 300);
+  widget_t* list_item = list_item_create(list_view, 0, 0, 128, 30);
+
+  widget_t* a = slider_create(list_item, 0, 0, 0, 0);
+
+  widget_set_prop_str(a, "v-data:value", "{item.a}");
+
+  test_model_init();
+
+  widget_set_prop_str(list_view, WIDGET_PROP_V_MODEL, STR_V_MODEL_PERSONS);
+  bind_for_window(win);
+  ASSERT_EQ(list_view->children->size, 10);
+  ASSERT_EQ(widget_get_value(a), 100);
+
+  widget_destroy(win);
   test_model_deinit();
 }

@@ -253,6 +253,11 @@ ret_t data_binding_get_prop(data_binding_t* rule, value_t* v) {
   view_model = BINDING_RULE(rule)->view_model;
   return_value_if_fail(view_model != NULL, RET_BAD_PARAMS);
 
+  if (object_is_collection(OBJECT(view_model))) {
+    uint32_t cursor = BINDING_RULE(rule)->cursor;
+    object_set_prop_int(OBJECT(view_model), MODEL_PROP_CURSOR, cursor);
+  }
+
   return_value_if_fail(view_model_eval(view_model, rule->path, &raw) == RET_OK, RET_FAIL);
 
   return value_to_view(rule->converter, &raw, v);
@@ -280,6 +285,11 @@ ret_t data_binding_set_prop(data_binding_t* rule, const value_t* raw) {
   return_value_if_fail(view_model != NULL, RET_BAD_PARAMS);
 
   str_clear(&(view_model->last_error));
+  if (object_is_collection(OBJECT(view_model))) {
+    uint32_t cursor = BINDING_RULE(rule)->cursor;
+    object_set_prop_int(OBJECT(view_model), MODEL_PROP_CURSOR, cursor);
+  }
+
   if (!value_is_valid(rule->validator, raw, &(view_model->last_error))) {
     value_t fix_value;
     value_set_int(&fix_value, 0);

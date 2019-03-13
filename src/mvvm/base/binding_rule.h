@@ -54,6 +54,12 @@ typedef struct _binding_rule_t {
    * 绑定的ViewModel。
    */
   view_model_t* view_model;
+  /**
+   * @property {uint32_t} cursor;
+   * @annotation ["readable"]
+   * 对于数组的ViewModel，保存cursor。
+   */
+  uint32_t cursor;
 } binding_rule_t;
 
 #define BINDING_RULE(rule) ((binding_rule_t*)(rule))
