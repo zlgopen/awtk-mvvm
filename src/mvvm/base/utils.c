@@ -34,4 +34,3 @@ const char* destruct_array_prop_name(const char* name, uint32_t* index) {
 
   return prop + 2;
 }
-

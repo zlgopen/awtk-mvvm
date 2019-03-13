@@ -48,6 +48,11 @@ static ret_t view_model_array_set_prop(object_t* obj, const char* name, const va
 static ret_t view_model_array_get_prop(object_t* obj, const char* name, value_t* v) {
   view_model_t* vm = VIEW_MODEL(obj);
   return_value_if_fail(obj != NULL && name != NULL && v != NULL, RET_BAD_PARAMS);
+  if (tk_str_eq(name, MODEL_PROP_CURSOR)) {
+    value_set_int(v, VIEW_MODEL_ARRAY(vm)->cursor);
+
+    return RET_OK;
+  }
 
   return object_get_prop(OBJECT(vm->model), name, v);
 }

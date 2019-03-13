@@ -56,6 +56,12 @@ static ret_t model_array_get_prop(object_t* obj, const char* name, value_t* v) {
   model_array_t* array = MODEL_ARRAY(obj);
   return_value_if_fail(obj != NULL && name != NULL && v != NULL, RET_BAD_PARAMS);
 
+  if (tk_str_eq(MODEL_PROP_ITEMS, name)) {
+    value_set_int(v, array->array.size);
+
+    return RET_OK;
+  }
+
   name = destruct_array_prop_name(name, &index);
   return_value_if_fail(name != NULL, RET_BAD_PARAMS);
   return_value_if_fail(index < array->array.size, RET_BAD_PARAMS);
@@ -113,4 +119,3 @@ ret_t model_array_add(model_t* model, model_t* submodel) {
 
   return darray_push(&(array->array), submodel);
 }
-

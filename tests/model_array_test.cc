@@ -29,6 +29,10 @@ TEST(ModelArray, basic) {
     ASSERT_EQ(view_model_eval(vm, "item.c", &v), RET_OK);
     ASSERT_STREQ(value_str(&v), str);
 
+    ASSERT_EQ(object_get_prop_int(OBJECT(vm), MODEL_PROP_ITEMS, -1), i + 1);
+    ASSERT_EQ(object_get_prop_int(OBJECT(vm), MODEL_PROP_CURSOR, -1), i);
+    ASSERT_EQ(object_get_prop_int(OBJECT(model), MODEL_PROP_ITEMS, -1), i + 1);
+
     view_model_array_inc_cursor(vm);
   }
 
