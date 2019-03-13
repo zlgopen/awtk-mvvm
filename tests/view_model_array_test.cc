@@ -1,10 +1,10 @@
 ﻿#include "tkc/utils.h"
-#include "mvvm/base/model_dummy.h"
+#include "mvvm/base/model_array.h"
 #include "mvvm/base/view_model_array.h"
 #include "gtest/gtest.h"
 
 TEST(ViewModelArray, basic) {
-  model_t* model = model_dummy_create(NULL);
+  model_t* model = model_array_create(NULL);
   view_model_t* vm = view_model_array_create(model);
   view_model_array_t* vm_array = VIEW_MODEL_ARRAY(vm);
 

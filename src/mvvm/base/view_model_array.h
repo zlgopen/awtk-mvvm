@@ -39,7 +39,12 @@ typedef struct _view_model_array_t view_model_array_t;
 struct _view_model_array_t {
   view_model_t view_model;
 
-  int32_t cursor;
+  /**
+   * @property {uint32_t} cursor
+   * @annotation ["readable"]
+   * 当前可以访问的submodel。
+   */
+  uint32_t cursor;
 
   /*private*/
   str_t temp_prop;
@@ -55,6 +60,27 @@ struct _view_model_array_t {
  * @return {view_model_t*} 返回view_model对象。
  */
 view_model_t* view_model_array_create(model_t* model);
+
+/**
+ * @method view_model_array_inc_cursor
+ * 增加cursor的值。
+ *
+ * @param {view_model_t*} vm view_model对象。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t view_model_array_inc_cursor(view_model_t* vm);
+
+/**
+ * @method view_model_array_inc_cursor
+ * 设置cursor的值。
+ *
+ * @param {view_model_t*} vm view_model对象。
+ * @param {uint32_t} cursor 的值。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t view_model_array_set_cursor(view_model_t* vm, uint32_t cursor);
 
 #define VIEW_MODEL_ARRAY(view_model) ((view_model_array_t*)(view_model))
 

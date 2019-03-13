@@ -93,7 +93,7 @@ static const char* view_model_array_preprocess_prop(view_model_t* vm, const char
 static const object_vtable_t s_view_model_array_vtable = {.type = "view_model_array",
                                                           .desc = "view_model_array",
                                                           .size = sizeof(view_model_array_t),
-                                                          .is_collection = FALSE,
+                                                          .is_collection = TRUE,
                                                           .on_destroy = view_model_array_on_destroy,
 
                                                           .compare = view_model_array_compare,
@@ -103,9 +103,15 @@ static const object_vtable_t s_view_model_array_vtable = {.type = "view_model_ar
                                                           .exec = view_model_array_exec};
 
 view_model_t* view_model_array_create(model_t* model) {
-  object_t* obj = object_create(&s_view_model_array_vtable);
-  view_model_t* vm = view_model_init(VIEW_MODEL(obj), VIEW_MODEL_ARRAY, model);
-  view_model_array_t* vm_array = VIEW_MODEL_ARRAY(vm);
+  object_t* obj = NULL;
+  view_model_t* vm = NULL;
+  view_model_array_t* vm_array = NULL;
+
+  return_value_if_fail(object_is_collection(OBJECT(model)), NULL);
+
+  obj = object_create(&s_view_model_array_vtable);
+  vm = view_model_init(VIEW_MODEL(obj), VIEW_MODEL_ARRAY, model);
+  vm_array = VIEW_MODEL_ARRAY(vm);
   return_value_if_fail(vm_array != NULL, NULL);
 
   str_init(&(vm_array->temp_expr), 0);
@@ -114,4 +120,22 @@ view_model_t* view_model_array_create(model_t* model) {
   vm->preprocess_prop = view_model_array_preprocess_prop;
 
   return vm;
+}
+
+ret_t view_model_array_inc_cursor(view_model_t* vm) {
+  view_model_array_t* vm_array = VIEW_MODEL_ARRAY(vm);
+  return_value_if_fail(vm_array != NULL, RET_BAD_PARAMS);
+
+  vm_array->cursor++;
+
+  return RET_OK;
+}
+
+ret_t view_model_array_set_cursor(view_model_t* vm, uint32_t cursor) {
+  view_model_array_t* vm_array = VIEW_MODEL_ARRAY(vm);
+  return_value_if_fail(vm_array != NULL, RET_BAD_PARAMS);
+
+  vm_array->cursor = cursor;
+
+  return RET_OK;
 }

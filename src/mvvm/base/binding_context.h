@@ -93,6 +93,14 @@ struct _binding_context_t {
    * ViewModel
    */
   view_model_t* view_model;
+
+  /**
+   * @property {uint32_t} cursor;
+   * @annotation ["readable"]
+   * 用于数组ViewModel。
+   */
+  uint32_t cursor;
+
   /**
    * @property {void*} widget
    * @annotation ["readable"]

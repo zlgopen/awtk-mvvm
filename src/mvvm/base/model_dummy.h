@@ -53,7 +53,6 @@ struct _model_dummy_t {
  */
 model_t* model_dummy_create(navigator_request_t* req);
 
-
 #define MODEL_DUMMY(model) ((model_dummy_t*)(model))
 
 END_C_DECLS

@@ -63,18 +63,17 @@ static ret_t model_dummy_exec(object_t* obj, const char* name, const char* args)
   return RET_OK;
 }
 
-static const object_vtable_t s_model_dummy_vtable = {
-    .type = "model_dummy",
-    .desc = "model_dummy",
-    .size = sizeof(model_dummy_t),
-    .is_collection = FALSE,
-    .on_destroy = model_dummy_on_destroy,
+static const object_vtable_t s_model_dummy_vtable = {.type = "model_dummy",
+                                                     .desc = "model_dummy",
+                                                     .size = sizeof(model_dummy_t),
+                                                     .is_collection = FALSE,
+                                                     .on_destroy = model_dummy_on_destroy,
 
-    .compare = model_dummy_compare,
-    .get_prop = model_dummy_get_prop,
-    .set_prop = model_dummy_set_prop,
-    .can_exec = model_dummy_can_exec,
-    .exec = model_dummy_exec};
+                                                     .compare = model_dummy_compare,
+                                                     .get_prop = model_dummy_get_prop,
+                                                     .set_prop = model_dummy_set_prop,
+                                                     .can_exec = model_dummy_can_exec,
+                                                     .exec = model_dummy_exec};
 
 model_t* model_dummy_create(navigator_request_t* req) {
   object_t* obj = object_create(&s_model_dummy_vtable);

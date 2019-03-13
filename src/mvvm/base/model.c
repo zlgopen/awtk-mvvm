@@ -74,4 +74,3 @@ ret_t model_on_unmount(model_t* model) {
 
   return RET_OK;
 }
-
