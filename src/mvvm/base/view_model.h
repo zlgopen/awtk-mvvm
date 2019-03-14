@@ -63,6 +63,7 @@ struct _view_model_t {
  * @method view_model_init
  * 初始化模型(供子类使用)。
  *
+ *> 增加model的引用计数，并保存model的引用。
  * @param {view_model_t*} vm view_model对象。
  * @param {view_model_type_t} type 类型。
  * @param {model_t*} model model对象。

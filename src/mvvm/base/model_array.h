@@ -67,6 +67,8 @@ ret_t model_array_clear(model_t* model);
  * @method model_array_add
  * 增加submodel。
  *
+ *> 增加submodel的引用计数，并保存submodel的引用。
+ *
  * @param {model_t*} model model对象。
  * @param {model_t*} submodel submodel对象。
  *

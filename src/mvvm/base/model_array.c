@@ -120,6 +120,7 @@ ret_t model_array_add(model_t* model, model_t* submodel) {
   model_array_t* array = MODEL_ARRAY(model);
   return_value_if_fail(array != NULL && submodel != NULL, RET_BAD_PARAMS);
 
+  object_ref(OBJECT(submodel));
   emitter_dispatch_simple_event(EMITTER(model), EVT_ITEMS_WILL_CHANGE);
   ret = darray_push(&(array->array), submodel);
   emitter_dispatch_simple_event(EMITTER(model), EVT_ITEMS_CHANGED);

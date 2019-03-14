@@ -48,6 +48,7 @@ static ret_t persons_gen(model_t* model, uint32_t n) {
     object_set_prop_int(OBJECT(submodel), "b", i + 1);
     object_set_prop_int(OBJECT(submodel), "c", i + 2);
     model_array_add(model, submodel);
+    object_unref(OBJECT(submodel));
   }
 
   return RET_OK;
@@ -402,4 +403,6 @@ TEST(BindingContextAwtk, array) {
 
   widget_destroy(win);
   test_model_deinit();
+
+  idle_dispatch();
 }

@@ -130,12 +130,15 @@ struct _binding_context_t {
  * @method binding_context_init
  * 初始化。
  *
+ *> 内部自动增加req和vm的引用计数。
+ *
  * @param {binding_context_t*} ctx binding_context对象。
- * @param {navigator_request_t*} navigator_request 请求参数对象。
+ * @param {navigator_request_t*} req 请求参数对象。
+ * @param {view_model_t**} vm view model对象。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
-ret_t binding_context_init(binding_context_t* ctx, navigator_request_t* navigator_request);
+ret_t binding_context_init(binding_context_t* ctx, navigator_request_t* req, view_model_t* vm);
 
 /**
  * @method binding_context_update_to_view

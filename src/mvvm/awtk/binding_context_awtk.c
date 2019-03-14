@@ -292,7 +292,7 @@ static ret_t binding_context_prepare_children(binding_context_t* ctx, widget_t* 
 static ret_t binding_context_awtk_bind_widget_array(binding_context_t* ctx) {
   widget_t* widget = ctx->widget;
   view_model_t* view_model = ctx->view_model;
-  
+
   ctx->request_rebind = 0;
   return_value_if_fail(object_is_collection(OBJECT(view_model)), RET_BAD_PARAMS);
   return_value_if_fail(binding_context_prepare_children(ctx, widget) == RET_OK, RET_FAIL);
@@ -320,7 +320,7 @@ static ret_t binding_context_rebind_in_idle(const idle_info_t* info) {
 static ret_t binding_context_on_rebind(void* c, event_t* e) {
   binding_context_t* ctx = BINDING_CONTEXT(c);
 
-  if(ctx->request_rebind == 0) {
+  if (ctx->request_rebind == 0) {
     idle_add(binding_context_rebind_in_idle, ctx);
   }
   ctx->request_rebind++;
@@ -431,6 +431,10 @@ static ret_t binding_context_awtk_update_to_model(binding_context_t* ctx) {
 }
 
 static ret_t binding_context_awtk_destroy(binding_context_t* ctx) {
+  if (ctx->template_widget != NULL) {
+    widget_destroy(WIDGET(ctx->template_widget));
+  }
+
   TKMEM_FREE(ctx);
 
   return RET_OK;
@@ -443,25 +447,25 @@ static const binding_context_vtable_t s_binding_context_vtable = {
 
 binding_context_t* binding_context_awtk_create(widget_t* widget, navigator_request_t* req) {
   view_model_t* view_model = NULL;
-  binding_context_t* ctx = TKMEM_ZALLOC(binding_context_t);
-  return_value_if_fail(ctx != NULL, NULL);
+  binding_context_t* ctx = NULL;
+  return_value_if_fail(widget != NULL && req != NULL, NULL);
 
-  ctx->vt = &s_binding_context_vtable;
-  if (binding_context_init(ctx, req) != RET_OK) {
-    binding_context_destroy(ctx);
-    ctx = NULL;
-  }
-
-  object_set_prop_pointer(OBJECT(req), NAVIGATOR_ARG_VIEW, widget);
-  view_model = binding_context_awtk_create_view_model(widget, ctx->navigator_request);
+  view_model = binding_context_awtk_create_view_model(widget, req);
 
   if (view_model != NULL) {
-    ctx->widget = widget;
-    ctx->view_model = view_model;
-    model_on_will_mount(view_model->model, ctx->navigator_request);
-  } else {
-    binding_context_destroy(ctx);
-    ctx = NULL;
+    ctx = TKMEM_ZALLOC(binding_context_t);
+    if (ctx != NULL) {
+      ctx->widget = widget;
+      ctx->vt = &s_binding_context_vtable;
+
+      if (binding_context_init(ctx, req, view_model) == RET_OK) {
+        model_on_will_mount(view_model->model, req);
+      } else {
+        binding_context_destroy(ctx);
+        ctx = NULL;
+      }
+    }
+    object_unref(OBJECT(view_model));
   }
 
   return ctx;

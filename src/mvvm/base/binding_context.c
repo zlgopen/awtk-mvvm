@@ -22,16 +22,21 @@
 #include "tkc/mem.h"
 #include "mvvm/base/binding_context.h"
 
-ret_t binding_context_init(binding_context_t* ctx, navigator_request_t* navigator_request) {
+ret_t binding_context_init(binding_context_t* ctx, navigator_request_t* req, view_model_t* vm) {
   return_value_if_fail(ctx != NULL, RET_BAD_PARAMS);
 
   darray_init(&(ctx->command_bindings), 10, (tk_destroy_t)object_unref,
               (tk_compare_t)object_compare);
   darray_init(&(ctx->data_bindings), 10, (tk_destroy_t)object_unref, (tk_compare_t)object_compare);
 
-  if (navigator_request != NULL) {
-    ctx->navigator_request = navigator_request;
-    object_ref(OBJECT(ctx->navigator_request));
+  if (req != NULL) {
+    object_ref(OBJECT(req));
+    ctx->navigator_request = req;
+  }
+
+  if (vm != NULL) {
+    object_ref(OBJECT(vm));
+    ctx->view_model = vm;
   }
 
   return RET_OK;
@@ -98,4 +103,3 @@ ret_t binding_context_clear_bindings(binding_context_t* ctx) {
 
   return RET_OK;
 }
-
