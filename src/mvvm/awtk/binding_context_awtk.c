@@ -279,6 +279,8 @@ static ret_t binding_context_prepare_children(binding_context_t* ctx, widget_t* 
   }
 
   widget_destroy_children(widget);
+  binding_context_clear_bindings(ctx);
+
   for (i = 0; i < items; i++) {
     widget_clone(template_widget, widget);
   }
@@ -287,8 +289,11 @@ static ret_t binding_context_prepare_children(binding_context_t* ctx, widget_t* 
   return RET_OK;
 }
 
-static ret_t binding_context_awtk_bind_widget_array(binding_context_t* ctx, widget_t* widget) {
+static ret_t binding_context_awtk_bind_widget_array(binding_context_t* ctx) {
+  widget_t* widget = ctx->widget;
   view_model_t* view_model = ctx->view_model;
+  
+  ctx->request_rebind = 0;
   return_value_if_fail(object_is_collection(OBJECT(view_model)), RET_BAD_PARAMS);
   return_value_if_fail(binding_context_prepare_children(ctx, widget) == RET_OK, RET_FAIL);
 
@@ -301,11 +306,34 @@ static ret_t binding_context_awtk_bind_widget_array(binding_context_t* ctx, widg
   return RET_OK;
 }
 
+static ret_t binding_context_rebind_in_idle(const idle_info_t* info) {
+  binding_context_t* ctx = BINDING_CONTEXT(info->ctx);
+
+  log_debug("start_rebing\n");
+  binding_context_awtk_bind_widget_array(ctx);
+  binding_context_update_to_view(ctx);
+  log_debug("end_rebing\n");
+
+  return RET_REMOVE;
+}
+
+static ret_t binding_context_on_rebind(void* c, event_t* e) {
+  binding_context_t* ctx = BINDING_CONTEXT(c);
+
+  if(ctx->request_rebind == 0) {
+    idle_add(binding_context_rebind_in_idle, ctx);
+  }
+  ctx->request_rebind++;
+
+  return RET_OK;
+}
+
 static ret_t binding_context_awtk_bind(binding_context_t* ctx, void* widget) {
   ret_t ret = RET_OK;
 
   if (object_is_collection(OBJECT(ctx->view_model))) {
-    ret = binding_context_awtk_bind_widget_array(ctx, WIDGET(widget));
+    ret = binding_context_awtk_bind_widget_array(ctx);
+    emitter_on(EMITTER(ctx->view_model), EVT_ITEMS_CHANGED, binding_context_on_rebind, ctx);
   } else {
     ret = binding_context_awtk_bind_widget(ctx, WIDGET(widget));
   }

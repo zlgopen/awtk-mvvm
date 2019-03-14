@@ -112,6 +112,14 @@ static const object_vtable_t s_view_model_array_vtable = {.type = "view_model_ar
                                                           .can_exec = view_model_array_can_exec,
                                                           .exec = view_model_array_exec};
 
+static ret_t view_model_array_on_items_changed(void* ctx, event_t* e) {
+  (void)e;
+
+  emitter_dispatch_simple_event(EMITTER(ctx), EVT_ITEMS_CHANGED);
+
+  return RET_OK;
+}
+
 view_model_t* view_model_array_create(model_t* model) {
   object_t* obj = NULL;
   view_model_t* vm = NULL;
@@ -128,6 +136,8 @@ view_model_t* view_model_array_create(model_t* model) {
   str_init(&(vm_array->temp_prop), 0);
   vm->preprocess_expr = view_model_array_preprocess_expr;
   vm->preprocess_prop = view_model_array_preprocess_prop;
+
+  emitter_on(EMITTER(model), EVT_ITEMS_CHANGED, view_model_array_on_items_changed, vm);
 
   return vm;
 }

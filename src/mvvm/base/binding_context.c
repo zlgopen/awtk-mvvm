@@ -89,3 +89,13 @@ ret_t binding_context_destroy(binding_context_t* ctx) {
 
   return RET_OK;
 }
+
+ret_t binding_context_clear_bindings(binding_context_t* ctx) {
+  return_value_if_fail(ctx != NULL && ctx->vt != NULL, RET_BAD_PARAMS);
+
+  darray_clear(&(ctx->data_bindings));
+  darray_clear(&(ctx->command_bindings));
+
+  return RET_OK;
+}
+

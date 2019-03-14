@@ -84,7 +84,7 @@ struct _binding_context_t {
   /**
    * @property {int32_t} request_rebind
    * @annotation ["readable"]
-   * 请求Rebind的次数（真正更新在idle中完成）。
+   * 请求Rebind的次数（真正Rebind在idle中完成）。
    *
    */
   int32_t request_rebind;
@@ -100,18 +100,16 @@ struct _binding_context_t {
    * ViewModel
    */
   view_model_t* view_model;
-
   /**
    * @property {uint32_t} cursor;
    * @annotation ["readable"]
    * 用于数组ViewModel。
    */
   uint32_t cursor;
-
   /**
    * @property {void*} widget
    * @annotation ["readable"]
-   * 绑定的根控件(通常是窗口)
+   * 绑定的根控件。
    */
   void* widget;
   /**
@@ -122,7 +120,9 @@ struct _binding_context_t {
   navigator_request_t* navigator_request;
 
   /*private*/
+  /*列表绑定的模板*/
   void* template_widget;
+
   const binding_context_vtable_t* vt;
 };
 
@@ -157,6 +157,17 @@ ret_t binding_context_update_to_view(binding_context_t* ctx);
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
 ret_t binding_context_update_to_model(binding_context_t* ctx);
+
+/**
+ * @method binding_context_clear_bindings
+ * 清除绑定规则(用于重新绑定)。
+ *
+ * @annotation ["scriptable"]
+ * @param {binding_context_t*} ctx binding_context对象。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t binding_context_clear_bindings(binding_context_t* ctx);
 
 /**
  * @method binding_context_destroy

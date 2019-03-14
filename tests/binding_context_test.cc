@@ -38,17 +38,25 @@ static model_t* test_persons_model_get(navigator_request_t* req) {
   return s_persons_model;
 }
 
-static model_t* persons_create_model(void) {
+static ret_t persons_gen(model_t* model, uint32_t n) {
   uint32_t i = 0;
-  model_t* model = model_array_create(NULL);
+  model_array_clear(model);
 
-  for (i = 0; i < 10; i++) {
+  for (i = 0; i < n; i++) {
     model_t* submodel = model_dummy_create(NULL);
     object_set_prop_int(OBJECT(submodel), "a", i);
     object_set_prop_int(OBJECT(submodel), "b", i + 1);
     object_set_prop_int(OBJECT(submodel), "c", i + 2);
     model_array_add(model, submodel);
   }
+
+  return RET_OK;
+}
+
+static model_t* persons_create_model(void) {
+  model_t* model = model_array_create(NULL);
+
+  persons_gen(model, 10);
 
   return model;
 }
@@ -339,10 +347,15 @@ TEST(BindingContextAwtk, array) {
   widget_set_name(b, "b");
   widget_set_name(c, "c");
   widget_set_name(d, "d");
+  slider_set_max(a, 50000);
+  slider_set_max(b, 50000);
+  slider_set_max(c, 50000);
+  slider_set_max(d, 50000);
+
   widget_set_prop_str(a, "v-data:value", "{item.a}");
   widget_set_prop_str(b, "v-data:value", "{item.b}");
   widget_set_prop_str(c, "v-data:value", "{item.c}");
-  widget_set_prop_str(d, "v-data:value", "{item.a + item.b + item.c}");
+  widget_set_prop_str(d, "v-data:value", "{item.a + item.b - item.c + 1}");
 
   test_model_init();
 
@@ -363,7 +376,28 @@ TEST(BindingContextAwtk, array) {
     ASSERT_EQ(widget_get_value(a), i);
     ASSERT_EQ(widget_get_value(b), i + 1);
     ASSERT_EQ(widget_get_value(c), i + 2);
-    ASSERT_EQ(widget_get_value(d), 3 * i + 3);
+    ASSERT_EQ(widget_get_value(d), i);
+  }
+
+  model_array_clear(s_persons_model);
+  ASSERT_EQ(model_array_size(s_persons_model), 0);
+  idle_dispatch();
+  ASSERT_EQ(list_view->children->size, model_array_size(s_persons_model));
+
+  persons_gen(s_persons_model, 10000);
+  idle_dispatch();
+  for (i = 0; i < model_array_size(s_persons_model); i++) {
+    list_item = widget_get_child(list_view, i);
+    log_debug("i=%d\n", i);
+    a = widget_child(list_item, "a");
+    b = widget_child(list_item, "b");
+    c = widget_child(list_item, "c");
+    d = widget_child(list_item, "d");
+
+    ASSERT_EQ(widget_get_value(a), i);
+    ASSERT_EQ(widget_get_value(b), i + 1);
+    ASSERT_EQ(widget_get_value(c), i + 2);
+    ASSERT_EQ(widget_get_value(d), i);
   }
 
   widget_destroy(win);
