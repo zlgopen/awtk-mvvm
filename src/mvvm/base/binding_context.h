@@ -82,6 +82,13 @@ struct _binding_context_t {
    */
   int32_t request_update_view;
   /**
+   * @property {int32_t} request_rebind
+   * @annotation ["readable"]
+   * 请求Rebind的次数（真正更新在idle中完成）。
+   *
+   */
+  int32_t request_rebind;
+  /**
    * @property {void*} current_widget
    * @annotation ["readable"]
    * 当前真正绑定的控件。
@@ -115,6 +122,7 @@ struct _binding_context_t {
   navigator_request_t* navigator_request;
 
   /*private*/
+  void* template_widget;
   const binding_context_vtable_t* vt;
 };
 

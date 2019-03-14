@@ -108,14 +108,49 @@ model_t* model_array_create(navigator_request_t* req) {
 ret_t model_array_clear(model_t* model) {
   model_array_t* array = MODEL_ARRAY(model);
   return_value_if_fail(array != NULL, RET_BAD_PARAMS);
+  emitter_dispatch_simple_event(EMITTER(model), EVT_ITEMS_WILL_CHANGE);
   darray_clear(&(array->array));
+  emitter_dispatch_simple_event(EMITTER(model), EVT_ITEMS_CHANGED);
 
   return RET_OK;
 }
 
 ret_t model_array_add(model_t* model, model_t* submodel) {
+  ret_t ret = RET_OK;
   model_array_t* array = MODEL_ARRAY(model);
   return_value_if_fail(array != NULL && submodel != NULL, RET_BAD_PARAMS);
 
-  return darray_push(&(array->array), submodel);
+  emitter_dispatch_simple_event(EMITTER(model), EVT_ITEMS_WILL_CHANGE);
+  ret = darray_push(&(array->array), submodel);
+  emitter_dispatch_simple_event(EMITTER(model), EVT_ITEMS_CHANGED);
+
+  return ret;
+}
+
+ret_t model_array_remove(model_t* model, uint32_t index) {
+  ret_t ret = RET_OK;
+  model_array_t* array = MODEL_ARRAY(model);
+  return_value_if_fail(array != NULL && index < array->array.size, RET_BAD_PARAMS);
+
+  emitter_dispatch_simple_event(EMITTER(model), EVT_ITEMS_WILL_CHANGE);
+  ret = darray_remove_index(&(array->array), index);
+  emitter_dispatch_simple_event(EMITTER(model), EVT_ITEMS_CHANGED);
+
+  return ret;
+}
+
+model_t* model_array_get(model_t* model, uint32_t index) {
+  ret_t ret = RET_OK;
+  model_array_t* array = MODEL_ARRAY(model);
+  return_value_if_fail(array != NULL && index < array->array.size, RET_BAD_PARAMS);
+
+  return MODEL(array->array.elms[index]);
+}
+
+int32_t model_array_size(model_t* model) {
+  ret_t ret = RET_OK;
+  model_array_t* array = MODEL_ARRAY(model);
+  return_value_if_fail(array != NULL, 0);
+
+  return MODEL(array->array.size);
 }

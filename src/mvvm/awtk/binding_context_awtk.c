@@ -99,8 +99,8 @@ static ret_t binding_context_bind_data(binding_context_t* ctx, const char* name,
   BINDING_RULE(rule)->widget = widget;
   BINDING_RULE(rule)->binding_context = ctx;
   BINDING_RULE(rule)->view_model = ctx->view_model;
-  
-  if(object_is_collection(OBJECT(ctx->view_model))) {
+
+  if (object_is_collection(OBJECT(ctx->view_model))) {
     uint32_t cursor = object_get_prop_int(OBJECT(ctx->view_model), MODEL_PROP_CURSOR, 0);
     BINDING_RULE(rule)->cursor = cursor;
   }
@@ -265,25 +265,32 @@ static ret_t binding_context_awtk_bind_widget_only(binding_context_t* ctx, widge
   return RET_OK;
 }
 
-static ret_t binding_context_awtk_bind_widget_array(binding_context_t* ctx, widget_t* widget) {
-  uint32_t k = 0;
-  uint32_t items = 0;
-  uint32_t children_nr = 0;
+static ret_t binding_context_prepare_children(binding_context_t* ctx, widget_t* widget) {
+  uint32_t i = 0;
   view_model_t* view_model = ctx->view_model;
-  widget_t* template = widget_get_child(widget, 0);
-  return_value_if_fail(template != NULL, RET_BAD_PARAMS);
-  return_value_if_fail(object_is_collection(OBJECT(view_model)), RET_BAD_PARAMS);
+  widget_t* template_widget = WIDGET(ctx->template_widget);
+  uint32_t items = object_get_prop_int(OBJECT(view_model), MODEL_PROP_ITEMS, 0);
 
-  items = object_get_prop_int(OBJECT(view_model), MODEL_PROP_ITEMS, 0);
+  if (ctx->template_widget == NULL) {
+    template_widget = widget_get_child(widget, 0);
 
-  children_nr = widget_count_children(widget);
-  for (k = children_nr; k < items; k++) {
-    widget_clone(template, widget);
+    ctx->template_widget = template_widget;
+    widget_remove_child(widget, template_widget);
   }
 
-  WIDGET_FOR_EACH_CHILD_BEGIN(widget, iter, i)
-  widget_set_visible(iter, i < items, FALSE);
-  WIDGET_FOR_EACH_CHILD_END();
+  widget_destroy_children(widget);
+  for (i = 0; i < items; i++) {
+    widget_clone(template_widget, widget);
+  }
+  return_value_if_fail(items == widget_count_children(widget), RET_OOM);
+
+  return RET_OK;
+}
+
+static ret_t binding_context_awtk_bind_widget_array(binding_context_t* ctx, widget_t* widget) {
+  view_model_t* view_model = ctx->view_model;
+  return_value_if_fail(object_is_collection(OBJECT(view_model)), RET_BAD_PARAMS);
+  return_value_if_fail(binding_context_prepare_children(ctx, widget) == RET_OK, RET_FAIL);
 
   view_model_array_set_cursor(view_model, 0);
   WIDGET_FOR_EACH_CHILD_BEGIN(widget, iter, i)

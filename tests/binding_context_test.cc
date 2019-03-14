@@ -44,9 +44,9 @@ static model_t* persons_create_model(void) {
 
   for (i = 0; i < 10; i++) {
     model_t* submodel = model_dummy_create(NULL);
-    object_set_prop_int(OBJECT(submodel), "a", 100 + i);
-    object_set_prop_int(OBJECT(submodel), "b", 100 + i + 1);
-    object_set_prop_int(OBJECT(submodel), "c", 100 + i + 2);
+    object_set_prop_int(OBJECT(submodel), "a", i);
+    object_set_prop_int(OBJECT(submodel), "b", i + 1);
+    object_set_prop_int(OBJECT(submodel), "c", i + 2);
     model_array_add(model, submodel);
   }
 
@@ -325,20 +325,46 @@ TEST(BindingContextAwtk, command_close_window) {
 }
 
 TEST(BindingContextAwtk, array) {
+  uint32_t i = 0;
   widget_t* win = window_create(NULL, 0, 0, 400, 300);
   widget_t* list_view = list_view_create(win, 0, 0, 128, 300);
   widget_t* list_item = list_item_create(list_view, 0, 0, 128, 30);
 
   widget_t* a = slider_create(list_item, 0, 0, 0, 0);
+  widget_t* b = slider_create(list_item, 0, 0, 0, 0);
+  widget_t* c = slider_create(list_item, 0, 0, 0, 0);
+  widget_t* d = slider_create(list_item, 0, 0, 0, 0);
 
+  widget_set_name(a, "a");
+  widget_set_name(b, "b");
+  widget_set_name(c, "c");
+  widget_set_name(d, "d");
   widget_set_prop_str(a, "v-data:value", "{item.a}");
+  widget_set_prop_str(b, "v-data:value", "{item.b}");
+  widget_set_prop_str(c, "v-data:value", "{item.c}");
+  widget_set_prop_str(d, "v-data:value", "{item.a + item.b + item.c}");
 
   test_model_init();
 
   widget_set_prop_str(list_view, WIDGET_PROP_V_MODEL, STR_V_MODEL_PERSONS);
   bind_for_window(win);
-  ASSERT_EQ(list_view->children->size, 10);
-  ASSERT_EQ(widget_get_value(a), 100);
+
+  ASSERT_EQ(model_array_size(s_persons_model), 10);
+  ASSERT_EQ(list_view->children->size, model_array_size(s_persons_model));
+
+  for (i = 0; i < model_array_size(s_persons_model); i++) {
+    list_item = widget_get_child(list_view, i);
+    log_debug("i=%d\n", i);
+    a = widget_child(list_item, "a");
+    b = widget_child(list_item, "b");
+    c = widget_child(list_item, "c");
+    d = widget_child(list_item, "d");
+
+    ASSERT_EQ(widget_get_value(a), i);
+    ASSERT_EQ(widget_get_value(b), i + 1);
+    ASSERT_EQ(widget_get_value(c), i + 2);
+    ASSERT_EQ(widget_get_value(d), 3 * i + 3);
+  }
 
   widget_destroy(win);
   test_model_deinit();

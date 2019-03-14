@@ -65,9 +65,7 @@ ret_t model_array_clear(model_t* model);
 
 /**
  * @method model_array_add
- * 增加一个submodel。
- *
- *>submodel由model负责释放。
+ * 增加submodel。
  *
  * @param {model_t*} model model对象。
  * @param {model_t*} submodel submodel对象。
@@ -75,6 +73,38 @@ ret_t model_array_clear(model_t* model);
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
 ret_t model_array_add(model_t* model, model_t* submodel);
+
+/**
+ * @method model_array_remove
+ * 删除指定的submodel。
+ *
+ * @param {model_t*} model model对象。
+ * @param {uint32_t} index submodel的索引。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t model_array_remove(model_t* model, uint32_t index);
+
+/**
+ * @method model_array_get
+ * 获取指定的submodel。
+ *
+ * @param {model_t*} model model对象。
+ * @param {uint32_t} index submodel的索引。
+ *
+ * @return {model_t} 返回指定的submodel。
+ */
+model_t* model_array_get(model_t* model, uint32_t index);
+
+/**
+ * @method model_array_size
+ * 获取submodel的个数。
+ *
+ * @param {model_t*} model model对象。
+ *
+ * @return {int32_t} 返回submodel的个数。
+ */
+int32_t model_array_size(model_t* model);
 
 #define MODEL_ARRAY(model) ((model_array_t*)(model))
 
