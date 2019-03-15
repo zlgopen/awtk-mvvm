@@ -265,6 +265,39 @@ static ret_t binding_context_awtk_bind_widget_only(binding_context_t* ctx, widge
   return RET_OK;
 }
 
+static ret_t widget_trim_children(widget_t* widget, uint32_t nr) {
+  int32_t i = 0;
+  int32_t real_nr = widget_count_children(widget);
+
+  widget->need_relayout_children = TRUE;
+  if (real_nr <= nr || widget->children == NULL) {
+    return RET_OK;
+  }
+
+  for (i = nr; i < real_nr; i++) {
+    widget_t* child = WIDGET(widget->children->elms[i]);
+
+    child->parent = NULL;
+    if (widget->target == child) {
+      widget->target = NULL;
+    }
+
+    if (widget->grab_widget == child) {
+      widget->grab_widget = NULL;
+    }
+
+    if (widget->key_target == child) {
+      widget->key_target = NULL;
+    }
+
+    widget_destroy(child);
+  }
+
+  widget->children->size = nr;
+
+  return RET_OK;
+}
+
 static ret_t binding_context_prepare_children(binding_context_t* ctx, widget_t* widget) {
   uint32_t i = 0;
   view_model_t* view_model = ctx->view_model;
@@ -278,10 +311,10 @@ static ret_t binding_context_prepare_children(binding_context_t* ctx, widget_t* 
     widget_remove_child(widget, template_widget);
   }
 
-  widget_destroy_children(widget);
+  widget_trim_children(widget, items);
   binding_context_clear_bindings(ctx);
 
-  for (i = 0; i < items; i++) {
+  for (i = widget_count_children(widget); i < items; i++) {
     widget_clone(template_widget, widget);
   }
   return_value_if_fail(items == widget_count_children(widget), RET_OOM);
