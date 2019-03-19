@@ -34,6 +34,7 @@
 #include "assets/inc/ui/temperature2.data"
 #include "assets/inc/ui/js_temperature_humidity.data"
 #include "assets/inc/ui/temperature3.data"
+#include "assets/inc/ui/books.data"
 #include "assets/inc/ui/js_temperature2.data"
 #include "assets/inc/ui/demo9_main.data"
 #ifdef WITH_STB_IMAGE
@@ -130,6 +131,7 @@ ret_t assets_init(void) {
   assets_manager_add(rm, ui_temperature2);
   assets_manager_add(rm, ui_js_temperature_humidity);
   assets_manager_add(rm, ui_temperature3);
+  assets_manager_add(rm, ui_books);
   assets_manager_add(rm, ui_js_temperature2);
   assets_manager_add(rm, ui_demo9_main);
   assets_manager_add(rm, strings_zh_CN);

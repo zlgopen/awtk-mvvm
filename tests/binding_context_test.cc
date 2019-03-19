@@ -6,6 +6,7 @@
 #include "widgets/slider.h"
 #include "widgets/button.h"
 #include "widgets/label.h"
+#include "base/window_manager.h"
 #include "ext_widgets/scroll_view/list_view.h"
 #include "ext_widgets/scroll_view/list_item.h"
 #include "base/idle.h"
@@ -316,9 +317,12 @@ TEST(BindingContextAwtk, command_update_to_model) {
 TEST(BindingContextAwtk, command_close_window) {
   pointer_event_t e;
   widget_t* win = window_create(NULL, 0, 0, 400, 300);
+  window_manager_open_window(window_manager(), win);
+
   widget_t* button = button_create(win, 0, 0, 128, 30);
   test_model_init();
 
+  idle_dispatch();
   widget_set_prop_str(win, WIDGET_PROP_V_MODEL, STR_V_MODEL_TEMP);
   widget_set_prop_str(button, "v-on:pointer_down", "{save, Args=2, CloseWindow=True}");
   bind_for_window(win);

@@ -1,0 +1,10 @@
+<window anim_hint="htranslate">
+   <list_view x="0"  y="30" w="100%" h="-80" item_height="60">
+    <scroll_view name="view" x="0"  y="0" w="100%" h="100%" v-model="books">
+      <list_item style="odd" children_layout="default(rows=1,cols=0)">
+        <label w="-30" v-data:text="{item.name}"/>
+      </list_item>
+    </scroll_view>
+    <scroll_bar_m name="bar" x="right" y="0" w="6" h="100%" value="0"/>
+  </list_view>
+</window>
