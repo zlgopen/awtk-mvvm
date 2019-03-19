@@ -101,8 +101,8 @@ ret_t model_on_unmount(model_t* model);
 
 #define MODEL(model) ((model_t*)(model))
 
-#define MODEL_PROP_CURSOR "_cursor_"
-#define MODEL_PROP_ITEMS "_items_"
+#define MODEL_PROP_CURSOR "cursor"
+#define MODEL_PROP_ITEMS "items"
 
 /**
  * @enum model_event_type_t

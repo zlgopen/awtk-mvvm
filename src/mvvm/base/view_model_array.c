@@ -66,14 +66,30 @@ static bool_t view_model_array_can_exec(object_t* obj, const char* name, const c
   view_model_t* vm = VIEW_MODEL(obj);
   return_value_if_fail(obj != NULL && name != NULL, FALSE);
 
-  return object_can_exec(OBJECT(vm->model), name, args);
+  if (args == NULL) {
+    char cursor[TK_NUM_MAX_LEN + 1];
+    view_model_array_t* vm_array = VIEW_MODEL_ARRAY(vm);
+
+    tk_itoa(cursor, TK_NUM_MAX_LEN, vm_array->cursor);
+    return object_can_exec(OBJECT(vm->model), name, cursor);
+  } else {
+    return object_can_exec(OBJECT(vm->model), name, args);
+  }
 }
 
 static ret_t view_model_array_exec(object_t* obj, const char* name, const char* args) {
   view_model_t* vm = VIEW_MODEL(obj);
   return_value_if_fail(obj != NULL && name != NULL, RET_BAD_PARAMS);
 
-  return object_exec(OBJECT(vm->model), name, args);
+  if (args == NULL) {
+    char cursor[TK_NUM_MAX_LEN + 1];
+    view_model_array_t* vm_array = VIEW_MODEL_ARRAY(vm);
+
+    tk_itoa(cursor, TK_NUM_MAX_LEN, vm_array->cursor);
+    return object_exec(OBJECT(vm->model), name, cursor);
+  } else {
+    return object_exec(OBJECT(vm->model), name, args);
+  }
 }
 
 static const char* view_model_array_preprocess_expr(view_model_t* vm, const char* expr) {

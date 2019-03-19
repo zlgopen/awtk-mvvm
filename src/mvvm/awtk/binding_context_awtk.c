@@ -167,6 +167,12 @@ static ret_t binding_context_bind_command(binding_context_t* ctx, const char* na
   BINDING_RULE(rule)->widget = widget;
   BINDING_RULE(rule)->binding_context = ctx;
   BINDING_RULE(rule)->view_model = ctx->view_model;
+
+  if (object_is_collection(OBJECT(ctx->view_model))) {
+    uint32_t cursor = object_get_prop_int(OBJECT(ctx->view_model), MODEL_PROP_CURSOR, 0);
+    BINDING_RULE(rule)->cursor = cursor;
+  }
+
   goto_error_if_fail(darray_push(&(ctx->command_bindings), rule) == RET_OK);
 
   event = int_str_name(s_event_map, rule->event, EVT_NONE);
@@ -252,19 +258,6 @@ static ret_t binding_context_awtk_bind_widget(binding_context_t* ctx, widget_t* 
   return RET_OK;
 }
 
-static ret_t binding_context_awtk_bind_widget_only(binding_context_t* ctx, widget_t* widget) {
-  if (widget->custom_props != NULL) {
-    ctx->current_widget = widget;
-    object_foreach_prop(widget->custom_props, visit_bind_one_prop, ctx);
-  }
-
-  WIDGET_FOR_EACH_CHILD_BEGIN(widget, iter, i)
-  binding_context_awtk_bind_widget_only(ctx, iter);
-  WIDGET_FOR_EACH_CHILD_END();
-
-  return RET_OK;
-}
-
 static ret_t widget_trim_children(widget_t* widget, uint32_t nr) {
   int32_t i = 0;
   int32_t real_nr = widget_count_children(widget);
@@ -312,7 +305,6 @@ static ret_t binding_context_prepare_children(binding_context_t* ctx, widget_t* 
   }
 
   widget_trim_children(widget, items);
-  binding_context_clear_bindings(ctx);
 
   for (i = widget_count_children(widget); i < items; i++) {
     widget_clone(template_widget, widget);
@@ -322,19 +314,48 @@ static ret_t binding_context_prepare_children(binding_context_t* ctx, widget_t* 
   return RET_OK;
 }
 
-static ret_t binding_context_awtk_bind_widget_array(binding_context_t* ctx) {
-  widget_t* widget = ctx->widget;
+static bool_t widget_is_for_items(widget_t* widget) {
+  value_t v;
+
+  value_set_bool(&v, FALSE);
+  widget_get_prop(widget, WIDGET_PROP_V_FOR_ITEMS, &v);
+
+  return value_bool(&v);
+}
+
+static ret_t on_reset_emitter(void* ctx, const void* data) {
+  widget_t* widget = WIDGET(data);
+  if (widget->emitter != NULL) {
+    emitter_deinit(widget->emitter);
+  }
+
+  return RET_OK;
+}
+
+static ret_t binding_context_awtk_bind_widget_array(binding_context_t* ctx, widget_t* widget) {
   view_model_t* view_model = ctx->view_model;
 
   ctx->request_rebind = 0;
   return_value_if_fail(object_is_collection(OBJECT(view_model)), RET_BAD_PARAMS);
-  return_value_if_fail(binding_context_prepare_children(ctx, widget) == RET_OK, RET_FAIL);
 
-  view_model_array_set_cursor(view_model, 0);
-  WIDGET_FOR_EACH_CHILD_BEGIN(widget, iter, i)
-  binding_context_awtk_bind_widget_only(ctx, iter);
-  view_model_array_inc_cursor(view_model);
-  WIDGET_FOR_EACH_CHILD_END();
+  if (widget->custom_props != NULL) {
+    ctx->current_widget = widget;
+    object_foreach_prop(widget->custom_props, visit_bind_one_prop, ctx);
+  }
+
+  if (widget_is_for_items(widget)) {
+    return_value_if_fail(binding_context_prepare_children(ctx, widget) == RET_OK, RET_FAIL);
+
+    view_model_array_set_cursor(view_model, 0);
+    WIDGET_FOR_EACH_CHILD_BEGIN(widget, iter, i)
+    binding_context_awtk_bind_widget_array(ctx, iter);
+    view_model_array_inc_cursor(view_model);
+    WIDGET_FOR_EACH_CHILD_END();
+  } else {
+    WIDGET_FOR_EACH_CHILD_BEGIN(widget, iter, i)
+    binding_context_awtk_bind_widget_array(ctx, iter);
+    WIDGET_FOR_EACH_CHILD_END();
+  }
 
   return RET_OK;
 }
@@ -342,10 +363,12 @@ static ret_t binding_context_awtk_bind_widget_array(binding_context_t* ctx) {
 static ret_t binding_context_rebind_in_idle(const idle_info_t* info) {
   binding_context_t* ctx = BINDING_CONTEXT(info->ctx);
 
-  log_debug("start_rebing\n");
-  binding_context_awtk_bind_widget_array(ctx);
+  log_debug("start_rebind\n");
+  binding_context_clear_bindings(ctx);
+  widget_foreach(ctx->widget, on_reset_emitter, NULL);
+  binding_context_awtk_bind_widget_array(ctx, ctx->widget);
   binding_context_update_to_view(ctx);
-  log_debug("end_rebing\n");
+  log_debug("end_rebind\n");
 
   return RET_REMOVE;
 }
@@ -365,7 +388,7 @@ static ret_t binding_context_awtk_bind(binding_context_t* ctx, void* widget) {
   ret_t ret = RET_OK;
 
   if (object_is_collection(OBJECT(ctx->view_model))) {
-    ret = binding_context_awtk_bind_widget_array(ctx);
+    ret = binding_context_awtk_bind_widget_array(ctx, WIDGET(widget));
     emitter_on(EMITTER(ctx->view_model), EVT_ITEMS_CHANGED, binding_context_on_rebind, ctx);
   } else {
     ret = binding_context_awtk_bind_widget(ctx, WIDGET(widget));

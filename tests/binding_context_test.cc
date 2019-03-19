@@ -364,7 +364,9 @@ TEST(BindingContextAwtk, array) {
 
   test_model_init();
 
-  widget_set_prop_str(list_view, WIDGET_PROP_V_MODEL, STR_V_MODEL_PERSONS);
+  widget_set_prop_bool(list_view, WIDGET_PROP_V_FOR_ITEMS, TRUE);
+  widget_set_prop_str(win, WIDGET_PROP_V_MODEL, STR_V_MODEL_PERSONS);
+
   bind_for_window(win);
 
   ASSERT_EQ(model_array_size(s_persons_model), 10);

@@ -9,11 +9,13 @@ TEST(Books, basic) {
   model_t* model = books_create(NULL);
   view_model_t* vm = view_model_array_create(model);
 
+  books_clear(model);
+
   for (i = 0; i < 100; i++) {
     char name[32];
     book_info_t* iter = NULL;
     tk_snprintf(name, sizeof(name) - 1, "test%u", i);
-    books_add(model, name, i + 1, i * 2 + 1);
+    books_add(model, name, i + 1);
 
     iter = books_get(model, i);
 
@@ -22,9 +24,6 @@ TEST(Books, basic) {
 
     ASSERT_EQ(view_model_eval(vm, "item.stock", &v), RET_OK);
     ASSERT_EQ(value_int(&v), iter->stock);
-
-    ASSERT_EQ(view_model_eval(vm, "item.publish_date", &v), RET_OK);
-    ASSERT_EQ(value_int(&v), iter->publish_date);
 
     ASSERT_EQ(view_model_eval(vm, "item.name", &v), RET_OK);
     ASSERT_STREQ(value_str(&v), iter->name);

@@ -124,6 +124,11 @@ bool_t command_binding_can_exec(command_binding_t* rule) {
     return TRUE;
   }
 
+  if (object_is_collection(OBJECT(view_model))) {
+    uint32_t cursor = BINDING_RULE(rule)->cursor;
+    object_set_prop_int(OBJECT(view_model), MODEL_PROP_CURSOR, cursor);
+  }
+
   return view_model_can_exec(view_model, rule->command, rule->args);
 }
 
@@ -139,6 +144,11 @@ ret_t command_binding_exec(command_binding_t* rule) {
 
   if (tk_str_ieq(rule->command, COMMAND_BINDING_CMD_NAVIGATE)) {
     return navigator_to(rule->args);
+  }
+
+  if (object_is_collection(OBJECT(view_model))) {
+    uint32_t cursor = BINDING_RULE(rule)->cursor;
+    object_set_prop_int(OBJECT(view_model), MODEL_PROP_CURSOR, cursor);
   }
 
   return view_model_exec(view_model, rule->command, rule->args);
