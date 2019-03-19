@@ -152,6 +152,7 @@ data_binding_t* data_binding_create(void) {
   data_binding_t* rule = DATA_BINDING(obj);
   return_value_if_fail(obj != NULL, NULL);
 
+  rule->mode = BINDING_ONE_WAY;
   rule->props = object_default_create();
 
   if (rule->props == NULL) {
@@ -256,6 +257,12 @@ ret_t data_binding_get_prop(data_binding_t* rule, value_t* v) {
   if (object_is_collection(OBJECT(view_model))) {
     uint32_t cursor = BINDING_RULE(rule)->cursor;
     object_set_prop_int(OBJECT(view_model), MODEL_PROP_CURSOR, cursor);
+
+    if (tk_str_eq(rule->path, MODEL_PROP_CURSOR)) {
+      value_set_int(v, cursor);
+
+      return RET_OK;
+    }
   }
 
   return_value_if_fail(view_model_eval(view_model, rule->path, &raw) == RET_OK, RET_FAIL);

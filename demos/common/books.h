@@ -27,8 +27,23 @@
 
 BEGIN_C_DECLS
 
+/**
+ * @class book_info_t
+ *
+ * 图书。
+ */
 typedef struct _book_info_t {
+  /**
+   * @property {char*} name
+   * @annotation ["readable"]
+   * 书名。
+   */
   char name[TK_NAME_LEN + 1];
+  /**
+   * @property {uint32_t} stock
+   * @annotation ["readable"]
+   * 库存(大于0时才可以出售)。
+   */
   uint32_t stock;
 } book_info_t;
 
@@ -41,6 +56,7 @@ typedef struct _book_info_t {
 typedef struct _books_t {
   model_t model;
 
+  /*private*/
   darray_t books;
 } books_t;
 
@@ -55,13 +71,70 @@ typedef struct _books_t {
  */
 model_t* books_create(navigator_request_t* req);
 
-uint32_t books_count(model_t* model);
+/**
+ * @method books_clear
+ * 清除全部图书。
+ *
+ * @param {model_t*} model books对象。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
 ret_t books_clear(model_t* model);
+
+/**
+ * @method books_size
+ * 返回图书数目。
+ *
+ * @param {model_t*} model books对象。
+ *
+ * @return {uint32_t} 返回图书数目。
+ */
+uint32_t books_size(model_t* model);
+
+/**
+ * @method books_remove
+ * 移出指定索引的图书。
+ *
+ * @param {model_t*} model books对象。
+ * @param {uint32_t} index 图书的索引。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
 ret_t books_remove(model_t* model, uint32_t index);
-ret_t books_add(model_t* model, const char* name, uint32_t stock);
+
+/**
+ * @method books_get
+ * 获取指定索引的图书。
+ *
+ * @param {model_t*} model books对象。
+ * @param {uint32_t} index 图书的索引。
+ *
+ * @return {book_info_t*} 返回指定索引的图书
+ */
 book_info_t* books_get(model_t* model, uint32_t index);
-ret_t books_set_stock(model_t* model, uint32_t index, uint32_t stock);
-ret_t books_set_stock_delta(model_t* model, uint32_t index, int32_t delta);
+
+/**
+ * @method books_add
+ * 增加图书。
+ *
+ * @param {model_t*} model books对象。
+ * @param {const char*} name 图书名称。
+ * @param {uint32_t} stock 库存。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t books_add(model_t* model, const char* name, uint32_t stock);
+
+/**
+ * @method books_sale
+ * 出售图书。
+ *
+ * @param {model_t*} model books对象。
+ * @param {uint32_t} index 图书的索引。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t books_sale(model_t* model, uint32_t index);
 
 #define BOOKS(t) ((books_t*)(t))
 
@@ -70,8 +143,8 @@ ret_t books_set_stock_delta(model_t* model, uint32_t index, int32_t delta);
 #define BOOK_PROP_STYLE "style"
 
 #define BOOK_CMD_ADD "add"
-#define BOOK_CMD_CLEAR "clear"
 #define BOOK_CMD_SALE "sale"
+#define BOOK_CMD_CLEAR "clear"
 #define BOOK_CMD_REMOVE "remove"
 
 END_C_DECLS

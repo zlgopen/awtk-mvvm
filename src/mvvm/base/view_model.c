@@ -94,9 +94,18 @@ bool_t view_model_can_exec(view_model_t* vm, const char* name, const char* args)
 }
 
 ret_t view_model_exec(view_model_t* vm, const char* name, const char* args) {
+  ret_t ret = RET_OK;
   return_value_if_fail(vm != NULL && name != NULL, RET_BAD_PARAMS);
 
-  return object_exec(OBJECT(vm), name, args);
+  ret = object_exec(OBJECT(vm), name, args);
+
+  if (ret == RET_OBJECT_CHANGED) {
+    emitter_dispatch_simple_event(EMITTER(vm), EVT_PROP_CHANGED);
+  } else if (ret == RET_ITEMS_CHANGED) {
+    emitter_dispatch_simple_event(EMITTER(vm), EVT_ITEMS_CHANGED);
+  }
+
+  return ret;
 }
 
 static EvalFunc vm_get_func(const char* name, void* user_data) {

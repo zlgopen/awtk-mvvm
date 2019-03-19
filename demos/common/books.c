@@ -24,6 +24,8 @@
 #include "tkc/utils.h"
 #include "mvvm/base/utils.h"
 
+static ret_t books_generate_data(books_t* books, uint32_t nr);
+
 book_info_t* book_info_init(book_info_t* info, const char* name, float_t stock) {
   return_value_if_fail(info != NULL && name != NULL, NULL);
 
@@ -60,13 +62,12 @@ ret_t book_info_destroy(book_info_t* info) {
 static ret_t books_set_prop(object_t* obj, const char* name, const value_t* v) {
   uint32_t index = 0;
   ret_t ret = RET_OK;
-  books_t* books = BOOKS(obj);
   book_info_t* info = NULL;
 
   name = destruct_array_prop_name(name, &index);
   return_value_if_fail(name != NULL, RET_BAD_PARAMS);
-  return_value_if_fail(index < books_count(MODEL(obj)), RET_BAD_PARAMS);
-  info = (book_info_t*)(books->books.elms[index]);
+  info = books_get(MODEL(obj), index);
+  return_value_if_fail(info != NULL, RET_BAD_PARAMS);
 
   if (tk_str_eq(BOOK_PROP_NAME, name)) {
     tk_strncpy(info->name, value_str(v), TK_NAME_LEN);
@@ -83,18 +84,17 @@ static ret_t books_get_prop(object_t* obj, const char* name, value_t* v) {
   uint32_t index = 0;
   ret_t ret = RET_OK;
   book_info_t* info = NULL;
-  books_t* books = BOOKS(obj);
 
   if (tk_str_eq(MODEL_PROP_ITEMS, name)) {
-    value_set_int(v, books_count(MODEL(obj)));
+    value_set_int(v, books_size(MODEL(obj)));
 
     return RET_OK;
   }
 
   name = destruct_array_prop_name(name, &index);
   return_value_if_fail(name != NULL, RET_BAD_PARAMS);
-  return_value_if_fail(index < books_count(MODEL(obj)), RET_BAD_PARAMS);
-  info = (book_info_t*)(books->books.elms[index]);
+  info = books_get(MODEL(obj), index);
+  return_value_if_fail(info != NULL, RET_BAD_PARAMS);
 
   if (tk_str_eq(BOOK_PROP_NAME, name)) {
     value_set_str(v, info->name);
@@ -112,14 +112,16 @@ static ret_t books_get_prop(object_t* obj, const char* name, value_t* v) {
 static bool_t books_can_exec(object_t* obj, const char* name, const char* args) {
   bool_t ret = TRUE;
   uint32_t index = tk_atoi(args);
+
   if (tk_str_ieq(name, BOOK_CMD_REMOVE)) {
-    ret = index < books_count(MODEL(obj));
+    ret = index < books_size(MODEL(obj));
   } else if (tk_str_ieq(name, BOOK_CMD_SALE)) {
-    ret = index < books_count(MODEL(obj));
+    const book_info_t* info = books_get(MODEL(obj), index);
+    ret = info != NULL && info->stock > 0;
   } else if (tk_str_ieq(name, BOOK_CMD_ADD)) {
     ret = TRUE;
   } else if (tk_str_ieq(name, BOOK_CMD_CLEAR)) {
-    ret = books_count(MODEL(obj)) > 0;
+    ret = books_size(MODEL(obj)) > 0;
   } else {
     ret = FALSE;
     log_debug("not supported\n");
@@ -129,24 +131,27 @@ static bool_t books_can_exec(object_t* obj, const char* name, const char* args) 
 }
 
 static ret_t books_exec(object_t* obj, const char* name, const char* args) {
-  bool_t ret = TRUE;
+  ret_t ret = TRUE;
   uint32_t index = tk_atoi(args);
 
   if (tk_str_ieq(name, BOOK_CMD_REMOVE)) {
-    ret = books_remove(MODEL(obj), index) == RET_OK;
+    ENSURE(books_remove(MODEL(obj), index) == RET_OK);
+    ret = RET_ITEMS_CHANGED;
   } else if (tk_str_ieq(name, BOOK_CMD_SALE)) {
-    ret = books_set_stock_delta(MODEL(obj), index, -1) == RET_OK;
-    object_notify_changed(obj);
+    ENSURE(books_sale(MODEL(obj), index) == RET_OK);
+    ret = RET_OBJECT_CHANGED;
   } else if (tk_str_ieq(name, BOOK_CMD_ADD)) {
-    ret = books_add(MODEL(obj), "name", 123) == RET_OK;
+    ENSURE(books_generate_data(BOOKS(obj), 1) == RET_OK);
+    ret = RET_ITEMS_CHANGED;
   } else if (tk_str_ieq(name, BOOK_CMD_CLEAR)) {
-    ret = books_clear(MODEL(obj)) == RET_OK;
+    ENSURE(books_clear(MODEL(obj)) == RET_OK);
+    ret = RET_ITEMS_CHANGED;
   } else {
-    ret = FALSE;
+    ret = RET_FAIL;
     log_debug("not supported\n");
   }
 
-  return RET_OK;
+  return ret;
 }
 
 static const object_vtable_t s_books_vtable = {.type = "books",
@@ -158,6 +163,19 @@ static const object_vtable_t s_books_vtable = {.type = "books",
                                                .get_prop = books_get_prop,
                                                .set_prop = books_set_prop};
 
+static ret_t books_generate_data(books_t* books, uint32_t nr) {
+  uint32_t i = 0;
+
+  for (i = 0; i < nr; i++) {
+    char name[TK_NAME_LEN + 1];
+    tk_snprintf(name, TK_NAME_LEN, "book %d", random() % 10000);
+
+    books_add(MODEL(books), name, random() % 100);
+  }
+
+  return RET_OK;
+}
+
 model_t* books_create(navigator_request_t* req) {
   model_t* model = MODEL(object_create(&s_books_vtable));
   books_t* books = BOOKS(model);
@@ -165,41 +183,30 @@ model_t* books_create(navigator_request_t* req) {
 
   darray_init(&(books->books), 100, (tk_destroy_t)book_info_destroy, (tk_compare_t)book_info_cmp);
 
-  books_add(model, "green book", 100);
-  books_add(model, "red book", 100);
+  books_generate_data(books, 100);
 
   return model;
 }
 
 ret_t books_remove(model_t* model, uint32_t index) {
-  ret_t ret = RET_FAIL;
   books_t* books = BOOKS(model);
-  return_value_if_fail(books != NULL, ret);
+  return_value_if_fail(books != NULL, RET_BAD_PARAMS);
 
-  emitter_dispatch_simple_event(EMITTER(model), EVT_ITEMS_WILL_CHANGE);
-  ret = darray_remove_index(&(books->books), index);
-  emitter_dispatch_simple_event(EMITTER(model), EVT_ITEMS_CHANGED);
-
-  return ret;
+  return darray_remove_index(&(books->books), index);
 }
 
 ret_t books_add(model_t* model, const char* name, uint32_t stock) {
-  ret_t ret = RET_FAIL;
   book_info_t* info = NULL;
   books_t* books = BOOKS(model);
-  return_value_if_fail(books != NULL && name != NULL, ret);
+  return_value_if_fail(books != NULL && name != NULL, RET_BAD_PARAMS);
 
   info = book_info_create(name, stock);
-  return_value_if_fail(info != NULL, ret);
+  return_value_if_fail(info != NULL, RET_BAD_PARAMS);
 
-  emitter_dispatch_simple_event(EMITTER(model), EVT_ITEMS_WILL_CHANGE);
-  ret = darray_push(&(books->books), info);
-  emitter_dispatch_simple_event(EMITTER(model), EVT_ITEMS_CHANGED);
-
-  return ret;
+  return darray_push(&(books->books), info);
 }
 
-uint32_t books_count(model_t* model) {
+uint32_t books_size(model_t* model) {
   books_t* books = BOOKS(model);
   return_value_if_fail(books != NULL, 0);
 
@@ -207,42 +214,27 @@ uint32_t books_count(model_t* model) {
 }
 
 ret_t books_clear(model_t* model) {
-  ret_t ret = RET_OK;
   books_t* books = BOOKS(model);
-
   return_value_if_fail(books != NULL, RET_BAD_PARAMS);
 
-  emitter_dispatch_simple_event(EMITTER(model), EVT_ITEMS_WILL_CHANGE);
-  ret = darray_clear(&(books->books));
-  emitter_dispatch_simple_event(EMITTER(model), EVT_ITEMS_CHANGED);
-
-  return ret;
+  return darray_clear(&(books->books));
 }
 
 book_info_t* books_get(model_t* model, uint32_t index) {
   books_t* books = BOOKS(model);
 
-  return_value_if_fail(books != NULL && index < books_count(model), NULL);
+  return_value_if_fail(books != NULL && index < books_size(model), NULL);
 
   return (book_info_t*)(books->books.elms[index]);
 }
 
-ret_t books_set_stock(model_t* model, uint32_t index, uint32_t stock) {
-  char name[64];
-  tk_snprintf(name, sizeof(name), "[%d].%s", index, BOOK_PROP_STOCK);
-
-  return object_set_prop_int(OBJECT(model), name, stock);
-}
-
-ret_t books_set_stock_delta(model_t* model, uint32_t index, int32_t delta) {
-  int32_t stock = 0;
+ret_t books_sale(model_t* model, uint32_t index) {
   books_t* books = BOOKS(model);
-  book_info_t* info = NULL;
-  return_value_if_fail(books != NULL && index < books_count(model), RET_BAD_PARAMS);
-  info = (book_info_t*)(books->books.elms[index]);
+  book_info_t* info = books_get(model, index);
+  return_value_if_fail(books != NULL && info != NULL, RET_BAD_PARAMS);
 
-  stock = info->stock + delta;
-  return_value_if_fail(stock >= 0, RET_FAIL);
+  return_value_if_fail(info->stock > 0, RET_FAIL);
+  info->stock--;
 
-  return books_set_stock(model, index, stock);
+  return RET_OK;
 }

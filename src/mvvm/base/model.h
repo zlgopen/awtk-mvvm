@@ -101,7 +101,7 @@ ret_t model_on_unmount(model_t* model);
 
 #define MODEL(model) ((model_t*)(model))
 
-#define MODEL_PROP_CURSOR "cursor"
+#define MODEL_PROP_CURSOR "index"
 #define MODEL_PROP_ITEMS "items"
 
 /**
