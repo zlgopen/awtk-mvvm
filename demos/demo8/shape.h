@@ -22,7 +22,7 @@
 #ifndef TK_SHAPE_H
 #define TK_SHAPE_H
 
-#include "mvvm/base/model.h"
+#include "mvvm/base/view_model.h"
 
 BEGIN_C_DECLS
 
@@ -33,7 +33,7 @@ BEGIN_C_DECLS
  *
  */
 typedef struct _shape_t {
-  model_t model;
+  view_model_t view_model;
 
   int32_t type;
   int32_t x;
@@ -54,9 +54,9 @@ typedef struct _shape_t {
  * @annotation ["constructor"]
  * @param {navigator_request_t*} req 请求参数。
  *
- * @return {model_t} 返回model_t对象。
+ * @return {view_model_t} 返回view_model_t对象。
  */
-model_t* shape_create(navigator_request_t* req);
+view_model_t* shape_create(navigator_request_t* req);
 
 #define SHAPE(t) ((shape_t*)(t))
 

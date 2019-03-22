@@ -134,7 +134,7 @@ struct _binding_context_t {
  *
  * @param {binding_context_t*} ctx binding_context对象。
  * @param {navigator_request_t*} req 请求参数对象。
- * @param {view_model_t**} vm view model对象。
+ * @param {view_model_t**} vm view view_model对象。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */

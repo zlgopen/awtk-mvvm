@@ -59,7 +59,7 @@ static ret_t command_binding_init(command_binding_t* rule, tokenizer_t* t) {
   return RET_FAIL;
 }
 
-static binding_rule_t* binding_rule_create(const char* name) {
+static binding_rule_t* binding_rule_create(const char* name, bool_t inputable) {
   tokenizer_t t;
   binding_rule_t* rule = NULL;
   return_value_if_fail(tokenizer_init(&t, name, -1, ":") != NULL, NULL);
@@ -74,6 +74,8 @@ static binding_rule_t* binding_rule_create(const char* name) {
           object_unref((object_t*)rule);
           rule = NULL;
         }
+        object_set_prop_str(OBJECT(rule), DATA_BINDING_MODE,
+                            inputable ? BINDING_STR_TWO_WAY : BINDING_STR_ONE_WAY);
       }
     } else if (tk_str_ieq(type, BINDING_RULE_COMMAND_PREFIX)) {
       rule = BINDING_RULE(command_binding_create());
@@ -90,7 +92,7 @@ static binding_rule_t* binding_rule_create(const char* name) {
   return rule;
 }
 
-binding_rule_t* binding_rule_parse(const char* name, const char* value) {
+binding_rule_t* binding_rule_parse(const char* name, const char* value, bool_t inputable) {
   tokenizer_t t;
   const char* k = NULL;
   const char* v = NULL;
@@ -98,7 +100,7 @@ binding_rule_t* binding_rule_parse(const char* name, const char* value) {
   binding_rule_t* rule = NULL;
   return_value_if_fail(name != NULL && value != NULL, NULL);
 
-  rule = binding_rule_create(name);
+  rule = binding_rule_create(name, inputable);
   return_value_if_fail(rule != NULL, NULL);
 
   if (tokenizer_init_ex(&t, value, -1, " {}=", ",") == NULL) {

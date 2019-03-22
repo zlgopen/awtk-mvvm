@@ -74,10 +74,10 @@ typedef enum _binding_mode_t {
   BINDING_ONE_WAY,
 
   /**
-   * @const BINDING_ONE_WAY_TO_MODEL
+   * @const BINDING_ONE_WAY_TO_VIEW_MODEL
    * 单向绑定，视图上数据变化时自动更新模型。
    */
-  BINDING_ONE_WAY_TO_MODEL,
+  BINDING_ONE_WAY_TO_VIEW_MODEL,
 
   /**
    * @const BINDING_ONCE
@@ -180,6 +180,11 @@ ret_t data_binding_set_prop(data_binding_t* rule, const value_t* v);
 #define DATA_BINDING_CONVERTER "Converter"
 #define DATA_BINDING_VALIDATOR "Validator"
 #define DATA_BINDING_ERROR_OF "error.of."
+
+#define BINDING_STR_ONCE "Once"
+#define BINDING_STR_TWO_WAY "TwoWay"
+#define BINDING_STR_ONE_WAY "OneWay"
+#define BINDING_STR_ONE_WAY_TO_VIEW_MODEL "OneWayToModel"
 
 END_C_DECLS
 

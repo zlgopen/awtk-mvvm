@@ -22,7 +22,7 @@
 #include "mvvm/base/mvvm_base.h"
 
 ret_t mvvm_base_init(void) {
-  return_value_if_fail(model_factory_init() == RET_OK, RET_FAIL);
+  return_value_if_fail(view_model_factory_init() == RET_OK, RET_FAIL);
   return_value_if_fail(value_converter_init() == RET_OK, RET_FAIL);
   return_value_if_fail(value_validator_init() == RET_OK, RET_FAIL);
   navigator_set(navigator_create());
@@ -32,7 +32,7 @@ ret_t mvvm_base_init(void) {
 }
 
 ret_t mvvm_base_deinit(void) {
-  model_factory_deinit();
+  view_model_factory_deinit();
   value_converter_deinit();
   value_validator_deinit();
   object_unref(OBJECT(navigator()));

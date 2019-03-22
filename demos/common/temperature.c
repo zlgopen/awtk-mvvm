@@ -49,12 +49,17 @@ static ret_t temperature_get_prop(object_t* obj, const char* name, value_t* v) {
   }
 }
 
+static ret_t temperature_on_destroy(object_t* obj) {
+  return view_model_deinit(VIEW_MODEL(obj));
+}
+
 static const object_vtable_t s_temperature_vtable = {.type = "temperature",
                                                      .desc = "temperature",
                                                      .size = sizeof(temperature_t),
                                                      .get_prop = temperature_get_prop,
-                                                     .set_prop = temperature_set_prop};
+                                                     .set_prop = temperature_set_prop,
+                                                     .on_destroy = temperature_on_destroy};
 
-model_t* temperature_create(navigator_request_t* req) {
-  return MODEL(object_create(&s_temperature_vtable));
+view_model_t* temperature_create(navigator_request_t* req) {
+  return view_model_init(VIEW_MODEL(object_create(&s_temperature_vtable)));
 }

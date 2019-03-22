@@ -22,7 +22,7 @@
 #ifndef TK_HOME_H
 #define TK_HOME_H
 
-#include "mvvm/base/model.h"
+#include "mvvm/base/view_model.h"
 
 BEGIN_C_DECLS
 
@@ -38,13 +38,13 @@ typedef struct _room_info_t {
  *
  */
 typedef struct _home_t {
-  model_t model;
+  view_model_t view_model;
 
   room_info_t bed_room;
   room_info_t living_room;
 } home_t;
 
-model_t* home_create(navigator_request_t* req);
+view_model_t* home_create(navigator_request_t* req);
 
 #define HOME(t) ((home_t*)(t))
 

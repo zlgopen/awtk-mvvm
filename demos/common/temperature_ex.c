@@ -79,14 +79,19 @@ static ret_t temperature_ex_exec(object_t* obj, const char* name, const char* ar
   return RET_OK;
 }
 
+static ret_t temperature_ex_on_destroy(object_t* obj) {
+  return view_model_deinit(VIEW_MODEL(obj));
+}
+
 static const object_vtable_t s_temperature_ex_vtable = {.type = "temperature",
                                                         .desc = "temperature",
                                                         .size = sizeof(temperature_ex_t),
                                                         .exec = temperature_ex_exec,
                                                         .can_exec = temperature_ex_can_exec,
                                                         .get_prop = temperature_ex_get_prop,
-                                                        .set_prop = temperature_ex_set_prop};
+                                                        .set_prop = temperature_ex_set_prop,
+                                                        .on_destroy = temperature_ex_on_destroy};
 
-model_t* temperature_ex_create(navigator_request_t* req) {
-  return MODEL(object_create(&s_temperature_ex_vtable));
+view_model_t* temperature_ex_create(navigator_request_t* req) {
+  return view_model_init(VIEW_MODEL(object_create(&s_temperature_ex_vtable)));
 }

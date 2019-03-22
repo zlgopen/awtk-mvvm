@@ -23,7 +23,7 @@
 #define TK_BOOKS_H
 
 #include "tkc/darray.h"
-#include "mvvm/base/model.h"
+#include "mvvm/base/view_model_array.h"
 
 BEGIN_C_DECLS
 
@@ -54,7 +54,7 @@ typedef struct _book_info_t {
  *
  */
 typedef struct _books_t {
-  model_t model;
+  view_model_array_t view_model_array;
 
   /*private*/
   darray_t books;
@@ -67,74 +67,74 @@ typedef struct _books_t {
  * @annotation ["constructor"]
  * @param {navigator_request_t*} req 请求参数。
  *
- * @return {model_t} 返回model_t对象。
+ * @return {view_model_t} 返回view_model_t对象。
  */
-model_t* books_create(navigator_request_t* req);
+view_model_t* books_create(navigator_request_t* req);
 
 /**
  * @method books_clear
  * 清除全部图书。
  *
- * @param {model_t*} model books对象。
+ * @param {view_model_t*} view_model books对象。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
-ret_t books_clear(model_t* model);
+ret_t books_clear(view_model_t* view_model);
 
 /**
  * @method books_size
  * 返回图书数目。
  *
- * @param {model_t*} model books对象。
+ * @param {view_model_t*} view_model books对象。
  *
  * @return {uint32_t} 返回图书数目。
  */
-uint32_t books_size(model_t* model);
+uint32_t books_size(view_model_t* view_model);
 
 /**
  * @method books_remove
  * 移出指定索引的图书。
  *
- * @param {model_t*} model books对象。
+ * @param {view_model_t*} view_model books对象。
  * @param {uint32_t} index 图书的索引。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
-ret_t books_remove(model_t* model, uint32_t index);
+ret_t books_remove(view_model_t* view_model, uint32_t index);
 
 /**
  * @method books_get
  * 获取指定索引的图书。
  *
- * @param {model_t*} model books对象。
+ * @param {view_model_t*} view_model books对象。
  * @param {uint32_t} index 图书的索引。
  *
  * @return {book_info_t*} 返回指定索引的图书
  */
-book_info_t* books_get(model_t* model, uint32_t index);
+book_info_t* books_get(view_model_t* view_model, uint32_t index);
 
 /**
  * @method books_add
  * 增加图书。
  *
- * @param {model_t*} model books对象。
+ * @param {view_model_t*} view_model books对象。
  * @param {const char*} name 图书名称。
  * @param {uint32_t} stock 库存。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
-ret_t books_add(model_t* model, const char* name, uint32_t stock);
+ret_t books_add(view_model_t* view_model, const char* name, uint32_t stock);
 
 /**
  * @method books_sale
  * 出售图书。
  *
- * @param {model_t*} model books对象。
+ * @param {view_model_t*} view_model books对象。
  * @param {uint32_t} index 图书的索引。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
-ret_t books_sale(model_t* model, uint32_t index);
+ret_t books_sale(view_model_t* view_model, uint32_t index);
 
 #define BOOKS(t) ((books_t*)(t))
 

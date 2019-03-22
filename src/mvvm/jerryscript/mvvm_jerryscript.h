@@ -23,7 +23,7 @@
 #define TK_MVVM_JERRYSCRIPT_H
 
 #include "mvvm/base/binding_context.h"
-#include "mvvm/jerryscript/model_jerryscript.h"
+#include "mvvm/jerryscript/view_model_jerryscript.h"
 #include "mvvm/jerryscript/value_validator_jerryscript.h"
 #include "mvvm/jerryscript/value_converter_jerryscript.h"
 

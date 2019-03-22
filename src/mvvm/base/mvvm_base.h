@@ -22,10 +22,9 @@
 #ifndef TK_MVVM_BASE_H
 #define TK_MVVM_BASE_H
 
-#include "mvvm/base/model.h"
+#include "mvvm/base/view_model.h"
 #include "mvvm/base/binding_rule_parser.h"
 #include "mvvm/base/navigator_request.h"
-#include "mvvm/base/view_model_normal.h"
 #include "mvvm/base/data_binding.h"
 #include "mvvm/base/view_model.h"
 #include "mvvm/base/binding_rule.h"
@@ -35,8 +34,8 @@
 #include "mvvm/base/value_converter.h"
 #include "mvvm/base/command_binding.h"
 #include "mvvm/base/navigator.h"
-#include "mvvm/base/model_delegate.h"
-#include "mvvm/base/model_factory.h"
+#include "mvvm/base/view_model_delegate.h"
+#include "mvvm/base/view_model_factory.h"
 #include "mvvm/base/value_validator_delegate.h"
 #include "mvvm/base/value_converter_delegate.h"
 

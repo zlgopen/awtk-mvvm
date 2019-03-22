@@ -1,5 +1,5 @@
 ﻿/**
- * File:   view_model.c
+ * File:   view_model.h
  * Author: AWTK Develop Team
  * Brief:  view_model
  *
@@ -15,94 +15,163 @@
 /**
  * History:
  * ================================================================
- * 2019-01-27 Li XianJing <xianjimli@hotmail.com> created
+ * 2019-02-08 Li XianJing <xianjimli@hotmail.com> created
  *
  */
 
-#include "mvvm/base/view_model.h"
-#include "tkc/expr_eval.h"
+#include "tkc/str.h"
 #include "tkc/utils.h"
+#include "tkc/expr_eval.h"
+#include "mvvm/base/view_model.h"
 
-const char* view_model_preprocess_expr(view_model_t* vm, const char* expr) {
-  return_value_if_fail(vm != NULL && expr != NULL, NULL);
+view_model_t* view_model_init(view_model_t* view_model) {
+  return_value_if_fail(view_model != NULL, NULL);
 
-  if (vm->preprocess_expr != NULL) {
-    return vm->preprocess_expr(vm, expr);
+  str_init(&(view_model->last_error), 0);
+  view_model->preprocess_expr = NULL;
+  view_model->preprocess_prop = NULL;
+
+  return view_model;
+}
+
+ret_t view_model_deinit(view_model_t* view_model) {
+  return_value_if_fail(view_model != NULL, RET_BAD_PARAMS);
+
+  str_reset(&(view_model->last_error));
+
+  return RET_OK;
+}
+
+ret_t view_model_on_will_mount(view_model_t* view_model, navigator_request_t* req) {
+  view_model_will_mount_event_t e;
+  return_value_if_fail(view_model != NULL && req != NULL, RET_BAD_PARAMS);
+
+  log_debug("%s\n", __FUNCTION__);
+  e.req = req;
+  e.e = event_init(EVT_VIEW_MODEL_WILL_MOUNT, view_model);
+  emitter_dispatch(EMITTER(view_model), (event_t*)&e);
+  if (view_model->vt != NULL && view_model->vt->on_will_mount != NULL) {
+    return view_model->vt->on_will_mount(view_model, req);
+  }
+
+  return RET_OK;
+}
+
+ret_t view_model_on_mount(view_model_t* view_model) {
+  event_t e = event_init(EVT_VIEW_MODEL_MOUNT, view_model);
+  return_value_if_fail(view_model != NULL, RET_BAD_PARAMS);
+
+  log_debug("%s\n", __FUNCTION__);
+  emitter_dispatch(EMITTER(view_model), (event_t*)&e);
+  if (view_model->vt != NULL && view_model->vt->on_mount != NULL) {
+    return view_model->vt->on_mount(view_model);
+  }
+
+  return RET_OK;
+}
+
+ret_t view_model_on_will_unmount(view_model_t* view_model) {
+  event_t e = event_init(EVT_VIEW_MODEL_WILL_UNMOUNT, view_model);
+  return_value_if_fail(view_model != NULL, RET_BAD_PARAMS);
+
+  log_debug("%s\n", __FUNCTION__);
+  emitter_dispatch(EMITTER(view_model), (event_t*)&e);
+  if (view_model->vt != NULL && view_model->vt->on_will_unmount != NULL) {
+    return view_model->vt->on_will_unmount(view_model);
+  }
+
+  return RET_OK;
+}
+
+ret_t view_model_on_unmount(view_model_t* view_model) {
+  event_t e = event_init(EVT_VIEW_MODEL_WILL_UNMOUNT, view_model);
+  return_value_if_fail(view_model != NULL, RET_BAD_PARAMS);
+
+  log_debug("%s\n", __FUNCTION__);
+  emitter_dispatch(EMITTER(view_model), (event_t*)&e);
+  if (view_model->vt != NULL && view_model->vt->on_unmount != NULL) {
+    return view_model->vt->on_unmount(view_model);
+  }
+
+  return RET_OK;
+}
+
+const char* view_model_preprocess_expr(view_model_t* view_model, const char* expr) {
+  return_value_if_fail(view_model != NULL && expr != NULL, NULL);
+
+  if (view_model->preprocess_expr != NULL) {
+    return view_model->preprocess_expr(view_model, expr);
   } else {
     return expr;
   }
 }
 
-const char* view_model_preprocess_prop(view_model_t* vm, const char* prop) {
-  return_value_if_fail(vm != NULL && prop != NULL, NULL);
+const char* view_model_preprocess_prop(view_model_t* view_model, const char* prop) {
+  return_value_if_fail(view_model != NULL && prop != NULL, NULL);
 
-  if (vm->preprocess_prop != NULL) {
-    return vm->preprocess_prop(vm, prop);
+  if (view_model->preprocess_prop != NULL) {
+    return view_model->preprocess_prop(view_model, prop);
   } else {
     return prop;
   }
 }
 
-static ret_t model_on_event(void* ctx, event_t* e) {
-  view_model_t* vm = VIEW_MODEL(ctx);
+bool_t view_model_has_prop(view_model_t* view_model, const char* name) {
+  return_value_if_fail(view_model != NULL && name != NULL, FALSE);
+  name = view_model_preprocess_prop(view_model, name);
 
-  emitter_dispatch(EMITTER(vm), e);
-
-  return RET_OK;
+  return object_has_prop(OBJECT(view_model), name);
 }
 
-view_model_t* view_model_init(view_model_t* vm, view_model_type_t type, model_t* model) {
-  return_value_if_fail(vm != NULL && model != NULL, NULL);
+ret_t view_model_get_prop(view_model_t* view_model, const char* name, value_t* value) {
+  return_value_if_fail(view_model != NULL && name != NULL && value != NULL, RET_BAD_PARAMS);
+  name = view_model_preprocess_prop(view_model, name);
 
-  vm->type = type;
-  vm->model = model;
-
-  object_ref(OBJECT(model));
-  emitter_on(EMITTER(vm->model), EVT_PROP_CHANGED, model_on_event, vm);
-  emitter_on(EMITTER(vm->model), EVT_PROPS_CHANGED, model_on_event, vm);
-
-  return vm;
+  return object_get_prop(OBJECT(view_model), name, value);
 }
 
-bool_t view_model_has_prop(view_model_t* vm, const char* name) {
-  return_value_if_fail(vm != NULL && name != NULL, FALSE);
-  name = view_model_preprocess_prop(vm, name);
-
-  return object_has_prop(OBJECT(vm), name);
-}
-
-ret_t view_model_get_prop(view_model_t* vm, const char* name, value_t* value) {
-  return_value_if_fail(vm != NULL && name != NULL && value != NULL, RET_BAD_PARAMS);
-  name = view_model_preprocess_prop(vm, name);
-
-  return object_get_prop(OBJECT(vm), name, value);
-}
-
-ret_t view_model_set_prop(view_model_t* vm, const char* name, const value_t* value) {
-  return_value_if_fail(vm != NULL && name != NULL && value != NULL, RET_BAD_PARAMS);
-  name = view_model_preprocess_prop(vm, name);
+ret_t view_model_set_prop(view_model_t* view_model, const char* name, const value_t* value) {
+  return_value_if_fail(view_model != NULL && name != NULL && value != NULL, RET_BAD_PARAMS);
+  name = view_model_preprocess_prop(view_model, name);
 
   if (!tk_is_valid_name(name)) {
     return RET_OK;
   }
 
-  return object_set_prop(OBJECT(vm), name, value);
+  return object_set_prop(OBJECT(view_model), name, value);
 }
 
-bool_t view_model_can_exec(view_model_t* vm, const char* name, const char* args) {
-  return object_can_exec(OBJECT(vm), name, args);
+bool_t view_model_can_exec(view_model_t* view_model, const char* name, const char* args) {
+  return_value_if_fail(view_model != NULL && name != NULL, FALSE);
+  if (object_is_collection(OBJECT(view_model))) {
+    char cursor[TK_NUM_MAX_LEN + 1];
+    int32_t index = object_get_prop_int(OBJECT(view_model), VIEW_MODEL_PROP_CURSOR, 0);
+
+    tk_itoa(cursor, TK_NUM_MAX_LEN, index);
+    return object_can_exec(OBJECT(view_model), name, cursor);
+  } else {
+    return object_can_exec(OBJECT(view_model), name, args);
+  }
 }
 
-ret_t view_model_exec(view_model_t* vm, const char* name, const char* args) {
+ret_t view_model_exec(view_model_t* view_model, const char* name, const char* args) {
   ret_t ret = RET_OK;
-  return_value_if_fail(vm != NULL && name != NULL, RET_BAD_PARAMS);
+  return_value_if_fail(view_model != NULL && name != NULL, RET_BAD_PARAMS);
 
-  ret = object_exec(OBJECT(vm), name, args);
+  if (object_is_collection(OBJECT(view_model))) {
+    char cursor[TK_NUM_MAX_LEN + 1];
+    int32_t index = object_get_prop_int(OBJECT(view_model), VIEW_MODEL_PROP_CURSOR, 0);
+
+    tk_itoa(cursor, TK_NUM_MAX_LEN, index);
+    ret = object_exec(OBJECT(view_model), name, cursor);
+  } else {
+    ret = object_exec(OBJECT(view_model), name, args);
+  }
 
   if (ret == RET_OBJECT_CHANGED) {
-    emitter_dispatch_simple_event(EMITTER(vm), EVT_PROP_CHANGED);
+    emitter_dispatch_simple_event(EMITTER(view_model), EVT_PROP_CHANGED);
   } else if (ret == RET_ITEMS_CHANGED) {
-    emitter_dispatch_simple_event(EMITTER(vm), EVT_ITEMS_CHANGED);
+    emitter_dispatch_simple_event(EMITTER(view_model), EVT_ITEMS_CHANGED);
   }
 
   return ret;
@@ -116,10 +185,10 @@ static EvalFunc vm_get_func(const char* name, void* user_data) {
 
 static EvalResult vm_get_variable(const char* name, void* user_data, ExprValue* output) {
   value_t value;
-  view_model_t* vm = (view_model_t*)user_data;
+  view_model_t* view_model = (view_model_t*)user_data;
   const EvalHooks* hooks = eval_default_hooks();
 
-  if (view_model_get_prop(vm, name, &value) == RET_OK) {
+  if (view_model_get_prop(view_model, name, &value) == RET_OK) {
     if (value.type == VALUE_TYPE_STRING) {
       const char* str = value_str(&value);
       expr_value_set_string(output, str, strlen(str));
@@ -133,14 +202,14 @@ static EvalResult vm_get_variable(const char* name, void* user_data, ExprValue* 
   return hooks->get_variable(name, user_data, output);
 }
 
-ret_t view_model_eval(view_model_t* vm, const char* expr, value_t* v) {
-  object_t* obj = OBJECT(vm);
+ret_t view_model_eval(view_model_t* view_model, const char* expr, value_t* v) {
+  object_t* obj = OBJECT(view_model);
   return_value_if_fail(expr != NULL && v != NULL, RET_BAD_PARAMS);
   return_value_if_fail(obj != NULL && obj->vt != NULL && obj->ref_count >= 0, RET_BAD_PARAMS);
 
-  expr = view_model_preprocess_expr(vm, expr);
+  expr = view_model_preprocess_expr(view_model, expr);
   if (tk_is_valid_name(expr)) {
-    return view_model_get_prop(vm, expr, v);
+    return view_model_get_prop(view_model, expr, v);
   } else {
     EvalHooks hooks;
     ExprValue result;
@@ -149,7 +218,7 @@ ret_t view_model_eval(view_model_t* vm, const char* expr, value_t* v) {
     hooks.get_func = vm_get_func;
     hooks.get_variable = vm_get_variable;
 
-    ret = eval_execute(expr, &hooks, (void*)vm, &result);
+    ret = eval_execute(expr, &hooks, (void*)view_model, &result);
     if (ret == EVAL_RESULT_OK) {
       if (result.type == EXPR_VALUE_TYPE_STRING) {
         value_dup_str(v, result.v.str.str);
@@ -172,11 +241,6 @@ ret_t view_model_eval(view_model_t* vm, const char* expr, value_t* v) {
   }
 }
 
-ret_t view_model_deinit(view_model_t* vm) {
-  return_value_if_fail(vm != NULL, RET_BAD_PARAMS);
-
-  emitter_off_by_ctx(EMITTER(vm->model), vm);
-  object_unref(OBJECT(vm->model));
-
-  return RET_OK;
+ret_t view_model_notify_props_changed(view_model_t* view_model) {
+  return emitter_dispatch_simple_event(EMITTER(view_model), EVT_PROPS_CHANGED);
 }

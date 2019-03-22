@@ -1,7 +1,7 @@
 ﻿/**
- * File:   model_jerryscript.h
+ * File:   view_model_jerryscript.h
  * Author: AWTK Develop Team
- * Brief:  jerryscript implemented model
+ * Brief:  jerryscript implemented view_model
  *
  * Copyright (c) 2019 - 2019  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
@@ -19,27 +19,27 @@
  *
  */
 
-#ifndef TK_MODEL_JERRYSCRIPT_H
-#define TK_MODEL_JERRYSCRIPT_H
+#ifndef TK_VIEW_MODEL_JERRYSCRIPT_H
+#define TK_VIEW_MODEL_JERRYSCRIPT_H
 
 #include "tkc/str.h"
 #include "jerryscript.h"
-#include "mvvm/base/model.h"
+#include "mvvm/base/view_model.h"
 
 BEGIN_C_DECLS
 
 struct _model_jerryscript_t;
-typedef struct _model_jerryscript_t model_jerryscript_t;
+typedef struct _model_jerryscript_t view_model_jerryscript_t;
 
 /**
- * @class model_jerryscript_t
- * @parent model_t
+ * @class view_model_jerryscript_t
+ * @parent view_model_t
  *
- * wrap jerryscript code to a model
+ * wrap jerryscript code to a view_model
  *
  */
 struct _model_jerryscript_t {
-  model_t model;
+  view_model_t view_model;
 
   /*private*/
   jerry_value_t jsobj;
@@ -49,8 +49,8 @@ struct _model_jerryscript_t {
 };
 
 /**
- * @method model_jerryscript_create
- * 通过一段JS代码创建一个model对象。
+ * @method view_model_jerryscript_create
+ * 通过一段JS代码创建一个view_model对象。
  *
  * @param {const char*} name 名称(通常是文件名)。
  * @param {const char*} code 代码字符字符串(UTF8)。
@@ -59,11 +59,11 @@ struct _model_jerryscript_t {
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
-model_t* model_jerryscript_create(const char* name, const char* code, uint32_t code_size,
-                                  navigator_request_t* req);
+view_model_t* view_model_jerryscript_create(const char* name, const char* code, uint32_t code_size,
+                                            navigator_request_t* req);
 
-#define MODEL_JERRYSCRIPT(model) ((model_jerryscript_t*)(model))
+#define VIEW_MODEL_JERRYSCRIPT(view_model) ((view_model_jerryscript_t*)(view_model))
 
 END_C_DECLS
 
-#endif /*TK_MODEL_JERRYSCRIPT_H*/
+#endif /*TK_VIEW_MODEL_JERRYSCRIPT_H*/

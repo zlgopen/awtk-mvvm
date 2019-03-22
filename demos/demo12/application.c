@@ -26,8 +26,8 @@
 #include "../common/room_settings.h"
 
 ret_t application_init() {
-  model_factory_register("home", home_create);
-  model_factory_register("room_settings", room_settings_create);
+  view_model_factory_register("home", home_create);
+  view_model_factory_register("room_settings", room_settings_create);
 
   return navigator_to("home");
 }

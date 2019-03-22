@@ -27,7 +27,7 @@
 struct _binding_context_t;
 typedef struct _binding_context_t binding_context_t;
 
-#define WIDGET_PROP_V_MODEL "v-model"
+#define WIDGET_PROP_V_VIEW_MODEL "v-model"
 #define WIDGET_PROP_V_FOR_ITEMS "v-for-items"
 
 #endif /*TK_MVVM_TYPES_DEF_H*/

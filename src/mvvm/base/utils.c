@@ -19,18 +19,21 @@
  *
  */
 
+#include "tkc/utils.h"
 #include "mvvm/base/utils.h"
 
 const char* destruct_array_prop_name(const char* name, uint32_t* index) {
   const char* prop = NULL;
-  return_value_if_fail(name != NULL && name[0] == '[', NULL);
+  return_value_if_fail(name != NULL, NULL);
 
   prop = strstr(name, "].");
-  return_value_if_fail(prop != NULL, NULL);
+  if (prop != NULL && name[0] == '[') {
+    if (index != NULL) {
+      *index = tk_atoi(name + 1);
+    }
 
-  if (index != NULL) {
-    *index = tk_atoi(name + 1);
+    return prop + 2;
+  } else {
+    return name;
   }
-
-  return prop + 2;
 }

@@ -21,8 +21,7 @@
 
 #include "tkc/mem.h"
 #include "tkc/utils.h"
-#include "mvvm/base/model_delegate.h"
-#include "mvvm/base/view_model_normal.h"
+#include "mvvm/base/view_model_delegate.h"
 
 #include "temperature.h"
 
@@ -37,12 +36,12 @@ static bool_t temperature_can_save(temperature_t* t, const char* args) {
   return t->value != t->saved_value;
 }
 
-model_t* temperature_create(navigator_request_t* req) {
+view_model_t* temperature_create(navigator_request_t* req) {
   temperature_t* t = TKMEM_ZALLOC(temperature_t);
-  model_t* model = model_delegate_create(t, default_destroy);
+  view_model_t* view_model = view_model_delegate_create(t, default_destroy);
 
-  MODEL_SIMPLE_PROP(model, "temp", VALUE_TYPE_INT32, &(t->value));
-  MODEL_COMMAND(model, "save", temperature_save, temperature_can_save);
+  VIEW_MODEL_SIMPLE_PROP(view_model, "temp", VALUE_TYPE_INT32, &(t->value));
+  VIEW_MODEL_COMMAND(view_model, "save", temperature_save, temperature_can_save);
 
-  return model;
+  return view_model;
 }

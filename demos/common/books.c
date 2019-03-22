@@ -64,9 +64,15 @@ static ret_t books_set_prop(object_t* obj, const char* name, const value_t* v) {
   ret_t ret = RET_OK;
   book_info_t* info = NULL;
 
+  if (tk_str_eq(VIEW_MODEL_PROP_CURSOR, name)) {
+    view_model_array_set_cursor(VIEW_MODEL(obj), value_int(v));
+
+    return RET_OK;
+  }
+
   name = destruct_array_prop_name(name, &index);
   return_value_if_fail(name != NULL, RET_BAD_PARAMS);
-  info = books_get(MODEL(obj), index);
+  info = books_get(VIEW_MODEL(obj), index);
   return_value_if_fail(info != NULL, RET_BAD_PARAMS);
 
   if (tk_str_eq(BOOK_PROP_NAME, name)) {
@@ -85,15 +91,19 @@ static ret_t books_get_prop(object_t* obj, const char* name, value_t* v) {
   ret_t ret = RET_OK;
   book_info_t* info = NULL;
 
-  if (tk_str_eq(MODEL_PROP_ITEMS, name)) {
-    value_set_int(v, books_size(MODEL(obj)));
+  if (tk_str_eq(VIEW_MODEL_PROP_ITEMS, name)) {
+    value_set_int(v, books_size(VIEW_MODEL(obj)));
+
+    return RET_OK;
+  } else if (tk_str_eq(VIEW_MODEL_PROP_CURSOR, name)) {
+    value_set_int(v, VIEW_MODEL_ARRAY(obj)->cursor);
 
     return RET_OK;
   }
 
   name = destruct_array_prop_name(name, &index);
   return_value_if_fail(name != NULL, RET_BAD_PARAMS);
-  info = books_get(MODEL(obj), index);
+  info = books_get(VIEW_MODEL(obj), index);
   return_value_if_fail(info != NULL, RET_BAD_PARAMS);
 
   if (tk_str_eq(BOOK_PROP_NAME, name)) {
@@ -114,14 +124,14 @@ static bool_t books_can_exec(object_t* obj, const char* name, const char* args) 
   uint32_t index = tk_atoi(args);
 
   if (tk_str_ieq(name, BOOK_CMD_REMOVE)) {
-    ret = index < books_size(MODEL(obj));
+    ret = index < books_size(VIEW_MODEL(obj));
   } else if (tk_str_ieq(name, BOOK_CMD_SALE)) {
-    const book_info_t* info = books_get(MODEL(obj), index);
+    const book_info_t* info = books_get(VIEW_MODEL(obj), index);
     ret = info != NULL && info->stock > 0;
   } else if (tk_str_ieq(name, BOOK_CMD_ADD)) {
     ret = TRUE;
   } else if (tk_str_ieq(name, BOOK_CMD_CLEAR)) {
-    ret = books_size(MODEL(obj)) > 0;
+    ret = books_size(VIEW_MODEL(obj)) > 0;
   } else {
     ret = FALSE;
     log_debug("not supported\n");
@@ -135,16 +145,16 @@ static ret_t books_exec(object_t* obj, const char* name, const char* args) {
   uint32_t index = tk_atoi(args);
 
   if (tk_str_ieq(name, BOOK_CMD_REMOVE)) {
-    ENSURE(books_remove(MODEL(obj), index) == RET_OK);
+    ENSURE(books_remove(VIEW_MODEL(obj), index) == RET_OK);
     ret = RET_ITEMS_CHANGED;
   } else if (tk_str_ieq(name, BOOK_CMD_SALE)) {
-    ENSURE(books_sale(MODEL(obj), index) == RET_OK);
+    ENSURE(books_sale(VIEW_MODEL(obj), index) == RET_OK);
     ret = RET_OBJECT_CHANGED;
   } else if (tk_str_ieq(name, BOOK_CMD_ADD)) {
     ENSURE(books_generate_data(BOOKS(obj), 1) == RET_OK);
     ret = RET_ITEMS_CHANGED;
   } else if (tk_str_ieq(name, BOOK_CMD_CLEAR)) {
-    ENSURE(books_clear(MODEL(obj)) == RET_OK);
+    ENSURE(books_clear(VIEW_MODEL(obj)) == RET_OK);
     ret = RET_ITEMS_CHANGED;
   } else {
     ret = RET_FAIL;
@@ -154,6 +164,13 @@ static ret_t books_exec(object_t* obj, const char* name, const char* args) {
   return ret;
 }
 
+static ret_t books_on_destroy(object_t* obj) {
+  books_clear(VIEW_MODEL(obj));
+  darray_deinit(&(BOOKS(obj)->books));
+
+  return view_model_array_deinit(VIEW_MODEL(obj));
+}
+
 static const object_vtable_t s_books_vtable = {.type = "books",
                                                .desc = "books",
                                                .size = sizeof(books_t),
@@ -161,7 +178,8 @@ static const object_vtable_t s_books_vtable = {.type = "books",
                                                .is_collection = TRUE,
                                                .can_exec = books_can_exec,
                                                .get_prop = books_get_prop,
-                                               .set_prop = books_set_prop};
+                                               .set_prop = books_set_prop,
+                                               .on_destroy = books_on_destroy};
 
 static ret_t books_generate_data(books_t* books, uint32_t nr) {
   uint32_t i = 0;
@@ -170,34 +188,34 @@ static ret_t books_generate_data(books_t* books, uint32_t nr) {
     char name[TK_NAME_LEN + 1];
     tk_snprintf(name, TK_NAME_LEN, "book %d", random() % 10000);
 
-    books_add(MODEL(books), name, random() % 100);
+    books_add(VIEW_MODEL(books), name, random() % 100);
   }
 
   return RET_OK;
 }
 
-model_t* books_create(navigator_request_t* req) {
-  model_t* model = MODEL(object_create(&s_books_vtable));
-  books_t* books = BOOKS(model);
+view_model_t* books_create(navigator_request_t* req) {
+  view_model_t* view_model = view_model_array_init(VIEW_MODEL(object_create(&s_books_vtable)));
+  books_t* books = BOOKS(view_model);
   return_value_if_fail(books != NULL, NULL);
 
   darray_init(&(books->books), 100, (tk_destroy_t)book_info_destroy, (tk_compare_t)book_info_cmp);
 
   books_generate_data(books, 100);
 
-  return model;
+  return view_model;
 }
 
-ret_t books_remove(model_t* model, uint32_t index) {
-  books_t* books = BOOKS(model);
+ret_t books_remove(view_model_t* view_model, uint32_t index) {
+  books_t* books = BOOKS(view_model);
   return_value_if_fail(books != NULL, RET_BAD_PARAMS);
 
   return darray_remove_index(&(books->books), index);
 }
 
-ret_t books_add(model_t* model, const char* name, uint32_t stock) {
+ret_t books_add(view_model_t* view_model, const char* name, uint32_t stock) {
   book_info_t* info = NULL;
-  books_t* books = BOOKS(model);
+  books_t* books = BOOKS(view_model);
   return_value_if_fail(books != NULL && name != NULL, RET_BAD_PARAMS);
 
   info = book_info_create(name, stock);
@@ -206,31 +224,31 @@ ret_t books_add(model_t* model, const char* name, uint32_t stock) {
   return darray_push(&(books->books), info);
 }
 
-uint32_t books_size(model_t* model) {
-  books_t* books = BOOKS(model);
+uint32_t books_size(view_model_t* view_model) {
+  books_t* books = BOOKS(view_model);
   return_value_if_fail(books != NULL, 0);
 
   return books->books.size;
 }
 
-ret_t books_clear(model_t* model) {
-  books_t* books = BOOKS(model);
+ret_t books_clear(view_model_t* view_model) {
+  books_t* books = BOOKS(view_model);
   return_value_if_fail(books != NULL, RET_BAD_PARAMS);
 
   return darray_clear(&(books->books));
 }
 
-book_info_t* books_get(model_t* model, uint32_t index) {
-  books_t* books = BOOKS(model);
+book_info_t* books_get(view_model_t* view_model, uint32_t index) {
+  books_t* books = BOOKS(view_model);
 
-  return_value_if_fail(books != NULL && index < books_size(model), NULL);
+  return_value_if_fail(books != NULL && index < books_size(view_model), NULL);
 
   return (book_info_t*)(books->books.elms[index]);
 }
 
-ret_t books_sale(model_t* model, uint32_t index) {
-  books_t* books = BOOKS(model);
-  book_info_t* info = books_get(model, index);
+ret_t books_sale(view_model_t* view_model, uint32_t index) {
+  books_t* books = BOOKS(view_model);
+  book_info_t* info = books_get(view_model, index);
   return_value_if_fail(books != NULL && info != NULL, RET_BAD_PARAMS);
 
   return_value_if_fail(info->stock > 0, RET_FAIL);

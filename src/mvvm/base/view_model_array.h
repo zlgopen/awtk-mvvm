@@ -22,21 +22,22 @@
 #ifndef TK_VIEW_MODEL_ARRAY_H
 #define TK_VIEW_MODEL_ARRAY_H
 
+#include "tkc/darray.h"
 #include "mvvm/base/view_model.h"
 
 BEGIN_C_DECLS
 
-struct _view_model_array_t;
-typedef struct _view_model_array_t view_model_array_t;
+struct _model_array_t;
+typedef struct _model_array_t view_model_array_t;
 
 /**
  * @class view_model_array_t
  * @parent view_model_t
  *
- * array view model。
+ * array view_model
  *
  */
-struct _view_model_array_t {
+struct _model_array_t {
   view_model_t view_model;
 
   /**
@@ -52,35 +53,55 @@ struct _view_model_array_t {
 };
 
 /**
- * @method view_model_array_create
- * 创建view_model对象。
+ * @method view_model_array_init
+ * 初始化。
  *
- * @param {model_t*} model model对象。
+ * @param {view_model_t*} view_model view_model对象。
  *
  * @return {view_model_t*} 返回view_model对象。
  */
-view_model_t* view_model_array_create(model_t* model);
+view_model_t* view_model_array_init(view_model_t* view_model);
+
+/**
+ * @method view_model_array_deinit
+ * ~初始化。
+ *
+ * @param {view_model_t*} view_model view_model对象。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t view_model_array_deinit(view_model_t* view_model);
 
 /**
  * @method view_model_array_inc_cursor
  * 增加cursor的值。
  *
- * @param {view_model_t*} vm view_model对象。
+ * @param {view_model_t*} view_model view_model对象。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
-ret_t view_model_array_inc_cursor(view_model_t* vm);
+ret_t view_model_array_inc_cursor(view_model_t* view_model);
 
 /**
- * @method view_model_array_inc_cursor
+ * @method view_model_array_set_cursor
  * 设置cursor的值。
  *
- * @param {view_model_t*} vm view_model对象。
+ * @param {view_model_t*} view_model view_model对象。
  * @param {uint32_t} cursor 的值。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
-ret_t view_model_array_set_cursor(view_model_t* vm, uint32_t cursor);
+ret_t view_model_array_set_cursor(view_model_t* view_model, uint32_t cursor);
+
+/**
+ * @method view_model_array_notify_items_changed
+ * 触发items改变事件。
+ *
+ * @param {view_model_t*} view_model view_model对象。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t view_model_array_notify_items_changed(view_model_t* view_model);
 
 #define VIEW_MODEL_ARRAY(view_model) ((view_model_array_t*)(view_model))
 

@@ -1,7 +1,7 @@
 ﻿/**
- * File:   model_factory.c
+ * File:   view_model_factory.c
  * Author: AWTK Develop Team
- * Brief:  model factory
+ * Brief:  view_model factory
  *
  * Copyright (c) 2019 - 2019  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
@@ -22,13 +22,13 @@
 #include "tkc/mem.h"
 #include "tkc/utils.h"
 #include "tkc/object_default.h"
-#include "mvvm/base/model_factory.h"
+#include "mvvm/base/view_model_factory.h"
 
-static model_factory_t* s_model_factory;
+static view_model_factory_t* s_model_factory;
 
-ret_t model_factory_init(void) {
+ret_t view_model_factory_init(void) {
   if (s_model_factory == NULL) {
-    s_model_factory = TKMEM_ZALLOC(model_factory_t);
+    s_model_factory = TKMEM_ZALLOC(view_model_factory_t);
     return_value_if_fail(s_model_factory != NULL, RET_OOM);
 
     s_model_factory->creators = object_default_create();
@@ -41,28 +41,28 @@ ret_t model_factory_init(void) {
   return s_model_factory != NULL ? RET_OK : RET_FAIL;
 }
 
-bool_t model_factory_exist(const char* type) {
+bool_t view_model_factory_exist(const char* type) {
   return_value_if_fail(s_model_factory != NULL && type != NULL, FALSE);
 
   return object_has_prop((s_model_factory->creators), type);
 }
 
-ret_t model_factory_unregister(const char* type) {
+ret_t view_model_factory_unregister(const char* type) {
   return_value_if_fail(s_model_factory != NULL && type != NULL, RET_BAD_PARAMS);
 
   return object_remove_prop((s_model_factory->creators), type);
 }
 
-ret_t model_factory_register(const char* type, model_create_t create) {
+ret_t view_model_factory_register(const char* type, view_model_create_t create) {
   return_value_if_fail(s_model_factory != NULL && type != NULL && create != NULL, RET_BAD_PARAMS);
 
   return object_set_prop_pointer(s_model_factory->creators, type, create);
 }
 
-model_t* model_factory_create_model(const char* type, navigator_request_t* req) {
-  model_create_t create = NULL;
+view_model_t* view_model_factory_create_model(const char* type, navigator_request_t* req) {
+  view_model_create_t create = NULL;
   return_value_if_fail(s_model_factory != NULL && type != NULL && req != NULL, NULL);
-  create = (model_create_t)object_get_prop_pointer(s_model_factory->creators, type);
+  create = (view_model_create_t)object_get_prop_pointer(s_model_factory->creators, type);
   if (create != NULL) {
     return create(req);
   } else {
@@ -70,7 +70,7 @@ model_t* model_factory_create_model(const char* type, navigator_request_t* req) 
   }
 }
 
-ret_t model_factory_deinit(void) {
+ret_t view_model_factory_deinit(void) {
   return_value_if_fail(s_model_factory != NULL && s_model_factory->creators != NULL,
                        RET_BAD_PARAMS);
 

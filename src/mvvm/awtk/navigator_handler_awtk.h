@@ -22,7 +22,7 @@
 #ifndef TK_NAVIGATOR_HANDLER_AWTK_H
 #define TK_NAVIGATOR_HANDLER_AWTK_H
 
-#include "mvvm/base/model.h"
+#include "mvvm/base/view_model.h"
 #include "mvvm/base/navigator.h"
 
 BEGIN_C_DECLS

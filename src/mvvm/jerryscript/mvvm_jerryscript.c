@@ -22,7 +22,7 @@
 #include "tkc/utils.h"
 #include "jerryscript-port.h"
 #include "jerryscript-ext/handler.h"
-#include "mvvm/base/model_factory.h"
+#include "mvvm/base/view_model_factory.h"
 #include "mvvm/jerryscript/jsobj.h"
 #include "mvvm/jerryscript/jerryscript_awtk.h"
 #include "mvvm/jerryscript/mvvm_jerryscript.h"

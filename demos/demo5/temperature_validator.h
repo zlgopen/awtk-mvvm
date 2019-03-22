@@ -22,7 +22,7 @@
 #ifndef TK_TEMPERATURE_VALIDATOR_H
 #define TK_TEMPERATURE_VALIDATOR_H
 
-#include "mvvm/base/model.h"
+#include "mvvm/base/view_model.h"
 
 BEGIN_C_DECLS
 

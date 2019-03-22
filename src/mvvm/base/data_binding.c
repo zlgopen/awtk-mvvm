@@ -26,14 +26,9 @@
 #include "mvvm/base/value_converter.h"
 #include "mvvm/base/value_validator.h"
 
-#define STR_ONCE "Once"
-#define STR_TWO_WAY "TwoWay"
-#define STR_ONE_WAY "OneWay"
-#define STR_ONE_WAY_TO_MODEL "OneWayToModel"
-
-#define STR_CHANGED "Changed"
-#define STR_CHANGING "Changing"
-#define STR_EXPLICIT "Explicit"
+#define BINDING_STR_CHANGED "Changed"
+#define BINDING_STR_CHANGING "Changing"
+#define BINDING_STR_EXPLICIT "Explicit"
 
 #define equal tk_str_ieq
 
@@ -64,25 +59,25 @@ static ret_t data_binding_object_set_prop(object_t* obj, const char* name, const
   } else if (equal(DATA_BINDING_MODE, name)) {
     binding_mode_t mode = BINDING_TWO_WAY;
 
-    if (equal(value, STR_ONCE)) {
+    if (equal(value, BINDING_STR_ONCE)) {
       mode = BINDING_ONCE;
-    } else if (equal(value, STR_TWO_WAY)) {
+    } else if (equal(value, BINDING_STR_TWO_WAY)) {
       mode = BINDING_TWO_WAY;
-    } else if (equal(value, STR_ONE_WAY)) {
+    } else if (equal(value, BINDING_STR_ONE_WAY)) {
       mode = BINDING_ONE_WAY;
-    } else if (equal(value, STR_ONE_WAY_TO_MODEL)) {
-      mode = BINDING_ONE_WAY_TO_MODEL;
+    } else if (equal(value, BINDING_STR_ONE_WAY_TO_VIEW_MODEL)) {
+      mode = BINDING_ONE_WAY_TO_VIEW_MODEL;
     }
 
     rule->mode = mode;
   } else if (equal(DATA_BINDING_TRIGGER, name)) {
     update_model_trigger_t trigger = UPDATE_WHEN_CHANGED;
 
-    if (equal(value, STR_CHANGED)) {
+    if (equal(value, BINDING_STR_CHANGED)) {
       trigger = UPDATE_WHEN_CHANGED;
-    } else if (equal(value, STR_CHANGING)) {
+    } else if (equal(value, BINDING_STR_CHANGING)) {
       trigger = UPDATE_WHEN_CHANGING;
-    } else if (equal(value, STR_EXPLICIT)) {
+    } else if (equal(value, BINDING_STR_EXPLICIT)) {
       trigger = UPDATE_WHEN_EXPLICIT;
     }
 
@@ -256,9 +251,9 @@ ret_t data_binding_get_prop(data_binding_t* rule, value_t* v) {
 
   if (object_is_collection(OBJECT(view_model))) {
     uint32_t cursor = BINDING_RULE(rule)->cursor;
-    object_set_prop_int(OBJECT(view_model), MODEL_PROP_CURSOR, cursor);
+    object_set_prop_int(OBJECT(view_model), VIEW_MODEL_PROP_CURSOR, cursor);
 
-    if (tk_str_eq(rule->path, MODEL_PROP_CURSOR)) {
+    if (tk_str_eq(rule->path, VIEW_MODEL_PROP_CURSOR)) {
       value_set_int(v, cursor);
 
       return RET_OK;
@@ -294,7 +289,7 @@ ret_t data_binding_set_prop(data_binding_t* rule, const value_t* raw) {
   str_clear(&(view_model->last_error));
   if (object_is_collection(OBJECT(view_model))) {
     uint32_t cursor = BINDING_RULE(rule)->cursor;
-    object_set_prop_int(OBJECT(view_model), MODEL_PROP_CURSOR, cursor);
+    object_set_prop_int(OBJECT(view_model), VIEW_MODEL_PROP_CURSOR, cursor);
   }
 
   if (!value_is_valid(rule->validator, raw, &(view_model->last_error))) {

@@ -60,7 +60,7 @@ static ret_t command_binding_set_prop(object_t* obj, const char* name, const val
     rule->event_args = tk_str_copy(rule->event_args, value);
   } else if (equal(COMMAND_BINDING_CLOSE_WINDOW, name)) {
     rule->close_window = value != NULL ? tk_atob(value) : TRUE;
-  } else if (equal(COMMAND_BINDING_UPDATE_MODEL, name)) {
+  } else if (equal(COMMAND_BINDING_UPDATE_VIEW_MODEL, name)) {
     rule->update_model = value != NULL ? tk_atob(value) : TRUE;
   } else {
     if (rule->props == NULL) {
@@ -85,7 +85,7 @@ static ret_t command_binding_get_prop(object_t* obj, const char* name, value_t* 
     value_set_str(v, rule->event);
   } else if (equal(COMMAND_BINDING_CLOSE_WINDOW, name)) {
     value_set_bool(v, rule->close_window);
-  } else if (equal(COMMAND_BINDING_UPDATE_MODEL, name)) {
+  } else if (equal(COMMAND_BINDING_UPDATE_VIEW_MODEL, name)) {
     value_set_bool(v, rule->update_model);
   } else {
     ret = object_get_prop(rule->props, name, v);
@@ -126,7 +126,7 @@ bool_t command_binding_can_exec(command_binding_t* rule) {
 
   if (object_is_collection(OBJECT(view_model))) {
     uint32_t cursor = BINDING_RULE(rule)->cursor;
-    object_set_prop_int(OBJECT(view_model), MODEL_PROP_CURSOR, cursor);
+    object_set_prop_int(OBJECT(view_model), VIEW_MODEL_PROP_CURSOR, cursor);
   }
 
   return view_model_can_exec(view_model, rule->command, rule->args);
@@ -148,7 +148,7 @@ ret_t command_binding_exec(command_binding_t* rule) {
 
   if (object_is_collection(OBJECT(view_model))) {
     uint32_t cursor = BINDING_RULE(rule)->cursor;
-    object_set_prop_int(OBJECT(view_model), MODEL_PROP_CURSOR, cursor);
+    object_set_prop_int(OBJECT(view_model), VIEW_MODEL_PROP_CURSOR, cursor);
   }
 
   return view_model_exec(view_model, rule->command, rule->args);

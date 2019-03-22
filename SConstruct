@@ -60,5 +60,6 @@ DefaultEnvironment(
   OS_SUBSYSTEM_CONSOLE=awtk.OS_SUBSYSTEM_CONSOLE,
   OS_SUBSYSTEM_WINDOWS=awtk.OS_SUBSYSTEM_WINDOWS)
 
-SConscript(['3rd/SConscript', 'src/SConscript', 'demos/SConscript', 'tests/SConscript'])
+#SConscript(['3rd/SConscript', 'src/SConscript', 'demos/SConscript', 'tests/SConscript'])
+SConscript(['3rd/SConscript', 'src/SConscript', 'demos/SConscript'])
 

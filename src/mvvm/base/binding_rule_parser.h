@@ -23,10 +23,11 @@
 #define TK_BINDING_RULE_PARSER_H
 
 #include "mvvm/base/binding_rule.h"
+#include "mvvm/base/data_binding.h"
 
 BEGIN_C_DECLS
 
-binding_rule_t* binding_rule_parse(const char* name, const char* value);
+binding_rule_t* binding_rule_parse(const char* name, const char* value, bool_t inputable);
 
 END_C_DECLS
 

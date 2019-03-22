@@ -1,7 +1,7 @@
 ﻿/**
- * File:   model_delegate.c
+ * File:   view_model_delegate.c
  * Author: AWTK Develop Team
- * Brief:  model_delegate
+ * Brief:  view_model_delegate
  *
  * Copyright (c) 2019 - 2019  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
@@ -22,15 +22,15 @@
 #include "tkc/mem.h"
 #include "tkc/utils.h"
 #include "tkc/object_default.h"
-#include "mvvm/base/model_delegate.h"
+#include "mvvm/base/view_model_delegate.h"
 
 typedef struct _command_desc_t {
-  model_exec_t exec;
-  model_can_exec_t can_exec;
+  view_model_exec_t exec;
+  view_model_can_exec_t can_exec;
 } command_desc_t;
 
-static command_desc_t* command_desc_init(command_desc_t* desc, model_exec_t exec,
-                                         model_can_exec_t can_exec) {
+static command_desc_t* command_desc_init(command_desc_t* desc, view_model_exec_t exec,
+                                         view_model_can_exec_t can_exec) {
   return_value_if_fail(desc != NULL, NULL);
 
   desc->exec = exec;
@@ -39,7 +39,7 @@ static command_desc_t* command_desc_init(command_desc_t* desc, model_exec_t exec
   return desc;
 }
 
-static command_desc_t* command_desc_create(model_exec_t exec, model_can_exec_t can_exec) {
+static command_desc_t* command_desc_create(view_model_exec_t exec, view_model_can_exec_t can_exec) {
   command_desc_t* desc = TKMEM_ZALLOC(command_desc_t);
 
   return command_desc_init(desc, exec, can_exec);
@@ -49,12 +49,12 @@ typedef struct _prop_desc_t {
   void* addr;
   value_type_t type;
 
-  model_get_prop_t get;
-  model_set_prop_t set;
+  view_model_get_prop_t get;
+  view_model_set_prop_t set;
 } prop_desc_t;
 
 static prop_desc_t* prop_desc_init(prop_desc_t* desc, value_type_t type, void* addr,
-                                   model_get_prop_t get, model_set_prop_t set) {
+                                   view_model_get_prop_t get, view_model_set_prop_t set) {
   return_value_if_fail(desc != NULL, NULL);
 
   desc->type = type;
@@ -65,16 +65,17 @@ static prop_desc_t* prop_desc_init(prop_desc_t* desc, value_type_t type, void* a
   return desc;
 }
 
-static prop_desc_t* prop_desc_create(value_type_t type, void* addr, model_get_prop_t get,
-                                     model_set_prop_t set) {
+static prop_desc_t* prop_desc_create(value_type_t type, void* addr, view_model_get_prop_t get,
+                                     view_model_set_prop_t set) {
   prop_desc_t* desc = TKMEM_ZALLOC(prop_desc_t);
 
   return prop_desc_init(desc, type, addr, get, set);
 }
 
-static ret_t prop_desc_set_value(model_delegate_t* model, prop_desc_t* desc, const value_t* v) {
+static ret_t prop_desc_set_value(view_model_delegate_t* view_model, prop_desc_t* desc,
+                                 const value_t* v) {
   ret_t ret = RET_OK;
-  void* obj = model->obj;
+  void* obj = view_model->obj;
   if (desc->set != NULL) {
     ret = desc->set(obj, v);
   } else if (desc->addr != NULL) {
@@ -141,8 +142,8 @@ static ret_t prop_desc_set_value(model_delegate_t* model, prop_desc_t* desc, con
       }
       case VALUE_TYPE_STRING: {
         char** str = (char**)desc->addr;
-        if (str_from_value(&(model->temp), v) == RET_OK) {
-          *str = tk_str_copy(*str, model->temp.str);
+        if (str_from_value(&(view_model->temp), v) == RET_OK) {
+          *str = tk_str_copy(*str, view_model->temp.str);
         } else {
           ret = RET_FAIL;
         }
@@ -240,83 +241,83 @@ static ret_t tk_visit_free(void* ctx, const void* data) {
   return RET_OK;
 }
 
-static ret_t model_delegate_on_destroy(object_t* obj) {
-  model_delegate_t* model = MODEL_DELEGATE(obj);
+static ret_t view_model_delegate_on_destroy(object_t* obj) {
+  view_model_delegate_t* view_model = VIEW_MODEL_DELEGATE(obj);
 
-  if (model->obj_destroy != NULL) {
-    model->obj_destroy(model->obj);
+  if (view_model->obj_destroy != NULL) {
+    view_model->obj_destroy(view_model->obj);
   }
 
-  str_reset(&(model->temp));
-  object_foreach_prop(model->props, tk_visit_free, NULL);
-  object_foreach_prop(model->commands, tk_visit_free, NULL);
-  object_unref(model->props);
-  object_unref(model->commands);
+  str_reset(&(view_model->temp));
+  object_foreach_prop(view_model->props, tk_visit_free, NULL);
+  object_foreach_prop(view_model->commands, tk_visit_free, NULL);
+  object_unref(view_model->props);
+  object_unref(view_model->commands);
 
   return RET_OK;
 }
 
-static int32_t model_delegate_compare(object_t* obj, object_t* other) {
+static int32_t view_model_delegate_compare(object_t* obj, object_t* other) {
   return tk_str_cmp(obj->name, other->name);
 }
 
-static ret_t model_delegate_remove_prop(object_t* obj, const char* name) {
-  model_delegate_t* model = MODEL_DELEGATE(obj);
+static ret_t view_model_delegate_remove_prop(object_t* obj, const char* name) {
+  view_model_delegate_t* view_model = VIEW_MODEL_DELEGATE(obj);
 
-  return object_remove_prop(model->props, name);
+  return object_remove_prop(view_model->props, name);
 }
 
-static prop_desc_t* model_delegate_get_prop_desc(object_t* obj, const char* name) {
+static prop_desc_t* view_model_delegate_get_prop_desc(object_t* obj, const char* name) {
   value_t v;
-  model_delegate_t* model = MODEL_DELEGATE(obj);
-  if (object_get_prop(model->props, name, &v) == RET_OK) {
+  view_model_delegate_t* view_model = VIEW_MODEL_DELEGATE(obj);
+  if (object_get_prop(view_model->props, name, &v) == RET_OK) {
     return (prop_desc_t*)value_pointer(&v);
   } else {
     return NULL;
   }
 }
 
-static ret_t model_delegate_set_prop(object_t* obj, const char* name, const value_t* v) {
-  prop_desc_t* prop_desc = model_delegate_get_prop_desc(obj, name);
-  model_delegate_t* model = MODEL_DELEGATE(obj);
+static ret_t view_model_delegate_set_prop(object_t* obj, const char* name, const value_t* v) {
+  prop_desc_t* prop_desc = view_model_delegate_get_prop_desc(obj, name);
+  view_model_delegate_t* view_model = VIEW_MODEL_DELEGATE(obj);
   return_value_if_fail(prop_desc != NULL, RET_NOT_FOUND);
 
-  return prop_desc_set_value(model, prop_desc, v);
+  return prop_desc_set_value(view_model, prop_desc, v);
 }
 
-static ret_t model_delegate_get_prop(object_t* obj, const char* name, value_t* v) {
-  prop_desc_t* prop_desc = model_delegate_get_prop_desc(obj, name);
-  model_delegate_t* model = MODEL_DELEGATE(obj);
+static ret_t view_model_delegate_get_prop(object_t* obj, const char* name, value_t* v) {
+  prop_desc_t* prop_desc = view_model_delegate_get_prop_desc(obj, name);
+  view_model_delegate_t* view_model = VIEW_MODEL_DELEGATE(obj);
   return_value_if_fail(prop_desc != NULL, RET_NOT_FOUND);
 
-  return prop_desc_get_value(model->obj, prop_desc, v);
+  return prop_desc_get_value(view_model->obj, prop_desc, v);
 }
 
-static command_desc_t* model_delegate_get_command_desc(object_t* obj, const char* name) {
+static command_desc_t* view_model_delegate_get_command_desc(object_t* obj, const char* name) {
   value_t v;
-  model_delegate_t* model = MODEL_DELEGATE(obj);
-  if (object_get_prop(model->commands, name, &v) == RET_OK) {
+  view_model_delegate_t* view_model = VIEW_MODEL_DELEGATE(obj);
+  if (object_get_prop(view_model->commands, name, &v) == RET_OK) {
     return (command_desc_t*)value_pointer(&v);
   } else {
     return NULL;
   }
 }
 
-static bool_t model_delegate_can_exec(object_t* obj, const char* name, const char* args) {
-  command_desc_t* command_desc = model_delegate_get_command_desc(obj, name);
-  model_delegate_t* model = MODEL_DELEGATE(obj);
+static bool_t view_model_delegate_can_exec(object_t* obj, const char* name, const char* args) {
+  command_desc_t* command_desc = view_model_delegate_get_command_desc(obj, name);
+  view_model_delegate_t* view_model = VIEW_MODEL_DELEGATE(obj);
   return_value_if_fail(command_desc != NULL, FALSE);
 
-  return command_desc->can_exec != NULL ? command_desc->can_exec(model->obj, args) : TRUE;
+  return command_desc->can_exec != NULL ? command_desc->can_exec(view_model->obj, args) : TRUE;
 }
 
-static ret_t model_delegate_exec(object_t* obj, const char* name, const char* args) {
+static ret_t view_model_delegate_exec(object_t* obj, const char* name, const char* args) {
   ret_t ret = RET_OK;
-  command_desc_t* command_desc = model_delegate_get_command_desc(obj, name);
-  model_delegate_t* model = MODEL_DELEGATE(obj);
+  command_desc_t* command_desc = view_model_delegate_get_command_desc(obj, name);
+  view_model_delegate_t* view_model = VIEW_MODEL_DELEGATE(obj);
   return_value_if_fail(command_desc != NULL, RET_NOT_FOUND);
 
-  ret = command_desc->exec(model->obj, args);
+  ret = command_desc->exec(view_model->obj, args);
   if (ret == RET_OBJECT_CHANGED) {
     object_notify_changed(OBJECT(obj));
   }
@@ -325,40 +326,40 @@ static ret_t model_delegate_exec(object_t* obj, const char* name, const char* ar
 }
 
 static const object_vtable_t s_model_delegate_vtable = {
-    .type = "model_delegate",
-    .desc = "model_delegate",
-    .size = sizeof(model_delegate_t),
+    .type = "view_model_delegate",
+    .desc = "view_model_delegate",
+    .size = sizeof(view_model_delegate_t),
     .is_collection = FALSE,
-    .on_destroy = model_delegate_on_destroy,
+    .on_destroy = view_model_delegate_on_destroy,
 
-    .exec = model_delegate_exec,
-    .can_exec = model_delegate_can_exec,
-    .compare = model_delegate_compare,
-    .get_prop = model_delegate_get_prop,
-    .set_prop = model_delegate_set_prop,
-    .remove_prop = model_delegate_remove_prop,
+    .exec = view_model_delegate_exec,
+    .can_exec = view_model_delegate_can_exec,
+    .compare = view_model_delegate_compare,
+    .get_prop = view_model_delegate_get_prop,
+    .set_prop = view_model_delegate_set_prop,
+    .remove_prop = view_model_delegate_remove_prop,
 };
 
-model_t* model_delegate_create(void* obj, tk_destroy_t obj_destroy) {
+view_model_t* view_model_delegate_create(void* obj, tk_destroy_t obj_destroy) {
   object_t* o = object_create(&s_model_delegate_vtable);
-  model_delegate_t* model = MODEL_DELEGATE(o);
-  return_value_if_fail(model != NULL, NULL);
+  view_model_delegate_t* view_model = VIEW_MODEL_DELEGATE(view_model_init(VIEW_MODEL(o)));
+  return_value_if_fail(view_model != NULL, NULL);
 
-  model->obj = obj;
-  model->obj_destroy = obj_destroy;
-  model->props = object_default_create();
-  model->commands = object_default_create();
-  str_init(&(model->temp), 0);
+  view_model->obj = obj;
+  view_model->obj_destroy = obj_destroy;
+  view_model->props = object_default_create();
+  view_model->commands = object_default_create();
+  str_init(&(view_model->temp), 0);
 
-  return MODEL(o);
+  return VIEW_MODEL(o);
 }
 
-ret_t model_delegate_install_command(model_t* model, const char* name, model_exec_t exec,
-                                     model_can_exec_t can_exec) {
+ret_t view_model_delegate_install_command(view_model_t* view_model, const char* name,
+                                          view_model_exec_t exec, view_model_can_exec_t can_exec) {
   value_t v;
   command_desc_t* desc = NULL;
-  model_delegate_t* m = MODEL_DELEGATE(model);
-  return_value_if_fail(model != NULL && name != NULL && exec != NULL, RET_BAD_PARAMS);
+  view_model_delegate_t* m = VIEW_MODEL_DELEGATE(view_model);
+  return_value_if_fail(view_model != NULL && name != NULL && exec != NULL, RET_BAD_PARAMS);
 
   if (desc != NULL) {
     command_desc_init(desc, exec, can_exec);
@@ -373,12 +374,13 @@ ret_t model_delegate_install_command(model_t* model, const char* name, model_exe
   }
 }
 
-ret_t model_delegate_install_prop(model_t* model, const char* name, value_type_t type, void* addr,
-                                  model_get_prop_t get, model_set_prop_t set) {
+ret_t view_model_delegate_install_prop(view_model_t* view_model, const char* name,
+                                       value_type_t type, void* addr, view_model_get_prop_t get,
+                                       view_model_set_prop_t set) {
   value_t v;
-  prop_desc_t* desc = model_delegate_get_prop_desc(OBJECT(model), name);
-  model_delegate_t* m = MODEL_DELEGATE(model);
-  return_value_if_fail(model != NULL && name != NULL, RET_BAD_PARAMS);
+  prop_desc_t* desc = view_model_delegate_get_prop_desc(OBJECT(view_model), name);
+  view_model_delegate_t* m = VIEW_MODEL_DELEGATE(view_model);
+  return_value_if_fail(view_model != NULL && name != NULL, RET_BAD_PARAMS);
 
   if (desc != NULL) {
     prop_desc_init(desc, type, addr, get, set);

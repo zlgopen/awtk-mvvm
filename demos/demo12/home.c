@@ -122,9 +122,9 @@ static const object_vtable_t s_home_vtable = {.type = "home",
                                               .get_prop = home_get_prop,
                                               .set_prop = home_set_prop};
 
-model_t* home_create(navigator_request_t* req) {
-  model_t* model = MODEL(object_create(&s_home_vtable));
-  home_t* h = HOME(model);
+view_model_t* home_create(navigator_request_t* req) {
+  view_model_t* view_model = VIEW_MODEL(object_create(&s_home_vtable));
+  home_t* h = HOME(view_model);
   return_value_if_fail(h != NULL, NULL);
 
   h->bed_room.temp = 10;
@@ -133,5 +133,5 @@ model_t* home_create(navigator_request_t* req) {
   h->living_room.temp = 15;
   h->living_room.humidity = 25;
 
-  return model;
+  return view_model;
 }

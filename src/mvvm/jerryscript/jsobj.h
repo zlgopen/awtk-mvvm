@@ -69,7 +69,7 @@ ret_t jsvalue_validator_fix(const char* name, value_t* v);
 
 #define JSOBJ_VALUE_CONVERTERS "ValueConverters"
 #define JSOBJ_VALUE_CONVERTER_TO_VIEW "toView"
-#define JSOBJ_VALUE_CONVERTER_TO_MODEL "toModel"
+#define JSOBJ_VALUE_CONVERTER_TO_VIEW_MODEL "toModel"
 #define JSOBJ_VALUE_VALIDATORS "ValueValidators"
 #define JSOBJ_VALUE_VALIDATOR_FIX "fix"
 #define JSOBJ_VALUE_VALIDATOR_IS_VALID "isValid"

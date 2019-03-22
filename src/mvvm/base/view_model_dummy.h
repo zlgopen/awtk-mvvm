@@ -1,7 +1,7 @@
 ﻿/**
- * File:   model_dummy.h
+ * File:   view_model_dummy.h
  * Author: AWTK Develop Team
- * Brief:  model_dummy
+ * Brief:  view_model_dummy
  *
  * Copyright (c) 2019 - 2019  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
@@ -19,42 +19,42 @@
  *
  */
 
-#ifndef TK_MODEL_DUMMY_H
-#define TK_MODEL_DUMMY_H
+#ifndef TK_VIEW_MODEL_DUMMY_H
+#define TK_VIEW_MODEL_DUMMY_H
 
-#include "mvvm/base/model.h"
+#include "mvvm/base/view_model.h"
 
 BEGIN_C_DECLS
 
 struct _model_dummy_t;
-typedef struct _model_dummy_t model_dummy_t;
+typedef struct _model_dummy_t view_model_dummy_t;
 
 /**
- * @class model_dummy_t
- * @parent model_t
+ * @class view_model_dummy_t
+ * @parent view_model_t
  *
- * dummy model
+ * dummy view_model
  *
  */
 struct _model_dummy_t {
-  model_t model;
+  view_model_t view_model;
 
   object_t* props;
 };
 
 /**
- * @method model_dummy_create
+ * @method view_model_dummy_create
  * 创建dummy模型对象。
  *
  * 对于一些简单的窗口，只需要简单的导航(打开或关闭窗口)，可以不用实现自己的模型，而使用dummy模型。
  * @param {navigator_request_t*} req 请求参数。
  *
- * @return {model_t*} 返回model对象。
+ * @return {view_model_t*} 返回view_model对象。
  */
-model_t* model_dummy_create(navigator_request_t* req);
+view_model_t* view_model_dummy_create(navigator_request_t* req);
 
-#define MODEL_DUMMY(model) ((model_dummy_t*)(model))
+#define VIEW_MODEL_DUMMY(view_model) ((view_model_dummy_t*)(view_model))
 
 END_C_DECLS
 
-#endif /*TK_MODEL_DUMMY_H*/
+#endif /*TK_VIEW_MODEL_DUMMY_H*/

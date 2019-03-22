@@ -221,10 +221,10 @@ jerry_value_t jsobj_get_global(const char* name) {
 }
 
 jerry_value_t jsobj_get_model(const char* name) {
-  jerry_value_t model = jsobj_get_global(name);
-  jerry_value_check(model);
+  jerry_value_t view_model = jsobj_get_global(name);
+  jerry_value_check(view_model);
 
-  return model;
+  return view_model;
 }
 
 jerry_value_t jsobj_get_prop_value(jerry_value_t obj, const char* name) {
@@ -525,7 +525,7 @@ ret_t jsvalue_converter_to_view(const char* name, const value_t* from, value_t* 
 }
 
 ret_t jsvalue_converter_to_model(const char* name, const value_t* from, value_t* to, str_t* temp) {
-  return value_convert(name, JSOBJ_VALUE_CONVERTER_TO_MODEL, from, to, temp);
+  return value_convert(name, JSOBJ_VALUE_CONVERTER_TO_VIEW_MODEL, from, to, temp);
 }
 
 static jerry_value_t jsobj_get_validator(const char* name) {

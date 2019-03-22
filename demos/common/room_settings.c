@@ -96,6 +96,7 @@ static ret_t room_settings_on_destroy(object_t* obj) {
   room_settings_t* room_settings = ROOM_SETTINGS(obj);
 
   TKMEM_FREE(room_settings->room);
+  view_model_deinit(VIEW_MODEL(obj));
 
   return RET_OK;
 }
@@ -109,15 +110,15 @@ static const object_vtable_t s_room_settings_vtable = {.type = "room_settings",
                                                        .set_prop = room_settings_set_prop,
                                                        .on_destroy = room_settings_on_destroy};
 
-model_t* room_settings_create(navigator_request_t* req) {
-  model_t* model = MODEL(object_create(&s_room_settings_vtable));
-  room_settings_t* room_settings = ROOM_SETTINGS(model);
+view_model_t* room_settings_create(navigator_request_t* req) {
+  view_model_t* view_model = view_model_init(VIEW_MODEL(object_create(&s_room_settings_vtable)));
+  room_settings_t* room_settings = ROOM_SETTINGS(view_model);
   return_value_if_fail(room_settings != NULL, NULL);
 
   room_settings->req = req;
-  object_copy_prop(OBJECT(model), OBJECT(req), PROP_ROOM);
-  object_copy_prop(OBJECT(model), OBJECT(req), PROP_TEMP);
-  object_copy_prop(OBJECT(model), OBJECT(req), PROP_HUMIDITY);
+  object_copy_prop(OBJECT(view_model), OBJECT(req), PROP_ROOM);
+  object_copy_prop(OBJECT(view_model), OBJECT(req), PROP_TEMP);
+  object_copy_prop(OBJECT(view_model), OBJECT(req), PROP_HUMIDITY);
 
-  return model;
+  return view_model;
 }

@@ -118,7 +118,7 @@ ret_t command_binding_exec(command_binding_t* rule);
 #define COMMAND_BINDING_COMMAND "Command"
 #define COMMAND_BINDING_EVENT_ARGS "EventArgs"
 #define COMMAND_BINDING_CLOSE_WINDOW "CloseWindow"
-#define COMMAND_BINDING_UPDATE_MODEL "UpdateModel"
+#define COMMAND_BINDING_UPDATE_VIEW_MODEL "UpdateModel"
 
 END_C_DECLS
 

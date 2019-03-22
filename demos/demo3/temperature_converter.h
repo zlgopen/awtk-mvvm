@@ -22,7 +22,7 @@
 #ifndef TK_TEMPERATURE_CONVERTER_H
 #define TK_TEMPERATURE_CONVERTER_H
 
-#include "mvvm/base/model.h"
+#include "mvvm/base/view_model.h"
 
 BEGIN_C_DECLS
 

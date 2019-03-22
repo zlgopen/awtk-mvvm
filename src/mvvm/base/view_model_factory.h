@@ -1,7 +1,7 @@
 ﻿/**
- * File:   model_factory.h
+ * File:   view_model_factory.h
  * Author: AWTK Develop Team
- * Brief:  model factory
+ * Brief:  view_model factory
  *
  * Copyright (c) 2019 - 2019  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
@@ -19,79 +19,79 @@
  *
  */
 
-#ifndef TK_MODEL_FACTORY_H
-#define TK_MODEL_FACTORY_H
+#ifndef TK_VIEW_MODEL_FACTORY_H
+#define TK_VIEW_MODEL_FACTORY_H
 
-#include "mvvm/base/model.h"
+#include "mvvm/base/view_model.h"
 
 BEGIN_C_DECLS
 
 /**
- * @class model_factory_t
+ * @class view_model_factory_t
  *
  * 模型工厂。
  *
  */
 typedef struct _model_factory_t {
   object_t* creators;
-} model_factory_t;
+} view_model_factory_t;
 
 /**
- * @method model_factory_init
+ * @method view_model_factory_init
  * 初始化模型工厂。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
-ret_t model_factory_init(void);
+ret_t view_model_factory_init(void);
 
 /**
- * @method model_factory_exist
+ * @method view_model_factory_exist
  * 检查指定的模型是否存在。
  * @param {const char*} type 模型的类型。
  *
  * @return {bool_t} 返回TRUE表示存在，否则表示不存在。
  */
-bool_t model_factory_exist(const char* type);
+bool_t view_model_factory_exist(const char* type);
 
 /**
- * @method model_factory_register
+ * @method view_model_factory_register
  * 注册模型的创建函数。
  * @param {const char*} type 模型的类型。
- * @param {model_create_t} create 创建函数。
+ * @param {view_model_create_t} create 创建函数。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
-ret_t model_factory_register(const char* type, model_create_t create);
+ret_t view_model_factory_register(const char* type, view_model_create_t create);
 
 /**
- * @method model_factory_unregister
+ * @method view_model_factory_unregister
  * 注销模型的创建函数。
  * @param {const char*} type 模型的类型。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
-ret_t model_factory_unregister(const char* type);
+ret_t view_model_factory_unregister(const char* type);
 
 /**
- * @method model_factory_create_model
+ * @method view_model_factory_create_model
  * 创建模型。
  * @param {const char*} type 模型的类型。
  * @param {navigator_request_t*} req 请求参数。
  *
- * @return {model_t*} 返回model对象。
+ * @return {view_model_t*} 返回view_model对象。
  */
-model_t* model_factory_create_model(const char* type, navigator_request_t* req);
+view_model_t* view_model_factory_create_model(const char* type, navigator_request_t* req);
 
 /**
- * @method model_factory_deinit
+ * @method view_model_factory_deinit
  * ~初始化模型工厂。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
-ret_t model_factory_deinit(void);
+ret_t view_model_factory_deinit(void);
 
-#define MODEL_FACTORY(model_factory) ((model_factory_t*)(model_factory))
+#define VIEW_MODEL_FACTORY(view_model_factory) ((view_model_factory_t*)(view_model_factory))
 
 END_C_DECLS
 
-#endif /*TK_MODEL_FACTORY_H*/
+#endif /*TK_VIEW_MODEL_FACTORY_H*/
