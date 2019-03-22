@@ -110,7 +110,6 @@ static ret_t on_widget_value_change(void* ctx, event_t* e) {
 static ret_t binding_context_bind_data(binding_context_t* ctx, const char* name,
                                        const char* value) {
   widget_t* widget = WIDGET(ctx->current_widget);
-  widget->vt->inputable;
   data_binding_t* rule = (data_binding_t*)binding_rule_parse(name, value, widget->vt->inputable);
   return_value_if_fail(rule != NULL, RET_FAIL);
 
@@ -418,7 +417,9 @@ static ret_t binding_context_on_rebind(void* c, event_t* e) {
   if (ctx->request_rebind == 0) {
     idle_add(binding_context_rebind_in_idle, ctx);
   }
+
   ctx->request_rebind++;
+  ctx->request_update_view = 0;
 
   return RET_OK;
 }
@@ -473,10 +474,12 @@ static ret_t visit_command_binding(void* ctx, const void* data) {
 }
 
 static ret_t binding_context_awtk_update_to_view_sync(binding_context_t* ctx) {
-  darray_foreach(&(ctx->data_bindings), visit_data_binding_update_to_view, ctx);
-  darray_foreach(&(ctx->command_bindings), visit_command_binding, ctx);
+  if (ctx->request_update_view > 0) {
+    darray_foreach(&(ctx->data_bindings), visit_data_binding_update_to_view, ctx);
+    darray_foreach(&(ctx->command_bindings), visit_command_binding, ctx);
 
-  ctx->request_update_view = 0;
+    ctx->request_update_view = 0;
+  }
 
   return RET_OK;
 }
@@ -499,6 +502,7 @@ static ret_t binding_context_awtk_update_to_view(binding_context_t* ctx) {
     }
     ctx->request_update_view++;
   } else {
+    ctx->request_update_view++;
     binding_context_awtk_update_to_view_sync(ctx);
   }
 
