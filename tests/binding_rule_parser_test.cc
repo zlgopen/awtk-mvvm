@@ -68,7 +68,8 @@ TEST(CommandBindingParser, update_model_false) {
 }
 
 TEST(CommandBindingParser, event_args) {
-  binding_rule_t* rule = binding_rule_parse("v-on:keydown:ctrl_a", "{Save, UpdateModel=False}", TRUE);
+  binding_rule_t* rule =
+      binding_rule_parse("v-on:keydown:ctrl_a", "{Save, UpdateModel=False}", TRUE);
   command_binding_t* cmd = (command_binding_t*)rule;
 
   ASSERT_EQ(cmd->update_model, FALSE);
@@ -79,7 +80,8 @@ TEST(CommandBindingParser, event_args) {
 }
 
 TEST(CommandBindingParser, ievent_args) {
-  binding_rule_t* rule = binding_rule_parse("v-on:keydown:ctrl_a", "{Save, updateModel=false}", TRUE);
+  binding_rule_t* rule =
+      binding_rule_parse("v-on:keydown:ctrl_a", "{Save, updateModel=false}", TRUE);
   command_binding_t* cmd = (command_binding_t*)rule;
 
   ASSERT_EQ(cmd->update_model, FALSE);

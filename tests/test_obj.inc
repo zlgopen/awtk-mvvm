@@ -97,4 +97,3 @@ static view_model_t* test_obj_create_view_model(void) {
 
   return view_model;
 }
-
