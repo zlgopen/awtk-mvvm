@@ -210,7 +210,7 @@ static view_model_t* view_model_jerryscript_create_with_widget(navigator_request
   widget_t* widget = WIDGET(object_get_prop_pointer(OBJECT(req), NAVIGATOR_ARG_VIEW));
   return_value_if_fail(widget != NULL, NULL);
 
-  vmodel = widget_get_prop_str(widget, WIDGET_PROP_V_VIEW_MODEL, NULL);
+  vmodel = widget_get_prop_str(widget, WIDGET_PROP_V_MODEL, NULL);
   return_value_if_fail(vmodel != NULL, NULL);
 
   tk_strncpy(name, vmodel, sizeof(name) - 1);

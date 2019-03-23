@@ -42,7 +42,7 @@ static const char* widget_get_prop_vmodel(widget_t* widget) {
   value_t v;
   value_set_str(&v, NULL);
 
-  return (widget_get_prop(widget, WIDGET_PROP_V_VIEW_MODEL, &v) == RET_OK) ? value_str(&v) : NULL;
+  return (widget_get_prop(widget, WIDGET_PROP_V_MODEL, &v) == RET_OK) ? value_str(&v) : NULL;
 }
 
 static ret_t view_model_on_window_close(void* ctx, event_t* e) {

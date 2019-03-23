@@ -7,7 +7,7 @@
 using std::string;
 
 TEST(CommandBindingParser, close_window) {
-  binding_rule_t* rule = binding_rule_parse("v-on:click", "{Save, CloseWindow}");
+  binding_rule_t* rule = binding_rule_parse("v-on:click", "{Save, CloseWindow}", TRUE);
   command_binding_t* cmd = (command_binding_t*)rule;
 
   ASSERT_EQ(cmd->close_window, TRUE);
@@ -18,7 +18,7 @@ TEST(CommandBindingParser, close_window) {
 }
 
 TEST(CommandBindingParser, close_window_true) {
-  binding_rule_t* rule = binding_rule_parse("v-on:click", "{Save, CloseWindow=True}");
+  binding_rule_t* rule = binding_rule_parse("v-on:click", "{Save, CloseWindow=True}", TRUE);
   command_binding_t* cmd = (command_binding_t*)rule;
 
   ASSERT_EQ(cmd->close_window, TRUE);
@@ -28,7 +28,7 @@ TEST(CommandBindingParser, close_window_true) {
 }
 
 TEST(CommandBindingParser, close_window_false) {
-  binding_rule_t* rule = binding_rule_parse("v-on:click", "{Save, CloseWindow=False}");
+  binding_rule_t* rule = binding_rule_parse("v-on:click", "{Save, CloseWindow=False}", TRUE);
   command_binding_t* cmd = (command_binding_t*)rule;
 
   ASSERT_EQ(cmd->close_window, FALSE);
@@ -38,7 +38,7 @@ TEST(CommandBindingParser, close_window_false) {
 }
 
 TEST(CommandBindingParser, update_model) {
-  binding_rule_t* rule = binding_rule_parse("v-on:click", "{Save, UpdateModel}");
+  binding_rule_t* rule = binding_rule_parse("v-on:click", "{Save, UpdateModel}", TRUE);
   command_binding_t* cmd = (command_binding_t*)rule;
 
   ASSERT_EQ(cmd->update_model, TRUE);
@@ -48,7 +48,7 @@ TEST(CommandBindingParser, update_model) {
 }
 
 TEST(CommandBindingParser, update_model_true) {
-  binding_rule_t* rule = binding_rule_parse("v-on:click", "{Save, UpdateModel=True}");
+  binding_rule_t* rule = binding_rule_parse("v-on:click", "{Save, UpdateModel=True}", TRUE);
   command_binding_t* cmd = (command_binding_t*)rule;
 
   ASSERT_EQ(cmd->update_model, TRUE);
@@ -58,7 +58,7 @@ TEST(CommandBindingParser, update_model_true) {
 }
 
 TEST(CommandBindingParser, update_model_false) {
-  binding_rule_t* rule = binding_rule_parse("v-on:click", "{Save, UpdateModel=False}");
+  binding_rule_t* rule = binding_rule_parse("v-on:click", "{Save, UpdateModel=False}", TRUE);
   command_binding_t* cmd = (command_binding_t*)rule;
 
   ASSERT_EQ(cmd->update_model, FALSE);
@@ -68,7 +68,7 @@ TEST(CommandBindingParser, update_model_false) {
 }
 
 TEST(CommandBindingParser, event_args) {
-  binding_rule_t* rule = binding_rule_parse("v-on:keydown:ctrl_a", "{Save, UpdateModel=False}");
+  binding_rule_t* rule = binding_rule_parse("v-on:keydown:ctrl_a", "{Save, UpdateModel=False}", TRUE);
   command_binding_t* cmd = (command_binding_t*)rule;
 
   ASSERT_EQ(cmd->update_model, FALSE);
@@ -79,7 +79,7 @@ TEST(CommandBindingParser, event_args) {
 }
 
 TEST(CommandBindingParser, ievent_args) {
-  binding_rule_t* rule = binding_rule_parse("v-on:keydown:ctrl_a", "{Save, updateModel=false}");
+  binding_rule_t* rule = binding_rule_parse("v-on:keydown:ctrl_a", "{Save, updateModel=false}", TRUE);
   command_binding_t* cmd = (command_binding_t*)rule;
 
   ASSERT_EQ(cmd->update_model, FALSE);
@@ -90,7 +90,7 @@ TEST(CommandBindingParser, ievent_args) {
 }
 
 TEST(DataBindingParser, basic) {
-  binding_rule_t* rule = binding_rule_parse("v-data:text", "{Name}");
+  binding_rule_t* rule = binding_rule_parse("v-data:text", "{Name}", TRUE);
   data_binding_t* data = (data_binding_t*)rule;
 
   ASSERT_EQ(string(data->path), string("Name"));
@@ -100,7 +100,7 @@ TEST(DataBindingParser, basic) {
 }
 
 TEST(DataBindingParser, mode) {
-  binding_rule_t* rule = binding_rule_parse("v-data:text", "{Name, Mode=TwoWay}");
+  binding_rule_t* rule = binding_rule_parse("v-data:text", "{Name, Mode=TwoWay}", TRUE);
   data_binding_t* data = (data_binding_t*)rule;
 
   ASSERT_EQ(string(data->path), string("Name"));
@@ -111,7 +111,7 @@ TEST(DataBindingParser, mode) {
 }
 
 TEST(DataBindingParser, imode) {
-  binding_rule_t* rule = binding_rule_parse("v-data:text", "{Name, mode=twoWay}");
+  binding_rule_t* rule = binding_rule_parse("v-data:text", "{Name, mode=twoWay}", TRUE);
   data_binding_t* data = (data_binding_t*)rule;
 
   ASSERT_EQ(data->mode, BINDING_TWO_WAY);
@@ -120,7 +120,7 @@ TEST(DataBindingParser, imode) {
 }
 
 TEST(DataBindingParser, trigger) {
-  binding_rule_t* rule = binding_rule_parse("v-data:text", "{Name, Trigger=Explicit}");
+  binding_rule_t* rule = binding_rule_parse("v-data:text", "{Name, Trigger=Explicit}", TRUE);
   data_binding_t* data = (data_binding_t*)rule;
 
   ASSERT_EQ(string(data->path), string("Name"));
@@ -131,7 +131,7 @@ TEST(DataBindingParser, trigger) {
 }
 
 TEST(DataBindingParser, itrigger) {
-  binding_rule_t* rule = binding_rule_parse("v-data:text", "{Name, trigger=explicit}");
+  binding_rule_t* rule = binding_rule_parse("v-data:text", "{Name, trigger=explicit}", TRUE);
   data_binding_t* data = (data_binding_t*)rule;
 
   ASSERT_EQ(data->trigger, UPDATE_WHEN_EXPLICIT);
@@ -140,7 +140,7 @@ TEST(DataBindingParser, itrigger) {
 }
 
 TEST(DataBindingParser, converter) {
-  binding_rule_t* rule = binding_rule_parse("v-data:text", "{Name, Converter=converter}");
+  binding_rule_t* rule = binding_rule_parse("v-data:text", "{Name, Converter=converter}", TRUE);
   data_binding_t* data = (data_binding_t*)rule;
 
   ASSERT_EQ(string(data->path), string("Name"));
@@ -151,7 +151,7 @@ TEST(DataBindingParser, converter) {
 }
 
 TEST(DataBindingParser, iconverter) {
-  binding_rule_t* rule = binding_rule_parse("v-data:text", "{Name, converter=converter}");
+  binding_rule_t* rule = binding_rule_parse("v-data:text", "{Name, converter=converter}", TRUE);
   data_binding_t* data = (data_binding_t*)rule;
 
   ASSERT_EQ(string(data->converter), string("converter"));
@@ -160,7 +160,7 @@ TEST(DataBindingParser, iconverter) {
 }
 
 TEST(DataBindingParser, validator) {
-  binding_rule_t* rule = binding_rule_parse("v-data:text", "{Name, Validator=validator}");
+  binding_rule_t* rule = binding_rule_parse("v-data:text", "{Name, Validator=validator}", TRUE);
   data_binding_t* data = (data_binding_t*)rule;
 
   ASSERT_EQ(string(data->path), string("Name"));
@@ -171,7 +171,7 @@ TEST(DataBindingParser, validator) {
 }
 
 TEST(DataBindingParser, ivalidator) {
-  binding_rule_t* rule = binding_rule_parse("v-data:text", "{Name, validator=validator}");
+  binding_rule_t* rule = binding_rule_parse("v-data:text", "{Name, validator=validator}", TRUE);
   data_binding_t* data = (data_binding_t*)rule;
 
   ASSERT_EQ(string(data->validator), string("validator"));
@@ -180,7 +180,7 @@ TEST(DataBindingParser, ivalidator) {
 }
 
 TEST(DataBindingParser, expr) {
-  binding_rule_t* rule = binding_rule_parse("v-data:text", "{$type==1}");
+  binding_rule_t* rule = binding_rule_parse("v-data:text", "{$type==1}", TRUE);
   data_binding_t* data = (data_binding_t*)rule;
 
   ASSERT_EQ(string(data->path), string("$type==1"));

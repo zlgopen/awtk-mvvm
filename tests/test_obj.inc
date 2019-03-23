@@ -1,7 +1,6 @@
 #include "tkc/mem.h"
 #include "tkc/utils.h"
-#include "mvvm/base/model_delegate.h"
-#include "mvvm/base/view_model_normal.h"
+#include "mvvm/base/view_model_delegate.h"
 
 typedef struct _test_obj_t {
   int8_t i8;
@@ -69,37 +68,33 @@ static ret_t test_obj_destroy(test_obj_t* obj) {
   return RET_OK;
 }
 
-static model_t* test_obj_create_model(void) {
+static view_model_t* test_obj_create_view_model(void) {
   test_obj_t* obj = test_obj_create();
-  model_t* model = model_delegate_create(obj, (tk_destroy_t)test_obj_destroy);
+  view_model_t* view_model = view_model_delegate_create(obj, (tk_destroy_t)test_obj_destroy);
 
-  MODEL_SIMPLE_PROP(model, "i8", VALUE_TYPE_INT8, &(obj->i8));
-  MODEL_SIMPLE_PROP(model, "i16", VALUE_TYPE_INT16, &(obj->i16));
-  MODEL_SIMPLE_PROP(model, "i32", VALUE_TYPE_INT32, &(obj->i32));
-  MODEL_SIMPLE_PROP(model, "i64", VALUE_TYPE_INT64, &(obj->i64));
+  VIEW_MODEL_SIMPLE_PROP(view_model, "i8", VALUE_TYPE_INT8, &(obj->i8));
+  VIEW_MODEL_SIMPLE_PROP(view_model, "i16", VALUE_TYPE_INT16, &(obj->i16));
+  VIEW_MODEL_SIMPLE_PROP(view_model, "i32", VALUE_TYPE_INT32, &(obj->i32));
+  VIEW_MODEL_SIMPLE_PROP(view_model, "i64", VALUE_TYPE_INT64, &(obj->i64));
 
-  MODEL_SIMPLE_PROP(model, "u8", VALUE_TYPE_UINT8, &(obj->u8));
-  MODEL_SIMPLE_PROP(model, "u16", VALUE_TYPE_UINT16, &(obj->u16));
-  MODEL_SIMPLE_PROP(model, "u32", VALUE_TYPE_UINT32, &(obj->u32));
-  MODEL_SIMPLE_PROP(model, "u64", VALUE_TYPE_UINT64, &(obj->u64));
+  VIEW_MODEL_SIMPLE_PROP(view_model, "u8", VALUE_TYPE_UINT8, &(obj->u8));
+  VIEW_MODEL_SIMPLE_PROP(view_model, "u16", VALUE_TYPE_UINT16, &(obj->u16));
+  VIEW_MODEL_SIMPLE_PROP(view_model, "u32", VALUE_TYPE_UINT32, &(obj->u32));
+  VIEW_MODEL_SIMPLE_PROP(view_model, "u64", VALUE_TYPE_UINT64, &(obj->u64));
 
-  MODEL_SIMPLE_PROP(model, "f", VALUE_TYPE_FLOAT, &(obj->f));
-  MODEL_SIMPLE_PROP(model, "f32", VALUE_TYPE_FLOAT32, &(obj->f32));
-  MODEL_SIMPLE_PROP(model, "f64", VALUE_TYPE_DOUBLE, &(obj->f64));
-  MODEL_SIMPLE_PROP(model, "b", VALUE_TYPE_BOOL, &(obj->b));
+  VIEW_MODEL_SIMPLE_PROP(view_model, "f", VALUE_TYPE_FLOAT, &(obj->f));
+  VIEW_MODEL_SIMPLE_PROP(view_model, "f32", VALUE_TYPE_FLOAT32, &(obj->f32));
+  VIEW_MODEL_SIMPLE_PROP(view_model, "f64", VALUE_TYPE_DOUBLE, &(obj->f64));
+  VIEW_MODEL_SIMPLE_PROP(view_model, "b", VALUE_TYPE_BOOL, &(obj->b));
 
-  MODEL_PROP(model, "data", test_obj_get_data, test_obj_set_data);
-  MODEL_PROP(model, "save_count", test_obj_get_save_count, NULL);
-  MODEL_COMMAND(model, "save", test_obj_save, test_obj_can_save);
+  VIEW_MODEL_PROP(view_model, "data", test_obj_get_data, test_obj_set_data);
+  VIEW_MODEL_PROP(view_model, "save_count", test_obj_get_save_count, NULL);
+  VIEW_MODEL_COMMAND(view_model, "save", test_obj_save, test_obj_can_save);
 
   /*test repeat*/
-  MODEL_PROP(model, "data", test_obj_get_data, test_obj_set_data);
-  MODEL_COMMAND(model, "save", test_obj_save, test_obj_can_save);
+  VIEW_MODEL_PROP(view_model, "data", test_obj_get_data, test_obj_set_data);
+  VIEW_MODEL_COMMAND(view_model, "save", test_obj_save, test_obj_can_save);
 
-  return model;
+  return view_model;
 }
 
-static view_model_t* test_obj_create_view_model(void) {
-  model_t* model = test_obj_create_model();
-  return view_model_normal_create(model);
-}

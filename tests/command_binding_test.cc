@@ -35,7 +35,7 @@ TEST(CommandBinding, update_model) {
   object_t* o = OBJECT(rule);
 
   ASSERT_EQ(rule->update_model, FALSE);
-  ASSERT_EQ(object_set_prop_str(o, COMMAND_BINDING_UPDATE_MODEL, "TRUE"), RET_OK);
+  ASSERT_EQ(object_set_prop_str(o, COMMAND_BINDING_UPDATE_VIEW_MODEL, "TRUE"), RET_OK);
   ASSERT_EQ(rule->update_model, TRUE);
 
   object_unref(OBJECT(rule));

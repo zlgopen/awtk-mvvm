@@ -1,4 +1,4 @@
-﻿#include "mvvm/jerryscript/model_jerryscript.h"
+﻿#include "mvvm/jerryscript/view_model_jerryscript.h"
 #include "mvvm/jerryscript/value_validator_jerryscript.h"
 #include "gtest/gtest.h"
 
@@ -13,7 +13,7 @@ TEST(ValueValidatorJerryScript, basic) {
         }";
   str_t str;
   value_t value;
-  model_t* model = model_jerryscript_create("test", code, strlen(code), NULL);
+  view_model_t* view_model = view_model_jerryscript_create("test", code, strlen(code), NULL);
 
   str_init(&str, 0);
   value_validator_t* c = value_validator_create("jsdummy");
@@ -33,7 +33,7 @@ TEST(ValueValidatorJerryScript, basic) {
 
   str_reset(&str);
   object_unref(OBJECT(c));
-  object_unref(OBJECT(model));
+  object_unref(OBJECT(view_model));
 }
 
 TEST(ValueValidatorJerryScript, fix) {
@@ -43,7 +43,7 @@ TEST(ValueValidatorJerryScript, fix) {
           fix:function(v) {return 10;} \
         }";
   value_t value;
-  model_t* model = model_jerryscript_create("test", code, strlen(code), NULL);
+  view_model_t* view_model = view_model_jerryscript_create("test", code, strlen(code), NULL);
 
   value_validator_t* c = value_validator_create("jsdummy");
   ASSERT_NE(c, VALUE_VALIDATOR(NULL));
@@ -61,7 +61,7 @@ TEST(ValueValidatorJerryScript, fix) {
   ASSERT_EQ(value_int(&value), 10);
 
   object_unref(OBJECT(c));
-  object_unref(OBJECT(model));
+  object_unref(OBJECT(view_model));
 }
 
 TEST(ValueValidatorJerryScript, message) {
@@ -74,7 +74,7 @@ TEST(ValueValidatorJerryScript, message) {
         }";
   str_t str;
   value_t value;
-  model_t* model = model_jerryscript_create("test", code, strlen(code), NULL);
+  view_model_t* view_model = view_model_jerryscript_create("test", code, strlen(code), NULL);
 
   str_init(&str, 0);
   value_validator_t* c = value_validator_create("jsdummy");
@@ -97,18 +97,18 @@ TEST(ValueValidatorJerryScript, message) {
 
   str_reset(&str);
   object_unref(OBJECT(c));
-  object_unref(OBJECT(model));
+  object_unref(OBJECT(view_model));
 }
 
 TEST(ValueValidatorJerryScript, not_exist) {
   const char* code = "var ValueValidators = {};";
 
-  model_t* model = model_jerryscript_create("test", code, strlen(code), NULL);
+  view_model_t* view_model = view_model_jerryscript_create("test", code, strlen(code), NULL);
 
   value_validator_t* c = value_validator_create("notexist");
   ASSERT_EQ(c, VALUE_VALIDATOR(NULL));
 
-  object_unref(OBJECT(model));
+  object_unref(OBJECT(view_model));
 }
 
 TEST(ValueValidatorJerryScript, no_isValid) {
@@ -119,7 +119,7 @@ TEST(ValueValidatorJerryScript, no_isValid) {
         }";
   str_t str;
   value_t value;
-  model_t* model = model_jerryscript_create("test", code, strlen(code), NULL);
+  view_model_t* view_model = view_model_jerryscript_create("test", code, strlen(code), NULL);
   value_validator_t* c = value_validator_create("notexist");
 
   str_init(&str, 0);
@@ -128,5 +128,5 @@ TEST(ValueValidatorJerryScript, no_isValid) {
 
   str_reset(&str);
   object_unref(OBJECT(c));
-  object_unref(OBJECT(model));
+  object_unref(OBJECT(view_model));
 }

@@ -36,7 +36,7 @@ TEST(DataBinding, mode) {
   ASSERT_EQ(rule->mode, BINDING_TWO_WAY);
 
   ASSERT_EQ(object_set_prop_str(o, DATA_BINDING_MODE, "OneWayToModel"), RET_OK);
-  ASSERT_EQ(rule->mode, BINDING_ONE_WAY_TO_MODEL);
+  ASSERT_EQ(rule->mode, BINDING_ONE_WAY_TO_VIEW_MODEL);
 
   object_unref(OBJECT(rule));
 }

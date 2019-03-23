@@ -32,7 +32,7 @@ typedef struct _model_array_dummy_t view_model_array_dummy_t;
 
 /**
  * @class view_model_array_dummy_t
- * @parent view_model_array_t
+ * @parent view_model_array_dummy_t
  *
  * array view_model
  *
@@ -45,27 +45,27 @@ struct _model_array_dummy_t {
 };
 
 /**
- * @method view_model_array_create
+ * @method view_model_array_dummy_create
  * 创建array模型对象。
  *
  * @param {navigator_request_t*} req 请求参数。
  *
  * @return {view_model_t*} 返回view_model对象。
  */
-view_model_t* view_model_array_create(navigator_request_t* req);
+view_model_t* view_model_array_dummy_create(navigator_request_t* req);
 
 /**
- * @method view_model_array_clear
+ * @method view_model_array_dummy_clear
  * 清除全部submodel。
  *
  * @param {view_model_t*} view_model view_model对象。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
-ret_t view_model_array_clear(view_model_t* view_model);
+ret_t view_model_array_dummy_clear(view_model_t* view_model);
 
 /**
- * @method view_model_array_add
+ * @method view_model_array_dummy_add
  * 增加submodel。
  *
  *> 增加submodel的引用计数，并保存submodel的引用。
@@ -75,10 +75,10 @@ ret_t view_model_array_clear(view_model_t* view_model);
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
-ret_t view_model_array_add(view_model_t* view_model, view_model_t* submodel);
+ret_t view_model_array_dummy_add(view_model_t* view_model, view_model_t* submodel);
 
 /**
- * @method view_model_array_remove
+ * @method view_model_array_dummy_remove
  * 删除指定的submodel。
  *
  * @param {view_model_t*} view_model view_model对象。
@@ -86,10 +86,10 @@ ret_t view_model_array_add(view_model_t* view_model, view_model_t* submodel);
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
-ret_t view_model_array_remove(view_model_t* view_model, uint32_t index);
+ret_t view_model_array_dummy_remove(view_model_t* view_model, uint32_t index);
 
 /**
- * @method view_model_array_get
+ * @method view_model_array_dummy_get
  * 获取指定的submodel。
  *
  * @param {view_model_t*} view_model view_model对象。
@@ -97,17 +97,17 @@ ret_t view_model_array_remove(view_model_t* view_model, uint32_t index);
  *
  * @return {view_model_t} 返回指定的submodel。
  */
-view_model_t* view_model_array_get(view_model_t* view_model, uint32_t index);
+view_model_t* view_model_array_dummy_get(view_model_t* view_model, uint32_t index);
 
 /**
- * @method view_model_array_size
+ * @method view_model_array_dummy_size
  * 获取submodel的个数。
  *
  * @param {view_model_t*} view_model view_model对象。
  *
  * @return {int32_t} 返回submodel的个数。
  */
-int32_t view_model_array_size(view_model_t* view_model);
+int32_t view_model_array_dummy_size(view_model_t* view_model);
 
 #define VIEW_MODEL_ARRAY_DUMMY(view_model) ((view_model_array_dummy_t*)(view_model))
 
