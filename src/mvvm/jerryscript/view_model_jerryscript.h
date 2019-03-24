@@ -28,26 +28,6 @@
 
 BEGIN_C_DECLS
 
-struct _model_jerryscript_t;
-typedef struct _model_jerryscript_t view_model_jerryscript_t;
-
-/**
- * @class view_model_jerryscript_t
- * @parent view_model_t
- *
- * wrap jerryscript code to a view_model
- *
- */
-struct _model_jerryscript_t {
-  view_model_t view_model;
-
-  /*private*/
-  jerry_value_t jsobj;
-
-  /*避免每次动态分配内存*/
-  str_t temp;
-};
-
 /**
  * @method view_model_jerryscript_create
  * 通过一段JS代码创建一个view_model对象。
