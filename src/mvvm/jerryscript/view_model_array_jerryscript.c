@@ -41,6 +41,8 @@ static int32_t view_model_array_jerryscript_compare(object_t* obj, object_t* oth
 static ret_t view_model_array_jerryscript_set_prop(object_t* obj, const char* name,
                                                    const value_t* v) {
   uint32_t index = 0;
+  jerry_value_t jsprop = 0;
+  ret_t ret = RET_NOT_FOUND;
   view_model_array_jerryscript_t* view_modeljs = VIEW_MODEL_ARRAY_JERRYSCRIPT(obj);
   return_value_if_fail(obj != NULL && name != NULL && v != NULL, RET_BAD_PARAMS);
 
@@ -54,11 +56,17 @@ static ret_t view_model_array_jerryscript_set_prop(object_t* obj, const char* na
   return_value_if_fail(name != NULL, RET_BAD_PARAMS);
   return_value_if_fail(index < jerry_get_array_length(view_modeljs->jsobj), RET_BAD_PARAMS);
 
-  return jsobj_set_prop(view_modeljs->jsobj, name, v, &(view_modeljs->temp));
+  jsprop = jerry_get_property_by_index(view_modeljs->jsobj, index);
+  ret = jsobj_set_prop(jsprop, name, v, &(view_modeljs->temp));
+  jerry_release_value(jsprop);
+
+  return ret;
 }
 
 static ret_t view_model_array_jerryscript_get_prop(object_t* obj, const char* name, value_t* v) {
   uint32_t index = 0;
+  jerry_value_t jsprop = 0;
+  ret_t ret = RET_NOT_FOUND;
   view_model_array_jerryscript_t* view_modeljs = VIEW_MODEL_ARRAY_JERRYSCRIPT(obj);
   return_value_if_fail(obj != NULL && name != NULL && v != NULL, RET_BAD_PARAMS);
 
@@ -77,11 +85,14 @@ static ret_t view_model_array_jerryscript_get_prop(object_t* obj, const char* na
   return_value_if_fail(index < jerry_get_array_length(view_modeljs->jsobj), RET_BAD_PARAMS);
 
   value_set_int(v, 0);
-  if (jsobj_has_prop(view_modeljs->jsobj, name)) {
-    return jsobj_get_prop(view_modeljs->jsobj, name, v, &(view_modeljs->temp));
+  jsprop = jerry_get_property_by_index(view_modeljs->jsobj, index);
+  if (jsobj_has_prop(jsprop, name)) {
+    ret = jsobj_get_prop(jsprop, name, v, &(view_modeljs->temp));
   }
+  jerry_release_value(jsprop);
 
-  return RET_NOT_FOUND;
+  return ret;
+  ;
 }
 
 static bool_t view_model_array_jerryscript_can_exec(object_t* obj, const char* name,

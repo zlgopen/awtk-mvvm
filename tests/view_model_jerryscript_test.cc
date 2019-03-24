@@ -19,11 +19,25 @@ TEST(ModelJerryScript, get_prop) {
 }
 
 TEST(ModelJerryScript, array) {
-  const char* code = "var test_array = [{'name':'a'}, {'name':'b'}, {'name':'c'}];";
+  const char* code =
+      "var test_array = [{'name':'a', 'stock':1}, {'name':'b', 'stock':2}, {'name':'c', "
+      "'stock':3}];";
   view_model_t* view_model = view_model_jerryscript_create("test_array", code, strlen(code), NULL);
   object_t* obj = OBJECT(view_model);
   ASSERT_NE(obj, OBJECT(NULL));
   ASSERT_EQ(object_is_collection(obj), TRUE);
+  ASSERT_EQ(object_get_prop_int(obj, VIEW_MODEL_PROP_ITEMS, 0), 3);
+  ASSERT_EQ(object_get_prop_int(obj, "[0].stock", 0), 1);
+  ASSERT_EQ(object_get_prop_int(obj, "[1].stock", 0), 2);
+  ASSERT_EQ(object_get_prop_int(obj, "[2].stock", 0), 3);
+
+  ASSERT_EQ(object_set_prop_int(obj, "[0].stock", 4), RET_OK);
+  ASSERT_EQ(object_set_prop_int(obj, "[1].stock", 5), RET_OK);
+  ASSERT_EQ(object_set_prop_int(obj, "[2].stock", 6), RET_OK);
+
+  ASSERT_EQ(object_get_prop_int(obj, "[0].stock", 0), 4);
+  ASSERT_EQ(object_get_prop_int(obj, "[1].stock", 0), 5);
+  ASSERT_EQ(object_get_prop_int(obj, "[2].stock", 0), 6);
 
   object_unref(OBJECT(view_model));
 }
