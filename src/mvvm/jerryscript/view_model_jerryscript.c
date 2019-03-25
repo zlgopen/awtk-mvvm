@@ -147,6 +147,7 @@ view_model_t* view_model_jerryscript_create(const char* name, const char* code, 
 
   if (jerry_value_is_array(jsobj)) {
     view_model = view_model_array_jerryscript_create(jsobj);
+    jsobj_set_prop_func(jsobj, "notifyPropsChanged", wrap_notify_props_changed);
     jsobj_set_prop_func(jsobj, "notifyItemsChanged", wrap_notify_items_changed);
   } else {
     view_model = view_model_normal_jerryscript_create(jsobj);

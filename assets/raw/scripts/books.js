@@ -1,4 +1,3 @@
-
 var gBooks = [];
 
 gBooks.canRemove = function(index) {
@@ -41,8 +40,6 @@ gBooks.add = function() {
   }
 
   gBooks.push(b);
-
-  console.log("RET_ITEMS_CHANGED:" + RET_ITEMS_CHANGED);
 
   return RET_ITEMS_CHANGED;
 }
