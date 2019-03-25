@@ -13,7 +13,7 @@ gBooks.remove = function(index) {
 }
 
 gBooks.canSale = function(index) {
-  return index < gBooks.length;
+  return gBooks[index].stock > 0;
 }
 
 gBooks.sale = function(index) {
