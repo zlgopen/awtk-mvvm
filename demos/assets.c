@@ -29,6 +29,7 @@
 #include "assets/inc/ui/temperature5.data"
 #include "assets/inc/ui/temperature10.data"
 #include "assets/inc/ui/room_settings.data"
+#include "assets/inc/ui/js_books.data"
 #include "assets/inc/ui/js_demo9_main.data"
 #include "assets/inc/ui/js_temperature3.data"
 #include "assets/inc/ui/temperature2.data"
@@ -125,6 +126,7 @@ ret_t assets_init(void) {
   assets_manager_add(rm, ui_temperature5);
   assets_manager_add(rm, ui_temperature10);
   assets_manager_add(rm, ui_room_settings);
+  assets_manager_add(rm, ui_js_books);
   assets_manager_add(rm, ui_js_demo9_main);
   assets_manager_add(rm, ui_js_temperature3);
   assets_manager_add(rm, ui_temperature2);

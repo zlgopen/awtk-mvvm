@@ -53,6 +53,8 @@ static ret_t ret_t_init(void) {
   jsobj_set_prop_int(obj, "RET_STOP", RET_STOP);
   jsobj_set_prop_int(obj, "RET_CONTINUE", RET_CONTINUE);
   jsobj_set_prop_int(obj, "RET_BAD_PARAMS", RET_BAD_PARAMS);
+  jsobj_set_prop_int(obj, "RET_ITEMS_CHANGED", RET_ITEMS_CHANGED);
+  jsobj_set_prop_int(obj, "RET_OBJECT_CHANGED", RET_OBJECT_CHANGED);
 
   jerry_release_value(obj);
 

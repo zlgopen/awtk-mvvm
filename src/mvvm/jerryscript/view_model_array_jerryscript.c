@@ -165,6 +165,7 @@ view_model_t* view_model_array_jerryscript_create(jerry_value_t jsobj) {
 
   view_modeljs->jsobj = jsobj;
   str_init(&(view_modeljs->temp), 0);
+  view_model_array_init(VIEW_MODEL(obj));
   VIEW_MODEL(view_modeljs)->vt = &s_view_model_jerryscript_vtable;
 
   return VIEW_MODEL(obj);
