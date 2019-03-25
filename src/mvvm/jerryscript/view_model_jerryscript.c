@@ -28,8 +28,6 @@
 #include "mvvm/jerryscript/value_converter_jerryscript.h"
 #include "mvvm/jerryscript/value_validator_jerryscript.h"
 
-#define STR_NATIVE_VIEW_MODEL "nativeModel"
-
 static jerry_value_t jsobj_create_model_by_creator(const char* name, navigator_request_t* req) {
   jerry_value_t func = jsobj_get_model(name);
   if (jerry_value_is_function(func)) {
@@ -143,6 +141,7 @@ view_model_t* view_model_jerryscript_create(const char* name, const char* code, 
   return_value_if_fail(view_model_jerryscript_load(name, code, code_size) == RET_OK, NULL);
 
   jsobj = jsobj_create_model(name, req);
+  return_value_if_fail(jerry_value_is_object(jsobj), NULL);
   return_value_if_fail(jerry_value_check(jsobj) == RET_OK, NULL);
 
   if (jerry_value_is_array(jsobj)) {
@@ -157,7 +156,6 @@ view_model_t* view_model_jerryscript_create(const char* name, const char* code, 
   if (view_model != NULL) {
     object_set_name(OBJECT(view_model), name);
     jsobj_set_prop_pointer(jsobj, STR_NATIVE_MODEL, OBJECT(view_model));
-    jsobj_set_prop_pointer(jsobj, STR_NATIVE_VIEW_MODEL, OBJECT(view_model));
   } else {
     jerry_release_value(jsobj);
     return NULL;

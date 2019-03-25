@@ -42,8 +42,6 @@ BEGIN_C_DECLS
 view_model_t* view_model_jerryscript_create(const char* name, const char* code, uint32_t code_size,
                                             navigator_request_t* req);
 
-#define VIEW_MODEL_JERRYSCRIPT(view_model) ((view_model_jerryscript_t*)(view_model))
-
 END_C_DECLS
 
 #endif /*TK_VIEW_MODEL_JERRYSCRIPT_H*/

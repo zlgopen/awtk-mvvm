@@ -28,6 +28,7 @@ static ret_t view_model_normal_jerryscript_on_destroy(object_t* obj) {
   view_model_normal_jerryscript_t* view_modeljs = VIEW_MODEL_NORMAL_JERRYSCRIPT(obj);
 
   str_reset(&(view_modeljs->temp));
+  view_model_deinit(VIEW_MODEL(obj));
   jerry_release_value(view_modeljs->jsobj);
 
   return RET_OK;

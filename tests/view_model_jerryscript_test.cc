@@ -143,23 +143,6 @@ TEST(ModelJerryScript, exec2) {
   object_unref(OBJECT(view_model));
 }
 
-TEST(ModelJerryScript, exec_global) {
-  const char* code =
-      "function save3(args) {print(args); return RET_OK;}\nfunction canSave3(args) {print(args); "
-      "return true;}";
-  view_model_t* view_model = view_model_jerryscript_create("test", code, strlen(code), NULL);
-  object_t* obj = OBJECT(view_model);
-  ASSERT_NE(obj, OBJECT(NULL));
-
-  ASSERT_EQ(object_can_exec(obj, "save3", "awtk\n"), TRUE);
-  ASSERT_EQ(object_exec(obj, "save3", "awtk\n"), RET_OK);
-
-  ASSERT_EQ(object_can_exec(obj, "load", "awtk\n"), FALSE);
-  ASSERT_NE(object_exec(obj, "load", "awtk\n"), RET_OK);
-
-  object_unref(OBJECT(view_model));
-}
-
 static ret_t on_view_model_changed(void* ctx, event_t* e) {
   int* n = (int*)ctx;
 
@@ -317,9 +300,5 @@ TEST(ModelJerryScript, invalid) {
   view_model_t* view_model = view_model_jerryscript_create("notexist", code, strlen(code), NULL);
 
   object_t* obj = OBJECT(view_model);
-  ASSERT_NE(obj, OBJECT(NULL));
-
-  ASSERT_EQ(object_get_prop_int(obj, "count", 0), 0);
-
-  object_unref(OBJECT(view_model));
+  ASSERT_EQ(obj, OBJECT(NULL));
 }

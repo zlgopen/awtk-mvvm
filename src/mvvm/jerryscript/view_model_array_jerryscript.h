@@ -50,12 +50,11 @@ struct _model_jerryscript_array_t {
 
 /**
  * @method view_model_array_jerryscript_create
- * 通过一段JS代码创建一个view_model对象。
+ * 将jsobj包装成view_model。
  *
- * @param {const char*} name 名称(通常是文件名)。
  * @param {jerry_value_t*} jsobj js对象。
  *
- * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ * @return {view_model_t*} 返回view_model对象。
  */
 view_model_t* view_model_array_jerryscript_create(jerry_value_t jsobj);
 
