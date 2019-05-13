@@ -91,7 +91,7 @@ struct _binding_context_t {
   /**
    * @property {void*} current_widget
    * @annotation ["readable"]
-   * 当前真正绑定的控件。
+   * 当前正在绑定的控件。
    */
   void* current_widget;
   /**
