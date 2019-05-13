@@ -246,7 +246,7 @@ ret_t data_binding_get_prop(data_binding_t* rule, value_t* v) {
   view_model_t* view_model = NULL;
   return_value_if_fail(rule != NULL && v != NULL, RET_BAD_PARAMS);
 
-  view_model = BINDING_RULE(rule)->view_model;
+  view_model = BINDING_RULE_VIEW_MODEL(rule);
   return_value_if_fail(view_model != NULL, RET_BAD_PARAMS);
 
   if (object_is_collection(OBJECT(view_model))) {
@@ -283,7 +283,7 @@ ret_t data_binding_set_prop(data_binding_t* rule, const value_t* raw) {
   view_model_t* view_model = NULL;
   return_value_if_fail(rule != NULL && raw != NULL, RET_BAD_PARAMS);
 
-  view_model = BINDING_RULE(rule)->view_model;
+  view_model = BINDING_RULE_VIEW_MODEL(rule);
   return_value_if_fail(view_model != NULL, RET_BAD_PARAMS);
 
   str_clear(&(view_model->last_error));

@@ -60,7 +60,7 @@ static ret_t view_model_on_window_destroy(void* ctx, event_t* e) {
 static ret_t visit_data_binding_update_error_of(void* ctx, const void* data) {
   data_binding_t* rule = DATA_BINDING(data);
   data_binding_t* trigger_rule = DATA_BINDING(ctx);
-  view_model_t* view_model = BINDING_RULE(trigger_rule)->view_model;
+  view_model_t* view_model = BINDING_RULE_VIEW_MODEL(trigger_rule);
 
   if (tk_str_start_with(rule->path, DATA_BINDING_ERROR_OF)) {
     const char* path = rule->path + sizeof(DATA_BINDING_ERROR_OF) - 1;
@@ -75,7 +75,7 @@ static ret_t visit_data_binding_update_error_of(void* ctx, const void* data) {
 
 static ret_t binding_context_update_error_of(data_binding_t* rule) {
   binding_context_t* ctx = BINDING_RULE(rule)->binding_context;
-  view_model_t* view_model = BINDING_RULE(rule)->view_model;
+  view_model_t* view_model = BINDING_RULE_VIEW_MODEL(rule);
   return_value_if_fail(ctx != NULL && view_model != NULL, RET_BAD_PARAMS);
 
   if (view_model->last_error.size > 0) {
@@ -115,7 +115,6 @@ static ret_t binding_context_bind_data(binding_context_t* ctx, const char* name,
 
   BINDING_RULE(rule)->widget = widget;
   BINDING_RULE(rule)->binding_context = ctx;
-  BINDING_RULE(rule)->view_model = ctx->view_model;
 
   if (object_is_collection(OBJECT(ctx->view_model))) {
     uint32_t cursor = object_get_prop_int(OBJECT(ctx->view_model), VIEW_MODEL_PROP_CURSOR, 0);
@@ -183,7 +182,6 @@ static ret_t binding_context_bind_command(binding_context_t* ctx, const char* na
 
   BINDING_RULE(rule)->widget = widget;
   BINDING_RULE(rule)->binding_context = ctx;
-  BINDING_RULE(rule)->view_model = ctx->view_model;
 
   if (object_is_collection(OBJECT(ctx->view_model))) {
     uint32_t cursor = object_get_prop_int(OBJECT(ctx->view_model), VIEW_MODEL_PROP_CURSOR, 0);

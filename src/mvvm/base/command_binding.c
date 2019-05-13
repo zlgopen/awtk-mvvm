@@ -116,7 +116,7 @@ command_binding_t* command_binding_create(void) {
 bool_t command_binding_can_exec(command_binding_t* rule) {
   view_model_t* view_model = NULL;
   return_value_if_fail(rule != NULL, FALSE);
-  view_model = BINDING_RULE(rule)->view_model;
+  view_model = BINDING_RULE_VIEW_MODEL(rule);
   return_value_if_fail(view_model != NULL, FALSE);
 
   if (tk_str_ieq(rule->command, COMMAND_BINDING_CMD_NOTHING) ||
@@ -135,7 +135,7 @@ bool_t command_binding_can_exec(command_binding_t* rule) {
 ret_t command_binding_exec(command_binding_t* rule) {
   view_model_t* view_model = NULL;
   return_value_if_fail(rule != NULL, FALSE);
-  view_model = BINDING_RULE(rule)->view_model;
+  view_model = BINDING_RULE_VIEW_MODEL(rule);
   return_value_if_fail(view_model != NULL, FALSE);
 
   if (tk_str_ieq(rule->command, COMMAND_BINDING_CMD_NOTHING)) {

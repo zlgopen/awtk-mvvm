@@ -89,6 +89,7 @@ static ret_t test_view_model_deinit(void) {
 
   object_unref(OBJECT(s_persons_view_model));
   s_persons_view_model = NULL;
+  idle_manager_remove_all(idle_manager());
 
   return RET_OK;
 }
