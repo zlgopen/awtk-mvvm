@@ -17,3 +17,4 @@ bin/js*
 .vscode
 .vs
 3rd/jerryscript
+lib

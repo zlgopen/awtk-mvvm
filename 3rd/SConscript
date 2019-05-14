@@ -11,13 +11,6 @@ sources= [
   "jerryscript/jerry-port/default/default-external-context.c",
   "jerryscript/jerry-port/default/default-fatal.c",
   "jerryscript/jerry-port/default/default-io.c",
-  "jerryscript/jerry-port/default/defaultx-handler.c",
-  "jerryscript/jerry-port/default/default-date.c",
-  "jerryscript/jerry-port/default/default-debugger.c",
-  "jerryscript/jerry-port/default/default-external-context.c",
-  "jerryscript/jerry-port/default/default-fatal.c",
-  "jerryscript/jerry-port/default/default-io.c",
-  "jerryscript/jerry-port/default/defaultx-handler.c",
   "jerryscript/jerry-ext/arg/arg-js-iterator-helper.c",
   "jerryscript/jerry-ext/arg/arg-transform-functions.c",
   "jerryscript/jerry-ext/arg/arg.c",
@@ -34,6 +27,6 @@ sources= [
 
 env=DefaultEnvironment().Clone()
 
-env['CCFLAGS'] = env['CCFLAGS'] + ' -DCONFIG_DISABLE_ES2015 -DCONFIG_MEM_HEAP_AREA_SIZE=2097152 -DJERRY_CPOINTER_32_BIT -DJERRY_ENABLE_ERROR_MESSAGES -DJERRY_ENABLE_LOGGING ';
+env['CCFLAGS'] = env['CCFLAGS'] + ' -DJERRY_ES2015=0 -DCONFIG_MEM_HEAP_AREA_SIZE=2097152 -DJERRY_CPOINTER_32_BIT -DJERRY_ENABLE_ERROR_MESSAGES -DJERRY_ENABLE_LOGGING ';
 
 env.Library(os.path.join(LIB_DIR, 'jerryscript'), sources)
