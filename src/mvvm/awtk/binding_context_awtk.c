@@ -477,6 +477,7 @@ static ret_t binding_context_awtk_update_to_view_sync(binding_context_t* ctx) {
     darray_foreach(&(ctx->command_bindings), visit_command_binding, ctx);
 
     ctx->request_update_view = 0;
+    widget_invalidate_force(WIDGET(ctx->widget), NULL);
   }
 
   return RET_OK;

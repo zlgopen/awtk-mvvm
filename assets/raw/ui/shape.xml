@@ -1,12 +1,12 @@
 <window anim_hint="htranslate" v-model="shape" children_layout="default(h=30,col=1,s=10, m=5)">
   <column children_layout="default(row=1,col=2)">
     <label text="Name:" />
-    <edit v-data:value="{name, Trigger=Changing}"/>
+    <edit v-data:value="{name, Trigger=Changing}" tips="name cannot be null"/>
   </column>
   
   <column children_layout="default(row=1,col=2)">
     <label text="Alignment:" />
-    <combo_box left_margin="6" options="0:left;1:center;2:right;" v-data:value="{align}"/>
+    <combo_box left_margin="6" options="0:left;1:center;2:right;" v-data:value="{align}" readonly="true"/>
   </column>
 
   <column children_layout="default(row=1,col=2)">
