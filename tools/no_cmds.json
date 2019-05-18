@@ -1,0 +1,41 @@
+{
+  "name":"no_cmds",
+  "desc":"cmd demo",
+  "props": [
+    {
+      "name":"i8",
+      "type":"int8_t",
+      "desc": "int8 test",
+      "setter":true,
+      "getter":true
+    },
+    {
+      "name":"i16",
+      "type":"int16_t",
+      "desc": "in16 test",
+      "getter":true
+    },
+    {
+      "name":"i32",
+      "type":"int32_t",
+      "desc": "int32 test",
+      "getter":true
+    },
+    {
+      "name":"name",
+      "type":"char*",
+      "desc": "name"
+    },
+    {
+      "name":"i64",
+      "type":"int64_t",
+      "desc": "int64 test"
+    },
+    {
+      "name":"sum",
+      "type":"int64_t",
+      "synthesized": true,
+      "desc": "sum"
+    }
+  ]
+}

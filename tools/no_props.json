@@ -1,0 +1,15 @@
+{
+  "name":"no_props",
+  "desc":"no_props",
+  "cmds": [
+    {
+      "name":"foo",
+      "desc":"foo"
+    },
+    {
+      "name":"bar",
+      "canExec":true,
+      "desc":"bar"
+    }
+  ]
+}

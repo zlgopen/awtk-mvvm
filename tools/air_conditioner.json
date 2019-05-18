@@ -1,0 +1,87 @@
+{
+  "name":"air_conditioner",
+  "desc":"空调控制器",
+  "props": [
+    {
+      "name":"mode",
+      "type":"int32_t",
+      "desc": "模式，如制冷、加热、换气和干燥",
+      "setter":true,
+      "getter":true
+    },
+    {
+      "name":"temperature",
+      "type":"int32_t",
+      "desc": "温度",
+      "setter":true,
+      "getter":true
+    },
+    {
+      "name":"fan_speed",
+      "type":"int32_t",
+      "desc": "风速",
+      "setter":true,
+      "getter":true
+    },
+    {
+      "name":"air_direction",
+      "type":"int32_t",
+      "desc": "风向(上下和左右扫风)",
+      "setter":true,
+      "getter":true
+    }
+  ],
+  "cmds": [
+    {
+      "name":"inc_temperature",
+      "desc":"温度提高一度"
+    },
+    {
+      "name":"dec_temperature",
+      "desc":"温度降低一度"
+    },
+    {
+      "name":"inc_fan_speed",
+      "desc":"风速提高一档"
+    },
+    {
+      "name":"dec_fan_speed",
+      "desc":"风速降低一档"
+    },
+    {
+      "name":"power",
+      "canExec": true,
+      "desc":"开机/关机"
+    },
+    {
+      "name":"light",
+      "canExec": true,
+      "desc":"打开/关闭灯光"
+    },
+    {
+      "name":"change_mode",
+      "canExec": true,
+      "desc":"切换到下一模式"
+    },
+    {
+      "name":"heat_mode",
+      "canExec": true,
+      "desc":"切换到加热模式"
+    },
+    {
+      "name":"cool_mode",
+      "canExec": true,
+      "desc":"切换到制冷模式"
+    },
+    {
+      "name":"wind_up_down",
+      "canExec": true,
+      "desc":"上下扫风"
+    },
+    {
+      "name":"wind_left_right",
+      "canExec": true,
+      "desc":"左右扫风"
+    }
+  ]
+}
