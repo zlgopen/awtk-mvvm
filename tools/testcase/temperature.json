@@ -1,0 +1,17 @@
+{
+  "name":"temperature",
+  "desc":"temperature controller",
+  "props": [
+    {
+      "name":"value",
+      "type":"double",
+      "desc": "the temperature value"
+    }
+  ],
+  "cmds": [
+    {
+      "name":"apply",
+      "desc":"apply the temperature value to device"
+    }
+  ]
+}
