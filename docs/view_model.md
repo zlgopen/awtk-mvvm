@@ -158,6 +158,7 @@ view_model_t* temperature_create(navigator_request_t* req) {
 view_model_factory_register("temperature", temperature_create);
 ```
 
+
 ### 2.通过接口描述来生成ViewModel框架代码
 
 前面我们手工实现了temperature这个ViewModel，这个过程不难，但是有些单调。写程序应该是件快乐的事情，我们用

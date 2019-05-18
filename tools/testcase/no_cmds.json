@@ -35,6 +35,8 @@
       "name":"sum",
       "type":"int64_t",
       "synthesized": true,
+      "getter":"return vm->i8 + vm->i16;",
+      "setter":"/*TODO*/\n  return RET_OK;",
       "desc": "sum"
     }
   ]

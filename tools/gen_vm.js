@@ -2,66 +2,6 @@ const fs = require('fs')
 const path = require('path')
 
 class CodeGen {
-  constructor() {
-    this.header = '';
-    this.content = '';
-  }
-
-  genHeader(json) {
-    let clsName = json.name;
-    let clsNameUpper = clsName.toUpperCase();
-
-    let propsDecl = '';
-   
-    if(json.props && json.props.length) {
-      propsDecl = json.props.map((prop) => {
-        if (prop.synthesized) {
-          return '';
-        } else {
-          return `  ${prop.type} ${prop.name};`;
-        }
-      }).join('\n');
-    }
-    let result =
-      `
-#ifndef TK_${clsNameUpper}_H
-#define TK_${clsNameUpper}_H
-
-#include "mvvm/base/view_model.h"
-
-BEGIN_C_DECLS
-
-/**
- * @class ${clsName}_t
- *
- * ${json.desc}
- *
- */
-typedef struct _${clsName}_t {
-  view_model_t view_model;
-${propsDecl}
-} ${clsName}_t;
-
-/**
- * @method ${clsName}_create
- * 创建${clsName}对象。
- *
- * @annotation ["constructor"]
- * @param {navigator_request_t*} req 请求参数。
- *
- * @return {view_model_t} 返回view_model_t对象。
- */
-view_model_t* ${clsName}_create(navigator_request_t* req);
-
-#define ${clsNameUpper}(t) ((${clsName}_t*)(t))
-
-END_C_DECLS
-
-#endif /*TK_${clsNameUpper}_H*/
-`
-    return result;
-  }
-
   genToValue(type, name) {
     switch (type) {
       case 'int8_t':
@@ -122,6 +62,60 @@ END_C_DECLS
     }
   }
 
+  genHeader(json) {
+    let propsDecl = '';
+    let clsName = json.name;
+    let clsNameUpper = clsName.toUpperCase();
+
+    if (json.props && json.props.length) {
+      propsDecl = json.props.map((prop) => {
+        if (prop.synthesized) {
+          return '';
+        } else {
+          return `  ${prop.type} ${prop.name};`;
+        }
+      }).join('\n');
+    }
+    let result =
+      `
+#ifndef TK_${clsNameUpper}_H
+#define TK_${clsNameUpper}_H
+
+#include "mvvm/base/view_model.h"
+
+BEGIN_C_DECLS
+
+/**
+ * @class ${clsName}_t
+ *
+ * ${json.desc}
+ *
+ */
+typedef struct _${clsName}_t {
+  view_model_t view_model;
+${propsDecl}
+} ${clsName}_t;
+
+/**
+ * @method ${clsName}_create
+ * 创建${clsName}对象。
+ *
+ * @annotation ["constructor"]
+ * @param {navigator_request_t*} req 请求参数。
+ *
+ * @return {view_model_t} 返回view_model_t对象。
+ */
+view_model_t* ${clsName}_create(navigator_request_t* req);
+
+#define ${clsNameUpper}(t) ((${clsName}_t*)(t))
+
+END_C_DECLS
+
+#endif /*TK_${clsNameUpper}_H*/
+`
+    return result;
+  }
+
   genGetProps(json) {
     const clsName = json.name;
     const dispatch = json.props.map((prop, index) => {
@@ -166,37 +160,43 @@ ${dispatch}
       const propName = prop.name;
       let str = '';
       if (prop.synthesized) {
+        let setter = typeof (prop.setter) === 'string' ? prop.setter : 'return RET_OK;';
+        let getter = typeof (prop.getter) === 'string' ? prop.getter : 'return 0;';
         str =
           `
 static ${prop.type} ${clsName}_get_${propName}(${clsName}_t* vm) {
-  /*TODO: synthesize prop*/ 
-  return 0;
+  ${getter}
 }
 
 static ret_t ${clsName}_set_${propName}(${clsName}_t* vm, ${prop.type} value) {
-  /*TODO: synthesize prop*/ 
-  return RET_OK;
+  ${setter}
 }
 
 `;
-      }  else { 
+      } else {
         if (prop.getter) {
+          let defaultGetter = `return vm->${propName};`;
+          let getter = typeof (prop.getter) === 'string' ? prop.getter : defaultGetter;
           str =
             `
 static ${prop.type} ${clsName}_get_${propName}(${clsName}_t* vm) {
-  return vm->${propName};
+  ${getter}
 }
 
   `;
-        } 
-          
+        }
+
         if (prop.setter) {
+          let defaultSetter =
+            `${this.genAssignValue(propName, prop.type)}
+
+  return RET_OK;`
+
+          let setter = typeof (prop.setter) === 'string' ? prop.setter : defaultSetter;
           str +=
             `
 static ret_t ${clsName}_set_${propName}(${clsName}_t* vm, ${prop.type} ${prop.name}) {
-  ${this.genAssignValue(propName, prop.type)}
-
-  return RET_OK;
+  ${setter}
 }
 
   `;
