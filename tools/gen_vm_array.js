@@ -97,20 +97,20 @@ ${propsDecl}
 } ${clsName}_t;
 
 /**
- * @class ${clsName}_view_model_t
+ * @class ${clsName}s_view_model_t
  *
  * view model of ${json.name}
  *
  */
-typedef struct _${clsName}_view_model_t {
-  view_model_t view_model;
+typedef struct _${clsName}s_view_model_t {
+  view_model_array_t view_model_array;
 
   /*model object*/
   darray_t ${clsName}s;
-} ${clsName}_view_model_t;
+} ${clsName}s_view_model_t;
 
 /**
- * @method ${clsName}_view_model_create
+ * @method ${clsName}s_view_model_create
  * 创建${clsName} view model对象。
  *
  * @annotation ["constructor"]
@@ -118,7 +118,17 @@ typedef struct _${clsName}_view_model_t {
  *
  * @return {view_model_t} 返回view_model_t对象。
  */
-view_model_t* ${clsName}_view_model_create(navigator_request_t* req);
+view_model_t* ${clsName}s_view_model_create(navigator_request_t* req);
+
+/*public for test*/
+
+${clsName}_t* ${clsName}_create(void);
+
+ret_t ${clsName}s_view_model_clear(view_model_t* view_model);
+uint32_t ${clsName}s_view_model_size(view_model_t* view_model);
+ret_t ${clsName}s_view_model_remove(view_model_t* view_model, uint32_t index);
+ret_t ${clsName}s_view_model_add(view_model_t* view_model, ${clsName}_t* ${clsName});
+${clsName}_t* ${clsName}s_view_model_get(view_model_t* view_model, uint32_t index);
 
 END_C_DECLS
 
@@ -155,13 +165,13 @@ END_C_DECLS
 
     const result =
       `
-static ret_t ${clsName}_view_model_get_prop(object_t* obj, const char* name, value_t* v) {
+static ret_t ${clsName}s_view_model_get_prop(object_t* obj, const char* name, value_t* v) {
   uint32_t index = 0;
   ${clsName}_t* ${clsName} = NULL;
   view_model_t* vm = VIEW_MODEL(obj);
 
   if (tk_str_eq(VIEW_MODEL_PROP_ITEMS, name)) {
-    value_set_int(v, ${clsName}_view_model_size(VIEW_MODEL(obj)));
+    value_set_int(v, ${clsName}s_view_model_size(VIEW_MODEL(obj)));
 
     return RET_OK;
   } else if (tk_str_eq(VIEW_MODEL_PROP_CURSOR, name)) {
@@ -172,7 +182,7 @@ static ret_t ${clsName}_view_model_get_prop(object_t* obj, const char* name, val
 
   name = destruct_array_prop_name(name, &index);
   return_value_if_fail(name != NULL, RET_BAD_PARAMS);
-  ${clsName} = ${clsName}_view_model_get(vm, index);
+  ${clsName} = ${clsName}s_view_model_get(vm, index);
   return_value_if_fail(${clsName} != NULL, RET_BAD_PARAMS);
 
 ${dispatch}
@@ -271,7 +281,7 @@ static ret_t ${clsName}_set_${propName}(${clsName}_t* ${clsName}, ${prop.type} $
 
     const result =
       `
-static ret_t ${clsName}_view_model_set_prop(object_t* obj, const char* name, const value_t* v) {
+static ret_t ${clsName}s_view_model_set_prop(object_t* obj, const char* name, const value_t* v) {
   uint32_t index = 0;
   ${clsName}_t* ${clsName} = NULL;
   view_model_t* vm = VIEW_MODEL(obj);
@@ -284,7 +294,7 @@ static ret_t ${clsName}_view_model_set_prop(object_t* obj, const char* name, con
 
   name = destruct_array_prop_name(name, &index);
   return_value_if_fail(name != NULL, RET_BAD_PARAMS);
-  ${clsName} = ${clsName}_view_model_get(vm, index);
+  ${clsName} = ${clsName}s_view_model_get(vm, index);
   return_value_if_fail(${clsName} != NULL, RET_BAD_PARAMS);
 
 ${dispatch}
@@ -336,20 +346,20 @@ ${dispatch}
 
     const result =
       `
-static ret_t ${clsName}_view_model_exec(object_t* obj, const char* name, const char* args) {
+static ret_t ${clsName}s_view_model_exec(object_t* obj, const char* name, const char* args) {
   uint32_t index = tk_atoi(args);
   view_model_t* vm = VIEW_MODEL(obj);
-  ${clsName}_t* ${clsName} = ${clsName}_view_model_get(vm, index);
+  ${clsName}_t* ${clsName} = ${clsName}s_view_model_get(vm, index);
   return_value_if_fail(${clsName} != NULL, RET_BAD_PARAMS);
 
   if (tk_str_ieq(name, "remove")) {
-    ENSURE(${clsName}_view_model_remove(vm, index) == RET_OK);
+    ENSURE(${clsName}s_view_model_remove(vm, index) == RET_OK);
     return RET_ITEMS_CHANGED;
   } else if (tk_str_ieq(name, "add")) {
-    ENSURE(${clsName}_view_model_add(vm, ${clsName}_create()) == RET_OK);
+    ENSURE(${clsName}s_view_model_add(vm, ${clsName}_create()) == RET_OK);
     return RET_ITEMS_CHANGED;
   } else if (tk_str_ieq(name, "clear")) {
-    ENSURE(${clsName}_view_model_clear(vm) == RET_OK);
+    ENSURE(${clsName}s_view_model_clear(vm) == RET_OK);
     return RET_ITEMS_CHANGED;
 ${dispatch}
   } else {
@@ -377,18 +387,18 @@ ${dispatch}
 
     const result =
       `
-static bool_t ${clsName}_view_model_can_exec(object_t* obj, const char* name, const char* args) {
+static bool_t ${clsName}s_view_model_can_exec(object_t* obj, const char* name, const char* args) {
   uint32_t index = tk_atoi(args);
   view_model_t* vm = VIEW_MODEL(obj);
-  ${clsName}_t* ${clsName} = ${clsName}_view_model_get(vm, index);
+  ${clsName}_t* ${clsName} = ${clsName}s_view_model_get(vm, index);
   return_value_if_fail(${clsName} != NULL, RET_BAD_PARAMS);
 
   if (tk_str_ieq(name, "remove")) {
-    return index < ${clsName}_view_model_size(vm);
+    return index < ${clsName}s_view_model_size(vm);
   } else if (tk_str_ieq(name, "add")) {
     return TRUE;
   } else if (tk_str_ieq(name, "clear")) {
-    return ${clsName}_view_model_size(vm) > 0;
+    return ${clsName}s_view_model_size(vm) > 0;
 ${dispatch}
   } else {
     return FALSE;
@@ -403,32 +413,32 @@ ${dispatch}
     const clsDesc = json.desc || clsName;
     let result =
       `
-static ret_t ${clsName}_view_model_on_destroy(object_t* obj) {
-  ${clsName}_view_model_t* vm = (${clsName}_view_model_t*)(obj);
+static ret_t ${clsName}s_view_model_on_destroy(object_t* obj) {
+  ${clsName}s_view_model_t* vm = (${clsName}s_view_model_t*)(obj);
   return_value_if_fail(vm != NULL, RET_BAD_PARAMS);
   
-  ${clsName}_view_model_clear(VIEW_MODEL(obj));
+  ${clsName}s_view_model_clear(VIEW_MODEL(obj));
   darray_deinit(&(vm->${clsName}s));
 
   return view_model_array_deinit(VIEW_MODEL(obj));
 }
 
-static const object_vtable_t s_${clsName}_view_model_vtable = {
+static const object_vtable_t s_${clsName}s_view_model_vtable = {
   .type = "${clsName}",
   .desc = "${clsDesc}",
   .is_collection = TRUE,
-  .size = sizeof(${clsName}_view_model_t),
-  .exec = ${clsName}_view_model_exec,
-  .can_exec = ${clsName}_view_model_can_exec,
-  .get_prop = ${clsName}_view_model_get_prop,
-  .set_prop = ${clsName}_view_model_set_prop,
-  .on_destroy = ${clsName}_view_model_on_destroy
+  .size = sizeof(${clsName}s_view_model_t),
+  .exec = ${clsName}s_view_model_exec,
+  .can_exec = ${clsName}s_view_model_can_exec,
+  .get_prop = ${clsName}s_view_model_get_prop,
+  .set_prop = ${clsName}s_view_model_set_prop,
+  .on_destroy = ${clsName}s_view_model_on_destroy
 };
 
-view_model_t* ${clsName}_view_model_create(navigator_request_t* req) {
-  object_t* obj = object_create(&s_${clsName}_view_model_vtable);
-  view_model_t* vm = view_model_init(VIEW_MODEL(obj));
-  ${clsName}_view_model_t* ${clsName}_vm = (${clsName}_view_model_t*)(vm);
+view_model_t* ${clsName}s_view_model_create(navigator_request_t* req) {
+  object_t* obj = object_create(&s_${clsName}s_view_model_vtable);
+  view_model_t* vm = view_model_array_init(VIEW_MODEL(obj));
+  ${clsName}s_view_model_t* ${clsName}_vm = (${clsName}s_view_model_t*)(vm);
 
   return_value_if_fail(vm != NULL, NULL);
 
@@ -449,12 +459,12 @@ view_model_t* ${clsName}_view_model_create(navigator_request_t* req) {
     let deinit = json.deinit ? json.deinit : "/*TODO: */"
     result += `#include "tkc/utils.h"\n`;
     result += `#include "mvvm/base/utils.h"\n`;
-    result += `#include "${json.name}.h"\n\n`;
+    result += `#include "${json.name}s.h"\n\n`;
     result +=
       `
 /***************${clsName}***************/;
 
-static ${clsName}_t* ${clsName}_create(void) {
+${clsName}_t* ${clsName}_create(void) {
   ${clsName}_t* ${clsName} = TKMEM_ZALLOC(${clsName}_t);
   return_value_if_fail(${clsName} != NULL, NULL);
 ${init}
@@ -484,41 +494,41 @@ ${deinit}
     }
 
     result += `
-/***************${clsName}_view_model***************/
+/***************${clsName}s_view_model***************/
 
-static ret_t ${clsName}_view_model_remove(view_model_t* view_model, uint32_t index) {
-  ${clsName}_view_model_t* ${clsName}_vm = (${clsName}_view_model_t*)(view_model);
+ret_t ${clsName}s_view_model_remove(view_model_t* view_model, uint32_t index) {
+  ${clsName}s_view_model_t* ${clsName}_vm = (${clsName}s_view_model_t*)(view_model);
   return_value_if_fail(${clsName}_vm != NULL, RET_BAD_PARAMS);
 
   return darray_remove_index(&(${clsName}_vm->${clsName}s), index);
 }
 
-static ret_t ${clsName}_view_model_add(view_model_t* view_model, ${clsName}_t* ${clsName}) {
-  ${clsName}_view_model_t* ${clsName}_vm = (${clsName}_view_model_t*)(view_model);
+ret_t ${clsName}s_view_model_add(view_model_t* view_model, ${clsName}_t* ${clsName}) {
+  ${clsName}s_view_model_t* ${clsName}_vm = (${clsName}s_view_model_t*)(view_model);
   return_value_if_fail(${clsName}_vm != NULL && ${clsName} != NULL, RET_BAD_PARAMS);
 
   return darray_push(&(${clsName}_vm->${clsName}s), ${clsName});
 }
 
-static uint32_t ${clsName}_view_model_size(view_model_t* view_model) {
-  ${clsName}_view_model_t* ${clsName}_vm = (${clsName}_view_model_t*)(view_model);
+uint32_t ${clsName}s_view_model_size(view_model_t* view_model) {
+  ${clsName}s_view_model_t* ${clsName}_vm = (${clsName}s_view_model_t*)(view_model);
   return_value_if_fail(${clsName}_vm != NULL, 0); 
 
   return ${clsName}_vm->${clsName}s.size;
 }
 
-static ret_t ${clsName}_view_model_clear(view_model_t* view_model) {
-  ${clsName}_view_model_t* ${clsName}_vm = (${clsName}_view_model_t*)(view_model);
+ret_t ${clsName}s_view_model_clear(view_model_t* view_model) {
+  ${clsName}s_view_model_t* ${clsName}_vm = (${clsName}s_view_model_t*)(view_model);
   return_value_if_fail(${clsName}_vm != NULL, 0); 
 
   return darray_clear(&(${clsName}_vm->${clsName}s));
 }
 
-static ${clsName}_t* ${clsName}_view_model_get(view_model_t* view_model, uint32_t index) {
-  ${clsName}_view_model_t* ${clsName}_vm = (${clsName}_view_model_t*)(view_model);
+${clsName}_t* ${clsName}s_view_model_get(view_model_t* view_model, uint32_t index) {
+  ${clsName}s_view_model_t* ${clsName}_vm = (${clsName}s_view_model_t*)(view_model);
   return_value_if_fail(${clsName}_vm != NULL, 0); 
 
-  return_value_if_fail(${clsName}_vm != NULL && index < ${clsName}_view_model_size(view_model), NULL);
+  return_value_if_fail(${clsName}_vm != NULL && index < ${clsName}s_view_model_size(view_model), NULL);
 
   return (${clsName}_t*)(${clsName}_vm->${clsName}s.elms[index]);
 }
@@ -538,10 +548,10 @@ static ${clsName}_t* ${clsName}_view_model_get(view_model_t* view_model, uint32_
     let header = this.genHeader(json);
     let content = this.genContent(json);
 
-    fs.writeFileSync(`${json.name}.h`, header);
-    fs.writeFileSync(`${json.name}.c`, content);
+    fs.writeFileSync(`${json.name}s.h`, header);
+    fs.writeFileSync(`${json.name}s.c`, content);
 
-    console.log(`output to ${json.name}.h and ${json.name}.c`);
+    console.log(`output to ${json.name}s.h and ${json.name}s.c`);
   }
 
   genFile(filename) {

@@ -5,17 +5,21 @@
 TEST(Books, basic) {
   value_t v;
   uint32_t i = 0;
-  view_model_t* view_model = books_create(NULL);
+  view_model_t* view_model = books_view_model_create(NULL);
 
-  books_clear(view_model);
+  books_view_model_clear(view_model);
 
   for (i = 0; i < 100; i++) {
     char name[32];
-    book_info_t* iter = NULL;
+    book_t* iter = book_create();
     tk_snprintf(name, sizeof(name) - 1, "test%u", i);
-    books_add(view_model, name, i + 1);
 
-    iter = books_get(view_model, i);
+    iter->stock = i + 1;
+    iter->name = tk_str_copy(iter->name, name);
+
+    books_view_model_add(view_model, iter);
+
+    iter = books_view_model_get(view_model, i);
 
     ASSERT_EQ(view_model_eval(view_model, "$item.stock * 2", &v), RET_OK);
     ASSERT_EQ(value_int(&v), 2 * iter->stock);

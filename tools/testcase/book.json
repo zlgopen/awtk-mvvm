@@ -3,7 +3,7 @@
   "desc":"book store",
   "collection":true,
   "cmp":"  return strcmp(a->name, b->name);",
-  "init":"  book->name = str_gen_random(\"book %d\");",
+  "init":"  book->name = str_gen_random(\"book %d\");\n  book->stock = random()/100;\n",
   "deinit":"  TKMEM_FREE(book->name);",
   "props": [
     {
