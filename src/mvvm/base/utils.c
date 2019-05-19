@@ -19,6 +19,7 @@
  *
  */
 
+#include "tkc/mem.h"
 #include "tkc/utils.h"
 #include "mvvm/base/utils.h"
 
@@ -37,3 +38,13 @@ const char* destruct_array_prop_name(const char* name, uint32_t* index) {
     return name;
   }
 }
+
+char* str_gen_random(const char* format) {
+  char buff[1024];
+  return_value_if_fail(format != NULL, NULL);
+
+  tk_snprintf(buff, sizeof(buff)-1, format, random() % 10000);
+
+  return tk_strdup(buff);
+}
+
