@@ -13,8 +13,7 @@ BEGIN_C_DECLS
  * book store
  *
  */
-typedef struct _book_t{
-  char* isbn;
+typedef struct _book_t {
   char* name;
   uint32_t stock;
 } book_t;

@@ -92,7 +92,7 @@ BEGIN_C_DECLS
  * ${json.desc}
  *
  */
-typedef struct _${clsName}_t{
+typedef struct _${clsName}_t {
 ${propsDecl}
 } ${clsName}_t;
 
@@ -186,6 +186,8 @@ static ret_t ${clsName}s_view_model_get_prop(object_t* obj, const char* name, va
   return_value_if_fail(${clsName} != NULL, RET_BAD_PARAMS);
 
 ${dispatch}
+  } else if (tk_str_eq("style", name)) {
+    value_set_str(v, index % 2 ? "odd" : "even");
   } else {
     return RET_NOT_FOUND;
   }
@@ -349,17 +351,21 @@ ${dispatch}
 static ret_t ${clsName}s_view_model_exec(object_t* obj, const char* name, const char* args) {
   uint32_t index = tk_atoi(args);
   view_model_t* vm = VIEW_MODEL(obj);
-  ${clsName}_t* ${clsName} = ${clsName}s_view_model_get(vm, index);
-  return_value_if_fail(${clsName} != NULL, RET_BAD_PARAMS);
+  ${clsName}_t* ${clsName} = NULL;
 
-  if (tk_str_ieq(name, "remove")) {
-    ENSURE(${clsName}s_view_model_remove(vm, index) == RET_OK);
-    return RET_ITEMS_CHANGED;
-  } else if (tk_str_ieq(name, "add")) {
+  if (tk_str_ieq(name, "add")) {
     ENSURE(${clsName}s_view_model_add(vm, ${clsName}_create()) == RET_OK);
     return RET_ITEMS_CHANGED;
   } else if (tk_str_ieq(name, "clear")) {
     ENSURE(${clsName}s_view_model_clear(vm) == RET_OK);
+    return RET_ITEMS_CHANGED;
+  }
+
+  ${clsName} = ${clsName}s_view_model_get(vm, index);
+  return_value_if_fail(${clsName} != NULL, RET_BAD_PARAMS);
+
+  if (tk_str_ieq(name, "remove")) {
+    ENSURE(${clsName}s_view_model_remove(vm, index) == RET_OK);
     return RET_ITEMS_CHANGED;
 ${dispatch}
   } else {
@@ -390,15 +396,19 @@ ${dispatch}
 static bool_t ${clsName}s_view_model_can_exec(object_t* obj, const char* name, const char* args) {
   uint32_t index = tk_atoi(args);
   view_model_t* vm = VIEW_MODEL(obj);
-  ${clsName}_t* ${clsName} = ${clsName}s_view_model_get(vm, index);
-  return_value_if_fail(${clsName} != NULL, RET_BAD_PARAMS);
+  ${clsName}_t* ${clsName} = NULL;
 
-  if (tk_str_ieq(name, "remove")) {
-    return index < ${clsName}s_view_model_size(vm);
-  } else if (tk_str_ieq(name, "add")) {
+  if (tk_str_ieq(name, "add")) {
     return TRUE;
   } else if (tk_str_ieq(name, "clear")) {
     return ${clsName}s_view_model_size(vm) > 0;
+  }
+
+  ${clsName} = ${clsName}s_view_model_get(vm, index);
+  return_value_if_fail(${clsName} != NULL, FALSE);
+
+  if (tk_str_ieq(name, "remove")) {
+    return index < ${clsName}s_view_model_size(vm);
 ${dispatch}
   } else {
     return FALSE;

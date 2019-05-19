@@ -10,7 +10,7 @@ book_t* book_create(void) {
   book_t* book = TKMEM_ZALLOC(book_t);
   return_value_if_fail(book != NULL, NULL);
   book->name = str_gen_random("book %d");
-  book->stock = random()/100;
+  book->stock = random()%100;
 
   return book;
 } 
@@ -93,9 +93,7 @@ static ret_t books_view_model_set_prop(object_t* obj, const char* name, const va
   book = books_view_model_get(vm, index);
   return_value_if_fail(book != NULL, RET_BAD_PARAMS);
 
-  if (tk_str_eq("isbn", name)) {
-    book->isbn = tk_str_copy(book->isbn, value_str(v));
-  } else if (tk_str_eq("name", name)) {
+  if (tk_str_eq("name", name)) {
     book->name = tk_str_copy(book->name, value_str(v));
   } else if (tk_str_eq("stock", name)) {
     book->stock = value_uint32(v);
@@ -127,15 +125,14 @@ static ret_t books_view_model_get_prop(object_t* obj, const char* name, value_t*
   book = books_view_model_get(vm, index);
   return_value_if_fail(book != NULL, RET_BAD_PARAMS);
 
-  if (tk_str_eq("isbn", name)) {
-    char* isbn = book->isbn;
-    value_set_str(v, isbn);
-  } else if (tk_str_eq("name", name)) {
+  if (tk_str_eq("name", name)) {
     char* name = book->name;
     value_set_str(v, name);
   } else if (tk_str_eq("stock", name)) {
     uint32_t stock = book->stock;
     value_set_uint32(v, stock);
+  } else if (tk_str_eq("style", name)) {
+    value_set_str(v, index % 2 ? "odd" : "even");
   } else {
     return RET_NOT_FOUND;
   }
@@ -147,15 +144,19 @@ static ret_t books_view_model_get_prop(object_t* obj, const char* name, value_t*
 static bool_t books_view_model_can_exec(object_t* obj, const char* name, const char* args) {
   uint32_t index = tk_atoi(args);
   view_model_t* vm = VIEW_MODEL(obj);
-  book_t* book = books_view_model_get(vm, index);
-  return_value_if_fail(book != NULL, RET_BAD_PARAMS);
+  book_t* book = NULL;
 
-  if (tk_str_ieq(name, "remove")) {
-    return index < books_view_model_size(vm);
-  } else if (tk_str_ieq(name, "add")) {
+  if (tk_str_ieq(name, "add")) {
     return TRUE;
   } else if (tk_str_ieq(name, "clear")) {
     return books_view_model_size(vm) > 0;
+  }
+
+  book = books_view_model_get(vm, index);
+  return_value_if_fail(book != NULL, FALSE);
+
+  if (tk_str_ieq(name, "remove")) {
+    return index < books_view_model_size(vm);
   } else if (tk_str_eq("sale", name)) {
     return book_can_exec_sale(book, args);
   } else {
@@ -166,17 +167,21 @@ static bool_t books_view_model_can_exec(object_t* obj, const char* name, const c
 static ret_t books_view_model_exec(object_t* obj, const char* name, const char* args) {
   uint32_t index = tk_atoi(args);
   view_model_t* vm = VIEW_MODEL(obj);
-  book_t* book = books_view_model_get(vm, index);
-  return_value_if_fail(book != NULL, RET_BAD_PARAMS);
+  book_t* book = NULL;
 
-  if (tk_str_ieq(name, "remove")) {
-    ENSURE(books_view_model_remove(vm, index) == RET_OK);
-    return RET_ITEMS_CHANGED;
-  } else if (tk_str_ieq(name, "add")) {
+  if (tk_str_ieq(name, "add")) {
     ENSURE(books_view_model_add(vm, book_create()) == RET_OK);
     return RET_ITEMS_CHANGED;
   } else if (tk_str_ieq(name, "clear")) {
     ENSURE(books_view_model_clear(vm) == RET_OK);
+    return RET_ITEMS_CHANGED;
+  }
+
+  book = books_view_model_get(vm, index);
+  return_value_if_fail(book != NULL, RET_BAD_PARAMS);
+
+  if (tk_str_ieq(name, "remove")) {
+    ENSURE(books_view_model_remove(vm, index) == RET_OK);
     return RET_ITEMS_CHANGED;
   } else if (tk_str_eq("sale", name)) {
     return book_sale(book, args);

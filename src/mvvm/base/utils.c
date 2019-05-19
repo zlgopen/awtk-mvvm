@@ -43,8 +43,7 @@ char* str_gen_random(const char* format) {
   char buff[1024];
   return_value_if_fail(format != NULL, NULL);
 
-  tk_snprintf(buff, sizeof(buff)-1, format, random() % 10000);
+  tk_snprintf(buff, sizeof(buff) - 1, format, random() % 10000);
 
   return tk_strdup(buff);
 }
-

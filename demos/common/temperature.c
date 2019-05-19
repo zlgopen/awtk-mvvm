@@ -8,14 +8,13 @@ static ret_t temperature_view_model_set_prop(object_t* obj, const char* name, co
 
   if (tk_str_eq("value", name)) {
     temperature->value = value_double(v);
-  
+
   } else {
     return RET_NOT_FOUND;
   }
-  
+
   return RET_OK;
 }
-
 
 static ret_t temperature_view_model_get_prop(object_t* obj, const char* name, value_t* v) {
   temperature_view_model_t* vm = (temperature_view_model_t*)(obj);
@@ -24,11 +23,11 @@ static ret_t temperature_view_model_get_prop(object_t* obj, const char* name, va
   if (tk_str_eq("value", name)) {
     double value = temperature->value;
     value_set_double(v, value);
-  
+
   } else {
     return RET_NOT_FOUND;
   }
-  
+
   return RET_OK;
 }
 
@@ -40,7 +39,6 @@ static ret_t temperature_apply(temperature_t* temperature, const char* args) {
   temperature->old_value = temperature->value;
   return RET_OBJECT_CHANGED;
 }
-
 
 static bool_t temperature_view_model_can_exec(object_t* obj, const char* name, const char* args) {
   temperature_view_model_t* vm = (temperature_view_model_t*)(obj);
@@ -66,7 +64,7 @@ static ret_t temperature_view_model_exec(object_t* obj, const char* name, const 
 
 static temperature_t* temperature_create(void) {
   return TKMEM_ZALLOC(temperature_t);
-} 
+}
 
 static ret_t temperature_destroy(temperature_t* temperature) {
   TKMEM_FREE(temperature);
@@ -84,15 +82,14 @@ static ret_t temperature_view_model_on_destroy(object_t* obj) {
 }
 
 static const object_vtable_t s_temperature_view_model_vtable = {
-  .type = "temperature",
-  .desc = "temperature controller",
-  .size = sizeof(temperature_view_model_t),
-  .exec = temperature_view_model_exec,
-  .can_exec = temperature_view_model_can_exec,
-  .get_prop = temperature_view_model_get_prop,
-  .set_prop = temperature_view_model_set_prop,
-  .on_destroy = temperature_view_model_on_destroy
-};
+    .type = "temperature",
+    .desc = "temperature controller",
+    .size = sizeof(temperature_view_model_t),
+    .exec = temperature_view_model_exec,
+    .can_exec = temperature_view_model_can_exec,
+    .get_prop = temperature_view_model_get_prop,
+    .set_prop = temperature_view_model_set_prop,
+    .on_destroy = temperature_view_model_on_destroy};
 
 view_model_t* temperature_view_model_create(navigator_request_t* req) {
   object_t* obj = object_create(&s_temperature_view_model_vtable);
