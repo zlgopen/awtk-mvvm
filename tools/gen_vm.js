@@ -365,16 +365,6 @@ ${dispatch}
     const clsDesc = json.desc || clsName;
     let result =
       `
-static ${clsName}_t* ${clsName}_create(void) {
-  return TKMEM_ZALLOC(${clsName}_t);
-} 
-
-static ret_t ${clsName}_destroy(${clsName}_t* ${clsName}) {
-  TKMEM_FREE(${clsName});
-
-  return RET_OK;
-}
-
 static ret_t ${clsName}_view_model_on_destroy(object_t* obj) {
   ${clsName}_view_model_t* vm = (${clsName}_view_model_t*)(obj);
   return_value_if_fail(vm != NULL, RET_BAD_PARAMS);
@@ -412,12 +402,36 @@ view_model_t* ${clsName}_view_model_create(navigator_request_t* req) {
   }
 
   genContent(json) {
-    let result = `#include "tkc/mem.h"\n`;
-    result += `#include "tkc/utils.h"\n`;
-    result += `#include "${json.name}.h"\n`;
     const clsName = json.name;
+    let result = `#include "tkc/mem.h"\n`;
+
+    result += `#include "tkc/utils.h"\n`;
+    result += `#include "${json.name}.h"\n\n`;
+    result +=
+      `
+/***************${clsName}***************/;
+
+static ${clsName}_t* ${clsName}_create(void) {
+  return TKMEM_ZALLOC(${clsName}_t);
+} 
+
+static ret_t ${clsName}_destroy(${clsName}_t* ${clsName}) {
+  TKMEM_FREE(${clsName});
+
+  return RET_OK;
+}
+
+`
     if (json.props && json.props.length) {
       result += this.genPropFuncs(json);
+    }
+
+    if (json.cmds && json.cmds.length) {
+      result += this.genCmdFuncs(json);
+    }
+
+    result += `/***************${clsName}_view_model***************/\n`;
+    if (json.props && json.props.length) {
       result += this.genSetProps(json);
       result += this.genGetProps(json);
     } else {
@@ -435,7 +449,6 @@ static ret_t ${clsName}_view_model_get_prop(object_t* obj, const char* name, val
     }
 
     if (json.cmds && json.cmds.length) {
-      result += this.genCmdFuncs(json);
       result += this.genCanExec(json);
       result += this.genExec(json);
     } else {
