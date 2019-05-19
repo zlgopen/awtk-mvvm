@@ -315,7 +315,7 @@ ${dispatch}
 
       let impl = cmd.impl || '';
       str +=
-        `static bool_t ${clsName}_${cmdName}(${clsName}_t* ${clsName}, const char* args) {
+        `static ret_t ${clsName}_${cmdName}(${clsName}_t* ${clsName}, const char* args) {
   ${impl}
   return RET_OBJECT_CHANGED;
 }\n\n`;

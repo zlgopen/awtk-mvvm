@@ -36,7 +36,7 @@ static bool_t temperature_can_exec_apply(temperature_t* temperature, const char*
   return temperature->old_value != temperature->value;
 }
 
-static bool_t temperature_apply(temperature_t* temperature, const char* args) {
+static ret_t temperature_apply(temperature_t* temperature, const char* args) {
   temperature->old_value = temperature->value;
   return RET_OBJECT_CHANGED;
 }
