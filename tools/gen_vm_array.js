@@ -189,6 +189,7 @@ ${dispatch}
   } else if (tk_str_eq("style", name)) {
     value_set_str(v, index % 2 ? "odd" : "even");
   } else {
+    log_debug("not found %s\\n", name);
     return RET_NOT_FOUND;
   }
   
@@ -301,6 +302,7 @@ static ret_t ${clsName}s_view_model_set_prop(object_t* obj, const char* name, co
 
 ${dispatch}
   } else {
+    log_debug("not found %s\\n", name);
     return RET_NOT_FOUND;
   }
   
@@ -369,6 +371,7 @@ static ret_t ${clsName}s_view_model_exec(object_t* obj, const char* name, const 
     return RET_ITEMS_CHANGED;
 ${dispatch}
   } else {
+    log_debug("not found %s\\\n", name);
     return RET_NOT_FOUND;
   }
 }

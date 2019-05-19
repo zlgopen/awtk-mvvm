@@ -160,6 +160,7 @@ static ret_t ${clsName}_view_model_get_prop(object_t* obj, const char* name, val
 
 ${dispatch}
   } else {
+    log_debug("not found %s\\n", name);
     return RET_NOT_FOUND;
   }
   
@@ -260,6 +261,7 @@ static ret_t ${clsName}_view_model_set_prop(object_t* obj, const char* name, con
 
 ${dispatch}
   } else {
+    log_debug("not found %s\\n", name);
     return RET_NOT_FOUND;
   }
   
@@ -293,6 +295,7 @@ static ret_t ${clsName}_view_model_exec(object_t* obj, const char* name, const c
 
 ${dispatch}
   } else {
+    log_debug("not found %s\\n", name);
     return RET_NOT_FOUND;
   }
 }
@@ -438,10 +441,12 @@ static ret_t ${clsName}_destroy(${clsName}_t* ${clsName}) {
       result +=
         `
 static ret_t ${clsName}_view_model_set_prop(object_t* obj, const char* name, const value_t* v) {
+  log_debug("not found %s\\n", name);
   return RET_NOT_FOUND;
 }
 
 static ret_t ${clsName}_view_model_get_prop(object_t* obj, const char* name, value_t* v) {
+  log_debug("not found %s\\n", name);
   return RET_NOT_FOUND;
 }
 

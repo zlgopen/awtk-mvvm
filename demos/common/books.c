@@ -98,6 +98,7 @@ static ret_t books_view_model_set_prop(object_t* obj, const char* name, const va
   } else if (tk_str_eq("stock", name)) {
     book->stock = value_uint32(v);
   } else {
+    log_debug("not found %s\n", name);
     return RET_NOT_FOUND;
   }
   
@@ -134,6 +135,7 @@ static ret_t books_view_model_get_prop(object_t* obj, const char* name, value_t*
   } else if (tk_str_eq("style", name)) {
     value_set_str(v, index % 2 ? "odd" : "even");
   } else {
+    log_debug("not found %s\n", name);
     return RET_NOT_FOUND;
   }
   
@@ -186,6 +188,8 @@ static ret_t books_view_model_exec(object_t* obj, const char* name, const char* 
   } else if (tk_str_eq("sale", name)) {
     return book_sale(book, args);
   } else {
+    log_debug("not found %s\
+", name);
     return RET_NOT_FOUND;
   }
 }
