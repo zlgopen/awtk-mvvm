@@ -41,7 +41,7 @@ typedef struct _temperature_t {
 } temperature_t;
 
 /**
- * @method temperature_create
+ * @method temperature_view_model_create
  * 创建temperature对象。
  *
  * @annotation ["constructor"]
@@ -49,7 +49,7 @@ typedef struct _temperature_t {
  *
  * @return {view_model_t} 返回view_model_t对象。
  */
-view_model_t* temperature_create(navigator_request_t* req);
+view_model_t* temperature_view_model_create(navigator_request_t* req);
 
 #define TEMPERATURE(t) ((temperature_t*)(t))
 

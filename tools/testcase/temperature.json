@@ -6,11 +6,19 @@
       "name":"value",
       "type":"double",
       "desc": "the temperature value"
+    },
+    {
+      "name":"old_value",
+      "private": true,
+      "type":"double",
+      "desc": "the temperature value"
     }
   ],
   "cmds": [
     {
       "name":"apply",
+      "canExec": "return temperature->old_value != temperature->value;",
+      "impl":  "temperature->old_value = temperature->value;",
       "desc":"apply the temperature value to device"
     }
   ]

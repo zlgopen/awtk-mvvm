@@ -42,7 +42,7 @@ static ret_t temperature_quit(temperature_t* t, const char* args) {
   return RET_OK;
 }
 
-view_model_t* temperature_create(navigator_request_t* req) {
+view_model_t* temperature_view_model_create(navigator_request_t* req) {
   temperature_t* t = TKMEM_ZALLOC(temperature_t);
   view_model_t* view_model = view_model_delegate_create(t, default_destroy);
 

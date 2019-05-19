@@ -28,7 +28,7 @@ class CodeGen {
     }
   }
 
-  genFromValue(type, name) {
+  genFromValue(clsName, type, name) {
     switch (type) {
       case 'int8_t':
       case 'int16_t':
@@ -45,7 +45,7 @@ class CodeGen {
         return `value_${typeName}(v)`;
       }
       case 'char*': {
-        return `tk_str_copy(vm->${name}, value_str(v))`;
+        return `tk_str_copy(${clsName}->${name}, value_str(v))`;
       }
       default: {
         console.log(`not supported ${type} for ${name}`);
@@ -54,11 +54,11 @@ class CodeGen {
     }
   }
 
-  genAssignValue(name, type) {
+  genAssignValue(clsName, name, type) {
     if (type === 'char*') {
-      return `tk_str_copy(vm->${name}, ${name});`;
+      return `tk_str_copy(${clsName}->${name}, ${name});`;
     } else {
-      return `vm->${name} = ${name};`;
+      return `${clsName}->${name} = ${name};`;
     }
   }
 
@@ -91,23 +91,33 @@ BEGIN_C_DECLS
  * ${json.desc}
  *
  */
-typedef struct _${clsName}_t {
-  view_model_t view_model;
+typedef struct _${clsName}_t{
 ${propsDecl}
 } ${clsName}_t;
 
 /**
- * @method ${clsName}_create
- * 创建${clsName}对象。
+ * @class ${clsName}_view_model_t
+ *
+ * view model of ${json.name}
+ *
+ */
+typedef struct _${clsName}_view_model_t {
+  view_model_t view_model;
+
+  /*model object*/
+  ${clsName}_t* ${clsName};
+} ${clsName}_view_model_t;
+
+/**
+ * @method ${clsName}_view_model_create
+ * 创建${clsName} view model对象。
  *
  * @annotation ["constructor"]
  * @param {navigator_request_t*} req 请求参数。
  *
  * @return {view_model_t} 返回view_model_t对象。
  */
-view_model_t* ${clsName}_create(navigator_request_t* req);
-
-#define ${clsNameUpper}(t) ((${clsName}_t*)(t))
+view_model_t* ${clsName}_view_model_create(navigator_request_t* req);
 
 END_C_DECLS
 
@@ -122,16 +132,21 @@ END_C_DECLS
       let str = '  ';
       const propName = prop.name;
 
+      if (prop.private) {
+        return str;
+      }
+
       if (index === 0) {
         str += 'if (';
       } else {
         str += '} else if (';
       }
+
       str += `tk_str_eq("${propName}", name)) {\n`
       if (prop.getter || prop.synthesized) {
-        str += `    ${prop.type} ${propName} = ${clsName}_get_${propName}(vm);\n`;
+        str += `    ${prop.type} ${propName} = ${clsName}_get_${propName}(${clsName});\n`;
       } else {
-        str += `    ${prop.type} ${propName} = vm->${propName};\n`;
+        str += `    ${prop.type} ${propName} = ${clsName}->${propName};\n`;
       }
       str += '    ' + this.genToValue(prop.type, propName);
       return str;
@@ -139,8 +154,9 @@ END_C_DECLS
 
     const result =
       `
-static ret_t ${clsName}_get_prop(object_t* obj, const char* name, value_t* v) {
-  ${clsName}_t* vm = (${clsName}_t*)(obj);
+static ret_t ${clsName}_view_model_get_prop(object_t* obj, const char* name, value_t* v) {
+  ${clsName}_view_model_t* vm = (${clsName}_view_model_t*)(obj);
+  ${clsName}_t* ${clsName} = vm->${clsName};
 
 ${dispatch}
   } else {
@@ -157,49 +173,54 @@ ${dispatch}
   genPropFuncs(json) {
     const clsName = json.name;
     const result = json.props.map((prop, index) => {
-      const propName = prop.name;
       let str = '';
+      const propName = prop.name;
+
+      if (prop.private) {
+        return str;
+      }
+
       if (prop.synthesized) {
         let setter = typeof (prop.setter) === 'string' ? prop.setter : 'return RET_OK;';
         let getter = typeof (prop.getter) === 'string' ? prop.getter : 'return 0;';
         str =
           `
-static ${prop.type} ${clsName}_get_${propName}(${clsName}_t* vm) {
+static ${prop.type} ${clsName}_get_${propName}(${clsName}_t* ${clsName}) {
   ${getter}
 }
 
-static ret_t ${clsName}_set_${propName}(${clsName}_t* vm, ${prop.type} value) {
+static ret_t ${clsName}_set_${propName}(${clsName}_t* ${clsName}, ${prop.type} value) {
   ${setter}
 }
 
 `;
       } else {
         if (prop.getter) {
-          let defaultGetter = `return vm->${propName};`;
+          let defaultGetter = `return ${clsName}->${propName};`;
           let getter = typeof (prop.getter) === 'string' ? prop.getter : defaultGetter;
           str =
             `
-static ${prop.type} ${clsName}_get_${propName}(${clsName}_t* vm) {
+static ${prop.type} ${clsName}_get_${propName}(${clsName}_t* ${clsName}) {
   ${getter}
 }
 
-  `;
+`;
         }
 
         if (prop.setter) {
           let defaultSetter =
-            `${this.genAssignValue(propName, prop.type)}
+            `${this.genAssignValue(clsName, propName, prop.type)}
 
   return RET_OK;`
 
           let setter = typeof (prop.setter) === 'string' ? prop.setter : defaultSetter;
           str +=
             `
-static ret_t ${clsName}_set_${propName}(${clsName}_t* vm, ${prop.type} ${prop.name}) {
+static ret_t ${clsName}_set_${propName}(${clsName}_t* ${clsName}, ${prop.type} ${prop.name}) {
   ${setter}
 }
 
-  `;
+`;
         }
       }
       return str;
@@ -211,8 +232,12 @@ static ret_t ${clsName}_set_${propName}(${clsName}_t* vm, ${prop.type} ${prop.na
   genSetProps(json) {
     const clsName = json.name;
     const dispatch = json.props.map((prop, index) => {
-      const propName = prop.name;
       let str = '  ';
+      const propName = prop.name;
+      if (prop.private) {
+        return str;
+      }
+
       if (index === 0) {
         str += 'if (';
       } else {
@@ -220,17 +245,18 @@ static ret_t ${clsName}_set_${propName}(${clsName}_t* vm, ${prop.type} ${prop.na
       }
       str += `tk_str_eq("${propName}", name)) {\n`
       if (prop.setter || prop.synthesized) {
-        str += `    ${clsName}_set_${propName}(vm, ${this.genFromValue(prop.type, prop.name)});`;
+        str += `    ${clsName}_set_${propName}(${clsName}, ${this.genFromValue(clsName, prop.type, prop.name)});`;
       } else {
-        str += `    vm->${propName} = ${this.genFromValue(prop.type, prop.name)};`;
+        str += `    ${clsName}->${propName} = ${this.genFromValue(clsName, prop.type, prop.name)};`;
       }
       return str;
     }).join('\n');
 
     const result =
       `
-static ret_t ${clsName}_set_prop(object_t* obj, const char* name, const value_t* v) {
-  ${clsName}_t* vm = (${clsName}_t*)(obj);
+static ret_t ${clsName}_view_model_set_prop(object_t* obj, const char* name, const value_t* v) {
+  ${clsName}_view_model_t* vm = (${clsName}_view_model_t*)(obj);
+  ${clsName}_t* ${clsName} = vm->${clsName};
 
 ${dispatch}
   } else {
@@ -255,14 +281,15 @@ ${dispatch}
         str += '} else if (';
       }
       str += `tk_str_eq("${cmdName}", name)) {\n`
-      str += `    return ${clsName}_${cmdName}(vm, args);`;
+      str += `    return ${clsName}_${cmdName}(${clsName}, args);`;
       return str;
     }).join('\n');
 
     const result =
       `
-static ret_t ${clsName}_exec(object_t* obj, const char* name, const char* args) {
-  ${clsName}_t* vm = (${clsName}_t*)(obj);
+static ret_t ${clsName}_view_model_exec(object_t* obj, const char* name, const char* args) {
+  ${clsName}_view_model_t* vm = (${clsName}_view_model_t*)(obj);
+  ${clsName}_t* ${clsName} = vm->${clsName};
 
 ${dispatch}
   } else {
@@ -276,17 +303,21 @@ ${dispatch}
   genCmdFuncs(json) {
     const clsName = json.name;
     const result = json.cmds.map((cmd, index) => {
-      const cmdName = cmd.name;
       let str = '';
-      if (!cmd.canExec) {
+      const cmdName = cmd.name;
+      if (!cmd.canExec || typeof cmd.canExec === 'string') {
+        let canExec = (typeof cmd.canExec === 'string') ? cmd.canExec : 'return TRUE;';
         str =
-          `static bool_t ${clsName}_can_exec_${cmdName}(${clsName}_t* vm, const char* args) {
-  return TRUE;
+          `static bool_t ${clsName}_can_exec_${cmdName}(${clsName}_t* ${clsName}, const char* args) {
+  ${canExec}
 }\n\n`;
       }
+
+      let impl = cmd.impl || '';
       str +=
-        `static bool_t ${clsName}_${cmdName}(${clsName}_t* vm, const char* args) {
-  return RET_OK;
+        `static bool_t ${clsName}_${cmdName}(${clsName}_t* ${clsName}, const char* args) {
+  ${impl}
+  return RET_OBJECT_CHANGED;
 }\n\n`;
       return str;
     }).join('\n');
@@ -306,18 +337,19 @@ ${dispatch}
       }
       str += `tk_str_eq("${cmdName}", name)) {\n`
 
-      if (cmd.canExec) {
-        str += `    return TRUE;`;
+      if (!cmd.canExec || typeof cmd.canExec === 'string') {
+        str += `    return ${clsName}_can_exec_${cmdName}(${clsName}, args);`;
       } else {
-        str += `    return ${clsName}_can_exec_${cmdName}(vm, args);`;
+        str += `    return TRUE;`;
       }
       return str;
     }).join('\n');
 
     const result =
       `
-static bool_t ${clsName}_can_exec(object_t* obj, const char* name, const char* args) {
-  ${clsName}_t* vm = (${clsName}_t*)(obj);
+static bool_t ${clsName}_view_model_can_exec(object_t* obj, const char* name, const char* args) {
+  ${clsName}_view_model_t* vm = (${clsName}_view_model_t*)(obj);
+  ${clsName}_t* ${clsName} = vm->${clsName};
 
 ${dispatch}
   } else {
@@ -333,23 +365,47 @@ ${dispatch}
     const clsDesc = json.desc || clsName;
     let result =
       `
-static ret_t ${clsName}_on_destroy(object_t* obj) {
+static ${clsName}_t* ${clsName}_create(void) {
+  return TKMEM_ZALLOC(${clsName}_t);
+} 
+
+static ret_t ${clsName}_destroy(${clsName}_t* ${clsName}) {
+  TKMEM_FREE(${clsName});
+
+  return RET_OK;
+}
+
+static ret_t ${clsName}_view_model_on_destroy(object_t* obj) {
+  ${clsName}_view_model_t* vm = (${clsName}_view_model_t*)(obj);
+  return_value_if_fail(vm != NULL, RET_BAD_PARAMS);
+
+  ${clsName}_destroy(vm->${clsName});
+
   return view_model_deinit(VIEW_MODEL(obj));
 }
 
-static const object_vtable_t s_${clsName}_vtable = {
+static const object_vtable_t s_${clsName}_view_model_vtable = {
   .type = "${clsName}",
   .desc = "${clsDesc}",
-  .size = sizeof(${clsName}_t),
-  .exec = ${clsName}_exec,
-  .can_exec = ${clsName}_can_exec,
-  .get_prop = ${clsName}_get_prop,
-  .set_prop = ${clsName}_set_prop,
-  .on_destroy = ${clsName}_on_destroy
+  .size = sizeof(${clsName}_view_model_t),
+  .exec = ${clsName}_view_model_exec,
+  .can_exec = ${clsName}_view_model_can_exec,
+  .get_prop = ${clsName}_view_model_get_prop,
+  .set_prop = ${clsName}_view_model_set_prop,
+  .on_destroy = ${clsName}_view_model_on_destroy
 };
 
-view_model_t* ${clsName}_create(navigator_request_t* req) {
-  return view_model_init(VIEW_MODEL(object_create(&s_${clsName}_vtable)));
+view_model_t* ${clsName}_view_model_create(navigator_request_t* req) {
+  object_t* obj = object_create(&s_${clsName}_view_model_vtable);
+  view_model_t* vm = view_model_init(VIEW_MODEL(obj));
+  ${clsName}_view_model_t* ${clsName}_view_model = (${clsName}_view_model_t*)(vm);
+
+  return_value_if_fail(vm != NULL, NULL);
+
+  ${clsName}_view_model->${clsName} = ${clsName}_create();
+  ENSURE(${clsName}_view_model->${clsName} != NULL);
+
+  return vm;
 }
 `
     return result;
@@ -367,11 +423,11 @@ view_model_t* ${clsName}_create(navigator_request_t* req) {
     } else {
       result +=
         `
-static ret_t ${clsName}_set_prop(object_t* obj, const char* name, const value_t* v) {
+static ret_t ${clsName}_view_model_set_prop(object_t* obj, const char* name, const value_t* v) {
   return RET_NOT_FOUND;
 }
 
-static ret_t ${clsName}_get_prop(object_t* obj, const char* name, value_t* v) {
+static ret_t ${clsName}_view_model_get_prop(object_t* obj, const char* name, value_t* v) {
   return RET_NOT_FOUND;
 }
 
@@ -385,11 +441,11 @@ static ret_t ${clsName}_get_prop(object_t* obj, const char* name, value_t* v) {
     } else {
       result +=
         `
-static bool_t ${clsName}_can_exec(object_t* obj, const char* name, const char* args) {
+static bool_t ${clsName}_view_model_can_exec(object_t* obj, const char* name, const char* args) {
   return FALSE;
 }
 
-static ret_t ${clsName}_exec(object_t* obj, const char* name, const char* args) {
+static ret_t ${clsName}_view_model_exec(object_t* obj, const char* name, const char* args) {
   return RET_NOT_IMPL;
 }
 

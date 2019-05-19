@@ -35,7 +35,7 @@
       "name":"sum",
       "type":"int64_t",
       "synthesized": true,
-      "getter":"return vm->i8 + vm->i16;",
+      "getter":"return no_cmds->i8 + no_cmds->i16;",
       "setter":"/*TODO*/\n  return RET_OK;",
       "desc": "sum"
     }

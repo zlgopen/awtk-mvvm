@@ -24,7 +24,7 @@
 #include "../common/temperature.h"
 
 ret_t application_init() {
-  view_model_factory_register("temperature", temperature_create);
+  view_model_factory_register("temperature", temperature_view_model_create);
 
   return navigator_to("temperature1");
 }
