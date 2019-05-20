@@ -18,6 +18,9 @@ class Utils {
       case 'char*': {
         return `value_set_str(v, ${name});`;
       }
+      case 'void*': {
+        return `value_set_pointer(v, ${name});`;
+      }
       default: {
         console.log(`not supported ${type} for ${name}`);
         process.exit(0);
@@ -44,6 +47,9 @@ class Utils {
       case 'char*': {
         return `tk_str_copy(${clsName}->${name}, value_str(v))`;
       }
+      case 'void*': {
+        return `value_pointer(v)`;
+      }
       default: {
         console.log(`not supported ${type} for ${name}`);
         process.exit(0);
@@ -63,7 +69,17 @@ class Utils {
     const clsName = json.name;
     let cmp = json.cmp ? json.cmp : "/*TODO: */\n  return 0;"
     let init = json.init ? json.init : "/*TODO: */"
-    let deinit = json.deinit ? json.deinit : "/*TODO: */"
+    let defulatDeinit = '';
+    if(json.props) {
+      defulatDeinit = json.props.map(iter => {
+        if(iter.type == 'char*') {
+          return `  TKMEM_FREE(${clsName}->${iter.name});\n`;
+        } else {
+          return '';
+        }
+      }).join('');
+    }
+    let deinit = json.deinit ? json.deinit : defulatDeinit;
 
     let cmpFunc = '';
     if(json.collection) {
@@ -114,7 +130,7 @@ ${deinit}
         return str;
       }
 
-      if (prop.synthesized) {
+      if (prop.fake) {
         let setter = typeof (prop.setter) === 'string' ? prop.setter : 'return RET_OK;';
         let getter = typeof (prop.getter) === 'string' ? prop.getter : 'return 0;';
         str =

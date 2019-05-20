@@ -34,7 +34,7 @@
     {
       "name":"sum",
       "type":"int64_t",
-      "synthesized": true,
+      "fake": true,
       "getter":"return no_cmds->i8 + no_cmds->i16;",
       "setter":"/*TODO*/\n  return RET_OK;",
       "desc": "sum"

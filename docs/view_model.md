@@ -414,7 +414,9 @@ static ret_t temperature_apply(temperature_t* temperature, const char* args) {
 
 前面的JSON文件非常简单，但为了满足不同的需求，JSON有很高级选项，下面我们来介绍一下这些选项，熟练掌握这些选项，可以大大提高效率。
 
-* name Model的名称 
+#### JSON的内容介绍
+
+##### 1. name Model的名称 
 
 Model的名称必须是有效的C语言变量名，一般使用小写字母的单词，多个单词之间用下划线连接。如：
 
@@ -422,13 +424,13 @@ Model的名称必须是有效的C语言变量名，一般使用小写字母的�
 "name":"temperature",
 ```
 
-* desc Model的描述信息(可选)
+##### 2. desc Model的描述信息(可选)
 
-* version 版本号(可选)，方便维护。
+##### 3. version 版本号(可选)，方便维护。
 
-* author 作者(可选)，方便维护。
+##### 4. author 作者(可选)，方便维护。
 
-* init Model 初始化
+##### 5. init Model 初始化(可选)。
 
 比如，在temperature中，我们指定init如下：
 
@@ -449,5 +451,124 @@ temperature_t* temperature_create(void) {
 } 
 ```
 
+##### 6.deinit Model 析构(可选)。
 
-### 4. 通过接口描述来生成 ViewModelArray 框架代码
+比如，在temperature中，我们指定deinit如下：
+
+```
+"deinit":"  temperature->value = 0;",
+```
+
+生成的temperature_create函数就会变成：
+
+```
+static ret_t temperature_destroy(temperature_t* temperature) {
+  return_value_if_fail(temperature != NULL, RET_BAD_PARAMS);
+
+  temperature->value = 0;
+
+  TKMEM_FREE(temperature);
+
+  return RET_OK;
+}
+```
+
+##### 7.属性定义。
+
+1.name 属性的名称 
+
+属性的名称必须是有效的C语言变量名，一般使用小写字母的单词，多个单词之间用下划线连接。如：
+
+```
+"name":"value",
+```
+
+2.desc 属性的描述信息(可选)
+
+3.type 属性的类型
+
+属性的类型目前支持以下类型：
+
+* int8_t
+* int16_t
+* int32_t
+* int64_t
+* uint8_t
+* uint16_t
+* uint32_t
+* uint64_t
+* float_t
+* float
+* double 
+* char* 
+* void*
+
+4.setter 属性的set方法
+
+如果setter为TRUE表示生成对应的set函数。比如在temperature例子中，属性"value"的"setter"为true，就会生成temperature\_set\_value函数：
+
+```
+    {   
+      "name":"value",
+      "type":"double",
+      "setter":true
+    }, 
+```
+
+```
+static ret_t temperature_set_value(temperature_t* temperature, double value) {
+  temperature->value = value;
+
+  return RET_OK;
+}
+
+```
+
+如果setter是一个字符串，则视为自定义的set方法，代码产生器会把它作为set函数的函数体。
+
+
+```
+    {   
+      "name":"value",
+      "type":"double",
+      "setter":"temperature->value = value + 1;\n  return RET_OK;"
+    }, 
+```
+
+```
+static ret_t temperature_set_value(temperature_t* temperature, double value) {
+  temperature->value = value + 1;
+  
+  return RET_OK;
+}
+
+```
+
+5.getter 属性的get方法
+
+如果getter为TRUE表示生成对应的get函数。比如在temperature例子中，属性"value"的"getter"为true，就会生成temperature\_get\_value函数：
+
+如果getter是一个字符串，则视为自定义的get方法，代码产生器会把它作为get函数的函数体。
+
+这个和setter非常类似，就不赘述了。
+
+6.fake 假属性的标识
+
+有的属性并不真正存在，而是有其它属性变化而来的。比如总价是由数量和单价相乘而来。这时可以指定"fake"为true，避免生成实际的变量定义。
+
+
+##### 8.命令定义。
+1.name 命令的名称 
+
+命令的名称必须是有效的C语言变量名，一般使用小写字母的单词，多个单词之间用下划线连接。如：
+
+```
+"name":"apply",
+```
+
+2.desc 命令的描述信息(可选)
+
+3.impl 命令的实现(可选)
+
+在JSON里写代码通常不是一个好的做法，不过有工具的配合有是另外回事(后期可能会有相应工具配合)。
+ 

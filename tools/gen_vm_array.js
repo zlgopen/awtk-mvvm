@@ -10,7 +10,7 @@ class CodeGen {
 
     if (json.props && json.props.length) {
       propsDecl = json.props.map((prop) => {
-        if (prop.synthesized) {
+        if (prop.fake) {
           return '';
         } else {
           return `  ${prop.type} ${prop.name};`;
@@ -95,7 +95,7 @@ END_C_DECLS
       }
 
       str += `tk_str_eq("${propName}", name)) {\n`
-      if (prop.getter || prop.synthesized) {
+      if (prop.getter || prop.fake) {
         str += `    ${prop.type} ${propName} = ${clsName}_get_${propName}(${clsName});\n`;
       } else {
         str += `    ${prop.type} ${propName} = ${clsName}->${propName};\n`;
@@ -156,7 +156,7 @@ ${dispatch}
         str += '} else if (';
       }
       str += `tk_str_eq("${propName}", name)) {\n`
-      if (prop.setter || prop.synthesized) {
+      if (prop.setter || prop.fake) {
         str += `    ${clsName}_set_${propName}(${clsName}, ${utils.genFromValue(clsName, prop.type, prop.name)});`;
       } else {
         str += `    ${clsName}->${propName} = ${utils.genFromValue(clsName, prop.type, prop.name)};`;
