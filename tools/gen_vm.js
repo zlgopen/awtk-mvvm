@@ -1,67 +1,8 @@
 const fs = require('fs')
 const path = require('path')
+const utils = require('./utils')
 
 class CodeGen {
-  genToValue(type, name) {
-    switch (type) {
-      case 'int8_t':
-      case 'int16_t':
-      case 'int32_t':
-      case 'int64_t':
-      case 'uint8_t':
-      case 'uint16_t':
-      case 'uint32_t':
-      case 'uint64_t':
-      case 'float_t':
-      case 'float':
-      case 'double': {
-        let typeName = type.replace(/_t$/, '');
-        return `value_set_${typeName}(v, ${name});`;
-      }
-      case 'char*': {
-        return `value_set_str(v, ${name});`;
-      }
-      default: {
-        console.log(`not supported ${type} for ${name}`);
-        process.exit(0);
-      }
-    }
-  }
-
-  genFromValue(clsName, type, name) {
-    switch (type) {
-      case 'int8_t':
-      case 'int16_t':
-      case 'int32_t':
-      case 'int64_t':
-      case 'uint8_t':
-      case 'uint16_t':
-      case 'uint32_t':
-      case 'uint64_t':
-      case 'float_t':
-      case 'float':
-      case 'double': {
-        let typeName = type.replace(/_t$/, '');
-        return `value_${typeName}(v)`;
-      }
-      case 'char*': {
-        return `tk_str_copy(${clsName}->${name}, value_str(v))`;
-      }
-      default: {
-        console.log(`not supported ${type} for ${name}`);
-        process.exit(0);
-      }
-    }
-  }
-
-  genAssignValue(clsName, name, type) {
-    if (type === 'char*') {
-      return `tk_str_copy(${clsName}->${name}, ${name});`;
-    } else {
-      return `${clsName}->${name} = ${name};`;
-    }
-  }
-
   genHeader(json) {
     let propsDecl = '';
     let clsName = json.name;
@@ -88,7 +29,7 @@ BEGIN_C_DECLS
 /**
  * @class ${clsName}_t
  *
- * ${json.desc}
+ * ${json.desc || ''}
  *
  */
 typedef struct _${clsName}_t{
@@ -148,7 +89,7 @@ END_C_DECLS
       } else {
         str += `    ${prop.type} ${propName} = ${clsName}->${propName};\n`;
       }
-      str += '    ' + this.genToValue(prop.type, propName);
+      str += '    ' + utils.genToValue(prop.type, propName);
       return str;
     }).join('\n');
 
@@ -171,65 +112,6 @@ ${dispatch}
     return result;
   }
 
-  genPropFuncs(json) {
-    const clsName = json.name;
-    const result = json.props.map((prop, index) => {
-      let str = '';
-      const propName = prop.name;
-
-      if (prop.private) {
-        return str;
-      }
-
-      if (prop.synthesized) {
-        let setter = typeof (prop.setter) === 'string' ? prop.setter : 'return RET_OK;';
-        let getter = typeof (prop.getter) === 'string' ? prop.getter : 'return 0;';
-        str =
-          `
-static ${prop.type} ${clsName}_get_${propName}(${clsName}_t* ${clsName}) {
-  ${getter}
-}
-
-static ret_t ${clsName}_set_${propName}(${clsName}_t* ${clsName}, ${prop.type} value) {
-  ${setter}
-}
-
-`;
-      } else {
-        if (prop.getter) {
-          let defaultGetter = `return ${clsName}->${propName};`;
-          let getter = typeof (prop.getter) === 'string' ? prop.getter : defaultGetter;
-          str =
-            `
-static ${prop.type} ${clsName}_get_${propName}(${clsName}_t* ${clsName}) {
-  ${getter}
-}
-
-`;
-        }
-
-        if (prop.setter) {
-          let defaultSetter =
-            `${this.genAssignValue(clsName, propName, prop.type)}
-
-  return RET_OK;`
-
-          let setter = typeof (prop.setter) === 'string' ? prop.setter : defaultSetter;
-          str +=
-            `
-static ret_t ${clsName}_set_${propName}(${clsName}_t* ${clsName}, ${prop.type} ${prop.name}) {
-  ${setter}
-}
-
-`;
-        }
-      }
-      return str;
-    }).join("");
-
-    return result;
-  }
-
   genSetProps(json) {
     const clsName = json.name;
     const dispatch = json.props.map((prop, index) => {
@@ -246,9 +128,9 @@ static ret_t ${clsName}_set_${propName}(${clsName}_t* ${clsName}, ${prop.type} $
       }
       str += `tk_str_eq("${propName}", name)) {\n`
       if (prop.setter || prop.synthesized) {
-        str += `    ${clsName}_set_${propName}(${clsName}, ${this.genFromValue(clsName, prop.type, prop.name)});`;
+        str += `    ${clsName}_set_${propName}(${clsName}, ${utils.genFromValue(clsName, prop.type, prop.name)});`;
       } else {
-        str += `    ${clsName}->${propName} = ${this.genFromValue(clsName, prop.type, prop.name)};`;
+        str += `    ${clsName}->${propName} = ${utils.genFromValue(clsName, prop.type, prop.name)};`;
       }
       return str;
     }).join('\n');
@@ -300,31 +182,6 @@ ${dispatch}
   }
 }
 `
-    return result;
-  }
-
-  genCmdFuncs(json) {
-    const clsName = json.name;
-    const result = json.cmds.map((cmd, index) => {
-      let str = '';
-      const cmdName = cmd.name;
-      if (!cmd.canExec || typeof cmd.canExec === 'string') {
-        let canExec = (typeof cmd.canExec === 'string') ? cmd.canExec : 'return TRUE;';
-        str =
-          `static bool_t ${clsName}_can_exec_${cmdName}(${clsName}_t* ${clsName}, const char* args) {
-  ${canExec}
-}\n\n`;
-      }
-
-      let impl = cmd.impl || '';
-      str +=
-        `static ret_t ${clsName}_${cmdName}(${clsName}_t* ${clsName}, const char* args) {
-  ${impl}
-  return RET_OBJECT_CHANGED;
-}\n\n`;
-      return str;
-    }).join('\n');
-
     return result;
   }
 
@@ -409,28 +266,16 @@ view_model_t* ${clsName}_view_model_create(navigator_request_t* req) {
     let result = `#include "tkc/mem.h"\n`;
 
     result += `#include "tkc/utils.h"\n`;
+    result += `#include "mvvm/base/utils.h"\n`;
     result += `#include "${json.name}.h"\n\n`;
-    result +=
-      `
-/***************${clsName}***************/;
+    result += utils.genModelCommonFuncs(json);
 
-static ${clsName}_t* ${clsName}_create(void) {
-  return TKMEM_ZALLOC(${clsName}_t);
-} 
-
-static ret_t ${clsName}_destroy(${clsName}_t* ${clsName}) {
-  TKMEM_FREE(${clsName});
-
-  return RET_OK;
-}
-
-`
     if (json.props && json.props.length) {
-      result += this.genPropFuncs(json);
+      result += utils.genPropFuncs(json);
     }
 
     if (json.cmds && json.cmds.length) {
-      result += this.genCmdFuncs(json);
+      result += utils.genCmdFuncs(json);
     }
 
     result += `/***************${clsName}_view_model***************/\n`;

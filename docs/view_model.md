@@ -209,8 +209,9 @@ view_model_factory_register("temperature", temperature_view_model_create);
 
 ### 2. 通过接口描述来生成 ViewModel 框架代码
 
-前面我们手工实现了 temperature 的 ViewModel 和 Model，这个过程不难，但是有些单调。如果是用动态语言如JS来实现，几行代码就搞定了。如可能的话用JS来写是最好的选择，如果确实需要用C语言来写，我们提供了一个工具来生成上面的代码。
+前面我们手工实现了 temperature 的 ViewModel 和 Model，这个过程不难，但是有些单调。如果是用动态语言如JS来实现，几行代码就搞定了。如可能的话，用JS来写是最好的选择，如果确实需要用C语言来写，我们提供了一个工具来生成上面的代码。
 
+代码产生器接受一个JSON格式的文件，它描述了模型的接口。比如，前面的例子，我们可以用下列的JSON来定义：
 
 ```
 {
@@ -234,7 +235,219 @@ view_model_factory_register("temperature", temperature_view_model_create);
 }
 ```
 
+gen_vm.js用来生成普通的ViewModel框架代码，用法如下：
 
-### 3. 手工编写 ViewModelArray
+```
+node gen_vm.js your_idl.json
+```
+
+将上面的JSON命名为temperature.json，执行下面的命令：
+
+
+
+```
+node gen_vm.js temperature.json
+```
+
+会生成temperature.h和temperature.c两个文件。
+
+temperature.h
+
+```
+#ifndef TK_TEMPERATURE_H
+#define TK_TEMPERATURE_H
+
+#include "mvvm/base/view_model.h"
+
+BEGIN_C_DECLS
+
+typedef struct _temperature_t{
+  double value;
+  double old_value;
+} temperature_t;
+
+typedef struct _temperature_view_model_t {
+  view_model_t view_model;
+
+  /*model object*/
+  temperature_t* temperature;
+} temperature_view_model_t;
+
+view_model_t* temperature_view_model_create(navigator_request_t* req);
+
+END_C_DECLS
+
+#endif /*TK_TEMPERATURE_H*/
+```
+
+temperature.c
+
+```
+#include "tkc/mem.h"
+#include "tkc/utils.h"
+#include "temperature.h"
+
+static temperature_t* temperature_create(void) {
+  return TKMEM_ZALLOC(temperature_t);
+} 
+
+static ret_t temperature_destroy(temperature_t* temperature) {
+  TKMEM_FREE(temperature);
+
+  return RET_OK;
+}
+
+static bool_t temperature_can_exec_apply(temperature_t* temperature, const char* args) {
+  return TRUE;
+}
+
+static ret_t temperature_apply(temperature_t* temperature, const char* args) {
+  
+  return RET_OBJECT_CHANGED;
+}
+
+static ret_t temperature_view_model_set_prop(object_t* obj, const char* name, const value_t* v) {
+  temperature_view_model_t* vm = (temperature_view_model_t*)(obj);
+  temperature_t* temperature = vm->temperature;
+
+  if (tk_str_eq("value", name)) {
+    temperature->value = value_double(v);
+
+  } else {
+    log_debug("not found %s\n", name);
+    return RET_NOT_FOUND;
+  }
+
+  return RET_OK;
+}
+
+
+static ret_t temperature_view_model_get_prop(object_t* obj, const char* name, value_t* v) {
+  temperature_view_model_t* vm = (temperature_view_model_t*)(obj);
+  temperature_t* temperature = vm->temperature;
+
+  if (tk_str_eq("value", name)) {
+    double value = temperature->value;
+    value_set_double(v, value);
+
+  } else {
+    log_debug("not found %s\n", name);
+    return RET_NOT_FOUND;
+  }
+
+  return RET_OK;
+}
+
+static bool_t temperature_view_model_can_exec(object_t* obj, const char* name, const char* args) {
+  temperature_view_model_t* vm = (temperature_view_model_t*)(obj);
+  temperature_t* temperature = vm->temperature;
+
+  if (tk_str_eq("apply", name)) {
+    return temperature_can_exec_apply(temperature, args);
+  } else {
+    return FALSE;
+  }
+}
+
+static ret_t temperature_view_model_exec(object_t* obj, const char* name, const char* args) {
+  temperature_view_model_t* vm = (temperature_view_model_t*)(obj);
+  temperature_t* temperature = vm->temperature;
+
+  if (tk_str_eq("apply", name)) {
+    return temperature_apply(temperature, args);
+  } else {
+    log_debug("not found %s\n", name);
+    return RET_NOT_FOUND;
+  }
+}
+
+static ret_t temperature_view_model_on_destroy(object_t* obj) {
+  temperature_view_model_t* vm = (temperature_view_model_t*)(obj);
+  return_value_if_fail(vm != NULL, RET_BAD_PARAMS);
+
+  temperature_destroy(vm->temperature);
+
+  return view_model_deinit(VIEW_MODEL(obj));
+}
+
+static const object_vtable_t s_temperature_view_model_vtable = {
+  .type = "temperature",
+  .desc = "temperature",
+  .size = sizeof(temperature_view_model_t),
+  .exec = temperature_view_model_exec,
+  .can_exec = temperature_view_model_can_exec,
+  .get_prop = temperature_view_model_get_prop,
+  .set_prop = temperature_view_model_set_prop,
+  .on_destroy = temperature_view_model_on_destroy
+};
+
+view_model_t* temperature_view_model_create(navigator_request_t* req) {
+  object_t* obj = object_create(&s_temperature_view_model_vtable);
+  view_model_t* vm = view_model_init(VIEW_MODEL(obj));
+  temperature_view_model_t* temperature_view_model = (temperature_view_model_t*)(vm);
+
+  return_value_if_fail(vm != NULL, NULL);
+
+  temperature_view_model->temperature = temperature_create();
+  ENSURE(temperature_view_model->temperature != NULL);
+
+  return vm;
+}
+
+```
+
+代码产生器只能产生框架代码，一些具体的实现需要自己补充。比如temperature\_can\_exec\_apply和temperature\_apply是空函数，我们需要自己实现：
+
+```
+static bool_t temperature_can_exec_apply(temperature_t* temperature, const char* args) {
+  return temperature->old_value != temperature->value;
+}
+
+static ret_t temperature_apply(temperature_t* temperature, const char* args) {
+  temperature->old_value = temperature->value;
+  return RET_OBJECT_CHANGED;
+}
+```
+
+由此可见，有代码产生器的帮助，开发AWTK-MVVM的程序就容易多了。但是充分理解产生出来的代码，对于调试定位问题是很有帮助的，
+所以有必要仔细阅读产生器出来的代码。
+
+前面的JSON文件非常简单，但为了满足不同的需求，JSON有很高级选项，下面我们来介绍一下这些选项，熟练掌握这些选项，可以大大提高效率。
+
+* name Model的名称 
+
+Model的名称必须是有效的C语言变量名，一般使用小写字母的单词，多个单词之间用下划线连接。如：
+
+```
+"name":"temperature",
+```
+
+* desc Model的描述信息(可选)
+
+* version 版本号(可选)，方便维护。
+
+* author 作者(可选)，方便维护。
+
+* init Model 初始化
+
+比如，在temperature中，我们指定init如下：
+
+```
+"init":"  temperature->value = 20;",
+```
+
+生成的temperature_create函数就会变成：
+
+```
+temperature_t* temperature_create(void) {
+  temperature_t* temperature = TKMEM_ZALLOC(temperature_t);
+  return_value_if_fail(temperature != NULL, NULL);
+  
+  temperature->value = 20; 
+  
+  return temperature;
+} 
+```
+
 
 ### 4. 通过接口描述来生成 ViewModelArray 框架代码
