@@ -1,18 +1,18 @@
 // Model
 function Temperature (req) {
-  this.temp = req.temp || 20;
-  this.saved_temp = 20;
+  this.value = req.value || 20;
+  this.saved_value = 20;
 }
 
 Temperature.prototype.save = function(args) {
-  this.saved_temp = this.temp;
+  this.saved_value = this.value;
 
   this.notifyPropsChanged();
   return true;
 }
 
 Temperature.prototype.canSave = function(args) {
-  return this.saved_temp != this.temp;
+  return this.saved_value != this.value;
 }
 
 // Model creator

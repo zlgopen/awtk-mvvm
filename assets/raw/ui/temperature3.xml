@@ -1,8 +1,7 @@
-<window anim_hint="htranslate" v-model="temperature">
-  <label text="1" x="center" y="30" w="90%" h="40" text="temperature"/>
+<window  v-model="temperature">
   <label text="C" x="0" y="middle:-40" w="40%" h="40"/>
   <label text="F" x="right" y="middle:-40" w="40%" h="40"/>
-  <label text="1" x="0" y="middle" w="40%" h="40" v-data:text="{value}"/>
-  <label text="1" x="right" y="middle" w="40%" h="40" v-data:text="{value, converter=fahrenheit}"/>
-  <slider value="1" x="center" y="middle:40" w="80%" h="20" v-data:value="{value}"/>
+  <label x="0" y="middle" w="40%" h="40" v-data:text="{value}"/>
+  <label x="right" y="middle" w="40%" h="40" v-data:text="{value, converter=fahrenheit}"/>
+  <slider x="center" y="middle:40" w="80%" h="20" v-data:value="{value}"/>
 </window>
