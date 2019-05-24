@@ -46,10 +46,13 @@ typedef ret_t (*value_validator_fix_t)(value_validator_t* validator, value_t* va
  */
 struct _value_validator_t {
   object_t object;
+  
+  object_t* context;
 
   /*private*/
   value_validator_is_valid_t is_valid;
   value_validator_fix_t fix;
+  
 };
 
 /**
@@ -74,6 +77,19 @@ bool_t value_validator_is_valid(value_validator_t* validator, const value_t* val
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
 ret_t value_validator_fix(value_validator_t* validator, value_t* value);
+
+/**
+ * @method value_validator_set_context
+ * 设置上下文对象。
+ *
+ * 有时需要根据一个上下文，才能决定数据是否有效。
+ *
+ * @param {value_validator_t*} validator validator对象。
+ * @param {object_t*} context 上下文对象。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t value_validator_set_context(value_validator_t* validator, object_t* context);
 
 /**
  * @method value_validator_create

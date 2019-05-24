@@ -7,3 +7,116 @@
 <language name="en_US">Cancel</language>
 <language name="zh_CN">取消</language>
 </string>
+
+<string name="english">
+<language name="en_US">Mon</language>
+<language name="zh_CN">星期一</language>
+</string>
+
+
+<string name="english">
+<language name="en_US">Tues</language>
+<language name="zh_CN">星期二</language>
+</string>
+
+
+<string name="english">
+<language name="en_US">Wed</language>
+<language name="zh_CN">星期三</language>
+</string>
+
+
+<string name="english">
+<language name="en_US">Thur</language>
+<language name="zh_CN">星期四</language>
+</string>
+
+
+<string name="english">
+<language name="en_US">Fri</language>
+<language name="zh_CN">星期五</language>
+</string>
+
+
+<string name="english">
+<language name="en_US">Sat</language>
+<language name="zh_CN">星期天</language>
+</string>
+
+
+<string name="english">
+<language name="en_US">Sun</language>
+<language name="zh_CN">星期七</language>
+</string>
+
+
+<string name="english">
+<language name="en_US">Jan</language>
+<language name="zh_CN">一月</language>
+</string>
+
+
+<string name="english">
+<language name="en_US">Feb</language>
+<language name="zh_CN">二月</language>
+</string>
+
+
+<string name="english">
+<language name="en_US">Mar</language>
+<language name="zh_CN">三月</language>
+</string>
+
+
+<string name="english">
+<language name="en_US">Apr</language>
+<language name="zh_CN">四月</language>
+</string>
+
+
+<string name="english">
+<language name="en_US">May</language>
+<language name="zh_CN">五月</language>
+</string>
+
+
+<string name="english">
+<language name="en_US">Jun</language>
+<language name="zh_CN">六月</language>
+</string>
+
+
+<string name="english">
+<language name="en_US">Jul</language>
+<language name="zh_CN">七月</language>
+</string>
+
+
+<string name="english">
+<language name="en_US">Aug</language>
+<language name="zh_CN">八月</language>
+</string>
+
+
+<string name="english">
+<language name="en_US">Sept</language>
+<language name="zh_CN">九月</language>
+</string>
+
+
+<string name="english">
+<language name="en_US">Oct</language>
+<language name="zh_CN">十月</language>
+</string>
+
+
+<string name="english">
+<language name="en_US">Nov</language>
+<language name="zh_CN">十一月</language>
+</string>
+
+
+<string name="english">
+<language name="en_US">Dec</language>
+<language name="zh_CN">十二月</language>
+</string>

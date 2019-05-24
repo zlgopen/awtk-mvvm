@@ -203,7 +203,7 @@ static ret_t value_to_view(const char* name, value_t* from, value_t* to) {
   }
 }
 
-static bool_t value_is_valid(const char* name, const value_t* value, str_t* msg) {
+static bool_t value_is_valid(view_model_t* view_model, const char* name, const value_t* value, str_t* msg) {
   bool_t ret = FALSE;
   value_validator_t* validator = NULL;
 
@@ -213,6 +213,7 @@ static bool_t value_is_valid(const char* name, const value_t* value, str_t* msg)
 
   validator = value_validator_create(name);
   if (validator != NULL) {
+    value_validator_set_context(validator, OBJECT(view_model));
     ret = value_validator_is_valid(validator, value, msg);
     object_unref(OBJECT(validator));
   } else {
@@ -222,7 +223,7 @@ static bool_t value_is_valid(const char* name, const value_t* value, str_t* msg)
   return ret;
 }
 
-static ret_t value_fix(const char* name, value_t* value) {
+static ret_t value_fix(view_model_t* view_model, const char* name, value_t* value) {
   ret_t ret = RET_OK;
   value_validator_t* validator = NULL;
 
@@ -232,6 +233,7 @@ static ret_t value_fix(const char* name, value_t* value) {
 
   validator = value_validator_create(name);
   if (validator != NULL) {
+    value_validator_set_context(validator, OBJECT(view_model));
     ret = value_validator_fix(validator, value);
     object_unref(OBJECT(validator));
   } else {
@@ -292,12 +294,12 @@ ret_t data_binding_set_prop(data_binding_t* rule, const value_t* raw) {
     object_set_prop_int(OBJECT(view_model), VIEW_MODEL_PROP_CURSOR, cursor);
   }
 
-  if (!value_is_valid(rule->validator, raw, &(view_model->last_error))) {
+  if (!value_is_valid(view_model, rule->validator, raw, &(view_model->last_error))) {
     value_t fix_value;
     value_set_int(&fix_value, 0);
     value_deep_copy(&fix_value, raw);
 
-    if (value_fix(rule->validator, &fix_value) == RET_OK) {
+    if (value_fix(view_model, rule->validator, &fix_value) == RET_OK) {
       ret_t ret = vm_set_prop(view_model, rule->converter, rule->path, &fix_value);
       value_reset(&fix_value);
 

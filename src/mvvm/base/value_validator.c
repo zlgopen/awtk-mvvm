@@ -131,6 +131,21 @@ value_validator_t* value_validator_create(const char* name) {
   return c;
 }
 
+ret_t value_validator_set_context(value_validator_t* validator, object_t* context) {
+  return_value_if_fail(validator != NULL, RET_BAD_PARAMS);
+  if(validator->context != NULL) {
+    object_unref(validator->context);
+    validator->context = NULL;
+  }
+
+  if(context != NULL) {
+    validator->context = context;
+    object_ref(validator->context);
+  }
+
+  return RET_OK;
+}
+
 ret_t value_validator_register(const char* name, tk_create_t create) {
   return_value_if_fail(name != NULL, RET_BAD_PARAMS);
   return_value_if_fail(create != NULL && s_factory != NULL, RET_BAD_PARAMS);
