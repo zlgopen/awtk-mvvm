@@ -1,15 +1,15 @@
-## 第10章 数据绑定
+## 第 10 章 数据绑定
 
 通过规则在视图和模型之间建立联系，当用户在视图上修改数据时，视图上的数据自动同步到模型中，当模型中的数据有变化时，自动更新到视图上去，这就是数据绑定。
 
 ### 10.1 建立视图与视图模型的联系
 
-在进行数据绑定之前，先要建立视图与视图模型的联系。在AWTK中，我们用XML文件来描述用户界面，这个XML文件就是视图。在上一章中，我们实现了一个温度控制器的视图模型temperature，现在我们来写一个视图，在这个视图上有：
+在进行数据绑定之前，先要建立视图与视图模型的联系。在 AWTK 中，我们用 XML 文件来描述用户界面，这个 XML 文件就是视图。在上一章中，我们实现了一个温度控制器的视图模型 temperature，现在我们来写一个视图，然后将两者关联起来。在这个视图上有：
 
-* 一个label控件用来显示当前的温度。
-* 一个slider控件用来调节当前的温度。
+* 一个 label 控件用来显示当前的温度。
+* 一个 slider 控件用来调节当前的温度。
 
-这个文件的内容如下(具体细节请参考AWTK界面描述文件和布局参数)：
+视图 XML 文件的内容如下（具体细节请参考 AWTK 界面描述文件和布局参数）：
 
 ```
 <window >
@@ -18,9 +18,9 @@
 </window>
 ```
 
-> 等AWStudio发布后，可以直接通过拖拽生成。
+> 等 AWStudio 发布后，可以直接通过拖拽生成界面描述文件。
 
-程序运行起来后，界面是这样的：
+程序运行起来后，界面大概是这样的：
 
 ![view](images/temperature_view.png)
 
@@ -40,7 +40,7 @@
 view_model_factory_register("temperature", temperature_view_model_create);
 ```
 
-这段代码的意义就在于：需要名为"temperature"的视图模型时，调用函数temperature\_view\_model\_create去创建。
+这段代码的意义就在于：需要名为"temperature"的视图模型时，调用函数 temperature\_view\_model\_create 去创建。
 
 ### 10.2 数据绑定的基本用法
 
@@ -49,9 +49,9 @@ view_model_factory_register("temperature", temperature_view_model_create);
 属性的名称由两部分组成，两者之间用英文冒号分隔。
 
 * v-data 表示该属性是一个数据绑定规则。
-* 第二部分是控件属性的名称，表示对该控件的哪个属性绑定进行绑定。
+* 第二部分是控件属性的名称，表示对该控件的哪个属性进行绑定。
 
-属性的值放在'{'和'}'之间，里面是视图模型中数据的名称。
+属性的值放在'{'和'}'之间，里面是视图模型中属性的名称。
 
 如：
 
@@ -72,9 +72,158 @@ v-data:value="{value}" 表示将控件的"value"属性与视图模型的"value"�
 </window>
 ```
 
-这样，label的文本和slider的值就与视图模型中的温度关联起来了。但用户拖动slider时，会自动修改模型中的温度，同时温度由会自动更新到label上。
+这样，label 的文本和 slider 的值就与视图模型中的温度关联起来了。当用户拖动 slider 时，会自动修改模型中的温度，同时模型中的温度由会自动更新到 label 控件上。
 
-在数据绑定规则中，还可以指定一些高级参数，这些参数之间用英文逗号分隔，后面我们将详细介绍这些参数的用法。
+在数据绑定规则中，还可以指定一些高级参数，这些参数之间用英文逗号分隔，后面我们将详细介绍 shang 用法。
+
+Windows 的命令行下，读者可以运行 demo1 来查看实际的效果。
+
+```
+bin\demo1.exe
+```
 
 ### 10.3 何时将数据更新到模型
 
+运行上面的例子，我们可以看到，拖动滑块时，label 上的文本并不会实时更新，而是松开滑块时，label 上的文本才更新。在有的情况下，我们需要实时更新，此时可以指定 Trigger 参数。Trigger 参数的取值如下：
+
+* Changed 表示在控件触发 EVT\_VALUE\_CHANGED 事件时，将视图上的数据更新到模型，这是缺省的触发方式。对于 slider 控件来说，用户松开滑块时，触发 EVT\_VALUE\_CHANGED 事件。
+
+* Changing 表示在控件触发 EVT\_VALUE\_CHANGING 事件时，将视图上的数据更新到模型。对于 slider 控件来说，用户拖动滑块时，就实时触发 EVT\_VALUE\_CHANGING 事件。
+
+* Explicit 显式的触发。我们经常看到设置界面上有"确定"和"应用"的按钮，在这些按钮中才把视图上的数据同步到模型，在这种情况下就可以使用显式触发。
+
+如果需要实时同步到模型，我们可以这样指定：
+
+```
+v-data:value="{value, Trigger=Changing}"
+```
+
+如果需要显式同步到模型，我们可以这样指定：
+
+```
+v-data:value="{value, Trigger=Explicit}"
+```
+
+对于上面的例子，如果我们需要实时将数据同步到模型，可以这样写：
+
+```
+<window v-model="temperature">
+  <label x="center" y="middle" w="50%" h="40" v-data:text="{value}"/>
+  <slider x="center" y="middle:40" w="80%" h="20" v-data:value="{value, Trigger=Changing}"/>
+</window>
+```
+
+Windows 的命令行下，读者可以运行 demo2 来查看实际的效果。
+
+```
+bin\demo2.exe
+```
+
+### 10.4 视图和模型之间的同步模式
+
+在一些特殊情况下，我们并不需要双向数据绑定，比如一个只读的视图，并不需要把视图中的数据同步到模型里。总之，不同应用场景有不同的需要，所以我们提供了一个 Mode 的参数，它的取值如下：
+
+* Once 一次绑定。数据绑定只是在视图初始化时绑一次，即把模型中的数据显示到界面上，然后就断开两者之间的联系。
+
+* TwoWay 双向数据绑定。即用户通过视图修改数据时，视图上的数据自动同步到模型。当模型的数据有变化时，自动更新到视图上。
+
+* OneWay 单向数据绑定。当模型的数据有变化时，自动更新到视图上。但是用户通过视图修改数据时，视图上的数据不会自动同步到模型。这相当于视图时只读的，不能修改模型。
+
+* OneWayToModel 单向数据绑定到模型。即用户通过视图修改数据时，视图上的数据自动同步到模型。但是模型的数据有变化时，不会自动更新到视图上。
+
+如果只需要在初始化时绑定一次，我们可以这样指定：
+
+```
+v-data:value="{value, Mode=Once}"
+```
+
+> 一般来说，使用缺省的方式就可以了，无需要另外指定。
+> 
+
+### 10.5 数据格式转换
+
+View 上显示的数据是给人看的，Model 里的数据则是为了给计算机存储的，这两者的格式有时是一致的，有时是不同的。如果两者的格式不同，那就需要对数据进行转换，此时我们用数据转换器来实现自动数据转换。
+
+数据转换器需要实现两个函数：
+
+ * to\_model 函数负责将数据转换成适合模型存储的格式。其原型如下：
+  
+```
+typedef ret_t (*value_converter_to_model_t)(value_converter_t* converter, const value_t* from,value_t* to);
+```
+
+ * to\_view 函数负责将数据转换成适合视图显示的格式。其原型如下：
+```
+typedef ret_t (*value_converter_to_view_t)(value_converter_t* converter, const value_t* from, value_t* to);
+```
+
+我们再看看温度控制器的例子，温度有摄氏度和华氏度两种单位。虽然作为习惯使用摄氏度的人，没法理解别人为什么要使用华氏度，但是不得说这是一个展示数据转换器的好例子。假设我们做了一个温度控制器，数据库里存储的是摄氏度，该系统要卖到全世界，在有的国家或地区，界面上要显示华氏度的，或者干脆简单点，同时显示摄氏度和华氏度。现在来看看如何实现温度单位的转换。
+
+在 C 语言中，要实现一个接口有些繁琐，所以我们提供了一个 value\_converter\_delegate\_create 函数，它把以上两个转换函数包装成 value\_converter 对象。
+
+```
+value_converter_t* value_converter_delegate_create(value_convert_t to_model, value_convert_t to_view);
+```
+
+现在我们来写一个温度的数据转换器，其实现是这样的：
+
+```
+/*将温度从摄氏度转换成华氏度*/
+static ret_t to_temp_f(const value_t* from, value_t* to) {
+  value_set_double(to, value_int(from) * 1.8 + 32);
+
+  return RET_OK;
+}
+
+/*将温度从华氏度转换成摄氏度*/
+static ret_t to_temp_c(const value_t* from, value_t* to) {
+  value_set_double(to, (value_int(from) - 32) / 1.8);
+
+  return RET_OK;
+}
+
+/*创建converter对象*/
+static void* create_temp_f_converter(void) {
+  return value_converter_delegate_create(to_temp_c, to_temp_f);
+}
+
+/*将converter创建函数注册到工厂*/
+ret_t temperature_converter_init(void) {
+  value_converter_register("fahrenheit", create_temp_f_converter);
+
+  return RET_OK;
+}
+
+```
+
+框架需要做数据转换的时候，从工厂中创建 converter 的实例，然后调用它的函数进行数据转换。
+
+在数据绑定规则中，把 converter 参数指定为上面注册的名称"fahrenheit"，那在进行数据交换时，框架就会调用上面两个函数进行数据转换了。如：
+
+```
+v-data:text="{value, converter=fahrenheit}"
+```
+
+现在我们来看看完整的例子，为了方便演示，我们把前面的视图稍微调整一下，在界面上同时显示摄氏度和华氏度。界面的样子大概是这样的：
+
+![converter](images/converter_view.png)
+
+它的界面描述文件是这样写的：
+
+```
+<window  v-model="temperature">
+  <label text="C" x="0" y="middle:-40" w="40%" h="40"/>
+  <label text="F" x="right" y="middle:-40" w="40%" h="40"/>
+  <label x="0" y="middle" w="40%" h="40" v-data:text="{value}"/>
+  <label x="right" y="middle" w="40%" h="40" v-data:text="{value, converter=fahrenheit}"/>
+  <slider x="center" y="middle:40" w="80%" h="20" v-data:value="{value}"/>
+</window>
+```
+
+Windows 的命令行下，读者可以运行 demo3 来查看实际的效果。
+
+```
+bin\demo3.exe
+```
+
+### 10.6 数据有效性校验

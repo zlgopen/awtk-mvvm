@@ -67,8 +67,8 @@ class Utils {
 
   static genModelCommonFuncs(json) {
     const clsName = json.name;
-    let cmp = json.cmp ? json.cmp : "/*TODO: */\n  return 0;"
-    let init = json.init ? json.init : "/*TODO: */"
+
+    let defaultInit = '';
     let defulatDeinit = '';
     if(json.props) {
       defulatDeinit = json.props.map(iter => {
@@ -78,8 +78,17 @@ class Utils {
           return '';
         }
       }).join('');
+      
+      defaultInit = json.props.map(iter => {
+        if(iter.init_value) {
+          return `  ${clsName}->${iter.name} = ${iter.init_value};\n`;
+        }
+      }).join('');
     }
+
+    let init = json.init ? json.init : defaultInit;
     let deinit = json.deinit ? json.deinit : defulatDeinit;
+    let cmp = json.cmp ? json.cmp : "/*TODO: */\n  return 0;"
 
     let cmpFunc = '';
     if(json.collection) {

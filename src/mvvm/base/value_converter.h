@@ -54,7 +54,7 @@ struct _value_converter_t {
 
 /**
  * @method value_converter_to_model
- * 将value转换成适合view_model存储的格式。
+ * 将value转换成适合model存储的格式。
  *
  * @param {value_converter_t*} converter converter对象。
  * @param {value_t*} from 源value。
