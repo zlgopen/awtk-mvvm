@@ -2,12 +2,12 @@
   "name":"book",
   "desc":"book store",
   "collection":true,
-  "cmp":"  return strcmp(a->name, b->name);",
+  "cmp":"  return strcmp(a->name.str, b->name.str);",
   "props": [
     {
       "name":"name",
       "type":"char*",
-      "init_value":"str_gen_random(\"book %d\")",
+      "init_value":"str_random(&(book->name), \"book %d\", 10000)",
       "desc": "book name"
     },
     {

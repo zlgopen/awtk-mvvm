@@ -15,8 +15,7 @@ TEST(Books, basic) {
     tk_snprintf(name, sizeof(name) - 1, "test%u", i);
 
     iter->stock = i + 1;
-    iter->name = tk_str_copy(iter->name, name);
-
+    str_set(&(iter->name), name);
     books_view_model_add(view_model, iter);
 
     iter = books_view_model_get(view_model, i);
@@ -28,7 +27,7 @@ TEST(Books, basic) {
     ASSERT_EQ(value_int(&v), iter->stock);
 
     ASSERT_EQ(view_model_eval(view_model, "item.name", &v), RET_OK);
-    ASSERT_STREQ(value_str(&v), iter->name);
+    ASSERT_STREQ(value_str(&v), iter->name.str);
 
     ASSERT_EQ(object_get_prop_int(OBJECT(view_model), VIEW_MODEL_PROP_ITEMS, -1), i + 1);
     ASSERT_EQ(object_get_prop_int(OBJECT(view_model), VIEW_MODEL_PROP_CURSOR, -1), i);

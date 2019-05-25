@@ -4,19 +4,10 @@ const utils = require('./utils')
 
 class CodeGen {
   genHeader(json) {
-    let propsDecl = '';
     let clsName = json.name;
+    let propsDecl = utils.genPropDecls(json);
     let clsNameUpper = clsName.toUpperCase();
 
-    if (json.props && json.props.length) {
-      propsDecl = json.props.map((prop) => {
-        if (prop.fake) {
-          return '';
-        } else {
-          return `  ${prop.type} ${prop.name};`;
-        }
-      }).join('\n');
-    }
     let result =
       `
 #ifndef TK_${clsNameUpper}_H
@@ -80,29 +71,7 @@ END_C_DECLS
 
   genGetProps(json) {
     const clsName = json.name;
-    const dispatch = json.props.map((prop, index) => {
-      let str = '  ';
-      const propName = prop.name;
-
-      if (prop.private) {
-        return str;
-      }
-
-      if (index === 0) {
-        str += 'if (';
-      } else {
-        str += '} else if (';
-      }
-
-      str += `tk_str_eq("${propName}", name)) {\n`
-      if (prop.getter || prop.fake) {
-        str += `    ${prop.type} ${propName} = ${clsName}_get_${propName}(${clsName});\n`;
-      } else {
-        str += `    ${prop.type} ${propName} = ${clsName}->${propName};\n`;
-      }
-      str += '    ' + utils.genToValue(prop.type, propName);
-      return str;
-    }).join('\n');
+    const dispatch = utils.genGetPropsDispatch(json);
 
     const result =
       `
@@ -143,26 +112,7 @@ ${dispatch}
 
   genSetProps(json) {
     const clsName = json.name;
-    const dispatch = json.props.map((prop, index) => {
-      let str = '  ';
-      const propName = prop.name;
-      if (prop.private) {
-        return str;
-      }
-
-      if (index === 0) {
-        str += 'if (';
-      } else {
-        str += '} else if (';
-      }
-      str += `tk_str_eq("${propName}", name)) {\n`
-      if (prop.setter || prop.fake) {
-        str += `    ${clsName}_set_${propName}(${clsName}, ${utils.genFromValue(clsName, prop.type, prop.name, false)});`;
-      } else {
-        str += `    ${clsName}->${propName} = ${utils.genFromValue(clsName, prop.type, prop.name, true)};`;
-      }
-      return str;
-    }).join('\n');
+    const dispatch = utils.genSetPropsDispatch(json);
 
     const result =
       `

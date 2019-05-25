@@ -20,10 +20,8 @@ typedef struct _shape_t{
   int32_t h;
   int32_t opacity;
   int32_t text_align;
-  char* name;
-
-  
-  char* overview;
+  str_t name;
+  str_t overview;
 } shape_t;
 
 /**

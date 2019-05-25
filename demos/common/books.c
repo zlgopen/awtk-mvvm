@@ -9,19 +9,26 @@
 book_t* book_create(void) {
   book_t* book = TKMEM_ZALLOC(book_t);
   return_value_if_fail(book != NULL, NULL);
-  book->name = str_gen_random("book %d");
+
+  str_random(&(book->name), "book %d", 10000);
   book->stock = random()%100;
+
 
   return book;
 } 
 
+
 int book_cmp(book_t* a, book_t* b) {
   return_value_if_fail(a != NULL && b != NULL, -1);
-  return strcmp(a->name, b->name);
+  return strcmp(a->name.str, b->name.str);
 }
 
+
 static ret_t book_destroy(book_t* book) {
-  TKMEM_FREE(book->name);
+  return_value_if_fail(book != NULL, RET_BAD_PARAMS);
+
+  str_reset(&(book->name));
+
 
   TKMEM_FREE(book);
 
@@ -94,9 +101,9 @@ static ret_t books_view_model_set_prop(object_t* obj, const char* name, const va
   return_value_if_fail(book != NULL, RET_BAD_PARAMS);
 
   if (tk_str_eq("name", name)) {
-    book->name = tk_str_copy(book->name, value_str(v));
+    str_set(&(book->name), (char*)value_str(v));
   } else if (tk_str_eq("stock", name)) {
-    book->stock = value_uint32(v);
+    book->stock =  value_uint32(v);
   } else {
     log_debug("not found %s\n", name);
     return RET_NOT_FOUND;
@@ -127,11 +134,9 @@ static ret_t books_view_model_get_prop(object_t* obj, const char* name, value_t*
   return_value_if_fail(book != NULL, RET_BAD_PARAMS);
 
   if (tk_str_eq("name", name)) {
-    char* name = book->name;
-    value_set_str(v, name);
+    value_set_str(v, book->name.str);
   } else if (tk_str_eq("stock", name)) {
-    uint32_t stock = book->stock;
-    value_set_uint32(v, stock);
+    value_set_uint32(v, book->stock);
   } else if (tk_str_eq("style", name)) {
     value_set_str(v, index % 2 ? "odd" : "even");
   } else {

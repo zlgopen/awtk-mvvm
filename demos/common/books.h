@@ -14,7 +14,7 @@ BEGIN_C_DECLS
  *
  */
 typedef struct _book_t {
-  char* name;
+  str_t name;
   uint32_t stock;
 } book_t;
 

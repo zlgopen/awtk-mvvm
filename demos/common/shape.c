@@ -10,13 +10,16 @@ shape_t* shape_create(void) {
   shape_t* shape = TKMEM_ZALLOC(shape_t);
   return_value_if_fail(shape != NULL, NULL);
 
-  shape->type = 0;
-  shape->x = 1;
-  shape->y = 2;
-  shape->w = 3;
-  shape->h = 4;
-  shape->opacity = 5;
+  shape->type = 1;
+  shape->x = 10;
+  shape->y = 20;
+  shape->w = 30;
+  shape->h = 40;
+  shape->opacity = 50;
   shape->text_align = 1;
+  str_init(&(shape->name), 10);
+  str_init(&(shape->overview), 10);
+
 
   return shape;
 } 
@@ -26,11 +29,35 @@ shape_t* shape_create(void) {
 static ret_t shape_destroy(shape_t* shape) {
   return_value_if_fail(shape != NULL, RET_BAD_PARAMS);
 
-  TKMEM_FREE(shape->name);
-  TKMEM_FREE(shape->overview);
+  str_reset(&(shape->name));
+  str_reset(&(shape->overview));
 
 
   TKMEM_FREE(shape);
+
+  return RET_OK;
+}
+
+
+static int32_t shape_get_text_align(shape_t* shape) {
+  return shape->text_align;
+}
+
+
+static ret_t shape_set_text_align(shape_t* shape, int32_t text_align) {
+  shape->text_align = text_align;
+
+  return RET_OK;
+}
+
+
+static char* shape_get_name(shape_t* shape) {
+  return shape->name.str;
+}
+
+
+static ret_t shape_set_name(shape_t* shape, char* name) {
+  str_set(&(shape->name), name);
 
   return RET_OK;
 }
@@ -41,17 +68,13 @@ static char* shape_get_overview(shape_t* shape) {
   tk_snprintf(buff, sizeof(buff), "type=%d (%d %d %d %d) opacity=%d align=%d", 
       shape->type, shape->x, shape->y, shape->w, shape->h, shape->opacity, shape->text_align);
 
-  shape->overview = tk_str_copy(shape->overview, buff);
+  str_set(&(shape->overview), buff);
 
-  return shape->overview;
-}
-
-static ret_t shape_set_overview(shape_t* shape, char* value) {
-  return RET_OK;
+  return shape->overview.str;
 }
 
 static bool_t shape_can_exec_save(shape_t* shape, const char* args) {
-  return shape->name != NULL && shape->name[0] != '\0';
+  return shape->name.size > 0;
 }
 
 static ret_t shape_save(shape_t* shape, const char* args) {
@@ -65,24 +88,24 @@ static ret_t shape_view_model_set_prop(object_t* obj, const char* name, const va
   shape_view_model_t* vm = (shape_view_model_t*)(obj);
   shape_t* shape = vm->shape;
 
- if (tk_str_eq("type", name)) {
-    shape->type = value_int32(v);
+  if (tk_str_eq("type", name)) {
+    shape->type =  value_int32(v);
   } else if (tk_str_eq("x", name)) {
-    shape->x = value_int32(v);
+    shape->x =  value_int32(v);
   } else if (tk_str_eq("y", name)) {
-    shape->y = value_int32(v);
+    shape->y =  value_int32(v);
   } else if (tk_str_eq("w", name)) {
-    shape->w = value_int32(v);
+    shape->w =  value_int32(v);
   } else if (tk_str_eq("h", name)) {
-    shape->h = value_int32(v);
+    shape->h =  value_int32(v);
   } else if (tk_str_eq("opacity", name)) {
-    shape->opacity = value_int32(v);
+    shape->opacity =  value_int32(v);
   } else if (tk_str_eq("text_align", name)) {
-    shape->text_align = value_int32(v);
+    shape_set_text_align(shape, value_int32(v));
   } else if (tk_str_eq("name", name)) {
-    shape->name = tk_str_copy(shape->name, value_str(v));
+    shape_set_name(shape, (char*)value_str(v));
   } else if (tk_str_eq("overview", name)) {
-    shape_set_overview(shape, value_str(v));
+    str_set(&(shape->overview), (char*)value_str(v));
   } else {
     log_debug("not found %s\n", name);
     return RET_NOT_FOUND;
@@ -97,32 +120,23 @@ static ret_t shape_view_model_get_prop(object_t* obj, const char* name, value_t*
   shape_t* shape = vm->shape;
 
   if (tk_str_eq("type", name)) {
-    int32_t type = shape->type;
-    value_set_int32(v, type);
+    value_set_int32(v, shape->type);
   } else if (tk_str_eq("x", name)) {
-    int32_t x = shape->x;
-    value_set_int32(v, x);
+    value_set_int32(v, shape->x);
   } else if (tk_str_eq("y", name)) {
-    int32_t y = shape->y;
-    value_set_int32(v, y);
+    value_set_int32(v, shape->y);
   } else if (tk_str_eq("w", name)) {
-    int32_t w = shape->w;
-    value_set_int32(v, w);
+    value_set_int32(v, shape->w);
   } else if (tk_str_eq("h", name)) {
-    int32_t h = shape->h;
-    value_set_int32(v, h);
+    value_set_int32(v, shape->h);
   } else if (tk_str_eq("opacity", name)) {
-    int32_t opacity = shape->opacity;
-    value_set_int32(v, opacity);
+    value_set_int32(v, shape->opacity);
   } else if (tk_str_eq("text_align", name)) {
-    int32_t text_align = shape->text_align;
-    value_set_int32(v, text_align);
+    value_set_int32(v, shape_get_text_align(shape));
   } else if (tk_str_eq("name", name)) {
-    char* name = shape->name;
-    value_set_str(v, name);
+    value_set_str(v, shape_get_name(shape));
   } else if (tk_str_eq("overview", name)) {
-    char* overview = shape_get_overview(shape);
-    value_set_str(v, overview);
+    value_set_str(v, shape_get_overview(shape));
   } else {
     log_debug("not found %s\n", name);
     return RET_NOT_FOUND;

@@ -1,5 +1,74 @@
 class Utils {
-  static genToValue(type, name) {
+  static genPropDecls(json) {
+    let propsDecl = '';
+    if (json.props && json.props.length) {
+      propsDecl = json.props.map((prop) => {
+        if (prop.fake) {
+          return '';
+        } else {
+          if(prop.type === "char*") {
+            return `  str_t ${prop.name};`;
+          } else {
+            return `  ${prop.type} ${prop.name};`;
+          }
+        }
+      }).join('\n');
+    }
+
+    return propsDecl;
+  }
+
+  static genGetPropsDispatch(json) {
+    const clsName = json.name;
+    return json.props.map((prop, index) => {
+      let str = '  ';
+      const propName = prop.name;
+
+      if (prop.private) {
+        return str;
+      }
+
+      if (index === 0) {
+        str += 'if (';
+      } else {
+        str += '} else if (';
+      }
+
+      str += `tk_str_eq("${propName}", name)) {\n`
+      if (prop.getter || prop.fake) {
+        str += '    ' + Utils.genToValue(clsName, prop.type, propName, true);
+      } else {
+        str += '    ' + Utils.genToValue(clsName, prop.type, propName, false);
+      }
+      return str;
+    }).join('\n');
+  }
+  
+  static genSetPropsDispatch(json) {
+    const clsName = json.name;
+    return json.props.map((prop, index) => {
+      let str = '  ';
+      const propName = prop.name;
+      if (prop.private) {
+        return str;
+      }
+
+      if (index === 0) {
+        str += 'if (';
+      } else {
+        str += '} else if (';
+      }
+      str += `tk_str_eq("${propName}", name)) {\n`
+      if (prop.setter || prop.fake) {
+        str += `    ${clsName}_set_${propName}(${clsName}, ${Utils.genFromValue(clsName, prop.type, prop.name)});`;
+      } else {
+        str += `    ${Utils.genAssignValue(clsName, prop.type, prop.name)};`;
+      }
+      return str;
+    }).join('\n');
+  }
+
+  static genToValue(clsName, type, name, getter) {
     switch (type) {
       case 'int8_t':
       case 'int16_t':
@@ -13,13 +82,25 @@ class Utils {
       case 'float':
       case 'double': {
         let typeName = type.replace(/_t$/, '');
-        return `value_set_${typeName}(v, ${name});`;
+        if(getter) {
+          return `value_set_${typeName}(v, ${clsName}_get_${name}(${clsName}));`;
+        } else {
+          return `value_set_${typeName}(v, ${clsName}->${name});`;
+        }
       }
       case 'char*': {
-        return `value_set_str(v, ${name});`;
+        if(getter) {
+          return `value_set_str(v, ${clsName}_get_${name}(${clsName}));`;
+        } else {
+          return `value_set_str(v, ${clsName}->${name}.str);`;
+        }
       }
       case 'void*': {
-        return `value_set_pointer(v, ${name});`;
+        if(getter) {
+          return `value_set_pointer(v, ${clsName}_get_${name}(${clsName}));`;
+        } else {
+          return `value_set_pointer(v, ${clsName}->${name});`;
+        }
       }
       default: {
         console.log(`not supported ${type} for ${name}`);
@@ -28,7 +109,7 @@ class Utils {
     }
   }
 
-  static genFromValue(clsName, type, name, copy) {
+  static genFromValue(clsName, type, name) {
     switch (type) {
       case 'int8_t':
       case 'int16_t':
@@ -38,18 +119,14 @@ class Utils {
       case 'uint16_t':
       case 'uint32_t':
       case 'uint64_t':
-      case 'float_t':
+      case 'bool_t':
       case 'float':
       case 'double': {
         let typeName = type.replace(/_t$/, '');
         return `value_${typeName}(v)`;
       }
       case 'char*': {
-        if(copy) {
-          return `tk_str_copy(${clsName}->${name}, value_str(v))`;
-        } else {
-          return `value_str(v)`;
-        }
+        return `(char*)value_str(v)`;
       }
       case 'void*': {
         return `value_pointer(v)`;
@@ -61,9 +138,17 @@ class Utils {
     }
   }
 
-  static genAssignValue(clsName, name, type) {
+  static genAssignValue(clsName, type, name) {
     if (type === 'char*') {
-      return `tk_str_copy(${clsName}->${name}, ${name});`;
+      return `str_set(&(${clsName}->${name}), ${Utils.genFromValue(clsName, type, name)})`;
+    } else {
+      return `${clsName}->${name} =  ${Utils.genFromValue(clsName, type, name)}`;
+    }
+  }
+  
+  static genAssignProp(clsName, type, name) {
+    if (type === 'char*') {
+      return `str_set(&(${clsName}->${name}), ${name});`;
     } else {
       return `${clsName}->${name} = ${name};`;
     }
@@ -77,15 +162,27 @@ class Utils {
     if(json.props) {
       defulatDeinit = json.props.map(iter => {
         if(!iter.fake && iter.type === 'char*') {
-          return `  TKMEM_FREE(${clsName}->${iter.name});\n`;
+          return `  str_reset(&(${clsName}->${iter.name}));\n`;
         } else {
           return '';
         }
       }).join('');
       
       defaultInit = json.props.map(iter => {
-        if(iter.init_value) {
-          return `  ${clsName}->${iter.name} = ${iter.init_value};\n`;
+        if(iter.fake) {
+          return '';
+        }
+
+        if(iter.type === 'char*') {
+          if(iter.init_value) {
+            return `  ${iter.init_value};\n`;
+          } else {
+            return `  str_init(&(${clsName}->${iter.name}), 10);\n`;
+          }
+        } else {
+          if(iter.init_value) {
+            return `  ${clsName}->${iter.name} = ${iter.init_value};\n`;
+          }
         }
       }).join('');
     }
@@ -159,7 +256,11 @@ static ret_t ${clsName}_set_${propName}(${clsName}_t* ${clsName}, ${prop.type} v
 `;
       } else {
         if (prop.getter) {
-          let defaultGetter = `return ${clsName}->${propName};`;
+          let defaultGetter = `return ${clsName}->${propName}`;
+          if(prop.type === "char*") {
+            defaultGetter += ".str";
+          }
+           defaultGetter += ";";
           let getter = typeof (prop.getter) === 'string' ? prop.getter : defaultGetter;
           str =
             `
@@ -172,7 +273,7 @@ static ${prop.type} ${clsName}_get_${propName}(${clsName}_t* ${clsName}) {
 
         if (prop.setter) {
           let defaultSetter =
-            `${Utils.genAssignValue(clsName, propName, prop.type)}
+            `${Utils.genAssignProp(clsName, prop.type, propName)}
 
   return RET_OK;`
 
