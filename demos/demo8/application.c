@@ -21,10 +21,10 @@
 
 #include "awtk.h"
 #include "mvvm/mvvm.h"
-#include "shape.h"
+#include "../common/shape.h"
 
 ret_t application_init() {
-  view_model_factory_register("shape", shape_create);
+  view_model_factory_register("shape", shape_view_model_create);
 
   return navigator_to("shape");
 }

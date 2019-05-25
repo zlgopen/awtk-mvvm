@@ -6,7 +6,7 @@
   
   <column children_layout="default(row=1,col=2)">
     <label text="Alignment:" />
-    <combo_box left_margin="6" options="0:left;1:center;2:right;" v-data:value="{align}" readonly="true"/>
+    <combo_box left_margin="6" options="0:left;1:center;2:right;" v-data:value="{text_align}" readonly="true"/>
   </column>
 
   <column children_layout="default(row=1,col=2)">

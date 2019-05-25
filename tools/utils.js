@@ -28,7 +28,7 @@ class Utils {
     }
   }
 
-  static genFromValue(clsName, type, name) {
+  static genFromValue(clsName, type, name, copy) {
     switch (type) {
       case 'int8_t':
       case 'int16_t':
@@ -45,7 +45,11 @@ class Utils {
         return `value_${typeName}(v)`;
       }
       case 'char*': {
-        return `tk_str_copy(${clsName}->${name}, value_str(v))`;
+        if(copy) {
+          return `tk_str_copy(${clsName}->${name}, value_str(v))`;
+        } else {
+          return `value_str(v)`;
+        }
       }
       case 'void*': {
         return `value_pointer(v)`;
@@ -72,7 +76,7 @@ class Utils {
     let defulatDeinit = '';
     if(json.props) {
       defulatDeinit = json.props.map(iter => {
-        if(iter.type == 'char*') {
+        if(!iter.fake && iter.type === 'char*') {
           return `  TKMEM_FREE(${clsName}->${iter.name});\n`;
         } else {
           return '';

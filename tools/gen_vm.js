@@ -128,9 +128,9 @@ ${dispatch}
       }
       str += `tk_str_eq("${propName}", name)) {\n`
       if (prop.setter || prop.fake) {
-        str += `    ${clsName}_set_${propName}(${clsName}, ${utils.genFromValue(clsName, prop.type, prop.name)});`;
+        str += `    ${clsName}_set_${propName}(${clsName}, ${utils.genFromValue(clsName, prop.type, prop.name, false)});`;
       } else {
-        str += `    ${clsName}->${propName} = ${utils.genFromValue(clsName, prop.type, prop.name)};`;
+        str += `    ${clsName}->${propName} = ${utils.genFromValue(clsName, prop.type, prop.name, true)};`;
       }
       return str;
     }).join('\n');

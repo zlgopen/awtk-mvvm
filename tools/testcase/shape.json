@@ -1,0 +1,50 @@
+{
+  "name":"shape",
+  "desc":"shape info",
+  "props": [
+    {
+      "name":"type",
+      "type":"int32_t"
+    },
+    {
+      "name":"x",
+      "type":"int32_t"
+    },
+    {
+      "name":"y",
+      "type":"int32_t"
+    },
+    {
+      "name":"w",
+      "type":"int32_t"
+    },
+    {
+      "name":"h",
+      "type":"int32_t"
+    },
+    {
+      "name":"opacity",
+      "type":"int32_t"
+    },
+    {
+      "name":"text_align",
+      "type":"int32_t"
+    },
+    {
+      "name":"name",
+      "type":"char*"
+    },
+    {
+      "name":"overview",
+      "type":"char*",
+      "fake":true
+    }
+  ],
+  "cmds": [
+    {
+      "name":"save",
+      "canExec": "return shape->name != NULL && shape->name[0] != '\\0';",
+      "desc":"save shape info"
+    }
+  ]
+}
