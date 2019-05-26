@@ -24,8 +24,7 @@
 
 #include "temperature.h"
 
-#define PROP_TEMP "temp"
-#define CMD_QUIT "quit"
+#define PROP_TEMP "value"
 
 static ret_t on_timer(const timer_info_t* info) {
   object_t* view_model = OBJECT(info->ctx);
@@ -37,7 +36,7 @@ static ret_t on_timer(const timer_info_t* info) {
 }
 
 view_model_t* temperature_view_model_timer_create(navigator_request_t* req) {
-  view_model_t* view_model = temperature_view_model_timer_create(req);
+  view_model_t* view_model = temperature_view_model_create(req);
 
   timer_add(on_timer, view_model, 1000);
 
