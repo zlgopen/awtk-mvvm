@@ -166,6 +166,10 @@ static ret_t on_widget_event(void* ctx, event_t* e) {
       widget_t* win = widget_get_window(BINDING_RULE(rule)->widget);
       window_close(win);
     }
+
+    if (rule->quit_app) {
+      tk_quit();
+    }
   } else {
     log_debug("%s cannot exec\n", rule->command);
   }

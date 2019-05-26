@@ -203,7 +203,8 @@ static ret_t value_to_view(const char* name, value_t* from, value_t* to) {
   }
 }
 
-static bool_t value_is_valid(view_model_t* view_model, const char* name, const value_t* value, str_t* msg) {
+static bool_t value_is_valid(view_model_t* view_model, const char* name, const value_t* value,
+                             str_t* msg) {
   bool_t ret = FALSE;
   value_validator_t* validator = NULL;
 

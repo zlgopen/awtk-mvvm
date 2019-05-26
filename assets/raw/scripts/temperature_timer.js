@@ -27,10 +27,6 @@ Temperature.prototype.onUnmount = function() {
   console.log('onUnmount');
 }
 
-Temperature.prototype.quit = function() {
-  exit();
-}
-
 function createTemperatureTimer(req) {
   return new Temperature(); 
 }

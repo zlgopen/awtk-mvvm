@@ -44,6 +44,13 @@ typedef struct _command_binding_t {
   bool_t close_window;
 
   /**
+   * @property {bool_t} quit_app
+   * @annotation ["readable"]
+   * 执行命令之后，是否推出应用程序。
+   */
+  bool_t quit_app;
+
+  /**
    * @property {bool_t} update_model
    * @annotation ["readable"]
    * 执行命令之前，是否更新数据到模型。
@@ -116,6 +123,7 @@ ret_t command_binding_exec(command_binding_t* rule);
 #define COMMAND_BINDING_ARGS "Args"
 #define COMMAND_BINDING_EVENT "Event"
 #define COMMAND_BINDING_COMMAND "Command"
+#define COMMAND_BINDING_QUIT_APP "QuitApp"
 #define COMMAND_BINDING_EVENT_ARGS "EventArgs"
 #define COMMAND_BINDING_CLOSE_WINDOW "CloseWindow"
 #define COMMAND_BINDING_UPDATE_VIEW_MODEL "UpdateModel"

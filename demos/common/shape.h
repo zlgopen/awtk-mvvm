@@ -12,7 +12,7 @@ BEGIN_C_DECLS
  * shape info
  *
  */
-typedef struct _shape_t{
+typedef struct _shape_t {
   int32_t type;
   int32_t x;
   int32_t y;

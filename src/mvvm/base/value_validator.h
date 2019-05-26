@@ -46,13 +46,12 @@ typedef ret_t (*value_validator_fix_t)(value_validator_t* validator, value_t* va
  */
 struct _value_validator_t {
   object_t object;
-  
+
   object_t* context;
 
   /*private*/
   value_validator_is_valid_t is_valid;
   value_validator_fix_t fix;
-  
 };
 
 /**

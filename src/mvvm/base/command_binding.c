@@ -60,6 +60,8 @@ static ret_t command_binding_set_prop(object_t* obj, const char* name, const val
     rule->event_args = tk_str_copy(rule->event_args, value);
   } else if (equal(COMMAND_BINDING_CLOSE_WINDOW, name)) {
     rule->close_window = value != NULL ? tk_atob(value) : TRUE;
+  } else if (equal(COMMAND_BINDING_QUIT_APP, name)) {
+    rule->quit_app = value != NULL ? tk_atob(value) : TRUE;
   } else if (equal(COMMAND_BINDING_UPDATE_VIEW_MODEL, name)) {
     rule->update_model = value != NULL ? tk_atob(value) : TRUE;
   } else {
@@ -85,6 +87,8 @@ static ret_t command_binding_get_prop(object_t* obj, const char* name, value_t* 
     value_set_str(v, rule->event);
   } else if (equal(COMMAND_BINDING_CLOSE_WINDOW, name)) {
     value_set_bool(v, rule->close_window);
+  } else if (equal(COMMAND_BINDING_QUIT_APP, name)) {
+    value_set_bool(v, rule->quit_app);
   } else if (equal(COMMAND_BINDING_UPDATE_VIEW_MODEL, name)) {
     value_set_bool(v, rule->update_model);
   } else {

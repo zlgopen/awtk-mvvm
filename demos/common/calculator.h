@@ -12,7 +12,7 @@ BEGIN_C_DECLS
  * a simple calculator
  *
  */
-typedef struct _calculator_t{
+typedef struct _calculator_t {
   str_t expr;
 } calculator_t;
 

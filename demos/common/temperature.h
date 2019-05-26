@@ -12,7 +12,7 @@ BEGIN_C_DECLS
  * temperature controller
  *
  */
-typedef struct _temperature_t{
+typedef struct _temperature_t {
   double value;
   double old_value;
 } temperature_t;

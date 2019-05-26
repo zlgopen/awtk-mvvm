@@ -133,12 +133,12 @@ value_validator_t* value_validator_create(const char* name) {
 
 ret_t value_validator_set_context(value_validator_t* validator, object_t* context) {
   return_value_if_fail(validator != NULL, RET_BAD_PARAMS);
-  if(validator->context != NULL) {
+  if (validator->context != NULL) {
     object_unref(validator->context);
     validator->context = NULL;
   }
 
-  if(context != NULL) {
+  if (context != NULL) {
     validator->context = context;
     object_ref(validator->context);
   }

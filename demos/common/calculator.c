@@ -12,15 +12,13 @@ calculator_t* calculator_create(void) {
 
   str_init(&(calculator->expr), 10);
 
-
   return calculator;
-} 
+}
 
 static ret_t calculator_destroy(calculator_t* calculator) {
   return_value_if_fail(calculator != NULL, RET_BAD_PARAMS);
 
   str_reset(&(calculator->expr));
-
 
   TKMEM_FREE(calculator);
 
@@ -32,7 +30,6 @@ static ret_t calculator_add_char(calculator_t* calculator, const char* args) {
   return RET_OBJECT_CHANGED;
 }
 
-
 static bool_t calculator_can_exec_remove_char(calculator_t* calculator, const char* args) {
   return calculator->expr.size > 0;
 }
@@ -41,7 +38,6 @@ static ret_t calculator_remove_char(calculator_t* calculator, const char* args) 
   str_pop(&(calculator->expr));
   return RET_OBJECT_CHANGED;
 }
-
 
 static bool_t calculator_can_exec_eval(calculator_t* calculator, const char* args) {
   return calculator->expr.size > 0;
@@ -64,10 +60,9 @@ static ret_t calculator_view_model_set_prop(object_t* obj, const char* name, con
     log_debug("not found %s\n", name);
     return RET_NOT_FOUND;
   }
-  
+
   return RET_OK;
 }
-
 
 static ret_t calculator_view_model_get_prop(object_t* obj, const char* name, value_t* v) {
   calculator_view_model_t* vm = (calculator_view_model_t*)(obj);
@@ -79,10 +74,9 @@ static ret_t calculator_view_model_get_prop(object_t* obj, const char* name, val
     log_debug("not found %s\n", name);
     return RET_NOT_FOUND;
   }
-  
+
   return RET_OK;
 }
-
 
 static bool_t calculator_view_model_can_exec(object_t* obj, const char* name, const char* args) {
   calculator_view_model_t* vm = (calculator_view_model_t*)(obj);
@@ -125,15 +119,14 @@ static ret_t calculator_view_model_on_destroy(object_t* obj) {
 }
 
 static const object_vtable_t s_calculator_view_model_vtable = {
-  .type = "calculator",
-  .desc = "a simple calculator",
-  .size = sizeof(calculator_view_model_t),
-  .exec = calculator_view_model_exec,
-  .can_exec = calculator_view_model_can_exec,
-  .get_prop = calculator_view_model_get_prop,
-  .set_prop = calculator_view_model_set_prop,
-  .on_destroy = calculator_view_model_on_destroy
-};
+    .type = "calculator",
+    .desc = "a simple calculator",
+    .size = sizeof(calculator_view_model_t),
+    .exec = calculator_view_model_exec,
+    .can_exec = calculator_view_model_can_exec,
+    .get_prop = calculator_view_model_get_prop,
+    .set_prop = calculator_view_model_set_prop,
+    .on_destroy = calculator_view_model_on_destroy};
 
 view_model_t* calculator_view_model_create(navigator_request_t* req) {
   object_t* obj = object_create(&s_calculator_view_model_vtable);
