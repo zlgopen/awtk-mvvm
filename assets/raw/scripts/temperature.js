@@ -1,4 +1,4 @@
 var temperature = {
-  temp : 20
+  value: 20
 }
 

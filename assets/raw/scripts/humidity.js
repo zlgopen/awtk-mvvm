@@ -1,4 +1,4 @@
 var humidity = {
-  humidity : 30
+  value : 30
 }
 
