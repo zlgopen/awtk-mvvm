@@ -46,7 +46,7 @@ TK_JS_JERRYSCRIPT_DIRS = [
   os.path.join(TK_JS_3RD_ROOT, 'jerryscript/jerry-core/ecma/builtin-objects/typedarray'),
 ]
 
-APP_LIBS = ['assets', 'jerryscript', 'mvvm']
+APP_LIBS = ['assets', 'mvvm', 'jerryscript']
 APP_LIBPATH = [APP_LIB_DIR]
 APP_CPPPATH = TK_JS_JERRYSCRIPT_DIRS + [APP_SRC]
 APP_CCFLAGS = '-DRES_ROOT=\"\\\"'+RES_ROOT+'\\\"\" -DWITH_JERRYSCRIPT '
