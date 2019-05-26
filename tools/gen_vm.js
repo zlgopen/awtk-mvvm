@@ -211,12 +211,7 @@ view_model_t* ${clsName}_view_model_create(navigator_request_t* req) {
 
   genContent(json) {
     const clsName = json.name;
-    let result = `#include "tkc/mem.h"\n`;
-
-    result += `#include "tkc/utils.h"\n`;
-    result += `#include "mvvm/base/utils.h"\n`;
-    result += `#include "${json.name}.h"\n\n`;
-    result += utils.genModelCommonFuncs(json);
+    let result = utils.genModelCommonFuncs(json);
 
     if (json.props && json.props.length) {
       result += utils.genPropFuncs(json);
@@ -269,7 +264,7 @@ static ret_t ${clsName}_view_model_exec(object_t* obj, const char* name, const c
   }
 
   genJson(json) {
-    utils.saveResult(json.name, this.genHeader(json), this.genContent(json));
+    utils.saveResult(json.name, json.includes, this.genHeader(json), this.genContent(json));
   }
 
   genFile(filename) {

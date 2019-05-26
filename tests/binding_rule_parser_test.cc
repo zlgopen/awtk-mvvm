@@ -17,6 +17,17 @@ TEST(CommandBindingParser, close_window) {
   object_unref(OBJECT(rule));
 }
 
+TEST(CommandBindingParser, args) {
+  binding_rule_t* rule = binding_rule_parse("v-on:click", "{add_char, args=1}", TRUE);
+  command_binding_t* cmd = (command_binding_t*)rule;
+
+  ASSERT_EQ(cmd->close_window, TRUE);
+  ASSERT_EQ(string(cmd->command), string("add_char"));
+  ASSERT_EQ(string(cmd->args), string("1"));
+
+  object_unref(OBJECT(rule));
+}
+
 TEST(CommandBindingParser, close_window_true) {
   binding_rule_t* rule = binding_rule_parse("v-on:click", "{Save, CloseWindow=True}", TRUE);
   command_binding_t* cmd = (command_binding_t*)rule;

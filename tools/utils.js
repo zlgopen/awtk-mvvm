@@ -2,9 +2,27 @@ const fs = require('fs')
 
 class Utils {
 
-  static saveResult(name, header, content) {
-    fs.writeFileSync(`${name}.h`, "\ufeff"+header);
-    fs.writeFileSync(`${name}.c`, "\ufeff"+content);
+  static genIncludes(name) {
+    let result = `#include "tkc/mem.h"\n`;
+    result += `#include "tkc/utils.h"\n`;
+    result += `#include "mvvm/base/utils.h"\n`;
+    result += `#include "${name}.h"\n`;
+
+    return result;
+  }
+
+  static saveResult(name, includes, header, content) {
+    let defaultInclude = Utils.genIncludes(name);
+
+    if(includes) {
+      defaultInclude += includes.map(iter => {
+        return `#include "${iter}"`
+      }).join('');
+    }
+    defaultInclude += '\n';
+
+    fs.writeFileSync(`${name}.h`, "\ufeff" + header);
+    fs.writeFileSync(`${name}.c`, "\ufeff" + defaultInclude + content);
     console.log(`output to ${name}.h and ${name}.c`);
   }
 
