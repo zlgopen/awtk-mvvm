@@ -14,7 +14,8 @@ env.Program(os.path.join(BIN_DIR, 'demo8'), Glob('demo8/*.c') + ["assets.c",
   "common/shape.c"])
 env.Program(os.path.join(BIN_DIR, 'demo9'), Glob('demo9/*.c') + ["assets.c", 
   "common/temperature.c", "common/humidity.c"])
-env.Program(os.path.join(BIN_DIR, 'demo10'), Glob('demo10/*.c') + ["assets.c"])
+env.Program(os.path.join(BIN_DIR, 'demo10'), Glob('demo10/*.c') + ["assets.c",
+  "common/temperature.c"])
 env.Program(os.path.join(BIN_DIR, 'demo11'), Glob('demo11/*.c') + ["assets.c", 
   "common/temperature.c", "common/humidity.c"])
 env.Program(os.path.join(BIN_DIR, 'demo12'), Glob('demo12/*.c') + ["assets.c", 

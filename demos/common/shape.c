@@ -24,8 +24,6 @@ shape_t* shape_create(void) {
   return shape;
 } 
 
-
-
 static ret_t shape_destroy(shape_t* shape) {
   return_value_if_fail(shape != NULL, RET_BAD_PARAMS);
 
@@ -44,8 +42,8 @@ static int32_t shape_get_text_align(shape_t* shape) {
 }
 
 
-static ret_t shape_set_text_align(shape_t* shape, int32_t text_align) {
-  shape->text_align = text_align;
+static ret_t shape_set_text_align(shape_t* shape, const value_t* v) {
+  shape->text_align =  value_int32(v);
 
   return RET_OK;
 }
@@ -56,22 +54,29 @@ static char* shape_get_name(shape_t* shape) {
 }
 
 
-static ret_t shape_set_name(shape_t* shape, char* name) {
-  str_set(&(shape->name), name);
+static ret_t shape_set_name(shape_t* shape, const value_t* v) {
+  str_from_value(&(shape->name), v);
 
   return RET_OK;
 }
 
-
 static char* shape_get_overview(shape_t* shape) {
   char buff[256];
-  tk_snprintf(buff, sizeof(buff), "type=%d (%d %d %d %d) opacity=%d align=%d", 
+  tk_snprintf(buff, sizeof(buff), "%s: type=%d (%d %d %d %d) opacity=%d align=%d", 
+      shape->name.str,
       shape->type, shape->x, shape->y, shape->w, shape->h, shape->opacity, shape->text_align);
 
   str_set(&(shape->overview), buff);
 
   return shape->overview.str;
 }
+
+static ret_t shape_change_type(shape_t* shape, const char* args) {
+  shape->type = tk_atoi(args);
+
+  return RET_OBJECT_CHANGED;
+}
+
 
 static bool_t shape_can_exec_save(shape_t* shape, const char* args) {
   return shape->name.size > 0;
@@ -101,11 +106,11 @@ static ret_t shape_view_model_set_prop(object_t* obj, const char* name, const va
   } else if (tk_str_eq("opacity", name)) {
     shape->opacity =  value_int32(v);
   } else if (tk_str_eq("text_align", name)) {
-    shape_set_text_align(shape, value_int32(v));
+    shape_set_text_align(shape, v);
   } else if (tk_str_eq("name", name)) {
-    shape_set_name(shape, (char*)value_str(v));
+    shape_set_name(shape, v);
   } else if (tk_str_eq("overview", name)) {
-    str_set(&(shape->overview), (char*)value_str(v));
+    str_from_value(&(shape->overview), v);
   } else {
     log_debug("not found %s\n", name);
     return RET_NOT_FOUND;
@@ -150,7 +155,9 @@ static bool_t shape_view_model_can_exec(object_t* obj, const char* name, const c
   shape_view_model_t* vm = (shape_view_model_t*)(obj);
   shape_t* shape = vm->shape;
 
-  if (tk_str_eq("save", name)) {
+  if (tk_str_eq("change_type", name)) {
+    return TRUE;
+  } else if (tk_str_eq("save", name)) {
     return shape_can_exec_save(shape, args);
   } else {
     return FALSE;
@@ -161,7 +168,9 @@ static ret_t shape_view_model_exec(object_t* obj, const char* name, const char* 
   shape_view_model_t* vm = (shape_view_model_t*)(obj);
   shape_t* shape = vm->shape;
 
-  if (tk_str_eq("save", name)) {
+  if (tk_str_eq("change_type", name)) {
+    return shape_change_type(shape, args);
+  } else if (tk_str_eq("save", name)) {
     return shape_save(shape, args);
   } else {
     log_debug("not found %s\n", name);

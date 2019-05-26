@@ -34,7 +34,6 @@
 #include "mvvm/base/value_converter.h"
 #include "mvvm/base/command_binding.h"
 #include "mvvm/base/navigator.h"
-#include "mvvm/base/view_model_delegate.h"
 #include "mvvm/base/view_model_factory.h"
 #include "mvvm/base/value_validator_delegate.h"
 #include "mvvm/base/value_converter_delegate.h"

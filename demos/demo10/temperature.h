@@ -27,21 +27,7 @@
 BEGIN_C_DECLS
 
 /**
- * @class temperature_t
- *
- * 温度对象。
- *
- */
-typedef struct _temperature_t {
-  view_model_t view_model;
-
-  double value;
-
-  double saved_value;
-} temperature_t;
-
-/**
- * @method temperature_view_model_create
+ * @method temperature_view_model_timer_create
  * 创建temperature对象。
  *
  * @annotation ["constructor"]
@@ -49,7 +35,7 @@ typedef struct _temperature_t {
  *
  * @return {view_model_t} 返回view_model_t对象。
  */
-view_model_t* temperature_view_model_create(navigator_request_t* req);
+view_model_t* temperature_view_model_timer_create(navigator_request_t* req);
 
 #define TEMPERATURE(t) ((temperature_t*)(t))
 

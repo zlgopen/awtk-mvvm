@@ -269,13 +269,7 @@ static ret_t ${clsName}_view_model_exec(object_t* obj, const char* name, const c
   }
 
   genJson(json) {
-    let header = this.genHeader(json);
-    let content = this.genContent(json);
-
-    fs.writeFileSync(`${json.name}.h`, header);
-    fs.writeFileSync(`${json.name}.c`, content);
-
-    console.log(`output to ${json.name}.h and ${json.name}.c`);
+    utils.saveResult(json.name, this.genHeader(json), this.genContent(json));
   }
 
   genFile(filename) {

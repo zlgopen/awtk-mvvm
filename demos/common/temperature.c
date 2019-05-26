@@ -1,15 +1,25 @@
 #include "tkc/mem.h"
 #include "tkc/utils.h"
+#include "mvvm/base/utils.h"
 #include "temperature.h"
 
 
 /***************temperature***************/;
 
-static temperature_t* temperature_create(void) {
-  return TKMEM_ZALLOC(temperature_t);
+temperature_t* temperature_create(void) {
+  temperature_t* temperature = TKMEM_ZALLOC(temperature_t);
+  return_value_if_fail(temperature != NULL, NULL);
+
+
+
+  return temperature;
 } 
 
 static ret_t temperature_destroy(temperature_t* temperature) {
+  return_value_if_fail(temperature != NULL, RET_BAD_PARAMS);
+
+
+
   TKMEM_FREE(temperature);
 
   return RET_OK;
@@ -31,7 +41,7 @@ static ret_t temperature_view_model_set_prop(object_t* obj, const char* name, co
   temperature_t* temperature = vm->temperature;
 
   if (tk_str_eq("value", name)) {
-    temperature->value = value_double(v);
+    temperature->value =  value_double(v);
   
   } else {
     log_debug("not found %s\n", name);
@@ -47,8 +57,7 @@ static ret_t temperature_view_model_get_prop(object_t* obj, const char* name, va
   temperature_t* temperature = vm->temperature;
 
   if (tk_str_eq("value", name)) {
-    double value = temperature->value;
-    value_set_double(v, value);
+    value_set_double(v, temperature->value);
   
   } else {
     log_debug("not found %s\n", name);

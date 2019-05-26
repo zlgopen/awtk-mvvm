@@ -20,7 +20,7 @@
  */
 
 #include "awtk.h"
-#include "mvvm/base/view_model_delegate.h"
+#include "../common/temperature.h"
 
 #include "temperature.h"
 
@@ -36,18 +36,8 @@ static ret_t on_timer(const timer_info_t* info) {
   return temp < 10 ? RET_REPEAT : RET_REMOVE;
 }
 
-static ret_t temperature_quit(temperature_t* t, const char* args) {
-  tk_quit();
-
-  return RET_OK;
-}
-
-view_model_t* temperature_view_model_create(navigator_request_t* req) {
-  temperature_t* t = TKMEM_ZALLOC(temperature_t);
-  view_model_t* view_model = view_model_delegate_create(t, default_destroy);
-
-  VIEW_MODEL_SIMPLE_PROP(view_model, PROP_TEMP, VALUE_TYPE_DOUBLE, &(t->value));
-  VIEW_MODEL_COMMAND(view_model, CMD_QUIT, temperature_quit, NULL);
+view_model_t* temperature_view_model_timer_create(navigator_request_t* req) {
+  view_model_t* view_model = temperature_view_model_timer_create(req);
 
   timer_add(on_timer, view_model, 1000);
 

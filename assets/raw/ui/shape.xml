@@ -35,9 +35,9 @@
   </column>
   
   <column children_layout="default(row=1,col=3)">
-    <radio_button text="Rect" v-data:value="{$type==1}" v-on:click="{setType, args=1}"/>
-    <radio_button text="Circle" v-data:value="{$type==2}" v-on:click="{setType, args=2}" />
-    <radio_button text="Line" v-data:value="{$type==3}" v-on:click="{setType, args=3}"/>
+    <radio_button text="Rect" v-data:value="{$type==1}" v-on:click="{change_type, args=1}"/>
+    <radio_button text="Circle" v-data:value="{$type==2}" v-on:click="{change_type, args=2}" />
+    <radio_button text="Line" v-data:value="{$type==3}" v-on:click="{change_type, args=3}"/>
   </column>
   
   <column children_layout="default(row=1,col=1)">

@@ -340,13 +340,7 @@ ${clsName}_t* ${clsName}s_view_model_get(view_model_t* view_model, uint32_t inde
   }
 
   genJson(json) {
-    let header = this.genHeader(json);
-    let content = this.genContent(json);
-
-    fs.writeFileSync(`${json.name}s.h`, header);
-    fs.writeFileSync(`${json.name}s.c`, content);
-
-    console.log(`output to ${json.name}s.h and ${json.name}s.c`);
+    utils.saveResult(json.name+'s', this.genHeader(json), this.genContent(json));
   }
 
   genFile(filename) {

@@ -1,4 +1,13 @@
+const fs = require('fs')
+
 class Utils {
+
+  static saveResult(name, header, content) {
+    fs.writeFileSync(`${name}.h`, "\ufeff"+header);
+    fs.writeFileSync(`${name}.c`, "\ufeff"+content);
+    console.log(`output to ${name}.h and ${name}.c`);
+  }
+
   static genPropDecls(json) {
     let propsDecl = '';
     if (json.props && json.props.length) {
@@ -60,7 +69,7 @@ class Utils {
       }
       str += `tk_str_eq("${propName}", name)) {\n`
       if (prop.setter || prop.fake) {
-        str += `    ${clsName}_set_${propName}(${clsName}, ${Utils.genFromValue(clsName, prop.type, prop.name)});`;
+        str += `    ${clsName}_set_${propName}(${clsName}, v);`;
       } else {
         str += `    ${Utils.genAssignValue(clsName, prop.type, prop.name)};`;
       }
@@ -78,6 +87,7 @@ class Utils {
       case 'uint16_t':
       case 'uint32_t':
       case 'uint64_t':
+      case 'bool_t':
       case 'float_t':
       case 'float':
       case 'double': {
@@ -120,13 +130,14 @@ class Utils {
       case 'uint32_t':
       case 'uint64_t':
       case 'bool_t':
+      case 'float_t':
       case 'float':
       case 'double': {
         let typeName = type.replace(/_t$/, '');
         return `value_${typeName}(v)`;
       }
       case 'char*': {
-        return `(char*)value_str(v)`;
+        return `str_from_value(&(${clsName}->${name}), v)`;
       }
       case 'void*': {
         return `value_pointer(v)`;
@@ -140,20 +151,12 @@ class Utils {
 
   static genAssignValue(clsName, type, name) {
     if (type === 'char*') {
-      return `str_set(&(${clsName}->${name}), ${Utils.genFromValue(clsName, type, name)})`;
+      return `${Utils.genFromValue(clsName, type, name)}`;
     } else {
       return `${clsName}->${name} =  ${Utils.genFromValue(clsName, type, name)}`;
     }
   }
   
-  static genAssignProp(clsName, type, name) {
-    if (type === 'char*') {
-      return `str_set(&(${clsName}->${name}), ${name});`;
-    } else {
-      return `${clsName}->${name} = ${name};`;
-    }
-  }
-
   static genModelCommonFuncs(json) {
     const clsName = json.name;
 
@@ -195,10 +198,12 @@ class Utils {
     if(json.collection) {
     cmpFunc = 
 `
+
 int ${clsName}_cmp(${clsName}_t* a, ${clsName}_t* b) {
   return_value_if_fail(a != NULL && b != NULL, -1);
 ${cmp}
 }
+
 `
     }
     let result =
@@ -213,9 +218,7 @@ ${init}
 
   return ${clsName};
 } 
-
 ${cmpFunc}
-
 static ret_t ${clsName}_destroy(${clsName}_t* ${clsName}) {
   return_value_if_fail(${clsName} != NULL, RET_BAD_PARAMS);
 
@@ -249,7 +252,7 @@ static ${prop.type} ${clsName}_get_${propName}(${clsName}_t* ${clsName}) {
   ${getter}
 }
 
-static ret_t ${clsName}_set_${propName}(${clsName}_t* ${clsName}, ${prop.type} value) {
+static ret_t ${clsName}_set_${propName}(${clsName}_t* ${clsName}, const value_t* v) {
   ${setter}
 }
 
@@ -273,14 +276,14 @@ static ${prop.type} ${clsName}_get_${propName}(${clsName}_t* ${clsName}) {
 
         if (prop.setter) {
           let defaultSetter =
-            `${Utils.genAssignProp(clsName, prop.type, propName)}
+            `${Utils.genAssignValue(clsName, prop.type, propName)};
 
   return RET_OK;`
 
           let setter = typeof (prop.setter) === 'string' ? prop.setter : defaultSetter;
           str +=
             `
-static ret_t ${clsName}_set_${propName}(${clsName}_t* ${clsName}, ${prop.type} ${prop.name}) {
+static ret_t ${clsName}_set_${propName}(${clsName}_t* ${clsName}, const value_t* v) {
   ${setter}
 }
 

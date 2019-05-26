@@ -101,7 +101,7 @@ static ret_t books_view_model_set_prop(object_t* obj, const char* name, const va
   return_value_if_fail(book != NULL, RET_BAD_PARAMS);
 
   if (tk_str_eq("name", name)) {
-    str_set(&(book->name), (char*)value_str(v));
+    str_from_value(&(book->name), v);
   } else if (tk_str_eq("stock", name)) {
     book->stock =  value_uint32(v);
   } else {
