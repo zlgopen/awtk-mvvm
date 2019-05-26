@@ -309,7 +309,7 @@ TEST(BindingContextAwtk, command_update_to_view_model) {
   ASSERT_EQ(value_int(&v), 99);
 
   ASSERT_EQ(object_get_prop(OBJECT(s_temp_view_model), "save_count", &v), RET_OK);
-  ASSERT_EQ(value_int(&v), 2);
+  ASSERT_EQ(value_int(&v), 1);
 
   widget_destroy(win);
   test_view_model_deinit();
