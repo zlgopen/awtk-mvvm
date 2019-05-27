@@ -21,9 +21,39 @@ TEST(CommandBindingParser, args) {
   binding_rule_t* rule = binding_rule_parse("v-on:click", "{add_char, args=1}", TRUE);
   command_binding_t* cmd = (command_binding_t*)rule;
 
-  ASSERT_EQ(cmd->close_window, TRUE);
   ASSERT_EQ(string(cmd->command), string("add_char"));
   ASSERT_EQ(string(cmd->args), string("1"));
+
+  object_unref(OBJECT(rule));
+}
+
+TEST(CommandBindingParser, args1) {
+  binding_rule_t* rule = binding_rule_parse("v-on:click", "{add_char, args==}", TRUE);
+  command_binding_t* cmd = (command_binding_t*)rule;
+
+  ASSERT_EQ(string(cmd->command), string("add_char"));
+  ASSERT_EQ(string(cmd->args), string("="));
+
+  object_unref(OBJECT(rule));
+}
+
+TEST(CommandBindingParser, args2) {
+  binding_rule_t* rule = binding_rule_parse("v-on:click", "{add_char, args=,}", TRUE);
+  command_binding_t* cmd = (command_binding_t*)rule;
+
+  ASSERT_EQ(string(cmd->command), string("add_char"));
+  ASSERT_EQ(string(cmd->args), string(","));
+
+  object_unref(OBJECT(rule));
+}
+
+
+TEST(CommandBindingParser, args2) {
+  binding_rule_t* rule = binding_rule_parse("v-on:click", "{add_char, args==+-*/==}", TRUE);
+  command_binding_t* cmd = (command_binding_t*)rule;
+
+  ASSERT_EQ(string(cmd->command), string("add_char"));
+  ASSERT_EQ(string(cmd->args), string("=+-*/=="));
 
   object_unref(OBJECT(rule));
 }
