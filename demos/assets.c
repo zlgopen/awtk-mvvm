@@ -25,7 +25,6 @@
 #include "assets/inc/ui/js_temperature4.data"
 #include "assets/inc/ui/js_temperature5.data"
 #include "assets/inc/ui/js_temperature6.data"
-#include "assets/inc/ui/js_temperature7.data"
 #include "assets/inc/ui/js_temperature9.data"
 #include "assets/inc/ui/js_temperature_humidity.data"
 #include "assets/inc/ui/room_settings.data"
@@ -38,7 +37,6 @@
 #include "assets/inc/ui/temperature4.data"
 #include "assets/inc/ui/temperature5.data"
 #include "assets/inc/ui/temperature6.data"
-#include "assets/inc/ui/temperature7.data"
 #include "assets/inc/ui/temperature9.data"
 #include "assets/inc/ui/temperature_humidity.data"
 #ifdef WITH_STB_IMAGE
@@ -156,7 +154,6 @@ ret_t assets_init(void) {
   assets_manager_add(rm, ui_js_temperature4);
   assets_manager_add(rm, ui_js_temperature5);
   assets_manager_add(rm, ui_js_temperature6);
-  assets_manager_add(rm, ui_js_temperature7);
   assets_manager_add(rm, ui_js_temperature9);
   assets_manager_add(rm, ui_js_temperature_humidity);
   assets_manager_add(rm, ui_room_settings);
@@ -169,7 +166,6 @@ ret_t assets_init(void) {
   assets_manager_add(rm, ui_temperature4);
   assets_manager_add(rm, ui_temperature5);
   assets_manager_add(rm, ui_temperature6);
-  assets_manager_add(rm, ui_temperature7);
   assets_manager_add(rm, ui_temperature9);
   assets_manager_add(rm, ui_temperature_humidity);
 #ifdef WITH_VGCANVAS
