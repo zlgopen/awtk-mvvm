@@ -132,13 +132,14 @@ ret_t command_binding_exec(command_binding_t* rule);
 #define COMMAND_BINDING_CMD_NAVIGATE "navigate"
 
 #define COMMAND_BINDING_ARGS "Args"
-#define COMMAND_BINDING_EVENT "Event"
 #define COMMAND_BINDING_COMMAND "Command"
 #define COMMAND_BINDING_QUIT_APP "QuitApp"
-#define COMMAND_BINDING_KEY_FILTER "EventFilter"
+#define COMMAND_BINDING_AUTO_DISABLE "AutoDisable"
 #define COMMAND_BINDING_CLOSE_WINDOW "CloseWindow"
 #define COMMAND_BINDING_UPDATE_VIEW_MODEL "UpdateModel"
-#define COMMAND_BINDING_AUTO_DISABLE "AutoDisable"
+
+#define COMMAND_BINDING_EVENT "Event"
+#define COMMAND_BINDING_KEY_FILTER "KeyFilter"
 
 END_C_DECLS
 
