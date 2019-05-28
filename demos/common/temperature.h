@@ -1,4 +1,4 @@
-
+﻿
 #ifndef TK_TEMPERATURE_H
 #define TK_TEMPERATURE_H
 

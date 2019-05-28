@@ -1,4 +1,4 @@
-<window v-model="temperature" v-on:key_down="{apply, EventFilter=ctrl+s}" 
+<window v-model="temperature_ex.js" v-on:key_down="{apply, EventFilter=ctrl+s}" 
   v-on:key_down="{nothing, QuitApp=true, EventFilter=escape}">
   <label  x="center" y="middle:-80" w="80%" h="40" text="ctrl+s to apply, escape to quit"/>
   <label  x="center" y="middle:-40" w="80%" h="40" v-data:text="{value}"/>
