@@ -49,8 +49,8 @@ static ret_t command_binding_init(command_binding_t* rule, tokenizer_t* t) {
                          RET_FAIL);
 
     if (tokenizer_has_more(t)) {
-      const char* event_args = tokenizer_next(t);
-      return object_set_prop_str(OBJECT(rule), COMMAND_BINDING_EVENT_ARGS, event_args);
+      const char* event_filter = tokenizer_next(t);
+      return object_set_prop_str(OBJECT(rule), COMMAND_BINDING_KEY_FILTER, event_filter);
     } else {
       return RET_OK;
     }

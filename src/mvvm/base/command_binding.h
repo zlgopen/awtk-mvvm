@@ -22,6 +22,7 @@
 #ifndef TK_COMMAND_BINDING_H
 #define TK_COMMAND_BINDING_H
 
+#include "base/shortcut.h"
 #include "mvvm/base/binding_rule.h"
 
 BEGIN_C_DECLS
@@ -79,11 +80,21 @@ typedef struct _command_binding_t {
   char* event;
 
   /**
-   * @property {char*} event_args
+   * @property {char*} key_filter
    * @annotation ["readable"]
-   * 事件参数(主要用于按键事件)。
+   * 按键过滤(主要用于按键事件，相当于快捷键)。
    */
-  char* event_args;
+  char* key_filter;
+  
+  /**
+   * @property {bool_t} auto_disable
+   * @annotation ["readable"]
+   * 是否根据can_exec自动禁用控件(缺省为TRUE)。
+   */
+  bool_t auto_disable;
+
+  /*private*/
+  shortcut_t filter;
 } command_binding_t;
 
 /**
@@ -124,9 +135,10 @@ ret_t command_binding_exec(command_binding_t* rule);
 #define COMMAND_BINDING_EVENT "Event"
 #define COMMAND_BINDING_COMMAND "Command"
 #define COMMAND_BINDING_QUIT_APP "QuitApp"
-#define COMMAND_BINDING_EVENT_ARGS "EventArgs"
+#define COMMAND_BINDING_KEY_FILTER "EventFilter"
 #define COMMAND_BINDING_CLOSE_WINDOW "CloseWindow"
 #define COMMAND_BINDING_UPDATE_VIEW_MODEL "UpdateModel"
+#define COMMAND_BINDING_AUTO_DISABLE "AutoDisable"
 
 END_C_DECLS
 

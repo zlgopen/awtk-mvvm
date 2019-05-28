@@ -53,6 +53,16 @@ int main(void) {
   }
 #endif /*WITH_LCD_PORTRAIT*/
 
+#if defined(WIN32)
+#if !defined(NDEBUG)
+  {
+    AllocConsole();
+    FILE* fp = NULL;
+    freopen_s(&fp, "CONOUT$", "w+t", stdout);
+  }
+#endif /*NDEBUG*/
+#endif /*WIN32*/
+
   tk_ext_widgets_init();
 
   assets_init();

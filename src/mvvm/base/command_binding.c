@@ -56,10 +56,15 @@ static ret_t command_binding_set_prop(object_t* obj, const char* name, const val
     rule->args = tk_str_copy(rule->args, value);
   } else if (equal(COMMAND_BINDING_EVENT, name)) {
     rule->event = tk_str_copy(rule->event, value);
-  } else if (equal(COMMAND_BINDING_EVENT_ARGS, name)) {
-    rule->event_args = tk_str_copy(rule->event_args, value);
+  } else if (equal(COMMAND_BINDING_KEY_FILTER, name)) {
+    rule->key_filter = tk_str_copy(rule->key_filter, value);
+    if (value != NULL) {
+      shortcut_init_with_str(&(rule->filter), value);
+    }
   } else if (equal(COMMAND_BINDING_CLOSE_WINDOW, name)) {
     rule->close_window = value != NULL ? tk_atob(value) : TRUE;
+  } else if (equal(COMMAND_BINDING_AUTO_DISABLE, name)) {
+    rule->auto_disable = value != NULL ? tk_atob(value) : TRUE;
   } else if (equal(COMMAND_BINDING_QUIT_APP, name)) {
     rule->quit_app = value != NULL ? tk_atob(value) : TRUE;
   } else if (equal(COMMAND_BINDING_UPDATE_VIEW_MODEL, name)) {
@@ -114,7 +119,12 @@ static command_binding_t* command_binding_cast(void* rule) {
 }
 
 command_binding_t* command_binding_create(void) {
-  return (command_binding_t*)object_create(&s_command_binding_vtable);
+  command_binding_t* rule = (command_binding_t*)object_create(&s_command_binding_vtable);
+  return_value_if_fail(rule != NULL, NULL);
+
+  rule->auto_disable = TRUE;
+  
+  return rule;
 }
 
 bool_t command_binding_can_exec(command_binding_t* rule) {

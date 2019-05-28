@@ -1,5 +1,6 @@
 ﻿#include "mvvm/base/command_binding.h"
 #include "gtest/gtest.h"
+#include "base/keys.h"
 
 #include <string>
 using std::string;
@@ -15,6 +16,33 @@ TEST(CommandBinding, basic) {
 
   ASSERT_EQ(object_set_prop_str(o, COMMAND_BINDING_EVENT, "event"), RET_OK);
   ASSERT_EQ(string(rule->event), string("event"));
+
+  object_unref(OBJECT(rule));
+}
+
+TEST(CommandBinding, key_filter) {
+  command_binding_t* rule = (command_binding_t*)command_binding_create();
+  object_t* o = OBJECT(rule);
+
+  ASSERT_EQ(object_set_prop_str(o, COMMAND_BINDING_KEY_FILTER, "ctrl+a"), RET_OK);
+  ASSERT_EQ(rule->filter.ctrl, TRUE);
+  ASSERT_EQ(rule->filter.key, TK_KEY_a);
+
+  object_unref(OBJECT(rule));
+}
+
+TEST(CommandBinding, key_filter1) {
+  command_binding_t* rule = (command_binding_t*)command_binding_create();
+  object_t* o = OBJECT(rule);
+
+  ASSERT_EQ(object_set_prop_str(o, COMMAND_BINDING_KEY_FILTER, "ctrl+shift+LEFT"), RET_OK);
+  ASSERT_EQ(rule->filter.ctrl, TRUE);
+  ASSERT_EQ(rule->filter.shift, TRUE);
+  ASSERT_EQ(rule->filter.lctrl, TRUE);
+  ASSERT_EQ(rule->filter.lshift, TRUE);
+  ASSERT_EQ(rule->filter.rctrl, TRUE);
+  ASSERT_EQ(rule->filter.rshift, TRUE);
+  ASSERT_EQ(rule->filter.key, TK_KEY_LEFT);
 
   object_unref(OBJECT(rule));
 }

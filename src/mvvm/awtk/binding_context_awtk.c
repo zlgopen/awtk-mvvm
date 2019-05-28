@@ -152,8 +152,49 @@ static int_str_t s_event_map[] = {{EVT_CLICK, "click"},
                                   {EVT_VALUE_CHANGED, "value_changed"},
                                   {EVT_NONE, NULL}};
 
+static bool_t command_binding_filter(command_binding_t* rule, event_t* e) {
+  return_value_if_fail(rule != NULL && e != NULL, TRUE);
+  if (!(rule->filter.is_valid)) {
+    return FALSE;
+  }
+
+  if (e->type == EVT_KEY_DOWN || e->type == EVT_KEY_UP) {
+    shortcut_t shortcut;
+    key_event_t* evt = (key_event_t*)e;
+
+    if (evt->key == TK_KEY_LCTRL || evt->key == TK_KEY_RCTRL) {
+      return TRUE;
+    }
+
+    shortcut_init(&shortcut, evt->key);
+    shortcut.ctrl = evt->ctrl;
+    shortcut.lctrl = evt->lctrl;
+    shortcut.rctrl = evt->rctrl;
+    shortcut.alt = evt->alt;
+    shortcut.lalt = evt->lalt;
+    shortcut.ralt = evt->ralt;
+    shortcut.shift = evt->shift;
+    shortcut.lshift = evt->lshift;
+    shortcut.rshift = evt->rshift;
+    shortcut.cmd = evt->cmd;
+    shortcut.menu = evt->menu;
+
+    if (shortcut_match(&(rule->filter), &shortcut)) {
+      return FALSE;
+    } else {
+      return TRUE;
+    }
+  }
+
+  return FALSE;
+}
+
 static ret_t on_widget_event(void* ctx, event_t* e) {
   command_binding_t* rule = COMMAND_BINDING(ctx);
+
+  if (command_binding_filter(rule, e)) {
+    return RET_OK;
+  }
 
   if (command_binding_can_exec(rule)) {
     if (rule->update_model) {
@@ -468,9 +509,11 @@ static ret_t visit_data_binding_update_to_view(void* ctx, const void* data) {
 static ret_t visit_command_binding(void* ctx, const void* data) {
   command_binding_t* rule = COMMAND_BINDING(data);
   widget_t* widget = WIDGET(BINDING_RULE(rule)->widget);
-  bool_t can_exec = command_binding_can_exec(rule);
 
-  widget_set_enable(widget, can_exec);
+  if (rule->auto_disable && !widget_is_window(widget)) {
+    bool_t can_exec = command_binding_can_exec(rule);
+    widget_set_enable(widget, can_exec);
+  }
 
   return RET_OK;
 }
