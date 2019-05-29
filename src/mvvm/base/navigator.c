@@ -77,7 +77,6 @@ ret_t navigator_handle_request(navigator_t* nav, navigator_request_t* req) {
   }
 
   if (handler == NULL) {
-    handler = navigator_find_handler(nav, req->target);
     log_warn("not found %s\n", req->target);
   }
   return_value_if_fail(handler != NULL, RET_NOT_FOUND);
@@ -183,9 +182,8 @@ ret_t navigator_warn(const char* title, const char* content) {
   return_value_if_fail(navigator() != NULL, RET_BAD_PARAMS);
   return_value_if_fail(title != NULL && content != NULL, RET_BAD_PARAMS);
 
-  req = navigator_request_create(NAVIGATOR_REQ_CONFIRM, NULL);
-  return_value_if_fail(req != NULL, RET_OOM);
   req = navigator_request_create(NAVIGATOR_REQ_WARN, NULL);
+  return_value_if_fail(req != NULL, RET_OOM);
 
   object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_TITLE, title);
   object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_CONTENT, content);
