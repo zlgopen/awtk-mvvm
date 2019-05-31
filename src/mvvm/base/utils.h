@@ -27,7 +27,7 @@
 BEGIN_C_DECLS
 
 const char* destruct_array_prop_name(const char* name, uint32_t* index);
-char* str_gen_random(const char* format);
+ret_t str_random(str_t* str, const char* format, uint32_t max);
 
 END_C_DECLS
 

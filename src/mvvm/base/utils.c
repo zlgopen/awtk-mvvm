@@ -39,11 +39,11 @@ const char* destruct_array_prop_name(const char* name, uint32_t* index) {
   }
 }
 
-char* str_gen_random(const char* format) {
-  char buff[1024];
-  return_value_if_fail(format != NULL, NULL);
+ret_t str_random(str_t* str, const char* format, uint32_t max) {
+  char buff[256];
+  return_value_if_fail(str != NULL && format != NULL && max > 0, RET_BAD_PARAMS);
 
-  tk_snprintf(buff, sizeof(buff) - 1, format, random() % 10000);
+  tk_snprintf(buff, sizeof(buff) - 1, format, random() / max);
 
-  return tk_strdup(buff);
+  return str_set(str, buff);
 }
