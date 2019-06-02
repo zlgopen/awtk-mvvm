@@ -1,0 +1,32 @@
+<button bg_image_draw_type="patch3_x" text_color="blue">
+  <style name="green_btn" >
+    <normal   bg_image="green_btn_n" />
+    <pressed  bg_image="green_btn_p" />
+    <over     bg_image="green_btn_o" />
+  </style>
+
+  <style name="red_btn">
+    <normal   bg_image="red_btn_n" />
+    <pressed  bg_image="red_btn_p" />
+    <over     bg_image="red_btn_o" />
+  </style>
+</button>
+
+<dialog>
+  <style name="custom">
+    <normal />
+  </style>
+</dialog>
+
+<dialog_title icon="info" text_color="black">
+  <style name="custom">
+    <normal bg_image="dialog_title"  bg_image_draw_type="patch3_x"/>
+  </style>
+</dialog_title>
+
+<dialog_client>
+  <style name="custom">
+    <normal bg_color="#ededed" border_color="gray" />
+  </style>
+</dialog_client>
+

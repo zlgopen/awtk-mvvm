@@ -1,0 +1,26 @@
+{
+  "name":"custom_handlers",
+  "desc":"custom_handlers",
+  "cmds": [
+    {
+      "name":"show_toast",
+      "canExec": true,
+      "desc":"show_toast"
+    },
+    {
+      "name":"show_info",
+      "canExec": true,
+      "desc":"show_info"
+    },
+    {
+      "name":"show_confirm",
+      "canExec": true,
+      "desc":"show_confirm"
+    },
+    {
+      "name":"open_mywindow",
+      "canExec": true,
+      "desc":"open_mywindow"
+    }
+  ]
+}

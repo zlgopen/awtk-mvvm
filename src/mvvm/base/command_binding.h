@@ -85,7 +85,7 @@ typedef struct _command_binding_t {
    * 按键过滤(主要用于按键事件，相当于快捷键)。
    */
   char* key_filter;
-  
+
   /**
    * @property {bool_t} auto_disable
    * @annotation ["readable"]

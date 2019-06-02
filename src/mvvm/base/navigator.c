@@ -150,7 +150,7 @@ ret_t navigator_toast(const char* content, uint32_t timeout) {
   return_value_if_fail(req != NULL, RET_OOM);
 
   object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_CONTENT, content);
-  object_set_prop_int(OBJECT(req), NAVIGATOR_ARG_TIMEOUT, timeout);
+  object_set_prop_int(OBJECT(req), NAVIGATOR_ARG_DURATION, timeout);
 
   ret = navigator_handle_request(navigator(), req);
   object_unref(OBJECT(req));

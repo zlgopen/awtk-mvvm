@@ -1,0 +1,6 @@
+<window children_layout="default(r=4, c=1, m=20, s=60)" v-model="custom_handlers">
+  <button text="Toast" v-on:click="{show_toast}"/>
+  <button text="Info" v-on:click="{show_info}"/>
+  <button text="Confirm" v-on:click="{show_confirm}"/>
+  <button text="Open MyWindow" v-on:click="{open_mywindow}"/>
+</window>

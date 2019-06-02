@@ -123,7 +123,7 @@ command_binding_t* command_binding_create(void) {
   return_value_if_fail(rule != NULL, NULL);
 
   rule->auto_disable = TRUE;
-  
+
   return rule;
 }
 

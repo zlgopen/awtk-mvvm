@@ -116,7 +116,7 @@ ret_t navigator_request_on_result(navigator_request_t* req, const value_t* resul
 #define NAVIGATOR_ARG_TITLE "title"
 #define NAVIGATOR_ARG_TIPS "tips"
 #define NAVIGATOR_ARG_DEFAULT "default"
-#define NAVIGATOR_ARG_TIMEOUT "timeout"
+#define NAVIGATOR_ARG_DURATION "timeout"
 #define NAVIGATOR_ARG_CONTENT "content"
 #define NAVIGATOR_ARG_FOR_SAVE "for_save"
 #define NAVIGATOR_ARG_MINE_TYPES "mime_types"

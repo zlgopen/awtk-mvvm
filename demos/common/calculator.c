@@ -5,7 +5,6 @@
 #include "tkc/expr_eval.h"
 
 /***************calculator***************/;
-
 calculator_t* calculator_create(void) {
   calculator_t* calculator = TKMEM_ZALLOC(calculator_t);
   return_value_if_fail(calculator != NULL, NULL);
