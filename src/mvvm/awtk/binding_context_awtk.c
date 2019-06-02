@@ -487,6 +487,19 @@ static ret_t binding_context_awtk_bind(binding_context_t* ctx, void* widget) {
   return RET_OK;
 }
 
+static ret_t widget_set_prop_if_diff(widget_t* widget, const char* name, const value_t* v) {
+  value_t old;
+
+  value_set_int(&old, 0);
+  if (widget_get_prop(widget, name, &old) == RET_OK) {
+    if (value_equal(&old, v)) {
+      return RET_OK;
+    }
+  }
+
+  return widget_set_prop(widget, name, v);
+}
+
 static ret_t visit_data_binding_update_to_view(void* ctx, const void* data) {
   value_t v;
   data_binding_t* rule = DATA_BINDING(data);
@@ -500,7 +513,7 @@ static ret_t visit_data_binding_update_to_view(void* ctx, const void* data) {
   if ((rule->mode == BINDING_ONCE && !(bctx->bound)) || rule->mode == BINDING_ONE_WAY ||
       rule->mode == BINDING_TWO_WAY) {
     return_value_if_fail(data_binding_get_prop(rule, &v) == RET_OK, RET_OK);
-    return_value_if_fail(widget_set_prop(widget, rule->prop, &v) == RET_OK, RET_OK);
+    return_value_if_fail(widget_set_prop_if_diff(widget, rule->prop, &v) == RET_OK, RET_OK);
   }
 
   return RET_OK;

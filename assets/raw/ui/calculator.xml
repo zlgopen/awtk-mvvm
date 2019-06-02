@@ -1,22 +1,23 @@
 <window v-model="calculator">
-  <edit x="c" y="10" w="90%" h="30" focus="true" input_type="custom" text="" tips="expression" v-data:text="{expr}"/>
+  <edit name="expr" x="c" y="10" w="90%" h="30" focus="true" 
+    input_type="custom" text="" tips="expression" v-data:text="{expr}"/>
   <view y="60" x="c" w="90%" h="-60" is_keyboard="true" 
     children_layout="default(r=4,c=4,m=5,s=5)" >
-    <button name="key" text="0" v-on:click="{add_char, Args=0}"/>
-    <button name="key" text="1" v-on:click="{add_char, Args=1}"/>
-    <button name="key" text="2" v-on:click="{add_char, Args=2}"/>
-    <button name="key" text="3" v-on:click="{add_char, Args=3}"/>
-    <button name="key" text="4" v-on:click="{add_char, Args=4}"/>
-    <button name="key" text="5" v-on:click="{add_char, Args=5}"/>
-    <button name="key" text="6" v-on:click="{add_char, Args=6}"/>
-    <button name="key" text="7" v-on:click="{add_char, Args=7}"/>
-    <button name="key" text="8" v-on:click="{add_char, Args=8}"/>
-    <button name="key" text="9" v-on:click="{add_char, Args=9}"/>
-    <button name="key" text="+" v-on:click="{add_char, Args=+}"/>
-    <button name="key" text="-" v-on:click="{add_char, Args=-}"/>
-    <button name="key" text="*" v-on:click="{add_char, Args=*}"/>
-    <button name="key" text="/" v-on:click="{add_char, Args=/}"/>
-    <button name="key" text="=" v-on:click="{eval}"/>
+    <button name="0" text="0" v-on:click="{add_char, Args=0}"/>
+    <button name="1" text="1" v-on:click="{add_char, Args=1}"/>
+    <button name="2" text="2" v-on:click="{add_char, Args=2}"/>
+    <button name="3" text="3" v-on:click="{add_char, Args=3}"/>
+    <button name="4" text="4" v-on:click="{add_char, Args=4}"/>
+    <button name="5" text="5" v-on:click="{add_char, Args=5}"/>
+    <button name="6" text="6" v-on:click="{add_char, Args=6}"/>
+    <button name="7" text="7" v-on:click="{add_char, Args=7}"/>
+    <button name="8" text="8" v-on:click="{add_char, Args=8}"/>
+    <button name="9" text="9" v-on:click="{add_char, Args=9}"/>
+    <button name="+" text="+" v-on:click="{add_char, Args=+}"/>
+    <button name="-" text="-" v-on:click="{add_char, Args=-}"/>
+    <button name="*" text="*" v-on:click="{add_char, Args=*}"/>
+    <button name="/" text="/" v-on:click="{add_char, Args=/}"/>
+    <button name="=" text="=" v-on:click="{eval}"/>
     <button name="backspace" text="<=" v-on:click="{remove_char}"/>
   </view>
 </window>

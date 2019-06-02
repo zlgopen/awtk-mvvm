@@ -130,6 +130,19 @@ ret_t view_model_get_prop(view_model_t* view_model, const char* name, value_t* v
   return object_get_prop(OBJECT(view_model), name, value);
 }
 
+static ret_t object_set_prop_if_diff(object_t* object, const char* name, const value_t* v) {
+  value_t old;
+
+  value_set_int(&old, 0);
+  if (object_get_prop(object, name, &old) == RET_OK) {
+    if (value_equal(&old, v)) {
+      return RET_OK;
+    }
+  }
+
+  return object_set_prop(object, name, v);
+}
+
 ret_t view_model_set_prop(view_model_t* view_model, const char* name, const value_t* value) {
   return_value_if_fail(view_model != NULL && name != NULL && value != NULL, RET_BAD_PARAMS);
   name = view_model_preprocess_prop(view_model, name);
@@ -138,7 +151,7 @@ ret_t view_model_set_prop(view_model_t* view_model, const char* name, const valu
     return RET_OK;
   }
 
-  return object_set_prop(OBJECT(view_model), name, value);
+  return object_set_prop_if_diff(OBJECT(view_model), name, value);
 }
 
 bool_t view_model_can_exec(view_model_t* view_model, const char* name, const char* args) {
