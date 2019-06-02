@@ -47,3 +47,4 @@ ret_t str_random(str_t* str, const char* format, uint32_t max) {
 
   return str_set(str, buff);
 }
+

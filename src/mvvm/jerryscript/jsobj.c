@@ -256,7 +256,7 @@ ret_t jsobj_set_prop(jerry_value_t obj, const char* name, const value_t* v, str_
 
 char* jerry_get_utf8_value(jerry_value_t value, str_t* temp) {
   jerry_size_t string_size = jerry_get_utf8_string_size(value);
-  return_value_if_fail(str_extend(temp, string_size) == RET_OK, NULL);
+  return_value_if_fail(str_extend(temp, string_size + 10) == RET_OK, NULL);
 
   jerry_string_to_utf8_char_buffer(value, (jerry_char_t*)temp->str, string_size);
   temp->size = string_size;
@@ -339,6 +339,9 @@ bool_t jsobj_can_exec(jerry_value_t obj, const char* name, const char* args) {
     }
   } else {
     ret = jsobj_has_prop_func(obj, name);
+    if(!ret) {
+      log_debug("not find function %s\n", name);
+    }
   }
 
   return ret;
