@@ -42,6 +42,10 @@ class Utils {
       }).join('\n');
     }
 
+    if(propsDecl.length < 2) {
+      propsDecl = "   uint32_t dummy;";
+    }
+
     return propsDecl;
   }
 

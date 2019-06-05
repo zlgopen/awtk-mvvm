@@ -339,7 +339,7 @@ bool_t jsobj_can_exec(jerry_value_t obj, const char* name, const char* args) {
     }
   } else {
     ret = jsobj_has_prop_func(obj, name);
-    if(!ret) {
+    if (!ret) {
       log_debug("not find function %s\n", name);
     }
   }

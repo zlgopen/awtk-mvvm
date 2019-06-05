@@ -13,6 +13,7 @@ BEGIN_C_DECLS
  *
  */
 typedef struct _custom_handlers_t {
+  uint32_t dummy;
 } custom_handlers_t;
 
 /**
