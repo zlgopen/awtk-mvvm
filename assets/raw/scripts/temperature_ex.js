@@ -19,7 +19,8 @@ function createTemperatureEx(req) {
   return new Temperature(req);
 }
 
-// ValueValidators
+// ValueConverters
+var ValueConverters = ValueConverters || {};
 ValueConverters.fahrenheit = {
   toView: function(v) {
     return v * 1.8 + 32;
@@ -30,6 +31,7 @@ ValueConverters.fahrenheit = {
 }
 
 // ValueValidators
+var ValueValidators = ValueValidators || {};
 ValueValidators.waterTemp = {
   isValid: function(v) {
     if (v <= 20) {
