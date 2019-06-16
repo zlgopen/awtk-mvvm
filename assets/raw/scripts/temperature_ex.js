@@ -1,18 +1,17 @@
 // Model
 function Temperature (req) {
   this.value = req.value || 20;
-  this.applyd_value = 20;
+  this.applydValue = 20;
 }
 
 Temperature.prototype.apply = function(args) {
-  this.applyd_value = this.value;
+  this.applydValue = this.value;
 
-  this.notifyPropsChanged();
-  return true;
+  return RET_OBJECT_CHANGED;
 }
 
 Temperature.prototype.canApply = function(args) {
-  return this.applyd_value != this.value;
+  return this.applydValue != this.value;
 }
 
 // Model creator
@@ -31,7 +30,7 @@ ValueConverters.fahrenheit = {
 }
 
 // ValueValidators
-ValueValidators.water_temp = {
+ValueValidators.waterTemp = {
   isValid: function(v) {
     if (v <= 20) {
       return {result: false, message:"too low"};
