@@ -50,6 +50,16 @@ git clone https://github.com/jerryscript-project/jerryscript.git 3rd/jerryscript
 scons
 ```
 
+> 编译linux-fb版本，请修改SConstruct
+
+```
+#for pc
+#sys.path.insert(0, '../awtk/')
+
+#for linux-fb
+sys.path.insert(0, '../awtk-linux-fb/')
+```
+
 * 运行demos
 
 ```

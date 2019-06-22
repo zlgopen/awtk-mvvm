@@ -3,10 +3,10 @@ import sys
 import platform
 
 #for pc
-#sys.path.insert(0, '../awtk/')
+sys.path.insert(0, '../awtk/')
 
 #for linux-fb
-sys.path.insert(0, '../awtk-linux-fb/')
+#sys.path.insert(0, '../awtk-linux-fb/')
 
 import awtk_config as awtk
 
