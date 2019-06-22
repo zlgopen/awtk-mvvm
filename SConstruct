@@ -2,7 +2,12 @@ import os
 import sys
 import platform
 
-sys.path.insert(0, '../awtk/')
+#for pc
+#sys.path.insert(0, '../awtk/')
+
+#for linux-fb
+sys.path.insert(0, '../awtk-linux-fb/')
+
 import awtk_config as awtk
 
 APP_ROOT    = os.path.normpath(os.getcwd())
@@ -49,13 +54,21 @@ TK_JS_JERRYSCRIPT_DIRS = [
 APP_LIBS = ['assets', 'mvvm', 'jerryscript']
 APP_LIBPATH = [APP_LIB_DIR]
 APP_CPPPATH = TK_JS_JERRYSCRIPT_DIRS + [APP_SRC]
+APP_CFLAGS = '-DRES_ROOT=\"\\\"'+RES_ROOT+'\\\"\" -DWITH_JERRYSCRIPT '
 APP_CCFLAGS = '-DRES_ROOT=\"\\\"'+RES_ROOT+'\\\"\" -DWITH_JERRYSCRIPT '
 
 DefaultEnvironment(
+  CC=awtk.TOOLS_PREFIX+'gcc',
+  CXX=awtk.TOOLS_PREFIX+'g++',
+  LD=awtk.TOOLS_PREFIX+'g++',
+  AR=awtk.TOOLS_PREFIX+'ar',
+  STRIP=awtk.TOOLS_PREFIX+'strip',
+
   CPPPATH   = APP_CPPPATH + awtk.CPPPATH,
   LINKFLAGS = awtk.LINKFLAGS,
   LIBS      = APP_LIBS + awtk.LIBS,
   LIBPATH   = APP_LIBPATH + awtk.LIBPATH,
+  CFLAGS    = APP_CFLAGS + awtk.CFLAGS, 
   CCFLAGS   = APP_CCFLAGS + awtk.CCFLAGS, 
   OS_SUBSYSTEM_CONSOLE=awtk.OS_SUBSYSTEM_CONSOLE,
   OS_SUBSYSTEM_WINDOWS=awtk.OS_SUBSYSTEM_WINDOWS)
