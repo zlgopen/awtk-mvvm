@@ -47,6 +47,7 @@
 #include "assets/inc/ui/js_temperature9.data"
 #include "assets/inc/ui/shape.data"
 #include "assets/inc/ui/js_room_settings.data"
+#include "assets/inc/ui/js_com_settings.data"
 #ifdef WITH_STB_IMAGE
 #include "assets/inc/images/question.res"
 #include "assets/inc/images/info.res"
@@ -97,14 +98,14 @@
 #include "assets/inc/images/checked.data"
 #include "assets/inc/images/arrow_down_o.data"
 #include "assets/inc/images/edit_clear_p.data"
-#endif/*WITH_STB_IMAGE*/
+#endif /*WITH_STB_IMAGE*/
 #ifdef WITH_VGCANVAS
-#endif/*WITH_VGCANVAS*/
+#endif /*WITH_VGCANVAS*/
 #if defined(WITH_STB_FONT) || defined(WITH_FT_FONT)
 #include "assets/inc/fonts/default.res"
-#else/*WITH_STB_FONT or WITH_FT_FONT*/
-#endif/*WITH_STB_FONT or WITH_FT_FONT*/
-#endif/*WITH_FS_RES*/
+#else  /*WITH_STB_FONT or WITH_FT_FONT*/
+#endif /*WITH_STB_FONT or WITH_FT_FONT*/
+#endif /*WITH_FS_RES*/
 
 ret_t assets_init(void) {
   assets_manager_t* rm = assets_manager();
@@ -159,6 +160,7 @@ ret_t assets_init(void) {
   assets_manager_add(rm, ui_js_temperature9);
   assets_manager_add(rm, ui_shape);
   assets_manager_add(rm, ui_js_room_settings);
+  assets_manager_add(rm, ui_js_com_settings);
   assets_manager_add(rm, image_question);
   assets_manager_add(rm, image_arrow_left_n);
   assets_manager_add(rm, image_unchecked);
@@ -184,7 +186,7 @@ ret_t assets_init(void) {
   assets_manager_add(rm, image_arrow_down_o);
   assets_manager_add(rm, image_edit_clear_p);
 #ifdef WITH_VGCANVAS
-#endif/*WITH_VGCANVAS*/
+#endif /*WITH_VGCANVAS*/
 #endif
 
   tk_init_assets();

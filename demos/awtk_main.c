@@ -22,7 +22,6 @@
 #include "awtk.h"
 #include "mvvm/mvvm.h"
 extern ret_t assets_init(void);
-extern ret_t application_init(void);
 
 #ifdef USE_GUI_MAIN
 int gui_app_start(int lcd_w, int lcd_h) {

@@ -125,7 +125,10 @@ static ret_t binding_context_bind_data(binding_context_t* ctx, const char* name,
 
   if (rule->trigger != UPDATE_WHEN_EXPLICIT) {
     if (rule->mode == BINDING_TWO_WAY || rule->mode == BINDING_ONE_WAY_TO_VIEW_MODEL) {
-      if (tk_str_eq(rule->prop, WIDGET_PROP_VALUE)) {
+      bool_t is_edit = tk_str_eq(widget_get_type(widget), WIDGET_TYPE_EDIT);
+
+      if (tk_str_eq(rule->prop, WIDGET_PROP_VALUE) ||
+          (tk_str_eq(rule->prop, WIDGET_PROP_TEXT) && is_edit)) {
         if (rule->trigger == UPDATE_WHEN_CHANGING) {
           widget_on(widget, EVT_VALUE_CHANGING, on_widget_value_change, rule);
         }
@@ -513,7 +516,11 @@ static ret_t visit_data_binding_update_to_view(void* ctx, const void* data) {
   if ((rule->mode == BINDING_ONCE && !(bctx->bound)) || rule->mode == BINDING_ONE_WAY ||
       rule->mode == BINDING_TWO_WAY) {
     return_value_if_fail(data_binding_get_prop(rule, &v) == RET_OK, RET_OK);
-    return_value_if_fail(widget_set_prop_if_diff(widget, rule->prop, &v) == RET_OK, RET_OK);
+    if (bctx->bound) {
+      return_value_if_fail(widget_set_prop_if_diff(widget, rule->prop, &v) == RET_OK, RET_OK);
+    } else {
+      return_value_if_fail(widget_set_prop(widget, rule->prop, &v) == RET_OK, RET_OK);
+    }
   }
 
   return RET_OK;
