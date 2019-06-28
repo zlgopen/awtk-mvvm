@@ -17,6 +17,7 @@
 #include "assets/inc/ui/demo9_main.data"
 #include "assets/inc/ui/home.data"
 #include "assets/inc/ui/humidity.data"
+#include "assets/inc/ui/js_address.data"
 #include "assets/inc/ui/js_books.data"
 #include "assets/inc/ui/js_calculator.data"
 #include "assets/inc/ui/js_demo9_main.data"
@@ -152,6 +153,7 @@ ret_t assets_init(void) {
   assets_manager_add(rm, ui_demo9_main);
   assets_manager_add(rm, ui_home);
   assets_manager_add(rm, ui_humidity);
+  assets_manager_add(rm, ui_js_address);
   assets_manager_add(rm, ui_js_books);
   assets_manager_add(rm, ui_js_calculator);
   assets_manager_add(rm, ui_js_demo9_main);
