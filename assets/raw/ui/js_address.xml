@@ -1,6 +1,6 @@
 <window v-model="address.js"> 
-  <combo_box x="center" y="middle:-80" w="200" h="30" v-data:options="{province_list}" v-data:value="{province}"/>
-  <combo_box x="center" y="middle:-40" w="200" h="30" v-data:options="{city_list}" v-data:value="{city}"/>
-  <combo_box x="center" y="middle" w="200" h="30" v-data:options="{country_list}" v-data:value="{country}"/>
+  <combo_box x="center" y="middle:-80" w="200" h="30" v-data:options="{province_list}" v-data:text="{province}"/>
+  <combo_box x="center" y="middle:-40" w="200" h="30" v-data:options="{city_list}" v-data:text="{city}"/>
+  <combo_box x="center" y="middle" w="200" h="30" v-data:options="{country_list}" v-data:text="{country}"/>
   <label x="center" y="middle:40" w="90%" h="30" v-data:text="{address}"/>
 </window>

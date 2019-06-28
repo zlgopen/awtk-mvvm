@@ -1,8 +1,8 @@
-
 function Address() {
-  this.province = '广东';
-  this.city = '广州';
-  this.country = '天河区';
+  this._province = '广东';
+  this._city = '广州';
+  this._country = '天河区';
+
   this.data = {
     '北京': {
       '北京': ['东城区', '西城区', '朝阳区','丰台区','石景山区','海淀区','']
@@ -19,41 +19,59 @@ function Address() {
 
 Object.defineProperty(Address.prototype, 'province_list', {
   get: function () {
-    return Object.keys(this.data);
+    return Object.keys(this.data).join(';');
   }
 })
 
 Object.defineProperty(Address.prototype, 'city_list', {
   get: function () {
-    return Object.keys(this.data[this.province]);
+    return Object.keys(this.data[this._province]).join(';');
   }
 })
 
 Object.defineProperty(Address.prototype, 'country_list', {
   get: function () {
-    return this.data[this.province][this.city];
+    return this.data[this._province][this._city].join(';');
   }
 })
 
 Object.defineProperty(Address.prototype, 'address', {
   get: function () {
-    return this.province + this.city + this.country;
+    return this._province + this._city + this._country;
   }
 })
 
+Object.defineProperty(Address.prototype, 'province', {
+  get: function () {
+    return this._province;
+  },
+  set: function (val) {
+    this._province = val;
+    this.city = this.city_list.split(';')[0]; 
+  }
+})
+
+Object.defineProperty(Address.prototype, 'city', {
+  get: function () {
+    return this._city;
+  },
+  set: function (val) {
+    this._city = val;
+    this.country = this.country_list.split(';')[0]; 
+  }
+})
+
+Object.defineProperty(Address.prototype, 'country', {
+  get: function () {
+    return this._country;
+  },
+  set: function (val) {
+    return this._country = val;
+  }
+})
+
+
 function createAddress(req) {
-  var address = new Address();
-
-  return address;
+  return new Address();
 }
-
-
-function test() {
-  var addr = createAddress()
-  console.log(addr.province_list);
-  console.log(addr.city_list);
-  console.log(addr.country_list);
-}
-
-test();
 

@@ -64,6 +64,10 @@ int main(void) {
 #endif /*NDEBUG*/
 #endif /*WIN32*/
 
+#ifdef WITH_FS_RES
+  system_info_set_default_font(system_info(), "default_full");
+#endif /*WITH_FS_RES*/
+
   tk_ext_widgets_init();
 
   assets_init();
