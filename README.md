@@ -74,6 +74,7 @@ sys.path.insert(0, '../awtk-linux-fb/')
 * [数据绑定](docs/10.data_binding.md)
 * [命令绑定](docs/11.command_binding.md)
 * [窗口导航器](docs/12.navigate.md)
+* [JS实现ViewModel](docs/13.js_view_model.md)
 
 ## 五、示例
 
@@ -93,5 +94,6 @@ sys.path.insert(0, '../awtk-linux-fb/')
 | demo12   | jsdemo12 | 多窗口之间参数传递                   |
 | demo13   | jsdemo13 | 列表视图的基本用法                   |
 | demo14   | jsdemo14 | 快捷键的基本用法                     |
-| demo15   | （no）    | 自定义导航器处理插件，以及MVVM窗口和非MVVM窗口的交互 |
-
+| demo15   | （no）   | 自定义导航器处理插件，以及MVVM窗口和非MVVM窗口的交互 |
+| (no)     | jsdemo15 | combox 数据联动                     |
+| (no)     | jsdemo16 | 动态界面                            |
