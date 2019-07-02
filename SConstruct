@@ -57,22 +57,33 @@ APP_CPPPATH = TK_JS_JERRYSCRIPT_DIRS + [APP_SRC]
 APP_CFLAGS = '-DRES_ROOT=\"\\\"'+RES_ROOT+'\\\"\" -DWITH_JERRYSCRIPT '
 APP_CCFLAGS = '-DRES_ROOT=\"\\\"'+RES_ROOT+'\\\"\" -DWITH_JERRYSCRIPT '
 
-DefaultEnvironment(
-  CPPPATH   = APP_CPPPATH + awtk.CPPPATH,
-  LINKFLAGS = awtk.LINKFLAGS,
-  LIBS      = APP_LIBS + awtk.LIBS,
-  LIBPATH   = APP_LIBPATH + awtk.LIBPATH,
-  CFLAGS    = APP_CFLAGS + awtk.CFLAGS, 
-  CCFLAGS   = APP_CCFLAGS + awtk.CCFLAGS, 
-  OS_SUBSYSTEM_CONSOLE=awtk.OS_SUBSYSTEM_CONSOLE,
-  OS_SUBSYSTEM_WINDOWS=awtk.OS_SUBSYSTEM_WINDOWS)
 
-if awtk.OS_NAME != 'Windows':
-  DefaultEnvironment(CC=awtk.TOOLS_PREFIX+'gcc',
-    CXX=awtk.TOOLS_PREFIX+'g++',
-    LD=awtk.TOOLS_PREFIX+'g++',
-    AR=awtk.TOOLS_PREFIX+'ar',
-    STRIP=awtk.TOOLS_PREFIX+'strip')
+if hasattr(awtk, 'CC'):
+  DefaultEnvironment(
+    CC=awtk.CC,
+    CXX=awtk.CXX,
+    LD=awtk.LD,
+    AR=awtk.AR,
+    STRIP=awtk.STRIP,
+    
+    CPPPATH   = APP_CPPPATH + awtk.CPPPATH,
+    LINKFLAGS = awtk.LINKFLAGS,
+    LIBS      = APP_LIBS + awtk.LIBS,
+    LIBPATH   = APP_LIBPATH + awtk.LIBPATH,
+    CFLAGS    = APP_CFLAGS + awtk.CFLAGS, 
+    CCFLAGS   = APP_CCFLAGS + awtk.CCFLAGS, 
+    OS_SUBSYSTEM_CONSOLE=awtk.OS_SUBSYSTEM_CONSOLE,
+    OS_SUBSYSTEM_WINDOWS=awtk.OS_SUBSYSTEM_WINDOWS)
+else:
+  DefaultEnvironment(
+    CPPPATH   = APP_CPPPATH + awtk.CPPPATH,
+    LINKFLAGS = awtk.LINKFLAGS,
+    LIBS      = APP_LIBS + awtk.LIBS,
+    LIBPATH   = APP_LIBPATH + awtk.LIBPATH,
+    CFLAGS    = APP_CFLAGS + awtk.CFLAGS, 
+    CCFLAGS   = APP_CCFLAGS + awtk.CCFLAGS, 
+    OS_SUBSYSTEM_CONSOLE=awtk.OS_SUBSYSTEM_CONSOLE,
+    OS_SUBSYSTEM_WINDOWS=awtk.OS_SUBSYSTEM_WINDOWS)
 
 
 SConscript(['3rd/SConscript', 'src/SConscript', 'demos/SConscript', 'tests/SConscript'])
