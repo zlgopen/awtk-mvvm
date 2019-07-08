@@ -1,8 +1,6 @@
 <window v-model="com_settings.js"> 
-  <combo_box x="c" y="10" w="200" h="30" options="UART;SOCKET" v-data:value="{type}" readonly="true"/>
-  <label x="c" y="50" w="100%" h="30" v-data:text="{summary}" />
-
-  <pages x="10" y="90" w="-20" h="-90" v-data:value="{type}">
+  <combo_box x="r:24" y="10" w="200" h="30" options="UART;SOCKET" v-data:value="{type}" readonly="true"/>
+  <pages x="10" y="50" w="-20" h="-90" v-data:value="{type}">
     <view x="0" y="0" w="100%" h="100%" children_layout="default(c=1,h=25,m=0,s=5)">
       <row children_layout="default(c=0,r=1,m=0,s=5)">
         <label text="Device" w="80"/>
@@ -28,4 +26,6 @@
       </row>
     </view>
   </pages>
+  <label x="10" y="m" w="100%" h="30" v-data:text="{summary}" />
+
 </window>

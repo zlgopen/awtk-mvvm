@@ -70,11 +70,12 @@ sys.path.insert(0, '../awtk-linux-fb/')
 
 ## 四、文档
 * [介绍](docs/8.intro.md)
-* [ViewModel实现方法](9.view_model.md)
+* [ViewModel实现方法](docs/9.view_model.md)
 * [数据绑定](docs/10.data_binding.md)
 * [命令绑定](docs/11.command_binding.md)
 * [窗口导航器](docs/12.navigate.md)
 * [JS实现ViewModel](docs/13.js_view_model.md)
+* [高级用法](docs/14.advance_usages.md)
 
 ## 五、示例
 

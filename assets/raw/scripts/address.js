@@ -1,7 +1,8 @@
 function Address() {
   this._province = '广东';
   this._city = '广州';
-  this._country = '天河区';
+  this.country = '天河区';
+  this.detail = '';
 
   this.data = {
     '北京': {
@@ -37,7 +38,7 @@ Object.defineProperty(Address.prototype, 'country_list', {
 
 Object.defineProperty(Address.prototype, 'address', {
   get: function () {
-    return this._province + this._city + this._country;
+    return this._province + this._city + this.country + this.detail;
   }
 })
 
@@ -60,16 +61,6 @@ Object.defineProperty(Address.prototype, 'city', {
     this.country = this.country_list.split(';')[0]; 
   }
 })
-
-Object.defineProperty(Address.prototype, 'country', {
-  get: function () {
-    return this._country;
-  },
-  set: function (val) {
-    return this._country = val;
-  }
-})
-
 
 function createAddress(req) {
   return new Address();
