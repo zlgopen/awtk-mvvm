@@ -6,9 +6,9 @@
         <label w="20" v-data:text="{index}"/>
         <label w="35%" v-data:text="{item.name}"/>
         <label w="40" v-data:text="{item.stock}"/>
-        <column  w="128" children_layout="default(rows=1,cols=2,s=5,ym=5)">
-          <button w="60" text="Remove" v-on:click="{remove}"/>
-          <button w="60" text="Sale" v-on:click="{sale}"/>
+        <column  w="128" children_layout="default(rows=1,cols=0,s=5,ym=5)">
+          <button w="70" text="Remove" v-on:click="{remove}"/>
+          <button w="50" text="Sale" v-on:click="{sale}"/>
         </column>
       </list_item>
     </scroll_view>

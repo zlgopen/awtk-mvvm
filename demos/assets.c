@@ -30,6 +30,7 @@
 #include "assets/inc/ui/js_temperature10.data"
 #include "assets/inc/ui/js_temperature14.data"
 #include "assets/inc/ui/js_temperature17.data"
+#include "assets/inc/ui/js_temperature18.data"
 #include "assets/inc/ui/js_temperature2.data"
 #include "assets/inc/ui/js_temperature3.data"
 #include "assets/inc/ui/js_temperature4.data"
@@ -170,6 +171,7 @@ ret_t assets_init(void) {
   assets_manager_add(rm, ui_js_temperature10);
   assets_manager_add(rm, ui_js_temperature14);
   assets_manager_add(rm, ui_js_temperature17);
+  assets_manager_add(rm, ui_js_temperature18);
   assets_manager_add(rm, ui_js_temperature2);
   assets_manager_add(rm, ui_js_temperature3);
   assets_manager_add(rm, ui_js_temperature4);
