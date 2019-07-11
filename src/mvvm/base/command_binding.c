@@ -131,10 +131,10 @@ bool_t command_binding_can_exec(command_binding_t* rule) {
   view_model_t* view_model = NULL;
   return_value_if_fail(rule != NULL, FALSE);
   view_model = BINDING_RULE_VIEW_MODEL(rule);
+  binding_context_t* context = BINDING_RULE_CONTEXT(rule);
   return_value_if_fail(view_model != NULL, FALSE);
 
-  if (tk_str_ieq(rule->command, COMMAND_BINDING_CMD_NOTHING) ||
-      tk_str_ieq(rule->command, COMMAND_BINDING_CMD_NAVIGATE)) {
+  if (binding_context_can_exec(context, rule->command, rule->args)) {
     return TRUE;
   }
 
@@ -150,14 +150,12 @@ ret_t command_binding_exec(command_binding_t* rule) {
   view_model_t* view_model = NULL;
   return_value_if_fail(rule != NULL, FALSE);
   view_model = BINDING_RULE_VIEW_MODEL(rule);
+  binding_context_t* context = BINDING_RULE_CONTEXT(rule);
+
   return_value_if_fail(view_model != NULL, FALSE);
 
-  if (tk_str_ieq(rule->command, COMMAND_BINDING_CMD_NOTHING)) {
+  if (binding_context_exec(context, rule->command, rule->args) == RET_OK) {
     return RET_OK;
-  }
-
-  if (tk_str_ieq(rule->command, COMMAND_BINDING_CMD_NAVIGATE)) {
-    return navigator_to(rule->args);
   }
 
   if (object_is_collection(OBJECT(view_model))) {

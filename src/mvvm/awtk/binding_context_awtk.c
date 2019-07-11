@@ -192,13 +192,7 @@ static bool_t command_binding_filter(command_binding_t* rule, event_t* e) {
   return FALSE;
 }
 
-static ret_t on_widget_event(void* ctx, event_t* e) {
-  command_binding_t* rule = COMMAND_BINDING(ctx);
-
-  if (command_binding_filter(rule, e)) {
-    return RET_OK;
-  }
-
+static ret_t command_binding_exec_command(command_binding_t* rule) {
   if (command_binding_can_exec(rule)) {
     if (rule->update_model) {
       binding_context_update_to_model(BINDING_RULE(rule)->binding_context);
@@ -217,6 +211,18 @@ static ret_t on_widget_event(void* ctx, event_t* e) {
   } else {
     log_debug("%s cannot exec\n", rule->command);
   }
+
+  return RET_OK;
+}
+
+static ret_t on_widget_event(void* ctx, event_t* e) {
+  command_binding_t* rule = COMMAND_BINDING(ctx);
+
+  if (command_binding_filter(rule, e)) {
+    return RET_OK;
+  }
+
+  command_binding_exec_command(rule);
 
   return RET_OK;
 }

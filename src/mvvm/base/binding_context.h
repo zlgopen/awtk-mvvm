@@ -30,11 +30,16 @@ BEGIN_C_DECLS
 
 typedef ret_t (*binding_context_update_to_view_t)(binding_context_t* ctx);
 typedef ret_t (*binding_context_update_to_model_t)(binding_context_t* ctx);
+typedef ret_t (*binding_context_exec_t)(binding_context_t* ctx, const char* cmd, const char* args);
+typedef bool_t (*binding_context_can_exec_t)(binding_context_t* ctx, const char* cmd,
+                                             const char* args);
 typedef ret_t (*binding_context_destroy_t)(binding_context_t* ctx);
 
 typedef struct _binding_context_vtable_t {
   binding_context_update_to_view_t update_to_view;
   binding_context_update_to_model_t update_to_model;
+  binding_context_exec_t exec;
+  binding_context_can_exec_t can_exec;
   binding_context_destroy_t destroy;
 } binding_context_vtable_t;
 
@@ -149,6 +154,30 @@ ret_t binding_context_init(binding_context_t* ctx, navigator_request_t* req, vie
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
 ret_t binding_context_update_to_view(binding_context_t* ctx);
+
+/**
+ * @method binding_context_exec
+ * 执行内置命令。
+ *
+ * @param {binding_context_t*} ctx binding_context对象。
+ * @param {const char*} cmd 命令名。
+ * @param {const char*} args 命令参数。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t binding_context_exec(binding_context_t* ctx, const char* cmd, const char* args);
+
+/**
+ * @method binding_context_can_exec
+ * 检查内置命令是否可以执行。
+ *
+ * @param {binding_context_t*} ctx binding_context对象。
+ * @param {const char*} cmd 命令名。
+ * @param {const char*} args 命令参数。
+ *
+ * @return {bool_t} 返回TRUE表示可以执行，否则表示不可以执行。
+ */
+bool_t binding_context_can_exec(binding_context_t* ctx, const char* cmd, const char* args);
 
 /**
  * @method binding_context_update_to_model

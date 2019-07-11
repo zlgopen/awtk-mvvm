@@ -21,6 +21,7 @@
 
 #include "tkc/mem.h"
 #include "mvvm/base/binding_context.h"
+#include "mvvm/base/command_binding.h"
 
 ret_t binding_context_init(binding_context_t* ctx, navigator_request_t* req, view_model_t* vm) {
   return_value_if_fail(ctx != NULL, RET_BAD_PARAMS);
@@ -102,4 +103,35 @@ ret_t binding_context_clear_bindings(binding_context_t* ctx) {
   darray_clear(&(ctx->command_bindings));
 
   return RET_OK;
+}
+
+ret_t binding_context_exec(binding_context_t* ctx, const char* cmd, const char* args) {
+  return_value_if_fail(ctx != NULL && ctx->vt != NULL && cmd != NULL, RET_BAD_PARAMS);
+
+  if (tk_str_ieq(cmd, COMMAND_BINDING_CMD_NOTHING)) {
+    return RET_OK;
+  } else if (tk_str_ieq(cmd, COMMAND_BINDING_CMD_NAVIGATE)) {
+    return navigator_to(args);
+  }
+
+  if (ctx->vt->exec != NULL) {
+    return ctx->vt->exec(ctx, cmd, args);
+  }
+
+  return RET_NOT_IMPL;
+}
+
+bool_t binding_context_can_exec(binding_context_t* ctx, const char* cmd, const char* args) {
+  return_value_if_fail(ctx != NULL && ctx->vt != NULL && cmd != NULL, RET_BAD_PARAMS);
+
+  if (tk_str_ieq(cmd, COMMAND_BINDING_CMD_NOTHING) ||
+      tk_str_ieq(cmd, COMMAND_BINDING_CMD_NAVIGATE)) {
+    return TRUE;
+  }
+
+  if (ctx->vt->can_exec != NULL) {
+    return ctx->vt->can_exec(ctx, cmd, args);
+  }
+
+  return FALSE;
 }
