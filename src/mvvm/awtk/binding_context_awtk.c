@@ -25,8 +25,10 @@
 #include "tkc/int_str.h"
 #include "tkc/darray.h"
 #include "base/idle.h"
+#include "base/enums.h"
 #include "base/widget.h"
 #include "widgets/window.h"
+#include "base/window_manager.h"
 #include "mvvm/base/data_binding.h"
 #include "mvvm/base/view_model_dummy.h"
 #include "mvvm/base/view_model_array.h"
@@ -614,9 +616,48 @@ static ret_t binding_context_awtk_destroy(binding_context_t* ctx) {
   return RET_OK;
 }
 
+static ret_t binding_context_awtk_send_key(widget_t* win, const char* key) {
+  key_event_t e;
+  widget_t* wm = win->parent;
+
+  if (key && *key) {
+    const key_type_value_t* kt = keys_type_find(key);
+    int32_t code = kt != NULL ? kt->value : *key;
+
+    key_event_init(&e, EVT_KEY_DOWN, wm, code);
+    window_manager_dispatch_input_event(wm, (event_t*)&e);
+
+    key_event_init(&e, EVT_KEY_UP, wm, code);
+    window_manager_dispatch_input_event(wm, (event_t*)&e);
+  }
+
+  return RET_OK;
+}
+
+static ret_t binding_context_awtk_exec(binding_context_t* ctx, const char* cmd, const char* args) {
+  if (tk_str_ieq(COMMAND_BINDING_CMD_SEND_KEY, cmd)) {
+    widget_t* win = widget_get_window(WIDGET(ctx->widget));
+
+    return binding_context_awtk_send_key(win, args);
+  }
+
+  return RET_NOT_IMPL;
+}
+
+static bool_t binding_context_awtk_can_exec(binding_context_t* ctx, const char* cmd,
+                                            const char* args) {
+  if (tk_str_ieq(COMMAND_BINDING_CMD_SEND_KEY, cmd)) {
+    return TRUE;
+  }
+
+  return FALSE;
+}
+
 static const binding_context_vtable_t s_binding_context_vtable = {
     .update_to_view = binding_context_awtk_update_to_view,
     .update_to_model = binding_context_awtk_update_to_model,
+    .exec = binding_context_awtk_exec,
+    .can_exec = binding_context_awtk_can_exec,
     .destroy = binding_context_awtk_destroy};
 
 binding_context_t* binding_context_awtk_create(widget_t* widget, navigator_request_t* req) {
