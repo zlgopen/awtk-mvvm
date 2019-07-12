@@ -43,6 +43,7 @@
 #include "assets/inc/ui/temperature1.data"
 #include "assets/inc/ui/temperature10.data"
 #include "assets/inc/ui/temperature14.data"
+#include "assets/inc/ui/temperature16.data"
 #include "assets/inc/ui/temperature2.data"
 #include "assets/inc/ui/temperature3.data"
 #include "assets/inc/ui/temperature4.data"
@@ -100,15 +101,15 @@
 #include "assets/inc/images/radio_checked.data"
 #include "assets/inc/images/radio_unchecked.data"
 #include "assets/inc/images/unchecked.data"
-#endif/*WITH_STB_IMAGE*/
+#endif /*WITH_STB_IMAGE*/
 #ifdef WITH_VGCANVAS
-#endif/*WITH_VGCANVAS*/
+#endif /*WITH_VGCANVAS*/
 #if defined(WITH_STB_FONT) || defined(WITH_FT_FONT)
 #include "assets/inc/fonts/default.res"
-#else/*WITH_STB_FONT or WITH_FT_FONT*/
+#else /*WITH_STB_FONT or WITH_FT_FONT*/
 #include "assets/inc/fonts/default.data"
-#endif/*WITH_STB_FONT or WITH_FT_FONT*/
-#endif/*WITH_FS_RES*/
+#endif /*WITH_STB_FONT or WITH_FT_FONT*/
+#endif /*WITH_FS_RES*/
 
 ret_t assets_init(void) {
   assets_manager_t* rm = assets_manager();
@@ -184,6 +185,7 @@ ret_t assets_init(void) {
   assets_manager_add(rm, ui_temperature1);
   assets_manager_add(rm, ui_temperature10);
   assets_manager_add(rm, ui_temperature14);
+  assets_manager_add(rm, ui_temperature16);
   assets_manager_add(rm, ui_temperature2);
   assets_manager_add(rm, ui_temperature3);
   assets_manager_add(rm, ui_temperature4);
@@ -192,7 +194,7 @@ ret_t assets_init(void) {
   assets_manager_add(rm, ui_temperature9);
   assets_manager_add(rm, ui_temperature_humidity);
 #ifdef WITH_VGCANVAS
-#endif/*WITH_VGCANVAS*/
+#endif /*WITH_VGCANVAS*/
 #endif
 
   tk_init_assets();
