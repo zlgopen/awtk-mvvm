@@ -22,7 +22,7 @@
 #ifndef TK_TEMPERATURE_SENSOR_H
 #define TK_TEMPERATURE_SENSOR_H
 
-#include "tkc/object.h"
+#include "mvvm/hardware/device_object.h"
 
 BEGIN_C_DECLS
 
@@ -31,12 +31,12 @@ typedef struct _temperature_sensor_t temperature_sensor_t;
 
 /**
  * @class temperature_sensor_t
- * @parent object_t
+ * @parent device_object_t
  *
  * 温度传感器。
  */
 struct _temperature_sensor_t {
-  object_t object;
+  device_object_t device_object;
 
   /**
    * @property {double} value

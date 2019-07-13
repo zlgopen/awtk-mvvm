@@ -22,7 +22,7 @@
 #ifndef TK_BUZZER_H
 #define TK_BUZZER_H
 
-#include "tkc/object.h"
+#include "mvvm/hardware/device_object.h"
 
 BEGIN_C_DECLS
 
@@ -31,26 +31,33 @@ typedef struct _buzzer_t buzzer_t;
 
 /**
  * @class buzzer_t
- * @parent object_t
+ * @parent device_object_t
  *
  * 蜂鸣器。
  */
 struct _buzzer_t {
-  object_t object;
+  device_object_t device_object;
 
   /**
-   * @property {int32_t} volume
+   * @property {uint32_t} volume
    * @annotation ["set_prop","get_prop"]
    * 音量(0-100)。
    */
-  int32_t volume;
+  uint32_t volume;
 
   /**
-   * @property {int32_t} freq
+   * @property {uint32_t} duration 
+   * @annotation ["set_prop","get_prop"]
+   * 持续时间(ms)。
+   */
+  uint32_t duration;
+
+  /**
+   * @property {uint32_t} freq
    * @annotation ["set_prop","get_prop"]
    * 频率。
    */
-  int32_t freq;
+  uint32_t freq;
 
   /**
    * @property {bool_t} on
@@ -67,6 +74,8 @@ struct _buzzer_t {
 #define BUZZER_PROP_ON "on"
 #define BUZZER_PROP_FREQ "freq"
 #define BUZZER_PROP_VOLUME "volume"
+#define BUZZER_PROP_DURATION "duration"
+
 END_C_DECLS
 
 #endif /*TK_BUZZER_H*/

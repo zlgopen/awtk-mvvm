@@ -37,9 +37,12 @@ widget_t* widget_temperature_sensor_create(widget_t* parent, xy_t x, xy_t y, wh_
 
 ret_t hardware_init(void) {
   device_factory_init();
+#ifdef AWORKS_OS
+  /*register hardware device here */
+#else
   device_factory_register(BUZZER_TYPE, buzzer_log_create);
   device_factory_register(TEMPERATURE_SENSOR_TYPE, temperature_sensor_random_create);
-
+#endif/*AWORKS_OS*/
   widget_factory_register(widget_factory(), BUZZER_TYPE, widget_buzzer_create);
   widget_factory_register(widget_factory(), TEMPERATURE_SENSOR_TYPE,
                           widget_temperature_sensor_create);
