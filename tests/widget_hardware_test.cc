@@ -9,7 +9,6 @@ static object_t* dummy_device_create(const char* args) {
 
 TEST(WidgetHardware, basic) {
   widget_t* w = NULL;
-  object_t* device = NULL;
   device_factory_init();
 
   ASSERT_EQ(device_factory_register("dummy", dummy_device_create), RET_OK);
