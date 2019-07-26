@@ -372,7 +372,7 @@ ret_t jerry_value_to_value(jerry_value_t value, value_t* v, str_t* temp) {
     } else if (jerry_value_is_number(value)) {
       double raw_value = jerry_get_number_value(value);
 
-      if (floor(raw_value) == (int32_t)raw_value) {
+      if (ceil(raw_value) == (int32_t)raw_value) {
         value_set_int32(v, (int32_t)raw_value);
       } else {
         value_set_double(v, raw_value);
