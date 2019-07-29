@@ -46,7 +46,7 @@ struct _buzzer_t {
   uint32_t volume;
 
   /**
-   * @property {uint32_t} duration 
+   * @property {uint32_t} duration
    * @annotation ["set_prop","get_prop"]
    * 持续时间(ms)。
    */

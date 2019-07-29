@@ -145,11 +145,12 @@ static ret_t object_set_prop_if_diff(object_t* object, const char* name, const v
 
 ret_t view_model_set_prop(view_model_t* view_model, const char* name, const value_t* value) {
   return_value_if_fail(view_model != NULL && name != NULL && value != NULL, RET_BAD_PARAMS);
-  name = view_model_preprocess_prop(view_model, name);
 
-  if (!tk_is_valid_name(name)) {
+  if (!tk_is_valid_prop_name(name)) {
     return RET_OK;
   }
+
+  name = view_model_preprocess_prop(view_model, name);
 
   return object_set_prop_if_diff(OBJECT(view_model), name, value);
 }

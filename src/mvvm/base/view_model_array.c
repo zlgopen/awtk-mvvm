@@ -44,6 +44,7 @@ static const char* view_model_array_preprocess_prop(view_model_t* view_model, co
 
   str_set(&(vm_array->temp_prop), prop);
   str_replace(&(vm_array->temp_prop), "item_", index);
+  str_replace(&(vm_array->temp_prop), "item.", index);
 
   return vm_array->temp_prop.str;
 }

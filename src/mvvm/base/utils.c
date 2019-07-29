@@ -47,3 +47,9 @@ ret_t str_random(str_t* str, const char* format, uint32_t max) {
 
   return str_set(str, buff);
 }
+
+bool_t tk_is_valid_prop_name(const char* name) {
+  return_value_if_fail(name != NULL, FALSE);
+
+  return tk_is_valid_name(name) || tk_str_start_with(name, "item.");
+}

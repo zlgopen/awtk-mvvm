@@ -53,7 +53,7 @@ static ret_t data_binding_object_set_prop(object_t* obj, const char* name, const
   if (rule->path == NULL && value == NULL) {
     value = name;
     rule->path = tk_str_copy(rule->path, value);
-    if (tk_str_start_with(value, DATA_BINDING_ERROR_OF) || !tk_is_valid_name(value)) {
+    if (tk_str_start_with(value, DATA_BINDING_ERROR_OF) || !tk_is_valid_prop_name(value)) {
       rule->mode = BINDING_ONE_WAY;
     }
   } else if (equal(DATA_BINDING_MODE, name)) {

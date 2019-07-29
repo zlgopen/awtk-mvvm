@@ -42,7 +42,7 @@ ret_t hardware_init(void) {
 #else
   device_factory_register(BUZZER_TYPE, buzzer_log_create);
   device_factory_register(TEMPERATURE_SENSOR_TYPE, temperature_sensor_random_create);
-#endif/*AWORKS_OS*/
+#endif /*AWORKS_OS*/
   widget_factory_register(widget_factory(), BUZZER_TYPE, widget_buzzer_create);
   widget_factory_register(widget_factory(), TEMPERATURE_SENSOR_TYPE,
                           widget_temperature_sensor_create);
