@@ -1,4 +1,5 @@
-﻿#include "mvvm/base/view_model_factory.h"
+﻿#ifndef AWTK_NOGUI
+#include "mvvm/base/view_model_factory.h"
 #include "mvvm/base/view_model_dummy.h"
 #include "mvvm/base/view_model_array_dummy.h"
 #include "mvvm/awtk/binding_context_awtk.h"
@@ -415,3 +416,4 @@ TEST(BindingContextAwtk, array) {
 
   idle_dispatch();
 }
+#endif/*AWTK_NOGUI*/

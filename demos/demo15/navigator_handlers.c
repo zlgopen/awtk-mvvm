@@ -41,6 +41,7 @@ static ret_t button_on_click(void* ctx, event_t* e) {
 }
 
 static ret_t mywindow_on_request(navigator_handler_t* handler, navigator_request_t* req) {
+#ifndef AWTK_NOGUI
   widget_t* win = window_create(NULL, 0, 0, 0, 0);
   widget_t* ok = button_create(win, 0, 0, 0, 0);
 
@@ -50,6 +51,7 @@ static ret_t mywindow_on_request(navigator_handler_t* handler, navigator_request
   widget_on(ok, EVT_CLICK, button_on_click, win);
 
   widget_layout(win);
+#endif/*AWTK_NOGUI*/
 
   return RET_OK;
 }

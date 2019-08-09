@@ -22,7 +22,7 @@ INCLUDE_PATH = [TK_ROOT,
   os.path.join(GTEST_ROOT, 'make')] 
 
 env['CPPPATH'] = env['CPPPATH'] + INCLUDE_PATH
-env['LIBS'] = ['assets', 'jerryscript'] + env['LIBS']
+env['LIBS'] = ['jerryscript'] + env['LIBS']
 
 SOURCES = [
  os.path.join(GTEST_ROOT, 'src/gtest-all.cc'),

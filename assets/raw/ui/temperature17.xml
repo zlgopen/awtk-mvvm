@@ -1,0 +1,5 @@
+<window v-model="temperature">
+  <buzzer v-data:on="{$value > 50}" duration="" freq="3000" volume="60"/>
+  <temperature_sensor name="sensor0" v-data:value="{value, Mode=OneWayToModel}" 
+    sample_interval="1000"/>
+</window>

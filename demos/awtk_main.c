@@ -67,7 +67,9 @@ int main(void) {
   system_info_set_default_font(system_info(), "default_full");
 #endif /*WITH_FS_RES*/
 
+#ifndef WITHOUT_EXT_WIDGETS
   tk_ext_widgets_init();
+#endif/*WITHOUT_EXT_WIDGETS*/
 
   assets_init();
   mvvm_init();

@@ -42,6 +42,7 @@
 #include "assets/inc/ui/js_books.data"
 #include "assets/inc/ui/js_demo9_main.data"
 #include "assets/inc/ui/js_temperature3.data"
+#include "assets/inc/ui/temperature17.data"
 #include "assets/inc/ui/temperature2.data"
 #include "assets/inc/ui/js_temperature_humidity.data"
 #include "assets/inc/ui/temperature3.data"
@@ -149,6 +150,7 @@ ret_t assets_init(void) {
   assets_manager_add(rm, ui_js_books);
   assets_manager_add(rm, ui_js_demo9_main);
   assets_manager_add(rm, ui_js_temperature3);
+  assets_manager_add(rm, ui_temperature17);
   assets_manager_add(rm, ui_temperature2);
   assets_manager_add(rm, ui_js_temperature_humidity);
   assets_manager_add(rm, ui_temperature3);

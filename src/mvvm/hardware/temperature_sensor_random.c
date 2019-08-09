@@ -62,6 +62,8 @@ static ret_t temperature_sensor_sample(object_t* obj) {
 
   emitter_dispatch(EMITTER(obj), &e);
 
+  log_debug("temperature=%lf\n", temperature_sensor->value);
+
   return RET_REPEAT;
 }
 
