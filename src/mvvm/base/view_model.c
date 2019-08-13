@@ -84,7 +84,7 @@ ret_t view_model_on_will_unmount(view_model_t* view_model) {
 }
 
 ret_t view_model_on_unmount(view_model_t* view_model) {
-  event_t e = event_init(EVT_VIEW_MODEL_WILL_UNMOUNT, view_model);
+  event_t e = event_init(EVT_VIEW_MODEL_UNMOUNT, view_model);
   return_value_if_fail(view_model != NULL, RET_BAD_PARAMS);
 
   log_debug("%s\n", __FUNCTION__);
