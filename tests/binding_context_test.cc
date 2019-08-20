@@ -1,16 +1,9 @@
 ﻿#ifndef AWTK_NOGUI
+#include "awtk.h"
 #include "mvvm/base/view_model_factory.h"
 #include "mvvm/base/view_model_dummy.h"
 #include "mvvm/base/view_model_array_dummy.h"
 #include "mvvm/awtk/binding_context_awtk.h"
-#include "widgets/window.h"
-#include "widgets/slider.h"
-#include "widgets/button.h"
-#include "widgets/label.h"
-#include "base/window_manager.h"
-#include "ext_widgets/scroll_view/list_view.h"
-#include "ext_widgets/scroll_view/list_item.h"
-#include "base/idle.h"
 #include "gtest/gtest.h"
 #include "test_obj.h"
 

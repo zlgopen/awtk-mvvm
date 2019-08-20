@@ -27,7 +27,7 @@
 #include "base/idle.h"
 #include "base/enums.h"
 #include "base/widget.h"
-#include "widgets/window.h"
+#include "base/window.h"
 #include "base/window_manager.h"
 #include "mvvm/base/data_binding.h"
 #include "mvvm/base/view_model_dummy.h"
