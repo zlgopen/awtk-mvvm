@@ -18,3 +18,4 @@ bin/js*
 .vs
 3rd/jerryscript
 lib
+bin
