@@ -19,7 +19,7 @@
  *
  */
 
-#include "mvvm/cpp/cpp_adapter.hpp"
+#include "mvvm/cpp/adapter.hpp"
 #include "temperature_converter.hpp"
 
 class TemperatureConverter : public ValueConverter {

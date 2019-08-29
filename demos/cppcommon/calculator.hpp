@@ -1,8 +1,8 @@
 
 /**
- * File:  temperature.hpp
+ * File:  calculator.hpp
  * Author: AWTK Develop Team
- * Brief:  temperature view model
+ * Brief: calculator view model 
  *
  * Copyright (c) 2019 - 2019  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
@@ -16,19 +16,20 @@
 /**
  * History:
  * ================================================================
- * 2019-08-29 Li XianJing <xianjimli@hotmail.com> created
+ * 2019-08-30 Li XianJing <xianjimli@hotmail.com> created
  *
  */
 
-#ifndef TK_TEMPERATURE_HPP
-#define TK_TEMPERATURE_HPP
+#ifndef TK_CALCULATOR_HPP
+#define TK_CALCULATOR_HPP
 
+#include "tkc/str.h"
 #include "mvvm/cpp/adapter.hpp"
 
-class Temperature : public ViewModel {
+class Calculator : public ViewModel {
   public:
-    Temperature(navigator_request_t* request);
-    virtual ~Temperature();
+    Calculator(navigator_request_t* request);
+    virtual ~Calculator();
   
   public:
     virtual ret_t Exec(const char* name, const char* args);
@@ -37,11 +38,10 @@ class Temperature : public ViewModel {
     virtual ret_t SetProp(const char* name, const value_t* v);
 
   private:    
-    double value;
-    double old_value;
+    str_t expr;
 };
 
-view_model_t* temperature_view_model_create(navigator_request_t* req);
+view_model_t* calculator_view_model_create(navigator_request_t* req);
 
-#endif/*TK_TEMPERATURE_HPP*/
+#endif/*TK_CALCULATOR_HPP*/
 

@@ -20,7 +20,7 @@
  */
 
 #include "temperature_validator.hpp"
-#include "mvvm/cpp/cpp_adapter.hpp"
+#include "mvvm/cpp/adapter.hpp"
 
 class TemperatureValidator : public ValueValidator {
   public:

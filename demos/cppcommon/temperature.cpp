@@ -2,7 +2,7 @@
 /**
  * File:  temperature.cpp
  * Author: AWTK Develop Team
- * Brief:  temperature 
+ * Brief:  temperature view model 
  *
  * Copyright (c) 2019 - 2019  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
@@ -64,8 +64,6 @@ ret_t Temperature::SetProp(const char* name, const value_t* v) {
     return RET_NOT_FOUND;
   }
 }
-
-#include "mvvm/cpp/cpp_adapter.hpp"
 
 view_model_t* temperature_view_model_create(navigator_request_t* req) {
   return view_model_cpp_create(new Temperature(req));

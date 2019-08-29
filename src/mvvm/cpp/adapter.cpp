@@ -19,7 +19,7 @@
  *
  */
 
-#include "mvvm/cpp/cpp_adapter.hpp"
+#include "mvvm/cpp/adapter.hpp"
 
 typedef struct _view_model_adapter_t {
   view_model_t view_model;
