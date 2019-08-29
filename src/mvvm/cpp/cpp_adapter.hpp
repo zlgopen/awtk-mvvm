@@ -31,8 +31,8 @@
 #include "mvvm/cpp/value_validator.hpp"
 
 view_model_t* view_model_cpp_create(ViewModel* cpp);
-value_converter_t* value_converter_create(ValueConverter* cpp);
-value_validator_t* value_validator_create(ValueValidator* cpp);
+value_converter_t* value_converter_cpp_create(ValueConverter* cpp);
+value_validator_t* value_validator_cpp_create(ValueValidator* cpp);
 
 #endif/*TK_VIEW_MODEL_ADAPTER_H*/
 

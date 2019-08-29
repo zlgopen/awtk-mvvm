@@ -140,7 +140,7 @@ static ret_t value_converter_adapter_to_model(value_converter_t* c, const value_
   return value_convert_adapter->cpp->ToModel(from, to);
 }
 
-value_converter_t* value_converter_adapter_create(ValueConverter* cpp) {
+value_converter_t* value_converter_cpp_create(ValueConverter* cpp) {
   object_t* obj = NULL;
   value_converter_t* value_convert = NULL;
   value_converter_adapter_t* value_convert_adapter = NULL;
@@ -193,7 +193,7 @@ static ret_t value_validator_adapter_fix(value_validator_t* c, value_t* value) {
   return value_convert_adapter->cpp->Fix(value);
 }
 
-value_validator_t* value_validator_adapter_create(ValueValidator* cpp) {
+value_validator_t* value_validator_cpp_create(ValueValidator* cpp) {
   object_t* obj = NULL;
   value_validator_t* value_convert = NULL;
   return_value_if_fail(cpp != NULL, NULL);

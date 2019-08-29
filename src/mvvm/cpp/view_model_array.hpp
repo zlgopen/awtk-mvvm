@@ -1,7 +1,7 @@
 /**
  * File:  view_model.hpp
  * Author: AWTK Develop Team
- * Brief:  view_model interface for cpp
+ * Brief:  view_model array interface for cpp
  *
  * Copyright (c) 2019 - 2019  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
@@ -19,23 +19,23 @@
  *
  */
 
-#ifndef TK_VIEW_MODEL_HPP
-#define TK_VIEW_MODEL_HPP
+#ifndef TK_VIEW_MODEL_ARRAY_HPP
+#define TK_VIEW_MODEL_ARRAY_HPP
 
 #include "tkc/emitter.h"
 #include "mvvm/base/navigator_request.h"
 
-class ViewModel {
+class ViewModelArray {
   public:
-    ViewModel(navigator_request_t* request);
-    virtual ~ViewModel();
+    ViewModelArray(navigator_request_t* request);
+    virtual ~ViewModelArray();
   
   public:
-    virtual ret_t Exec(const char* name, const char* args);
-    virtual bool_t CanExec(const char* name, const char* args) const;
-    virtual ret_t GetProp(const char* name, value_t* v) const;
-    virtual ret_t SetProp(const char* name, const value_t* v);
-
+    virtual int32_t GetSize(void) const;
+    virtual ret_t SetProp(int32_t index, const char* name, const value_t* v);
+    virtual ret_t GetProp(int32_t index, const char* name, value_t* v) const;
+    virtual ret_t Exec(int32_t index, const char* name, const char* args);
+    virtual bool_t CanExec(int32_t index, const char* name, const char* args)const ;
   public:    
     ret_t Off(uint32_t id);
     ret_t OffByCtx(void* ctx);
@@ -49,5 +49,5 @@ class ViewModel {
     emitter_t emitter;
 };
 
-#endif/*TK_VIEW_MODEL_HPP*/
+#endif/*TK_VIEW_MODEL_ARRAY_HPP*/
 

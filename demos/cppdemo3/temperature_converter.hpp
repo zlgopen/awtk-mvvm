@@ -1,9 +1,9 @@
-/**
- * File:   application.c
+﻿/**
+ * File:   temperature_converter.hpp
  * Author: AWTK Develop Team
- * Brief:  application
+ * Brief:  temperature converter
  *
- * Copyright (c) 2018 - 2019  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2019 - 2019  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -19,14 +19,11 @@
  *
  */
 
-#include "awtk.h"
-#include "mvvm/mvvm.h"
-#include "../cppcommon/temperature.hpp"
+#ifndef TK_TEMPERATURE_CONVERTER_HPP
+#define TK_TEMPERATURE_CONVERTER_HPP
 
-ret_t application_init() {
-  view_model_factory_register("temperature", temperature_view_model_create);
+#include "mvvm/base/view_model.h"
 
-  return navigator_to("temperature1");
-}
+ret_t temperature_converter_init(void);
 
-#include "../awtk_main.c"
+#endif /*TK_TEMPERATURE_CONVERTER_HPP*/

@@ -1,5 +1,5 @@
 /**
- * File:   application.c
+ * File:   application.cpp
  * Author: AWTK Develop Team
  * Brief:  application
  *
@@ -22,11 +22,13 @@
 #include "awtk.h"
 #include "mvvm/mvvm.h"
 #include "../cppcommon/temperature.hpp"
+#include "temperature_converter.hpp"
 
 ret_t application_init() {
+  temperature_converter_init();
   view_model_factory_register("temperature", temperature_view_model_create);
 
-  return navigator_to("temperature1");
+  return navigator_to("temperature3");
 }
 
 #include "../awtk_main.c"

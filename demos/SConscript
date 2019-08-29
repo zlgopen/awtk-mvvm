@@ -49,3 +49,7 @@ env.Program(os.path.join(BIN_DIR, 'jsdemo17'), Glob('jsdemo17/*.c') + ["assets.c
 env.Program(os.path.join(BIN_DIR, 'jsdemo18'), Glob('jsdemo18/*.c') + ["assets.c"])
 
 env.Program(os.path.join(BIN_DIR, 'cppdemo1'), Glob('cppdemo1/*.cpp') + ["assets.c", "cppcommon/temperature.cpp"])
+env.Program(os.path.join(BIN_DIR, 'cppdemo2'), Glob('cppdemo2/*.cpp') + ["assets.c", "cppcommon/temperature.cpp"])
+env.Program(os.path.join(BIN_DIR, 'cppdemo3'), Glob('cppdemo3/*.cpp') + ["assets.c", "cppcommon/temperature.cpp"])
+env.Program(os.path.join(BIN_DIR, 'cppdemo4'), Glob('cppdemo4/*.cpp') + ["assets.c", "cppcommon/temperature.cpp"])
+env.Program(os.path.join(BIN_DIR, 'cppdemo5'), Glob('cppdemo5/*.cpp') + ["assets.c", "cppcommon/temperature.cpp"])

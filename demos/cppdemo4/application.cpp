@@ -15,7 +15,7 @@
 /**
  * History:
  * ================================================================
- * 2019-08-30 Li XianJing <xianjimli@hotmail.com> created
+ * 2019-02-02 Li XianJing <xianjimli@hotmail.com> created
  *
  */
 
@@ -26,7 +26,7 @@
 ret_t application_init() {
   view_model_factory_register("temperature", temperature_view_model_create);
 
-  return navigator_to("temperature1");
+  return navigator_to("temperature4");
 }
 
 #include "../awtk_main.c"
