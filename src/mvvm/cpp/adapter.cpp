@@ -1,7 +1,7 @@
 /**
  * File:  view_model_adapter
  * Author: AWTK Develop Team
- * Brief:  view model adapter between c and cpp
+ * Brief:  adapters between c and cpp
  *
  * Copyright (c) 2019 - 2019  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
@@ -20,6 +20,8 @@
  */
 
 #include "mvvm/cpp/adapter.hpp"
+
+/****************************view model*****************************/
 
 typedef struct _view_model_adapter_t {
   view_model_t view_model;
@@ -107,6 +109,8 @@ view_model_t* view_model_cpp_create(ViewModel* cpp) {
   return view_model;
 }
 
+/****************************converter*****************************/
+
 static object_vtable_t s_value_converter_adapter_vtable;
 typedef struct _value_converter_adapter_t {
   value_converter_t value_converter;
@@ -160,6 +164,8 @@ value_converter_t* value_converter_cpp_create(ValueConverter* cpp) {
   return value_convert;
 }
 
+/****************************validator*****************************/
+
 static object_vtable_t s_value_validator_adapter_vtable;
 
 typedef struct _value_validator_adapter_t {
@@ -211,4 +217,11 @@ value_validator_t* value_validator_cpp_create(ValueValidator* cpp) {
   value_convert_adapter->cpp = cpp;
 
   return value_convert;
+}
+
+/****************************view model array*****************************/
+
+view_model_t* view_model_array_cpp_create(ViewModelArray* cpp) {
+  /*TODO*/
+  return NULL;
 }

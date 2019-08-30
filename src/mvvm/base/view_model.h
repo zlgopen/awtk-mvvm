@@ -51,7 +51,7 @@ typedef struct _model_vtable_t {
  * @class view_model_t
  * @parent object_t
  *
- * 模型的基类。
+ * 视图模型的基类。
  *
  */
 struct _view_model_t {
