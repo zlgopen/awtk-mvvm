@@ -81,10 +81,8 @@ ret_t Shape::GetProp(const char* name, value_t* v) const {
     value_set_str(v, this->name.str);
   } else if (tk_str_eq("overview", name)) {
     char buff[256];
-    tk_snprintf(buff, sizeof(buff), "%s: type=%d (%d %d %d %d) opacity=%d align=%d", 
-                this->name.str,
-                this->type, this->x, this->y, this->w, this->h, this->opacity,
-                this->text_align);
+    tk_snprintf(buff, sizeof(buff), "%s: type=%d (%d %d %d %d) opacity=%d align=%d", this->name.str,
+                this->type, this->x, this->y, this->w, this->h, this->opacity, this->text_align);
 
     str_set(&(this->overview), buff);
     value_set_str(v, this->overview.str);

@@ -123,6 +123,13 @@ class ViewModel {
      */
     uint32_t On(uint32_t event, event_func_t on_event, void* ctx);
 
+    /**
+     * @method NotifyObjectChanged
+     * 通知对象变化。
+     *
+     * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+     */
+    ret_t NotifyObjectChanged();
   public:
     navigator_request_t* request;
 

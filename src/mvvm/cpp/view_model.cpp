@@ -64,4 +64,12 @@ uint32_t ViewModel::On(uint32_t event, event_func_t on_event, void* ctx) {
   return emitter_on(&(this->emitter), event, on_event, ctx);
 }
 
+ret_t ViewModel::NotifyObjectChanged() {
+  event_t e = event_init(EVT_PROPS_CHANGED, this);
+  
+  this->DispatchEvent(&e);
+
+  return RET_OK;
+}
+
 }  // namespace vm
