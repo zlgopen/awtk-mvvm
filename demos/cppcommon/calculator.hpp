@@ -26,7 +26,7 @@
 #include "tkc/str.h"
 #include "mvvm/cpp/adapter.hpp"
 
-class Calculator : public ViewModel {
+class Calculator : public vm::ViewModel {
   public:
     Calculator(navigator_request_t* request);
     virtual ~Calculator();

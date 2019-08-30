@@ -22,7 +22,7 @@
 #include "temperature_validator.hpp"
 #include "mvvm/cpp/adapter.hpp"
 
-class TemperatureValidator : public ValueValidator {
+class TemperatureValidator : public vm::ValueValidator {
  public:
   virtual bool_t IsValid(const value_t* value, str_t* msg) {
     int32_t temp = value_int(value);
@@ -45,7 +45,7 @@ class TemperatureValidator : public ValueValidator {
 };
 
 static void* create_water_temp_validator(void) {
-  return value_validator_cpp_create(new TemperatureValidator());
+  return vm::To(new TemperatureValidator());
 }
 
 ret_t temperature_validator_init(void) {

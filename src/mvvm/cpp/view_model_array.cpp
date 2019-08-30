@@ -21,6 +21,8 @@
 
 #include "mvvm/cpp/view_model_array.hpp"
 
+namespace vm {
+
 ViewModelArray::ViewModelArray(navigator_request_t* request) {
   this->request = request;
   emitter_init(&(this->emitter));
@@ -65,3 +67,5 @@ ret_t ViewModelArray::DispatchEvent(event_t* event) {
 uint32_t ViewModelArray::On(uint32_t event, event_func_t on_event, void* ctx) {
   return emitter_on(&(this->emitter), event, on_event, ctx);
 }
+
+}  // namespace vm

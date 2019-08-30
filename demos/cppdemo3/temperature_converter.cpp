@@ -22,7 +22,7 @@
 #include "mvvm/cpp/adapter.hpp"
 #include "temperature_converter.hpp"
 
-class TemperatureConverter : public ValueConverter {
+class TemperatureConverter : public vm::ValueConverter {
  public:
   virtual ret_t ToModel(const value_t* from, value_t* to) {
     value_set_double(to, (value_int(from) - 32) / 1.8);
@@ -38,7 +38,7 @@ class TemperatureConverter : public ValueConverter {
 };
 
 static void* create_temp_f_converter(void) {
-  return value_converter_cpp_create(new TemperatureConverter());
+  return vm::To(new TemperatureConverter());
 }
 
 ret_t temperature_converter_init(void) {

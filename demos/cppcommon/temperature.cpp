@@ -66,5 +66,5 @@ ret_t Temperature::SetProp(const char* name, const value_t* v) {
 }
 
 view_model_t* temperature_view_model_create(navigator_request_t* req) {
-  return view_model_cpp_create(new Temperature(req));
+  return vm::To(new Temperature(req));
 }

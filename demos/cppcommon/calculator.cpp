@@ -78,5 +78,5 @@ ret_t Calculator::SetProp(const char* name, const value_t* v) {
 }
 
 view_model_t* calculator_view_model_create(navigator_request_t* req) {
-  return view_model_cpp_create(new Calculator(req));
+  return vm::To(new Calculator(req));
 }

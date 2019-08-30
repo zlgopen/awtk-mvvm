@@ -23,6 +23,8 @@
 
 /****************************view model*****************************/
 
+namespace vm {
+
 typedef struct _view_model_adapter_t {
   view_model_t view_model;
 
@@ -225,3 +227,21 @@ view_model_t* view_model_array_cpp_create(ViewModelArray* cpp) {
   /*TODO*/
   return NULL;
 }
+
+view_model_t* To(ViewModel* cpp) {
+  return view_model_cpp_create(cpp);
+}
+
+view_model_t* To(ViewModelArray* cpp) {
+  return view_model_array_cpp_create(cpp);
+}
+
+value_converter_t* To(ValueConverter* cpp) {
+  return value_converter_cpp_create(cpp);
+}
+
+value_validator_t* To(ValueValidator* cpp) {
+  return value_validator_cpp_create(cpp);
+}
+
+}  // namespace vm

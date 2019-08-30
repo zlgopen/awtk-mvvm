@@ -25,6 +25,8 @@
 #include "tkc/emitter.h"
 #include "mvvm/base/navigator_request.h"
 
+namespace vm {
+
 class ViewModelArray {
   public:
     ViewModelArray(navigator_request_t* request);
@@ -133,6 +135,8 @@ class ViewModelArray {
   private:
     emitter_t emitter;
 };
+
+} /*namespae vm*/
 
 #endif/*TK_VIEW_MODEL_ARRAY_HPP*/
 

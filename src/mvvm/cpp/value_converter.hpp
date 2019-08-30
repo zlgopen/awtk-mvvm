@@ -24,6 +24,8 @@
 
 #include "mvvm/base/value_converter.h"
 
+namespace vm {
+
 /**
  * @class ValueConverter
  *
@@ -60,6 +62,8 @@ class ValueConverter {
      */
     virtual ret_t ToView(const value_t* from, value_t* to) = 0;
 };
+
+} /*namespae vm*/
 
 #endif/*TK_DATA_CONVERTER_HPP*/
 

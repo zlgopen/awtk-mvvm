@@ -25,7 +25,7 @@
 
 #include "mvvm/cpp/adapter.hpp"
 
-class Temperature : public ViewModel {
+class Temperature : public vm::ViewModel {
   public:
     Temperature(navigator_request_t* request);
     virtual ~Temperature();

@@ -21,6 +21,8 @@
 
 #include "mvvm/cpp/view_model.hpp"
 
+namespace vm {
+
 ViewModel::ViewModel(navigator_request_t* request) {
   this->request = request;
   emitter_init(&(this->emitter));
@@ -61,3 +63,5 @@ ret_t ViewModel::DispatchEvent(event_t* event) {
 uint32_t ViewModel::On(uint32_t event, event_func_t on_event, void* ctx) {
   return emitter_on(&(this->emitter), event, on_event, ctx);
 }
+
+}  // namespace vm

@@ -24,6 +24,8 @@
 
 #include "mvvm/base/value_validator.h"
 
+namespace vm {
+
 /**
  * @class ValueValidator
  *
@@ -59,6 +61,8 @@ class ValueValidator {
      */
     virtual ret_t Fix(value_t* value) = 0;
 };
+
+} /*namespae vm*/
 
 #endif/*TK_DATA_VALIDATOR_HPP*/
 

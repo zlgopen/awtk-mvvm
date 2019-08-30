@@ -31,17 +31,21 @@
 #include "mvvm/cpp/value_converter.hpp"
 #include "mvvm/cpp/value_validator.hpp"
 
+namespace vm {
+
 /*将C++的ViewModel适配成C的ViewModel*/
-view_model_t* view_model_cpp_create(ViewModel* cpp);
+view_model_t* To(ViewModel* cpp);
 
 /*将C++的ViewModelArray适配成C的ViewModel*/
-view_model_t* view_model_array_cpp_create(ViewModelArray* cpp);
+view_model_t* To(ViewModelArray* cpp);
 
 /*将C++的ValueConverter适配成C的ValueConverter*/
-value_converter_t* value_converter_cpp_create(ValueConverter* cpp);
+value_converter_t* To(ValueConverter* cpp);
 
 /*将C++的ValueValidator适配成C的ValueValidator*/
-value_validator_t* value_validator_cpp_create(ValueValidator* cpp);
+value_validator_t* To(ValueValidator* cpp);
+
+} /*namespae vm*/
 
 #endif/*TK_VIEW_MODEL_ADAPTER_H*/
 
