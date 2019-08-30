@@ -1,4 +1,4 @@
-/**
+﻿/**
  * File:  view_model_adapter
  * Author: AWTK Develop Team
  * Brief:  adapters between c and cpp

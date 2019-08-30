@@ -1,4 +1,4 @@
-/**
+﻿/**
  * File:  value_converter.hpp
  * Author: AWTK Develop Team
  * Brief:  value converter interface for cpp

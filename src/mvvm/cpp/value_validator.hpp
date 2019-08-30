@@ -1,4 +1,4 @@
-/**
+﻿/**
  * File:  value_validator.hpp
  * Author: AWTK Develop Team
  * Brief:  value validator interface for cpp

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * File:  view_model.hpp
  * Author: AWTK Develop Team
  * Brief:  view_model array interface for cpp

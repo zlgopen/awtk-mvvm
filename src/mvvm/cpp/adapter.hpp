@@ -1,4 +1,4 @@
-/**
+﻿/**
  * File:  adapter
  * Author: AWTK Develop Team
  * Brief:  adapters between c and cpp
