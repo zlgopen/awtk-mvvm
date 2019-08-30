@@ -1,5 +1,5 @@
 /**
- * File:  iview_model.cpp
+ * File:  view_model.cpp
  * Author: AWTK Develop Team
  * Brief:  view_model interface for cpp
  *
@@ -29,7 +29,7 @@ ViewModel::ViewModel(navigator_request_t* request) {
 ViewModel::~ViewModel() {
   emitter_deinit(&(this->emitter));
 }
-  
+
 ret_t ViewModel::Exec(const char* name, const char* args) {
   return RET_NOT_IMPL;
 }
@@ -61,5 +61,3 @@ ret_t ViewModel::DispatchEvent(event_t* event) {
 uint32_t ViewModel::On(uint32_t event, event_func_t on_event, void* ctx) {
   return emitter_on(&(this->emitter), event, on_event, ctx);
 }
-
-

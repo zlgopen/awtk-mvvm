@@ -72,7 +72,7 @@ int main(void) {
 
 #ifndef WITHOUT_EXT_WIDGETS
   tk_ext_widgets_init();
-#endif/*WITHOUT_EXT_WIDGETS*/
+#endif /*WITHOUT_EXT_WIDGETS*/
 
   assets_init();
   mvvm_init();

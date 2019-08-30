@@ -92,7 +92,7 @@ view_model_t* view_model_cpp_create(ViewModel* cpp) {
   view_model_adapter_t* adapter = NULL;
   return_value_if_fail(cpp != NULL, NULL);
 
-  if(s_view_model_adapter_vtable.type == NULL) {
+  if (s_view_model_adapter_vtable.type == NULL) {
     view_model_adapter_init_vtable(&s_view_model_adapter_vtable);
   }
 
@@ -128,17 +128,17 @@ static ret_t value_converter_adapter_init_vtable(object_vtable_t* vt) {
   return RET_OK;
 }
 
-#define VALUE_CONVERTER_ADAPTER(obj) ((value_converter_adapter_t*)(obj)) 
+#define VALUE_CONVERTER_ADAPTER(obj) ((value_converter_adapter_t*)(obj))
 
 static ret_t value_converter_adapter_to_view(value_converter_t* c, const value_t* from,
-                                              value_t* to) {
+                                             value_t* to) {
   value_converter_adapter_t* value_convert_adapter = VALUE_CONVERTER_ADAPTER(c);
 
   return value_convert_adapter->cpp->ToView(from, to);
 }
 
 static ret_t value_converter_adapter_to_model(value_converter_t* c, const value_t* from,
-                                               value_t* to) {
+                                              value_t* to) {
   value_converter_adapter_t* value_convert_adapter = VALUE_CONVERTER_ADAPTER(c);
 
   return value_convert_adapter->cpp->ToModel(from, to);
@@ -187,7 +187,7 @@ static ret_t value_validator_adapter_init_vtable(object_vtable_t* vt) {
 #define VALUE_VALIDATOR_ADAPTER(obj) ((value_validator_adapter_t*)(obj))
 
 static bool_t value_validator_adapter_is_valid(value_validator_t* c, const value_t* value,
-                                                str_t* msg) {
+                                               str_t* msg) {
   value_validator_adapter_t* value_convert_adapter = VALUE_VALIDATOR_ADAPTER(c);
 
   return value_convert_adapter->cpp->IsValid(value, msg);

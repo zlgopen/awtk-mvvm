@@ -2,7 +2,7 @@
 /**
  * File:  calculator.cpp
  * Author: AWTK Develop Team
- * Brief:  calculator view model 
+ * Brief:  calculator view model
  *
  * Copyright (c) 2019 - 2019  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
@@ -30,7 +30,7 @@ Calculator::Calculator(navigator_request_t* request) : ViewModel(request) {
 Calculator::~Calculator() {
   str_reset(&(this->expr));
 }
-  
+
 ret_t Calculator::Exec(const char* name, const char* args) {
   if (tk_str_eq("add_char", name)) {
     str_append(&(this->expr), args);
@@ -80,4 +80,3 @@ ret_t Calculator::SetProp(const char* name, const value_t* v) {
 view_model_t* calculator_view_model_create(navigator_request_t* req) {
   return view_model_cpp_create(new Calculator(req));
 }
-

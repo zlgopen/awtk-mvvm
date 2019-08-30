@@ -2,7 +2,7 @@
 /**
  * File:  temperature.cpp
  * Author: AWTK Develop Team
- * Brief:  temperature view model 
+ * Brief:  temperature view model
  *
  * Copyright (c) 2019 - 2019  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
@@ -29,7 +29,7 @@ Temperature::Temperature(navigator_request_t* request) : ViewModel(request) {
 
 Temperature::~Temperature() {
 }
-  
+
 ret_t Temperature::Exec(const char* name, const char* args) {
   if (tk_str_eq("apply", name)) {
     this->old_value = this->value;
@@ -68,4 +68,3 @@ ret_t Temperature::SetProp(const char* name, const value_t* v) {
 view_model_t* temperature_view_model_create(navigator_request_t* req) {
   return view_model_cpp_create(new Temperature(req));
 }
-

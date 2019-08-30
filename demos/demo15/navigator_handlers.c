@@ -51,7 +51,7 @@ static ret_t mywindow_on_request(navigator_handler_t* handler, navigator_request
   widget_on(ok, EVT_CLICK, button_on_click, win);
 
   widget_layout(win);
-#endif/*AWTK_NOGUI*/
+#endif /*AWTK_NOGUI*/
 
   return RET_OK;
 }

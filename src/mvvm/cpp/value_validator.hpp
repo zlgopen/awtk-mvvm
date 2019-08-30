@@ -1,7 +1,7 @@
 /**
  * File:  value_validator.hpp
  * Author: AWTK Develop Team
- * Brief:  value validator interface
+ * Brief:  value validator interface for cpp
  *
  * Copyright (c) 2019 - 2019  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *

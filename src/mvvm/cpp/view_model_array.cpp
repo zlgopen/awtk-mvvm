@@ -29,7 +29,11 @@ ViewModelArray::ViewModelArray(navigator_request_t* request) {
 ViewModelArray::~ViewModelArray() {
   emitter_deinit(&(this->emitter));
 }
-  
+
+uint32_t ViewModelArray::GetSize() const {
+  return 0;
+}
+
 ret_t ViewModelArray::Exec(int32_t index, const char* name, const char* args) {
   return RET_NOT_IMPL;
 }
@@ -61,5 +65,3 @@ ret_t ViewModelArray::DispatchEvent(event_t* event) {
 uint32_t ViewModelArray::On(uint32_t event, event_func_t on_event, void* ctx) {
   return emitter_on(&(this->emitter), event, on_event, ctx);
 }
-
-

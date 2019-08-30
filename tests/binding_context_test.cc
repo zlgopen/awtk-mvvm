@@ -409,4 +409,4 @@ TEST(BindingContextAwtk, array) {
 
   idle_dispatch();
 }
-#endif/*AWTK_NOGUI*/
+#endif /*AWTK_NOGUI*/

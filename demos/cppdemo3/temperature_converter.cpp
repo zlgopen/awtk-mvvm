@@ -23,18 +23,18 @@
 #include "temperature_converter.hpp"
 
 class TemperatureConverter : public ValueConverter {
-  public:
-    virtual ret_t ToModel(const value_t* from, value_t* to) {
-      value_set_double(to, (value_int(from) - 32) / 1.8);
-      
-      return RET_OK;
-    }
+ public:
+  virtual ret_t ToModel(const value_t* from, value_t* to) {
+    value_set_double(to, (value_int(from) - 32) / 1.8);
 
-    virtual ret_t ToView(const value_t* from, value_t* to)  {
-      value_set_double(to, value_int(from) * 1.8 + 32);
+    return RET_OK;
+  }
 
-      return RET_OK;
-    }
+  virtual ret_t ToView(const value_t* from, value_t* to) {
+    value_set_double(to, value_int(from) * 1.8 + 32);
+
+    return RET_OK;
+  }
 };
 
 static void* create_temp_f_converter(void) {
