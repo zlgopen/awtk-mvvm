@@ -47,11 +47,10 @@ class ViewModelArray {
      *
      * @param {int32_t} index 索引。
      * @param {const char*} name 命令名。
-     * @param {const char*} args 命令的参数。
      *
      * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
      */
-    virtual ret_t Exec(int32_t index, const char* name, const char* args);
+    virtual ret_t Exec(int32_t index, const char* name);
 
     /**
      * @method CanExec
@@ -59,11 +58,10 @@ class ViewModelArray {
      *
      * @param {int32_t} index 索引。
      * @param {const char*} name 命令名。
-     * @param {const char*} args 命令的参数。
      *
      * @return {bool_t} 返回TRUE表示可以执行，否则表示不可以执行。
      */
-    virtual bool_t CanExec(int32_t index, const char* name, const char* args) const;
+    virtual bool_t CanExec(int32_t index, const char* name) const;
 
     /**
      * @method GetProp
@@ -88,7 +86,23 @@ class ViewModelArray {
      * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
      */
     virtual ret_t SetProp(int32_t index, const char* name, const value_t* v);
+    
+    /**
+     * @method Remove
+     * 删除指定的条目。
+     *
+     * @param {int32_t} index 索引。
+     * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+     */
+    virtual ret_t Remove(int32_t index);
 
+    /**
+     * @method Clear
+     * 清除全部条目。
+     *
+     * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+     */
+    virtual ret_t Clear();
   public:    
     /**
      * @method Off

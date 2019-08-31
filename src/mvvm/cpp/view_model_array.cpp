@@ -36,11 +36,11 @@ uint32_t ViewModelArray::GetSize() const {
   return 0;
 }
 
-ret_t ViewModelArray::Exec(int32_t index, const char* name, const char* args) {
+ret_t ViewModelArray::Exec(int32_t index, const char* name) {
   return RET_NOT_IMPL;
 }
 
-bool_t ViewModelArray::CanExec(int32_t index, const char* name, const char* args) const {
+bool_t ViewModelArray::CanExec(int32_t index, const char* name) const {
   return FALSE;
 }
 
@@ -50,6 +50,14 @@ ret_t ViewModelArray::GetProp(int32_t index, const char* name, value_t* v) const
 
 ret_t ViewModelArray::SetProp(int32_t index, const char* name, const value_t* v) {
   return RET_NOT_FOUND;
+}
+
+ret_t ViewModelArray::Remove(int32_t index) {
+  return RET_NOT_FOUND;
+}
+
+ret_t ViewModelArray::Clear() {
+  return RET_NOT_IMPL;
 }
 
 ret_t ViewModelArray::Off(uint32_t id) {

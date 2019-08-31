@@ -22,7 +22,11 @@
 #ifndef TK_VIEW_MODEL_ADAPTER_H
 #define TK_VIEW_MODEL_ADAPTER_H
 
+#include "tkc/mem.h"
+#include "tkc/utils.h"
+#include "mvvm/base/utils.h"
 #include "mvvm/base/view_model.h"
+#include "mvvm/base/view_model_array.h"
 #include "mvvm/base/value_validator.h"
 #include "mvvm/base/value_converter.h"
 
