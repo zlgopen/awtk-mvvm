@@ -48,7 +48,7 @@ ret_t Books::AddBook() {
   char buff[64];
   tk_snprintf(buff, sizeof(buff), "book %d", (random() % 10000));
 
-  book.stock = random() % 100;
+  book.stock = random() % 10 + 1;
   book.name = buff;
 
   this->books.push_back(book);
@@ -79,6 +79,8 @@ bool_t Books::CanExec(int32_t index, const char* name) const {
     return TRUE;
   } else if (tk_str_eq(name, "remove")) {
     return this->books.size() > index;
+  } else if (tk_str_eq(name, "sale")) {
+    return this->books[index].stock > 0;
   } else if (tk_str_eq(name, "clear")) {
     return this->books.size() > 0;
   }
