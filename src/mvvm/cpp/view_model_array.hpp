@@ -103,7 +103,42 @@ class ViewModelArray {
      * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
      */
     virtual ret_t Clear();
+
+  public:
+    //事件
+    /**
+     * @method OnWillMount
+     * 打开视图即将加载模型时通知view_model。
+     *
+     * @param {navigator_request_t*} req request对象。
+     *
+     * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+     */
+    virtual ret_t OnWillMount(navigator_request_t* request);
+    /**
+     * @method OnMount
+     * 视图与模型绑定完成后通知模型。
+     *
+     * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+     */
+    virtual ret_t OnMount();
+    /**
+     * @method OnWillUnmount
+     * 视图即将关闭时通知模型。
+     *
+     * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+     */
+    virtual ret_t OnWillUnmount();
+    /**
+     * @method OnUnmount
+     * 视图销毁时通知模型。
+     *
+     * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+     */
+    virtual ret_t OnUnmount();
+
   public:    
+    //基类提供的公共函数。
     /**
      * @method Off
      * 注销指定事件的处理函数。

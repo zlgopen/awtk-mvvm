@@ -42,7 +42,7 @@ Books::Books(navigator_request_t* request) : ViewModelArray(request) {
 
 Books::~Books() {
 }
-  
+
 ret_t Books::AddBook() {
   Book book;
   char buff[64];
@@ -61,13 +61,13 @@ uint32_t Books::GetSize(void) const {
 }
 
 ret_t Books::Exec(int32_t index, const char* name) {
-  if(tk_str_eq(name, "add")) {
+  if (tk_str_eq(name, "add")) {
     return this->AddBook();
-  } else if(tk_str_eq(name, "remove")) {
+  } else if (tk_str_eq(name, "remove")) {
     return this->Remove(index);
-  } else if(tk_str_eq(name, "sale")) {
+  } else if (tk_str_eq(name, "sale")) {
     return this->Sale(index);
-  } else if(tk_str_eq(name, "clear")) {
+  } else if (tk_str_eq(name, "clear")) {
     return this->Clear();
   }
 
@@ -75,11 +75,11 @@ ret_t Books::Exec(int32_t index, const char* name) {
 }
 
 bool_t Books::CanExec(int32_t index, const char* name) const {
-  if(tk_str_eq(name, "add")) {
+  if (tk_str_eq(name, "add")) {
     return TRUE;
-  } else if(tk_str_eq(name, "remove")) {
+  } else if (tk_str_eq(name, "remove")) {
     return this->books.size() > index;
-  } else if(tk_str_eq(name, "clear")) {
+  } else if (tk_str_eq(name, "clear")) {
     return this->books.size() > 0;
   }
 
@@ -89,17 +89,17 @@ bool_t Books::CanExec(int32_t index, const char* name) const {
 ret_t Books::GetProp(int32_t index, const char* name, value_t* v) const {
   const Book& book = this->books[index];
 
-  if(tk_str_eq(name, "name")) {
-     value_set_str(v, book.name.c_str());
+  if (tk_str_eq(name, "name")) {
+    value_set_str(v, book.name.c_str());
 
-     return RET_OK;
-  } else if(tk_str_eq(name, "stock")) {
+    return RET_OK;
+  } else if (tk_str_eq(name, "stock")) {
     value_set_int(v, book.stock);
-     
+
     return RET_OK;
   } else if (tk_str_eq("style", name)) {
     value_set_str(v, index % 2 ? "odd" : "even");
-    
+
     return RET_OK;
   }
 
@@ -111,8 +111,8 @@ ret_t Books::GetProp(int32_t index, const char* name, value_t* v) const {
 ret_t Books::SetProp(int32_t index, const char* name, const value_t* v) {
   Book& book = this->books[index];
 
-  if(tk_str_eq(name, "stock")) {
-    book.stock = value_int(v); 
+  if (tk_str_eq(name, "stock")) {
+    book.stock = value_int(v);
     return RET_OK;
   }
 
@@ -126,7 +126,6 @@ ret_t Books::Sale(int32_t index) {
 
   return RET_OBJECT_CHANGED;
 }
-
 
 ret_t Books::Remove(int32_t index) {
   this->books.erase(this->books.begin() + index);
@@ -143,5 +142,3 @@ ret_t Books::Clear() {
 view_model_t* books_view_model_create(navigator_request_t* req) {
   return vm::To(new Books(req));
 }
-
-

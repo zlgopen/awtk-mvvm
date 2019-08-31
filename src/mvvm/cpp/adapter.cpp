@@ -31,6 +31,30 @@ typedef struct _view_model_adapter_t {
   ViewModel* cpp;
 } view_model_adapter_t;
 
+static ret_t view_model_adapter_on_will_mount(view_model_t* view_model, navigator_request_t* req) {
+  view_model_adapter_t* adapter = (view_model_adapter_t*)(view_model);
+
+  return adapter->cpp->OnWillMount(req);
+}
+
+static ret_t view_model_adapter_on_mount(view_model_t* view_model) {
+  view_model_adapter_t* adapter = (view_model_adapter_t*)(view_model);
+
+  return adapter->cpp->OnMount();
+}
+
+static ret_t view_model_adapter_on_will_unmount(view_model_t* view_model) {
+  view_model_adapter_t* adapter = (view_model_adapter_t*)(view_model);
+
+  return adapter->cpp->OnWillUnmount();
+}
+
+static ret_t view_model_adapter_on_unmount(view_model_t* view_model) {
+  view_model_adapter_t* adapter = (view_model_adapter_t*)(view_model);
+
+  return adapter->cpp->OnUnmount();
+}
+
 static ret_t view_model_adapter_set_prop(object_t* obj, const char* name, const value_t* v) {
   view_model_adapter_t* adapter = (view_model_adapter_t*)(obj);
   return_value_if_fail(adapter->cpp != NULL, RET_BAD_PARAMS);
@@ -69,9 +93,8 @@ static ret_t view_model_adapter_on_destroy(object_t* obj) {
   return view_model_deinit(VIEW_MODEL(obj));
 }
 
-static object_vtable_t s_view_model_adapter_vtable;
-
-static ret_t view_model_adapter_init_vtable(object_vtable_t* vt) {
+static object_vtable_t s_view_model_adapter_object_vtable;
+static ret_t view_model_adapter_init_object_vtable(object_vtable_t* vt) {
   vt->type = "view_model_adapter";
   vt->desc = "view_model_adapter for cpp";
   vt->size = sizeof(view_model_adapter_t);
@@ -80,6 +103,16 @@ static ret_t view_model_adapter_init_vtable(object_vtable_t* vt) {
   vt->get_prop = view_model_adapter_get_prop;
   vt->set_prop = view_model_adapter_set_prop;
   vt->on_destroy = view_model_adapter_on_destroy;
+
+  return RET_OK;
+}
+
+static view_model_vtable_t s_view_model_adapter_vtable;
+static ret_t view_model_adapter_init_vtable(view_model_vtable_t* vt) {
+  vt->on_will_mount = view_model_adapter_on_will_mount;
+  vt->on_mount = view_model_adapter_on_mount;
+  vt->on_will_unmount = view_model_adapter_on_will_unmount;
+  vt->on_unmount = view_model_adapter_on_unmount;
 
   return RET_OK;
 }
@@ -94,15 +127,17 @@ view_model_t* view_model_cpp_create(ViewModel* cpp) {
   view_model_adapter_t* adapter = NULL;
   return_value_if_fail(cpp != NULL, NULL);
 
-  if (s_view_model_adapter_vtable.type == NULL) {
+  if (s_view_model_adapter_object_vtable.type == NULL) {
     view_model_adapter_init_vtable(&s_view_model_adapter_vtable);
+    view_model_adapter_init_object_vtable(&s_view_model_adapter_object_vtable);
   }
 
-  obj = object_create(&s_view_model_adapter_vtable);
+  obj = object_create(&s_view_model_adapter_object_vtable);
   return_value_if_fail(obj != NULL, NULL);
 
   view_model = view_model_init(VIEW_MODEL(obj));
   adapter = (view_model_adapter_t*)(view_model);
+  view_model->vt = &s_view_model_adapter_vtable;
 
   adapter->cpp = cpp;
   cpp->On(EVT_PROP_CHANGED, view_model_adapter_on_cpp_changed, view_model);
@@ -229,6 +264,31 @@ typedef struct _view_model_array_adapter_t {
   ViewModelArray* cpp;
 } view_model_array_adapter_t;
 
+static ret_t view_model_array_adapter_on_will_mount(view_model_t* view_model,
+                                                    navigator_request_t* req) {
+  view_model_array_adapter_t* adapter = (view_model_array_adapter_t*)(view_model);
+
+  return adapter->cpp->OnWillMount(req);
+}
+
+static ret_t view_model_array_adapter_on_mount(view_model_t* view_model) {
+  view_model_array_adapter_t* adapter = (view_model_array_adapter_t*)(view_model);
+
+  return adapter->cpp->OnMount();
+}
+
+static ret_t view_model_array_adapter_on_will_unmount(view_model_t* view_model) {
+  view_model_array_adapter_t* adapter = (view_model_array_adapter_t*)(view_model);
+
+  return adapter->cpp->OnWillUnmount();
+}
+
+static ret_t view_model_array_adapter_on_unmount(view_model_t* view_model) {
+  view_model_array_adapter_t* adapter = (view_model_array_adapter_t*)(view_model);
+
+  return adapter->cpp->OnUnmount();
+}
+
 uint32_t view_model_array_adapter_size(view_model_t* view_model) {
   view_model_array_adapter_t* adapter = (view_model_array_adapter_t*)(view_model);
   return_value_if_fail(adapter != NULL, 0);
@@ -275,7 +335,7 @@ static ret_t view_model_array_adapter_get_prop(object_t* obj, const char* name, 
 
   name = destruct_array_prop_name(name, &index);
   return_value_if_fail(name != NULL, RET_BAD_PARAMS);
-  
+
   return adapter->cpp->GetProp(index, name, v);
 }
 
@@ -321,16 +381,31 @@ static ret_t view_model_array_adapter_on_destroy(object_t* obj) {
   return view_model_array_deinit(VIEW_MODEL(obj));
 }
 
-static const object_vtable_t s_view_model_array_adapter_vtable = {
-    .type = "view_model_array_adapter",
-    .desc = "view_model_array_adapter",
-    .is_collection = TRUE,
-    .size = sizeof(view_model_array_adapter_t),
-    .exec = view_model_array_adapter_exec,
-    .can_exec = view_model_array_adapter_can_exec,
-    .get_prop = view_model_array_adapter_get_prop,
-    .set_prop = view_model_array_adapter_set_prop,
-    .on_destroy = view_model_array_adapter_on_destroy};
+static object_vtable_t s_view_model_array_adapter_object_vtable;
+
+static ret_t view_model_array_adapter_init_object_vtable(object_vtable_t* vt) {
+  vt->type = "view_model_array_adapter";
+  vt->desc = "view_model_array_adapter";
+  vt->is_collection = TRUE;
+  vt->size = sizeof(view_model_array_adapter_t);
+  vt->exec = view_model_array_adapter_exec;
+  vt->can_exec = view_model_array_adapter_can_exec;
+  vt->get_prop = view_model_array_adapter_get_prop;
+  vt->set_prop = view_model_array_adapter_set_prop;
+  vt->on_destroy = view_model_array_adapter_on_destroy;
+
+  return RET_OK;
+}
+
+static view_model_vtable_t s_view_model_array_adapter_vtable;
+static ret_t view_model_array_adapter_init_vtable(view_model_vtable_t* vt) {
+  vt->on_will_mount = view_model_array_adapter_on_will_mount;
+  vt->on_mount = view_model_array_adapter_on_mount;
+  vt->on_will_unmount = view_model_array_adapter_on_will_unmount;
+  vt->on_unmount = view_model_array_adapter_on_unmount;
+
+  return RET_OK;
+}
 
 view_model_t* view_model_array_cpp_create(ViewModelArray* cpp) {
   object_t* obj = NULL;
@@ -338,10 +413,16 @@ view_model_t* view_model_array_cpp_create(ViewModelArray* cpp) {
   view_model_array_adapter_t* adapter = NULL;
   return_value_if_fail(cpp != NULL, NULL);
 
-  obj = object_create(&s_view_model_array_adapter_vtable);
+  if (s_view_model_array_adapter_object_vtable.type == NULL) {
+    view_model_array_adapter_init_vtable(&s_view_model_array_adapter_vtable);
+    view_model_array_adapter_init_object_vtable(&s_view_model_array_adapter_object_vtable);
+  }
+
+  obj = object_create(&s_view_model_array_adapter_object_vtable);
   view_model = view_model_array_init(VIEW_MODEL(obj));
   adapter = (view_model_array_adapter_t*)(view_model);
   return_value_if_fail(view_model != NULL, NULL);
+  view_model->vt = &s_view_model_array_adapter_vtable;
 
   adapter->cpp = cpp;
 

@@ -66,10 +66,33 @@ uint32_t ViewModel::On(uint32_t event, event_func_t on_event, void* ctx) {
 
 ret_t ViewModel::NotifyObjectChanged() {
   event_t e = event_init(EVT_PROPS_CHANGED, this);
-  
+
   this->DispatchEvent(&e);
 
   return RET_OK;
 }
 
+ret_t ViewModel::OnWillMount(navigator_request_t* request) {
+  log_debug("%s\n", __FUNCTION__);
+
+  return RET_OK;
+}
+
+ret_t ViewModel::OnMount() {
+  log_debug("%s\n", __FUNCTION__);
+
+  return RET_OK;
+}
+
+ret_t ViewModel::OnWillUnmount() {
+  log_debug("%s\n", __FUNCTION__);
+
+  return RET_OK;
+}
+
+ret_t ViewModel::OnUnmount() {
+  log_debug("%s\n", __FUNCTION__);
+
+  return RET_OK;
+}
 }  // namespace vm

@@ -76,4 +76,28 @@ uint32_t ViewModelArray::On(uint32_t event, event_func_t on_event, void* ctx) {
   return emitter_on(&(this->emitter), event, on_event, ctx);
 }
 
+ret_t ViewModelArray::OnWillMount(navigator_request_t* request) {
+  log_debug("%s\n", __FUNCTION__);
+
+  return RET_OK;
+}
+
+ret_t ViewModelArray::OnMount() {
+  log_debug("%s\n", __FUNCTION__);
+
+  return RET_OK;
+}
+
+ret_t ViewModelArray::OnWillUnmount() {
+  log_debug("%s\n", __FUNCTION__);
+
+  return RET_OK;
+}
+
+ret_t ViewModelArray::OnUnmount() {
+  log_debug("%s\n", __FUNCTION__);
+
+  return RET_OK;
+}
+
 }  // namespace vm
