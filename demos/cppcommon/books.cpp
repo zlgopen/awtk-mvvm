@@ -97,7 +97,13 @@ ret_t Books::GetProp(int32_t index, const char* name, value_t* v) const {
     value_set_int(v, book.stock);
      
     return RET_OK;
+  } else if (tk_str_eq("style", name)) {
+    value_set_str(v, index % 2 ? "odd" : "even");
+    
+    return RET_OK;
   }
+
+  log_debug("not found %s\n", name);
 
   return RET_NOT_FOUND;
 }
