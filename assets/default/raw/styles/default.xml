@@ -29,6 +29,9 @@
   <style name="default" border_color="#a0a0a0">
     <normal bg_color="#f0f0f0"/>
   </style>
+  <style name="dark">
+    <normal bg_color="#808080"/>
+  </style>
 </popup>
 
 <button>
@@ -139,6 +142,7 @@
     <disable    bg_color="gray" text_color="#d0d0d0" />
     <error      bg_color="#f0f0f0" text_color="red" />
     <empty      bg_color="#f0f0f0" text_color="#a0a0a0" />
+    <empty_focus bg_color="#f0f0f0" text_color="#a0a0a0" border_color="black"/>
   </style>
 </spin_box>
 
@@ -188,8 +192,8 @@
 </label>
 
 <progress_bar>
-  <style>
-    <normal text_color="gold" bg_color="#c0c0c0" fg_color="green" border_color="#333333" />
+  <style name="default">
+    <normal text_color="gold" bg_color="#c0c0c0" fg_color="green" border_color="#333333"/>
   </style>
   
   <style name="round">
@@ -439,7 +443,11 @@
 </tab_button>
 
 <tab_button_group>
-  <style name="default">
+  <style name="default" >
+    <normal/>
+  </style>
+
+  <style name="scrollable" border_color="#a0a0a0" border="left|right">
     <normal/>
   </style>
 </tab_button_group>
@@ -478,16 +486,37 @@
   <style name="default">
     <normal  bg_image="switch" />
   </style>
+  <style name="rounded">
+    <normal  bg_image="switch" round_radius="11"/>
+  </style>
+  <style name="no_image">
+    <normal  bg_color="#828282" selected_bg_color="#338fff" fg_color="#ffffff" round_radius="11"/>
+  </style>
 </switch>
 
-<slide_view>
+<slide_indicator>
   <style name="default">
-    <normal  fg_color="red" />
+    <normal  fg_color="#ff000040" selected_fg_color="#ff0000"/>
   </style>
-  <style name="dot">
+  <style name="blue">
+    <normal  fg_color="#338fff40" selected_fg_color="#338fff"/>
+  </style>
+  <style name="icon">
     <normal  icon="dot" active_icon="active_dot"/>
   </style>
-</slide_view>
+</slide_indicator>
+
+<slide_indicator_arc>
+  <style name="default">
+    <normal  fg_color="#ff000040" selected_fg_color="#ff0000"/>
+  </style>
+  <style name="blue">
+    <normal  fg_color="#338fff40" selected_fg_color="#338fff"/>
+  </style>
+  <style name="icon">
+    <normal  icon="dot" active_icon="active_dot"/>
+  </style>
+</slide_indicator_arc>
 
 <progress_circle>
   <style name="default">
@@ -498,11 +527,11 @@
   </style>
 </progress_circle>
 
-<svg_image>
+<svg>
   <style name="default">
     <normal border_color="green" fg_color="red" />
   </style>
-</svg_image>
+</svg>
 
 <check_button>
   <style name="password_visible" >
@@ -523,3 +552,38 @@
     <normal     bg_color="#f0f0f0" mask_color="#f0f0f0"/>
   </style>
 </slide_menu>
+
+<mledit selected_fg_color="#020202" selected_text_color="#010101" selected_bg_color="#b5d7fd">
+  <style name="default" border_color="#a0a0a0"  text_color="black" text_align_h="left">
+    <normal     bg_color="#f0f0f0" />
+    <focused    bg_color="#f0f0f0" border_color="black"/>
+    <disable    bg_color="gray" text_color="#d0d0d0" />
+    <error      bg_color="#f0f0f0" text_color="red" />
+    <empty      bg_color="#f0f0f0" text_color="#a0a0a0" />
+    <empty_focus bg_color="#f0f0f0" text_color="#a0a0a0" border_color="black"/>
+  </style>
+</mledit>
+
+<line_number>
+  <style name="default">
+    <normal text_color="black" bg_color="#d0d0d0" text_align_h="right"/>
+  </style>
+</line_number>
+
+<hscroll_label>
+  <style name="default" text_color="black">
+    <normal   />
+    <focused  />
+  </style>
+
+  <style name="green" text_color="green">
+    <normal   />
+    <focused  />
+  </style>
+  
+  <style name="right" text_color="green" text_align_h="right">
+    <normal   />
+    <focused  />
+  </style>
+</hscroll_label>
+
