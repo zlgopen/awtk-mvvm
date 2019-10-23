@@ -38,6 +38,7 @@
 #include "mvvm/base/binding_rule_parser.h"
 #include "mvvm/awtk/binding_context_awtk.h"
 
+#define EVENT_TAG 0x11223300
 static ret_t binding_context_bind_for_widget(widget_t* widget, navigator_request_t* req);
 
 static const char* widget_get_prop_vmodel(widget_t* widget) {
@@ -132,11 +133,11 @@ static ret_t binding_context_bind_data(binding_context_t* ctx, const char* name,
       if (tk_str_eq(rule->prop, WIDGET_PROP_VALUE) ||
           (tk_str_eq(rule->prop, WIDGET_PROP_TEXT) && is_edit)) {
         if (rule->trigger == UPDATE_WHEN_CHANGING) {
-          widget_on(widget, EVT_VALUE_CHANGING, on_widget_value_change, rule);
+          widget_on_with_tag(widget, EVT_VALUE_CHANGING, on_widget_value_change, rule, EVENT_TAG);
         }
-        widget_on(widget, EVT_VALUE_CHANGED, on_widget_value_change, rule);
+        widget_on_with_tag(widget, EVT_VALUE_CHANGED, on_widget_value_change, rule, EVENT_TAG);
       } else {
-        widget_on(widget, EVT_PROP_CHANGED, on_widget_prop_change, rule);
+        widget_on_with_tag(widget, EVT_PROP_CHANGED, on_widget_prop_change, rule, EVENT_TAG);
       }
     }
   }
@@ -248,7 +249,7 @@ static ret_t binding_context_bind_command(binding_context_t* ctx, const char* na
 
   event = int_str_name(s_event_map, rule->event, EVT_NONE);
   if (event != EVT_NONE) {
-    widget_on(widget, event, on_widget_event, rule);
+    widget_on_with_tag(widget, event, on_widget_event, rule, EVENT_TAG);
   }
 
   return RET_OK;
@@ -418,7 +419,7 @@ static bool_t widget_is_for_items(widget_t* widget) {
 static ret_t on_reset_emitter(void* ctx, const void* data) {
   widget_t* widget = WIDGET(data);
   if (widget->emitter != NULL) {
-    emitter_deinit(widget->emitter);
+    widget_off_by_tag(widget, EVENT_TAG);
   }
 
   return RET_OK;
