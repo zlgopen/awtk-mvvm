@@ -171,6 +171,16 @@ ret_t navigator_toast(const char* content, uint32_t timeout);
 ret_t navigator_back_to_home(void);
 
 /**
+ * @method navigator_back
+ * 关闭当前窗口，回到前一窗口。
+ *
+ * @annotation ["static"]
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t navigator_back(void);
+
+/**
  * @method navigator_info
  * 显示信息。
  *

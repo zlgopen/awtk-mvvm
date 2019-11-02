@@ -89,3 +89,22 @@ navigator_handler_t* navigator_handler_awtk_home_create(void) {
 
   return handler;
 }
+
+static ret_t navigator_handler_awtk_on_back(navigator_handler_t* handler,
+                                               navigator_request_t* req) {
+  window_manager_back(window_manager());
+  return RET_OK;
+}
+
+navigator_handler_t* navigator_handler_awtk_back_create(void) {
+  object_t* obj = NULL;
+  navigator_handler_t* handler = NULL;
+
+  obj = object_create(&s_navigator_handler_awtk_vtable);
+  handler = NAVIGATOR_HANDLER(obj);
+  return_value_if_fail(handler != NULL, NULL);
+
+  handler->on_request = navigator_handler_awtk_on_back;
+
+  return handler;
+}

@@ -30,6 +30,9 @@ ret_t mvvm_awtk_init(void) {
   
   navigator_register_handler(navigator(), NAVIGATOR_REQ_HOME,
                              navigator_handler_awtk_home_create());
+
+  navigator_register_handler(navigator(), NAVIGATOR_REQ_BACK,
+                             navigator_handler_awtk_back_create());
   return RET_OK;
 }
 
