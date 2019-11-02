@@ -3,7 +3,7 @@ const path = require('path')
 const utils = require('./utils')
 
 class CodeGen {
-  genHeader(json) {
+  genItemHeader(json) {
     let clsName = json.name;
     let propsDecl = utils.genPropDecls(json);
     let clsNameUpper = clsName.toUpperCase();
@@ -13,20 +13,45 @@ class CodeGen {
 #ifndef TK_${clsNameUpper}_H
 #define TK_${clsNameUpper}_H
 
-#include "tkc/darray.h"
-#include "mvvm/base/view_model_array.h"
+#include "tkc/str.h"
+#include "tkc/mem.h"
+#include "tkc/utils.h"
 
 BEGIN_C_DECLS
 
 /**
  * @class ${clsName}_t
  *
- * ${json.desc || ''}
- *
  */
 typedef struct _${clsName}_t {
 ${propsDecl}
 } ${clsName}_t;
+
+${utils.genModelCommonFuncs(json)}
+
+END_C_DECLS
+
+#endif /*TK_${clsNameUpper}_H*/
+`
+    return result;
+  }
+  
+  genHeader(json) {
+    let clsName = json.name;
+    let propsDecl = utils.genPropDecls(json);
+    let clsNameUpper = clsName.toUpperCase();
+
+    let result =
+      `
+#ifndef TK_${clsNameUpper}_VIEW_MODEL_H
+#define TK_${clsNameUpper}_VIEW_MODEL_H
+
+#include "tkc/darray.h"
+#include "mvvm/base/view_model_array.h"
+
+BEGIN_C_DECLS
+
+#include "${clsName}.h"
 
 /**
  * @class ${clsName}s_view_model_t
@@ -64,7 +89,7 @@ ${clsName}_t* ${clsName}s_view_model_get(view_model_t* view_model, uint32_t inde
 
 END_C_DECLS
 
-#endif /*TK_${clsNameUpper}_H*/
+#endif /*TK_${clsNameUpper}_VIEW_MODEL_H*/
 `
     return result;
   }
@@ -272,8 +297,8 @@ view_model_t* ${clsName}s_view_model_create(navigator_request_t* req) {
   }
 
   genContent(json) {
+    let result = '';
     const clsName = json.name;
-    let result = utils.genModelCommonFuncs(json);
 
     if (json.props && json.props.length) {
       result += utils.genPropFuncs(json);
@@ -335,7 +360,9 @@ ${clsName}_t* ${clsName}s_view_model_get(view_model_t* view_model, uint32_t inde
   }
 
   genJson(json) {
-    utils.saveResult(json.name+'s', json.includes, this.genHeader(json), this.genContent(json));
+    utils.saveHeader(json.name, this.genItemHeader(json));
+    utils.saveHeader(json.name+'s', this.genHeader(json));
+    utils.saveContent(json.name+'s', json.includes, this.genContent(json));
   }
 
   genFile(filename) {

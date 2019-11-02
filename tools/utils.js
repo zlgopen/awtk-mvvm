@@ -11,7 +11,7 @@ class Utils {
     return result;
   }
 
-  static saveResult(name, includes, header, content) {
+  static saveContent(name, includes, content) {
     let defaultInclude = Utils.genIncludes(name);
 
     if(includes) {
@@ -21,9 +21,18 @@ class Utils {
     }
     defaultInclude += '\n';
 
-    fs.writeFileSync(`${name}.h`, "\ufeff" + header);
     fs.writeFileSync(`${name}.c`, "\ufeff" + defaultInclude + content);
-    console.log(`output to ${name}.h and ${name}.c`);
+    console.log(`output to ${name}.c`);
+  }
+  
+  static saveHeader(name, header) {
+    fs.writeFileSync(`${name}.h`, "\ufeff" + header);
+    console.log(`output to ${name}.h`);
+  }
+  
+  static saveResult(name, includes, header, content) {
+    this.saveHeader(name, header);
+    this.saveContent(name, includes, content);
   }
 
   static genPropDecls(json) {
@@ -221,7 +230,7 @@ class Utils {
     cmpFunc = 
 `
 
-int ${clsName}_cmp(${clsName}_t* a, ${clsName}_t* b) {
+static inline int ${clsName}_cmp(${clsName}_t* a, ${clsName}_t* b) {
   return_value_if_fail(a != NULL && b != NULL, -1);
 ${cmp}
 }
@@ -232,7 +241,7 @@ ${cmp}
       `
 /***************${clsName}***************/;
 
-${clsName}_t* ${clsName}_create(void) {
+static inline ${clsName}_t* ${clsName}_create(void) {
   ${clsName}_t* ${clsName} = TKMEM_ZALLOC(${clsName}_t);
   return_value_if_fail(${clsName} != NULL, NULL);
 
@@ -241,7 +250,7 @@ ${init}
   return ${clsName};
 } 
 ${cmpFunc}
-static ret_t ${clsName}_destroy(${clsName}_t* ${clsName}) {
+static inline ret_t ${clsName}_destroy(${clsName}_t* ${clsName}) {
   return_value_if_fail(${clsName} != NULL, RET_BAD_PARAMS);
 
 ${deinit}

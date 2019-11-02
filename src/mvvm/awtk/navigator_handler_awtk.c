@@ -48,3 +48,24 @@ navigator_handler_t* navigator_handler_awtk_create(void) {
 
   return handler;
 }
+
+static ret_t navigator_handler_awtk_on_toast(navigator_handler_t* handler,
+                                               navigator_request_t* req) {
+  const char* content = object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_CONTENT, NULL);
+  int duration = object_get_prop_int(OBJECT(req), NAVIGATOR_ARG_DURATION, 3000);
+
+  return dialog_toast(content, duration);
+}
+
+navigator_handler_t* navigator_handler_awtk_toast_create(void) {
+  object_t* obj = NULL;
+  navigator_handler_t* handler = NULL;
+
+  obj = object_create(&s_navigator_handler_awtk_vtable);
+  handler = NAVIGATOR_HANDLER(obj);
+  return_value_if_fail(handler != NULL, NULL);
+
+  handler->on_request = navigator_handler_awtk_on_toast;
+
+  return handler;
+}

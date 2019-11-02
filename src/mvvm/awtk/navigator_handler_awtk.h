@@ -46,6 +46,8 @@ typedef struct _navigator_handler_awtk_t {
  */
 navigator_handler_t* navigator_handler_awtk_create(void);
 
+navigator_handler_t* navigator_handler_awtk_toast_create(void);
+
 #define NAVIGATOR_HANDLER_AWTK(h) ((navigator_handler_awtk_t*)h)
 
 END_C_DECLS
