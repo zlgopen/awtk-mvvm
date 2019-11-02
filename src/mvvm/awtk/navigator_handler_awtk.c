@@ -19,6 +19,7 @@
  *
  */
 
+#include "base/dialog.h"
 #include "base/window_manager.h"
 #include "mvvm/base/binding_context.h"
 #include "mvvm/awtk/navigator_handler_awtk.h"
@@ -52,7 +53,7 @@ navigator_handler_t* navigator_handler_awtk_create(void) {
 
 static ret_t navigator_handler_awtk_on_toast(navigator_handler_t* handler,
                                              navigator_request_t* req) {
-  const char* content = object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_CONTENT, NULL);
+  const char* content = object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_CONTENT);
   int duration = object_get_prop_int(OBJECT(req), NAVIGATOR_ARG_DURATION, 3000);
 
   return dialog_toast(content, duration);
