@@ -1,4 +1,8 @@
 # 最新动态
+* 2019/11/02
+  * 实现navigator\_toast
+  * 增加navigator\_back\_to\_home
+
 * 2019/10/23
   * 修改edit/combobox在 listview中的问题。
   * 增加键盘的资源。
