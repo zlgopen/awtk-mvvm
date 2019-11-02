@@ -51,7 +51,7 @@ navigator_handler_t* navigator_handler_awtk_create(void) {
 }
 
 static ret_t navigator_handler_awtk_on_toast(navigator_handler_t* handler,
-                                               navigator_request_t* req) {
+                                             navigator_request_t* req) {
   const char* content = object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_CONTENT, NULL);
   int duration = object_get_prop_int(OBJECT(req), NAVIGATOR_ARG_DURATION, 3000);
 
@@ -72,7 +72,7 @@ navigator_handler_t* navigator_handler_awtk_toast_create(void) {
 }
 
 static ret_t navigator_handler_awtk_on_home(navigator_handler_t* handler,
-                                               navigator_request_t* req) {
+                                            navigator_request_t* req) {
   window_manager_back_to_home(window_manager());
   return RET_OK;
 }
@@ -91,7 +91,7 @@ navigator_handler_t* navigator_handler_awtk_home_create(void) {
 }
 
 static ret_t navigator_handler_awtk_on_back(navigator_handler_t* handler,
-                                               navigator_request_t* req) {
+                                            navigator_request_t* req) {
   window_manager_back(window_manager());
   return RET_OK;
 }
