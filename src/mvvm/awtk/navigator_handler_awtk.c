@@ -19,6 +19,7 @@
  *
  */
 
+#include "base/window_manager.h"
 #include "mvvm/base/binding_context.h"
 #include "mvvm/awtk/navigator_handler_awtk.h"
 
@@ -66,6 +67,25 @@ navigator_handler_t* navigator_handler_awtk_toast_create(void) {
   return_value_if_fail(handler != NULL, NULL);
 
   handler->on_request = navigator_handler_awtk_on_toast;
+
+  return handler;
+}
+
+static ret_t navigator_handler_awtk_on_home(navigator_handler_t* handler,
+                                               navigator_request_t* req) {
+  window_manager_back_to_home(window_manager());
+  return RET_OK;
+}
+
+navigator_handler_t* navigator_handler_awtk_home_create(void) {
+  object_t* obj = NULL;
+  navigator_handler_t* handler = NULL;
+
+  obj = object_create(&s_navigator_handler_awtk_vtable);
+  handler = NAVIGATOR_HANDLER(obj);
+  return_value_if_fail(handler != NULL, NULL);
+
+  handler->on_request = navigator_handler_awtk_on_home;
 
   return handler;
 }

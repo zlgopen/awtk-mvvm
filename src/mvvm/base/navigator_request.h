@@ -99,6 +99,7 @@ ret_t navigator_request_on_result(navigator_request_t* req, const value_t* resul
 #define NAVIGATOR_REQUEST(req) ((navigator_request_t*)(req))
 
 #define NAVIGATOR_REQ_TOAST "toast"
+#define NAVIGATOR_REQ_HOME "home"
 #define NAVIGATOR_REQ_INFO "info"
 #define NAVIGATOR_REQ_WARN "warn"
 #define NAVIGATOR_REQ_CONFIRM "confirm"

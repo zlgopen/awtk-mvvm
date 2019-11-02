@@ -136,6 +136,10 @@ ret_t navigator_to(const char* target) {
   return ret;
 }
 
+ret_t navigator_back_to_home(void) {
+  return navigator_to(NAVIGATOR_REQ_HOME);
+}
+
 ret_t navigator_to_ex(navigator_request_t* req) {
   return navigator_handle_request(navigator(), req);
 }
