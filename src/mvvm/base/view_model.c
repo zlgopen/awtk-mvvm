@@ -205,7 +205,11 @@ static EvalResult vm_get_variable(const char* name, void* user_data, ExprValue* 
   if (view_model_get_prop(view_model, name, &value) == RET_OK) {
     if (value.type == VALUE_TYPE_STRING) {
       const char* str = value_str(&value);
-      expr_value_set_string(output, str, strlen(str));
+      if (str != NULL) {
+        expr_value_set_string(output, str, strlen(str));
+      } else {
+        expr_value_set_string(output, "", 0);
+      }
     } else {
       expr_value_set_number(output, value_double(&value));
     }
