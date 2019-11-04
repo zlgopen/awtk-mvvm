@@ -100,3 +100,5 @@ sys.path.insert(0, '../awtk-linux-fb/')
 | (no)     | jsdemo16 | 动态界面                            |
 | demo16   | (no)     | 集成硬件外设                        |
 | demo17   | (no)     | 无GUI情况集成硬件外设               |
+
+完整示例及模板项目：[awtk-mvvm-c-hello](https://github.com/zlgopen/awtk-mvvm-c-hello)
