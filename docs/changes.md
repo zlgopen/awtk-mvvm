@@ -1,4 +1,7 @@
 # 最新动态
+* 2019/11/07
+  * 增加demo19演示控制动画的方法。
+
 * 2019/11/02
   * 实现navigator\_toast
   * 增加navigator\_back

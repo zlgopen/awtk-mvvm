@@ -100,5 +100,8 @@ sys.path.insert(0, '../awtk-linux-fb/')
 | (no)     | jsdemo16 | 动态界面                            |
 | demo16   | (no)     | 集成硬件外设                        |
 | demo17   | (no)     | 无GUI情况集成硬件外设               |
+| (no)     | jsdemo17 | 控制控件的可见性                    |
+| (no)     | jsdemo18 | 复杂属性值的表示方法                |
+| demo19   | (no)     | 控制动画启停                        |
 
 完整示例及模板项目：[awtk-mvvm-c-hello](https://github.com/zlgopen/awtk-mvvm-c-hello)

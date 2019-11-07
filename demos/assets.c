@@ -54,6 +54,7 @@
 #include "assets/default/inc/ui/temperature14.data"
 #include "assets/default/inc/ui/temperature16.data"
 #include "assets/default/inc/ui/temperature17.data"
+#include "assets/default/inc/ui/temperature19.data"
 #include "assets/default/inc/ui/temperature2.data"
 #include "assets/default/inc/ui/temperature3.data"
 #include "assets/default/inc/ui/temperature4.data"
@@ -503,6 +504,7 @@ ret_t assets_init(void) {
   assets_manager_add(am, ui_temperature14);
   assets_manager_add(am, ui_temperature16);
   assets_manager_add(am, ui_temperature17);
+  assets_manager_add(am, ui_temperature19);
   assets_manager_add(am, ui_temperature2);
   assets_manager_add(am, ui_temperature3);
   assets_manager_add(am, ui_temperature4);
