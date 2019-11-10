@@ -34,6 +34,14 @@
 
 static data_binding_t* data_binding_cast(void* rule);
 
+static ret_t view_model_set_cursor(view_model_t* vm, uint32_t cursor) {
+  emitter_disable(EMITTER(vm));
+  object_set_prop_int(OBJECT(vm), VIEW_MODEL_PROP_CURSOR, cursor);
+  emitter_enable(EMITTER(vm));
+
+  return RET_OK;
+}
+
 static ret_t data_binding_on_destroy(object_t* obj) {
   data_binding_t* rule = data_binding_cast(obj);
   return_value_if_fail(rule != NULL, RET_BAD_PARAMS);
@@ -254,7 +262,7 @@ ret_t data_binding_get_prop(data_binding_t* rule, value_t* v) {
 
   if (object_is_collection(OBJECT(view_model))) {
     uint32_t cursor = BINDING_RULE(rule)->cursor;
-    object_set_prop_int(OBJECT(view_model), VIEW_MODEL_PROP_CURSOR, cursor);
+    view_model_set_cursor(view_model, cursor);
 
     if (tk_str_eq(rule->path, VIEW_MODEL_PROP_CURSOR)) {
       value_set_int(v, cursor);
@@ -292,7 +300,7 @@ ret_t data_binding_set_prop(data_binding_t* rule, const value_t* raw) {
   str_clear(&(view_model->last_error));
   if (object_is_collection(OBJECT(view_model))) {
     uint32_t cursor = BINDING_RULE(rule)->cursor;
-    object_set_prop_int(OBJECT(view_model), VIEW_MODEL_PROP_CURSOR, cursor);
+    view_model_set_cursor(view_model, cursor);
   }
 
   if (!value_is_valid(view_model, rule->validator, raw, &(view_model->last_error))) {
