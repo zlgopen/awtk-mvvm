@@ -123,9 +123,9 @@ static ret_t navigator_handler_awtk_on_pick_file(navigator_handler_t* handler,
   bool_t for_save = object_get_prop_bool(OBJECT(req), NAVIGATOR_ARG_FOR_SAVE, FALSE);
 
   if (for_save) {
-    result = NFD_OpenDialog(NULL, defpath, &outPath);
-  } else {
     result = NFD_SaveDialog(NULL, defpath, &outPath);
+  } else {
+    result = NFD_OpenDialog(NULL, defpath, &outPath);
   }
 
   if (result == NFD_OKAY) {
