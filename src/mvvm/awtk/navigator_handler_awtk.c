@@ -109,3 +109,86 @@ navigator_handler_t* navigator_handler_awtk_back_create(void) {
 
   return handler;
 }
+
+#ifdef WITH_NATIVE_FILE_DIALOG
+
+#include <nfd.h>
+
+static ret_t navigator_handler_awtk_on_pick_file(navigator_handler_t* handler,
+                                                 navigator_request_t* req) {
+  nfdchar_t* outPath = NULL;
+  nfdresult_t result = NFD_OKAY;
+  const char* defpath = object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_DEFAULT);
+  const char* mimetype = object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_MINE_TYPES);
+  bool_t for_save = object_get_prop_bool(OBJECT(req), NAVIGATOR_ARG_FOR_SAVE, FALSE);
+
+  if (for_save) {
+    result = NFD_OpenDialog(NULL, defpath, &outPath);
+  } else {
+    result = NFD_SaveDialog(NULL, defpath, &outPath);
+  }
+
+  if (result == NFD_OKAY) {
+    value_t v;
+    value_set_str(&v, outPath);
+    navigator_request_on_result(req, &v);
+    free(outPath);
+    return RET_OK;
+  } else if (result == NFD_CANCEL) {
+    log_debug("User pressed cancel.");
+    return RET_FAIL;
+  } else {
+    log_debug("Error: %s\n", NFD_GetError());
+    return RET_FAIL;
+  }
+}
+
+navigator_handler_t* navigator_handler_awtk_pick_file_create(void) {
+  object_t* obj = NULL;
+  navigator_handler_t* handler = NULL;
+
+  obj = object_create(&s_navigator_handler_awtk_vtable);
+  handler = NAVIGATOR_HANDLER(obj);
+  return_value_if_fail(handler != NULL, NULL);
+
+  handler->on_request = navigator_handler_awtk_on_pick_file;
+
+  return handler;
+}
+
+static ret_t navigator_handler_awtk_on_pick_dir(navigator_handler_t* handler,
+                                                navigator_request_t* req) {
+  nfdchar_t* outPath = NULL;
+  const char* defpath = object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_DEFAULT);
+  nfdresult_t result = NFD_PickFolder(defpath, &outPath);
+
+  if (result == NFD_OKAY) {
+    value_t v;
+    value_set_str(&v, outPath);
+    navigator_request_on_result(req, &v);
+    free(outPath);
+    return RET_OK;
+  } else if (result == NFD_CANCEL) {
+    log_debug("User pressed cancel.");
+    return RET_FAIL;
+  } else {
+    log_debug("Error: %s\n", NFD_GetError());
+    return RET_FAIL;
+  }
+
+  return RET_OK;
+}
+
+navigator_handler_t* navigator_handler_awtk_pick_dir_create(void) {
+  object_t* obj = NULL;
+  navigator_handler_t* handler = NULL;
+
+  obj = object_create(&s_navigator_handler_awtk_vtable);
+  handler = NAVIGATOR_HANDLER(obj);
+  return_value_if_fail(handler != NULL, NULL);
+
+  handler->on_request = navigator_handler_awtk_on_pick_dir;
+
+  return handler;
+}
+#endif /*WITH_NATIVE_FILE_DIALOG*/

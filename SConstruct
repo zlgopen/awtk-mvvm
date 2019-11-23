@@ -23,7 +23,7 @@ os.environ['APP_ROOT'] = APP_ROOT;
 os.environ['BIN_DIR'] = APP_BIN_DIR;
 os.environ['LIB_DIR'] = APP_LIB_DIR;
 
-TK_JS_JERRYSCRIPT_DIRS = [
+TK_3RD_DIRS = [
   os.path.join(TK_JS_3RD_ROOT, 'jerryscript/jerry-ext/include'),
   os.path.join(TK_JS_3RD_ROOT, 'jerryscript/jerry-ext/arg'),
   os.path.join(TK_JS_3RD_ROOT, 'jerryscript/jerry-ext/common'),
@@ -49,13 +49,14 @@ TK_JS_JERRYSCRIPT_DIRS = [
   os.path.join(TK_JS_3RD_ROOT, 'jerryscript/jerry-core/profiles'),
   os.path.join(TK_JS_3RD_ROOT, 'jerryscript/jerry-port/default/include'),
   os.path.join(TK_JS_3RD_ROOT, 'jerryscript/jerry-core/ecma/builtin-objects/typedarray'),
+  os.path.join(TK_JS_3RD_ROOT, 'nativefiledialog/src/include'),
 ]
 
-APP_LIBS = ['mvvm', 'jerryscript']
+APP_LIBS = ['mvvm', 'jerryscript', 'nfd']
 APP_LIBPATH = [APP_LIB_DIR]
-APP_CPPPATH = TK_JS_JERRYSCRIPT_DIRS + [APP_SRC, APP_ROOT]
-APP_CFLAGS = '-DRES_ROOT=\"\\\"'+RES_ROOT+'\\\"\" -DWITH_JERRYSCRIPT '
-APP_CCFLAGS = '-DRES_ROOT=\"\\\"'+RES_ROOT+'\\\"\" -DWITH_JERRYSCRIPT '
+APP_CPPPATH = TK_3RD_DIRS + [APP_SRC, APP_ROOT]
+APP_CFLAGS = '-DRES_ROOT=\"\\\"'+RES_ROOT+'\\\"\" -DWITH_JERRYSCRIPT -DWITH_NATIVE_FILE_DIALOG '
+APP_CCFLAGS = '-DRES_ROOT=\"\\\"'+RES_ROOT+'\\\"\" -DWITH_JERRYSCRIPT -DWITH_NATIVE_FILE_DIALOG '
 
 
 if hasattr(awtk, 'CC'):

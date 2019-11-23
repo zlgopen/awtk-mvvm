@@ -50,6 +50,11 @@ navigator_handler_t* navigator_handler_awtk_toast_create(void);
 navigator_handler_t* navigator_handler_awtk_home_create(void);
 navigator_handler_t* navigator_handler_awtk_back_create(void);
 
+#ifdef WITH_NATIVE_FILE_DIALOG
+navigator_handler_t* navigator_handler_awtk_pick_file_create(void);
+navigator_handler_t* navigator_handler_awtk_pick_dir_create(void);
+#endif /*WITH_NATIVE_FILE_DIALOG*/
+
 #define NAVIGATOR_HANDLER_AWTK(h) ((navigator_handler_awtk_t*)h)
 
 END_C_DECLS
