@@ -72,6 +72,69 @@ navigator_handler_t* navigator_handler_awtk_toast_create(void) {
   return handler;
 }
 
+static ret_t navigator_handler_awtk_on_info(navigator_handler_t* handler,
+                                            navigator_request_t* req) {
+  const char* title = object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_TITLE);
+  const char* content = object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_CONTENT);
+
+  return dialog_info(title, content);
+}
+
+navigator_handler_t* navigator_handler_awtk_info_create(void) {
+  object_t* obj = NULL;
+  navigator_handler_t* handler = NULL;
+
+  obj = object_create(&s_navigator_handler_awtk_vtable);
+  handler = NAVIGATOR_HANDLER(obj);
+  return_value_if_fail(handler != NULL, NULL);
+
+  handler->on_request = navigator_handler_awtk_on_info;
+
+  return handler;
+}
+
+static ret_t navigator_handler_awtk_on_warn(navigator_handler_t* handler,
+                                            navigator_request_t* req) {
+  const char* title = object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_TITLE);
+  const char* content = object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_CONTENT);
+
+  return dialog_warn(title, content);
+}
+
+navigator_handler_t* navigator_handler_awtk_warn_create(void) {
+  object_t* obj = NULL;
+  navigator_handler_t* handler = NULL;
+
+  obj = object_create(&s_navigator_handler_awtk_vtable);
+  handler = NAVIGATOR_HANDLER(obj);
+  return_value_if_fail(handler != NULL, NULL);
+
+  handler->on_request = navigator_handler_awtk_on_warn;
+
+  return handler;
+}
+
+static ret_t navigator_handler_awtk_on_confirm(navigator_handler_t* handler,
+                                               navigator_request_t* req) {
+  const char* title = object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_TITLE);
+  const char* content = object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_CONTENT);
+
+  return dialog_confirm(title, content);
+}
+
+navigator_handler_t* navigator_handler_awtk_confirm_create(void) {
+  object_t* obj = NULL;
+  navigator_handler_t* handler = NULL;
+
+  obj = object_create(&s_navigator_handler_awtk_vtable);
+  handler = NAVIGATOR_HANDLER(obj);
+  return_value_if_fail(handler != NULL, NULL);
+
+  handler->on_request = navigator_handler_awtk_on_confirm;
+
+  return handler;
+}
+
 static ret_t navigator_handler_awtk_on_home(navigator_handler_t* handler,
                                             navigator_request_t* req) {
   window_manager_back_to_home(window_manager());

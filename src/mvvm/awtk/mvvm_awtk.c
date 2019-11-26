@@ -27,6 +27,10 @@ ret_t mvvm_awtk_init(void) {
 
   navigator_register_handler(navigator(), NAVIGATOR_REQ_TOAST,
                              navigator_handler_awtk_toast_create());
+  navigator_register_handler(navigator(), NAVIGATOR_REQ_INFO, navigator_handler_awtk_info_create());
+  navigator_register_handler(navigator(), NAVIGATOR_REQ_WARN, navigator_handler_awtk_warn_create());
+  navigator_register_handler(navigator(), NAVIGATOR_REQ_CONFIRM,
+                             navigator_handler_awtk_confirm_create());
 
   navigator_register_handler(navigator(), NAVIGATOR_REQ_HOME, navigator_handler_awtk_home_create());
 

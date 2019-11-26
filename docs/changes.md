@@ -1,5 +1,8 @@
 # 最新动态
 
+* 2019/11/26
+  * 提供navigator\_info/navigator\_warn/navigator\_confirm的缺省实现。
+
 * 2019/11/23
   * 支持NFD打开文件对话框。
 

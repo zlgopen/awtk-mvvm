@@ -47,6 +47,9 @@ typedef struct _navigator_handler_awtk_t {
 navigator_handler_t* navigator_handler_awtk_create(void);
 
 navigator_handler_t* navigator_handler_awtk_toast_create(void);
+navigator_handler_t* navigator_handler_awtk_info_create(void);
+navigator_handler_t* navigator_handler_awtk_warn_create(void);
+navigator_handler_t* navigator_handler_awtk_confirm_create(void);
 navigator_handler_t* navigator_handler_awtk_home_create(void);
 navigator_handler_t* navigator_handler_awtk_back_create(void);
 
