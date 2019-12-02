@@ -474,7 +474,7 @@ static ret_t binding_context_on_rebind(void* c, event_t* e) {
   }
 
   ctx->request_rebind++;
-  ctx->request_update_view = 0;
+  ctx->update_view_idle_id = 0;
 
   return RET_OK;
 }
@@ -548,13 +548,9 @@ static ret_t visit_command_binding(void* ctx, const void* data) {
 }
 
 static ret_t binding_context_awtk_update_to_view_sync(binding_context_t* ctx) {
-  if (ctx->request_update_view > 0) {
-    ctx->request_update_view = 0;
-
-    darray_foreach(&(ctx->data_bindings), visit_data_binding_update_to_view, ctx);
-    darray_foreach(&(ctx->command_bindings), visit_command_binding, ctx);
-    widget_invalidate_force(WIDGET(ctx->widget), NULL);
-  }
+  darray_foreach(&(ctx->data_bindings), visit_data_binding_update_to_view, ctx);
+  darray_foreach(&(ctx->command_bindings), visit_command_binding, ctx);
+  widget_invalidate_force(WIDGET(ctx->widget), NULL);
 
   return RET_OK;
 }
@@ -563,21 +559,20 @@ static ret_t idle_update_to_view(const idle_info_t* info) {
   binding_context_t* ctx = BINDING_CONTEXT(info->ctx);
   return_value_if_fail(ctx != NULL, RET_BAD_PARAMS);
 
+  ctx->update_view_idle_id = TK_INVALID_ID;
   binding_context_awtk_update_to_view_sync(ctx);
 
-  return RET_OK;
+  return RET_REMOVE;
 }
 
 static ret_t binding_context_awtk_update_to_view(binding_context_t* ctx) {
   return_value_if_fail(ctx != NULL, RET_BAD_PARAMS);
 
   if (ctx->bound) {
-    if (!ctx->request_update_view) {
-      idle_add(idle_update_to_view, ctx);
+    if (ctx->update_view_idle_id == TK_INVALID_ID) {
+      ctx->update_view_idle_id = idle_add(idle_update_to_view, ctx);
     }
-    ctx->request_update_view++;
   } else {
-    ctx->request_update_view++;
     binding_context_awtk_update_to_view_sync(ctx);
   }
 
@@ -695,6 +690,8 @@ static ret_t binding_context_destroy_async(const idle_info_t* info) {
 
 static ret_t binding_context_on_widget_destroy(void* ctx, event_t* e) {
   idle_add(binding_context_destroy_async, ctx);
+  idle_remove(BINDING_CONTEXT(ctx)->update_view_idle_id);
+  BINDING_CONTEXT(ctx)->update_view_idle_id = TK_INVALID_ID;
 
   return RET_REMOVE;
 }

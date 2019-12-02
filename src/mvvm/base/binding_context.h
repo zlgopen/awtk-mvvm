@@ -80,12 +80,12 @@ struct _binding_context_t {
    */
   bool_t updating_model;
   /**
-   * @property {int32_t} request_update_view
+   * @property {uint32_t} update_view_idle_id
    * @annotation ["readable"]
-   * 请求更新视图的次数（真正更新在idle中完成）。
+   * 更新view的idle的id
    *
    */
-  int32_t request_update_view;
+  uint32_t update_view_idle_id;
   /**
    * @property {int32_t} request_rebind
    * @annotation ["readable"]
