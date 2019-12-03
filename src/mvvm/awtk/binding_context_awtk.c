@@ -689,9 +689,13 @@ static ret_t binding_context_destroy_async(const idle_info_t* info) {
 }
 
 static ret_t binding_context_on_widget_destroy(void* ctx, event_t* e) {
+  binding_context_t* bctx = BINDING_CONTEXT(ctx);
+
   idle_add(binding_context_destroy_async, ctx);
-  idle_remove(BINDING_CONTEXT(ctx)->update_view_idle_id);
-  BINDING_CONTEXT(ctx)->update_view_idle_id = TK_INVALID_ID;
+  if (bctx->update_view_idle_id != TK_INVALID_ID) {
+    idle_remove(bctx->update_view_idle_id);
+    bctx->update_view_idle_id = TK_INVALID_ID;
+  }
 
   return RET_REMOVE;
 }

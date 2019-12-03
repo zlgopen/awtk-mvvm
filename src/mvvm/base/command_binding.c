@@ -140,7 +140,7 @@ bool_t command_binding_can_exec(command_binding_t* rule) {
 
   if (object_is_collection(OBJECT(view_model))) {
     uint32_t cursor = BINDING_RULE(rule)->cursor;
-    object_set_prop_int(OBJECT(view_model), VIEW_MODEL_PROP_CURSOR, cursor);
+    view_model_array_set_cursor(view_model, cursor);
   }
 
   return view_model_can_exec(view_model, rule->command, rule->args);
@@ -160,7 +160,7 @@ ret_t command_binding_exec(command_binding_t* rule) {
 
   if (object_is_collection(OBJECT(view_model))) {
     uint32_t cursor = BINDING_RULE(rule)->cursor;
-    object_set_prop_int(OBJECT(view_model), VIEW_MODEL_PROP_CURSOR, cursor);
+    view_model_array_set_cursor(view_model, cursor);
   }
 
   return view_model_exec(view_model, rule->command, rule->args);

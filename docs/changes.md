@@ -1,5 +1,8 @@
 # 最新动态
 
+* 2019/12/03
+  * 修改view model array的CURSOR不应该触发prop changed事件的问题
+
 * 2019/12/02
   * 修改validator fix value之后界面没有及时更新的问题
 
