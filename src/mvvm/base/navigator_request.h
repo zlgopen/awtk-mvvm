@@ -98,18 +98,18 @@ ret_t navigator_request_on_result(navigator_request_t* req, const value_t* resul
 
 #define NAVIGATOR_REQUEST(req) ((navigator_request_t*)(req))
 
-#define NAVIGATOR_REQ_TOAST "toast"
-#define NAVIGATOR_REQ_HOME "home"
-#define NAVIGATOR_REQ_BACK "back"
-#define NAVIGATOR_REQ_INFO "info"
-#define NAVIGATOR_REQ_WARN "warn"
-#define NAVIGATOR_REQ_CONFIRM "confirm"
-#define NAVIGATOR_REQ_INPUT_TEXT "input_text"
-#define NAVIGATOR_REQ_INPUT_FLOAT "input_float"
-#define NAVIGATOR_REQ_INPUT_INT "input_int"
-#define NAVIGATOR_REQ_PICK_COLOR "pick_color"
-#define NAVIGATOR_REQ_PICK_FILE "pick_file"
-#define NAVIGATOR_REQ_PICK_DIR "pick_dir"
+#define NAVIGATOR_REQ_TOAST "_toast_"
+#define NAVIGATOR_REQ_HOME "_home_"
+#define NAVIGATOR_REQ_BACK "_back_"
+#define NAVIGATOR_REQ_INFO "_info_"
+#define NAVIGATOR_REQ_WARN "_warn_"
+#define NAVIGATOR_REQ_CONFIRM "_confirm_"
+#define NAVIGATOR_REQ_INPUT_TEXT "_input_text_"
+#define NAVIGATOR_REQ_INPUT_FLOAT "_input_float_"
+#define NAVIGATOR_REQ_INPUT_INT "_input_int_"
+#define NAVIGATOR_REQ_PICK_COLOR "_pick_color_"
+#define NAVIGATOR_REQ_PICK_FILE "_pick_file_"
+#define NAVIGATOR_REQ_PICK_DIR "_pick_dir_"
 
 #define NAVIGATOR_ARG_TARGET "target"
 
