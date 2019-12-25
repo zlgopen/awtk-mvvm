@@ -55,7 +55,7 @@ TK_3RD_DIRS = [
 APP_LIBPATH = [APP_LIB_DIR]
 APP_LIBS = ['mvvm', 'jerryscript']
 APP_CPPPATH = TK_3RD_DIRS + [APP_SRC, APP_ROOT]
-APP_CFLAGS = '-DRES_ROOT=\"\\\"'+RES_ROOT+'\\\"\" '
+APP_CFLAGS = '-DRES_ROOT=\"\\\"'+RES_ROOT+'\\\"\" -DWITH_JERRYSCRIPT '
 SConscripts = ['3rd/jerryscript/SConscript', 'src/SConscript', 'demos/SConscript', 'tests/SConscript']
 
 
