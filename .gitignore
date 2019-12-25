@@ -16,6 +16,6 @@ bin/run*
 bin/js*
 .vscode
 .vs
-3rd/jerryscript
+3rd/jerryscript/jerryscript
 lib
 bin
