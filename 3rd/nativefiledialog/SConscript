@@ -33,7 +33,5 @@ elif OS_NAME == 'Darwin':
   sources+=['nativefiledialog/src/nfd_cocoa.m']
 
 CCFLAGS=os.environ['CCFLAGS'];
-
-if TOOLS_PREFIX 
 env.Library(os.path.join(LIB_DIR, 'nfd'), sources, CPPPATH = CPPPATH, CCFLAGS = CCFLAGS)
 
