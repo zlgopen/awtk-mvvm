@@ -103,5 +103,6 @@ sys.path.insert(0, '../awtk-linux-fb/')
 | (no)     | jsdemo17 | 控制控件的可见性                    |
 | (no)     | jsdemo18 | 复杂属性值的表示方法                |
 | demo19   | (no)     | 控制动画启停                        |
+| demo20   | (no)     | 串口读取数据                        |
 
 完整示例及模板项目：[awtk-mvvm-c-hello](https://github.com/zlgopen/awtk-mvvm-c-hello)
