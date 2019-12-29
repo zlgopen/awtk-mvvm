@@ -36,10 +36,9 @@ static ret_t event_source_serial_on_data(event_source_t* source) {
 
   object_t* view_model = OBJECT(s->ctx);
   tk_iostream_t* iostream = TK_IOSTREAM(s->ctx2);
-  tk_istream_t* istream = tk_iostream_get_istream(iostream);
 
   memset(str, 0x00, sizeof(str));
-  int ret = tk_istream_read(istream, (uint8_t*)str, sizeof(str));
+  int ret = tk_iostream_read(iostream, str, sizeof(str));
 
   if (ret > 0) {
     temp = tk_atoi(str);
