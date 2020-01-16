@@ -231,7 +231,8 @@ navigator_handler_t* navigator_handler_awtk_pick_file_create(void) {
 static ret_t navigator_handler_awtk_on_pick_dir(navigator_handler_t* handler,
                                                 navigator_request_t* req) {
   const char* defpath = object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_DEFAULT);
-  file_chooser_t* chooser = file_chooser_create(defpath, NULL);
+  file_chooser_t* chooser = file_chooser_create();
+  file_chooser_set_init_dir(chooser, defpath);
   emitter_on(EMITTER(chooser), EVT_DONE, tk_on_choose_file_result, req);
 
   return file_chooser_choose_folder(chooser);
