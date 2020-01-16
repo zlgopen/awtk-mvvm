@@ -218,7 +218,7 @@ static ret_t pick_file_on_request(navigator_handler_t* handler, navigator_reques
   value_t v;
 
   s_log = string("pick_file:") + string(object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_TITLE)) +
-          string(object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_MINE_TYPES)) +
+          string(object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_FILTER)) +
           string(object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_DEFAULT));
   value_set_str(&v, "file");
 

@@ -36,12 +36,10 @@ ret_t mvvm_awtk_init(void) {
 
   navigator_register_handler(navigator(), NAVIGATOR_REQ_BACK, navigator_handler_awtk_back_create());
 
-#ifdef WITH_NATIVE_FILE_DIALOG
   navigator_register_handler(navigator(), NAVIGATOR_REQ_PICK_FILE,
                              navigator_handler_awtk_pick_file_create());
   navigator_register_handler(navigator(), NAVIGATOR_REQ_PICK_DIR,
                              navigator_handler_awtk_pick_dir_create());
-#endif /*WITH_NATIVE_FILE_DIALOG*/
 
   return RET_OK;
 }

@@ -1,0 +1,26 @@
+<dialog>
+  <style name="default">
+    <normal border_color="#606060" bg_color="#f0f0f0"/>
+  </style>
+</dialog>
+
+<label>
+  <style name="default" text_align_h="left">
+    <normal text_color="black" />
+  </style>
+</label>
+
+<list_item>
+  <style name="odd_clickable" border_color="#a0a0a0"  border="bottom" text_color="black">
+    <normal     bg_color="#f5f5f5" />
+    <pressed    bg_color="#c0c0c0" />
+    <over       bg_color="#f5f5f5" />
+    <focused    bg_color="#e5e5e5" />
+  </style>
+  <style name="even_clickable" border_color="#a0a0a0"  border="bottom" text_color="black">
+    <normal     bg_color="#eaeaea" />
+    <pressed    bg_color="#c0c0c0" />
+    <over       bg_color="#eaeaea" />
+    <focused    bg_color="#e5e5e5" />
+  </style>
+</list_item>

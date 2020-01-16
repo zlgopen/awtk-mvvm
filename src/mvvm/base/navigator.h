@@ -239,13 +239,13 @@ ret_t navigator_pick_dir(const char* title, str_t* result);
  * @annotation ["static"]
  *
  * @param {const char*} title 标题。
- * @param {const char*} mimetype 文件类型。
+ * @param {const char*} filter 文件过滤(如：.txt.html), NULL表示不过滤。
  * @param {bool_t} for_save TRUE表示用于保存，FALSE表示用于打开。
  * @param {str_t*} result 用于传递缺省值和返回结果。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
-ret_t navigator_pick_file(const char* title, const char* mimetype, bool_t for_save, str_t* result);
+ret_t navigator_pick_file(const char* title, const char* filter, bool_t for_save, str_t* result);
 
 /**
  * @method navigator_pick_color

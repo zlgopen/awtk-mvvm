@@ -39,6 +39,25 @@ static ret_t custom_handlers_show_confirm(custom_handlers_t* custom_handlers, co
   return RET_OBJECT_CHANGED;
 }
 
+static ret_t custom_handlers_choose(custom_handlers_t* custom_handlers, const char* args) {
+  str_t str;
+  str_init(&str, 0);
+  str_set(&str, "./");
+
+  if(tk_str_eq(args, "file_for_save")) {
+    navigator_pick_file("Choose...", ".txt", TRUE, &str);
+  } else if(tk_str_eq(args, "file_for_open")) {
+    navigator_pick_file("Choose...", ".txt", FALSE, &str);
+  } else {
+    navigator_pick_dir("Choose...", &str);
+  }
+
+  log_debug("Choosed: %s\n", str.str);
+  str_reset(&str);
+
+  return RET_OBJECT_CHANGED;
+}
+
 static ret_t custom_handlers_open_mywindow(custom_handlers_t* custom_handlers, const char* args) {
   navigator_to("mywindow");
 
@@ -68,6 +87,8 @@ static bool_t custom_handlers_view_model_can_exec(object_t* obj, const char* nam
     return TRUE;
   } else if (tk_str_eq("open_mywindow", name)) {
     return TRUE;
+  } else if (tk_str_eq("choose", name)) {
+    return TRUE;
   } else {
     return FALSE;
   }
@@ -83,6 +104,8 @@ static ret_t custom_handlers_view_model_exec(object_t* obj, const char* name, co
     return custom_handlers_show_info(custom_handlers, args);
   } else if (tk_str_eq("show_confirm", name)) {
     return custom_handlers_show_confirm(custom_handlers, args);
+  } else if (tk_str_eq("choose", name)) {
+    return custom_handlers_choose(custom_handlers, args);
   } else if (tk_str_eq("open_mywindow", name)) {
     return custom_handlers_open_mywindow(custom_handlers, args);
   } else {

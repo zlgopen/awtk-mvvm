@@ -21,6 +21,7 @@
 
 #include "base/dialog.h"
 #include "base/window_manager.h"
+#include "file_browser/file_chooser.h"
 #include "mvvm/base/binding_context.h"
 #include "mvvm/awtk/navigator_handler_awtk.h"
 
@@ -173,36 +174,44 @@ navigator_handler_t* navigator_handler_awtk_back_create(void) {
   return handler;
 }
 
-#ifdef WITH_NATIVE_FILE_DIALOG
+static ret_t tk_on_choose_file_result(void* ctx, event_t* e) {
+	navigator_request_t* req = (navigator_request_t*)ctx;
+  file_chooser_t* chooser = (file_chooser_t*)(e->target);
 
-#include <nfd.h>
+  if (!file_chooser_is_aborted(chooser)) {
+    value_t v;
+		str_t str;
+		const char* filename = file_chooser_get_filename(chooser);
+
+		str_init(&str, MAX_PATH);
+		str_append(&str, file_chooser_get_dir(chooser));
+    if(filename != NULL && *filename) {
+      str_append_char(&str, TK_PATH_SEP);
+      str_append(&str, filename);
+    }
+    value_set_str(&v, str.str);
+    navigator_request_on_result(req, &v);
+		str_reset(&str);
+  }
+
+  return RET_OK;
+}
 
 static ret_t navigator_handler_awtk_on_pick_file(navigator_handler_t* handler,
                                                  navigator_request_t* req) {
-  nfdchar_t* outPath = NULL;
-  nfdresult_t result = NFD_OKAY;
   const char* defpath = object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_DEFAULT);
-  const char* mimetype = object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_MINE_TYPES);
+  const char* mimetype = object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_FILTER);
   bool_t for_save = object_get_prop_bool(OBJECT(req), NAVIGATOR_ARG_FOR_SAVE, FALSE);
+  file_chooser_t* chooser = file_chooser_create();
+
+  file_chooser_set_init_dir(chooser, defpath);
+  file_chooser_set_filter(chooser, mimetype);
+  emitter_on(EMITTER(chooser), EVT_DONE, tk_on_choose_file_result, req);
 
   if (for_save) {
-    result = NFD_SaveDialog(NULL, defpath, &outPath);
+    return file_chooser_choose_file_for_save(chooser);
   } else {
-    result = NFD_OpenDialog(NULL, defpath, &outPath);
-  }
-
-  if (result == NFD_OKAY) {
-    value_t v;
-    value_set_str(&v, outPath);
-    navigator_request_on_result(req, &v);
-    free(outPath);
-    return RET_OK;
-  } else if (result == NFD_CANCEL) {
-    log_debug("User pressed cancel.");
-    return RET_FAIL;
-  } else {
-    log_debug("Error: %s\n", NFD_GetError());
-    return RET_FAIL;
+    return file_chooser_choose_file_for_open(chooser);
   }
 }
 
@@ -221,25 +230,11 @@ navigator_handler_t* navigator_handler_awtk_pick_file_create(void) {
 
 static ret_t navigator_handler_awtk_on_pick_dir(navigator_handler_t* handler,
                                                 navigator_request_t* req) {
-  nfdchar_t* outPath = NULL;
   const char* defpath = object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_DEFAULT);
-  nfdresult_t result = NFD_PickFolder(defpath, &outPath);
+  file_chooser_t* chooser = file_chooser_create(defpath, NULL);
+  emitter_on(EMITTER(chooser), EVT_DONE, tk_on_choose_file_result, req);
 
-  if (result == NFD_OKAY) {
-    value_t v;
-    value_set_str(&v, outPath);
-    navigator_request_on_result(req, &v);
-    free(outPath);
-    return RET_OK;
-  } else if (result == NFD_CANCEL) {
-    log_debug("User pressed cancel.");
-    return RET_FAIL;
-  } else {
-    log_debug("Error: %s\n", NFD_GetError());
-    return RET_FAIL;
-  }
-
-  return RET_OK;
+  return file_chooser_choose_folder(chooser);
 }
 
 navigator_handler_t* navigator_handler_awtk_pick_dir_create(void) {
@@ -254,4 +249,3 @@ navigator_handler_t* navigator_handler_awtk_pick_dir_create(void) {
 
   return handler;
 }
-#endif /*WITH_NATIVE_FILE_DIALOG*/

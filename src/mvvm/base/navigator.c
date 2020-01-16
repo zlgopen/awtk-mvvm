@@ -269,11 +269,11 @@ ret_t navigator_pick_color(const char* title, str_t* result) {
   return ret;
 }
 
-ret_t navigator_pick_file(const char* title, const char* mimetype, bool_t for_save, str_t* result) {
+ret_t navigator_pick_file(const char* title, const char* filter, bool_t for_save, str_t* result) {
   ret_t ret = RET_OK;
   navigator_request_t* req = NULL;
   return_value_if_fail(navigator() != NULL, RET_BAD_PARAMS);
-  return_value_if_fail(title != NULL && mimetype != NULL && result != NULL, RET_BAD_PARAMS);
+  return_value_if_fail(title != NULL && result != NULL, RET_BAD_PARAMS);
 
   req = navigator_request_create(NAVIGATOR_REQ_PICK_FILE, on_str_result);
   return_value_if_fail(req != NULL, RET_OOM);
@@ -282,7 +282,7 @@ ret_t navigator_pick_file(const char* title, const char* mimetype, bool_t for_sa
   object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_TITLE, title);
   object_set_prop_int(OBJECT(req), NAVIGATOR_ARG_FOR_SAVE, for_save);
   object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_DEFAULT, result->str);
-  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_MINE_TYPES, mimetype);
+  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_FILTER, filter);
 
   ret = navigator_handle_request(navigator(), req);
   object_unref(OBJECT(req));
