@@ -2,6 +2,7 @@
 #include "jerryscript/jerry-core/api/jerry-debugger.c"
 #include "jerryscript/jerry-core/api/jerry-snapshot.c"
 #include "jerryscript/jerry-core/api/jerry.c"
+#include "jerryscript/jerry-core/parser/js/js-scanner-ops.c"
 #include "jerryscript/jerry-core/debugger/debugger.c"
 #include "jerryscript/jerry-core/ecma/base/ecma-alloc.c"
 #include "jerryscript/jerry-core/ecma/base/ecma-gc.c"

@@ -4,14 +4,14 @@ import sys
 env=DefaultEnvironment().Clone()
 BIN_DIR=os.environ['BIN_DIR'];
 
-env.Program(os.path.join(BIN_DIR, 'demo1'), Glob('demo1/*.c') + ["assets.c", "common/temperature.c"])
-env.Program(os.path.join(BIN_DIR, 'demo2'), Glob('demo2/*.c') + ["assets.c", "common/temperature.c"])
-env.Program(os.path.join(BIN_DIR, 'demo3'), Glob('demo3/*.c') + ["assets.c", "common/temperature.c"])
-env.Program(os.path.join(BIN_DIR, 'demo4'), Glob('demo4/*.c') + ["assets.c", "common/temperature.c"])
-env.Program(os.path.join(BIN_DIR, 'demo5'), Glob('demo5/*.c') + ["assets.c", "common/temperature.c"])
-env.Program(os.path.join(BIN_DIR, 'demo6'), Glob('demo6/*.c') + ["assets.c", "common/temperature.c"])
-env.Program(os.path.join(BIN_DIR, 'demo7'), Glob('demo7/*.c') + ["assets.c",
-  "common/calculator.c"])
+env.Program(os.path.join(BIN_DIR, 'demo1'), Glob('demo1/*.c') + ["assets.c"])
+env.Program(os.path.join(BIN_DIR, 'demo2'), Glob('demo2/*.c') + ["assets.c"])
+env.Program(os.path.join(BIN_DIR, 'demo3'), Glob('demo3/*.c') + ["assets.c"])
+env.Program(os.path.join(BIN_DIR, 'demo4'), Glob('demo4/*.c') + ["assets.c"])
+env.Program(os.path.join(BIN_DIR, 'demo5'), Glob('demo5/*.c') + ["assets.c"])
+env.Program(os.path.join(BIN_DIR, 'demo6'), Glob('demo6/*.c') + ["assets.c"])
+env.Program(os.path.join(BIN_DIR, 'demo7'), Glob('demo7/*.c') + ["assets.c"])
+
 env.Program(os.path.join(BIN_DIR, 'demo8'), Glob('demo8/*.c') + ["assets.c",
   "common/shape.c"])
 env.Program(os.path.join(BIN_DIR, 'demo9'), Glob('demo9/*.c') + ["assets.c", 

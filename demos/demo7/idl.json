@@ -1,0 +1,180 @@
+[
+  {
+    "type": "class",
+    "methods": [
+      {
+        "params": [],
+        "annotation": {
+          "constructor": true
+        },
+        "desc": "创建calculator对象。",
+        "name": "calculator_create",
+        "return": {
+          "type": "calculator_t*",
+          "desc": "返回calculator对象。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "calculator_t*",
+            "name": "calculator",
+            "desc": "calculator对象。"
+          }
+        ],
+        "annotation": {
+          "destructor": true
+        },
+        "desc": "销毁calculator对象。",
+        "name": "calculator_destroy",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "calculator_t*",
+            "name": "calculator",
+            "desc": "calculator对象。"
+          }
+        ],
+        "annotation": {},
+        "desc": "获取当前表达式。",
+        "name": "calculator_get_expr",
+        "return": {
+          "type": "const char*",
+          "desc": "返回表达式。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "calculator_t*",
+            "name": "calculator",
+            "desc": "calculator对象。"
+          },
+          {
+            "type": "const char*",
+            "name": "expr",
+            "desc": "表达式。"
+          }
+        ],
+        "annotation": {},
+        "desc": "设置当前表达式。",
+        "name": "calculator_set_expr",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "calculator_t*",
+            "name": "calculator",
+            "desc": "calculator对象。"
+          },
+          {
+            "type": "const char*",
+            "name": "args",
+            "desc": "参数。"
+          }
+        ],
+        "annotation": {
+          "command": true
+        },
+        "desc": "追加一个字符。",
+        "name": "calculator_add_char",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "calculator_t*",
+            "name": "calculator",
+            "desc": "calculator对象。"
+          }
+        ],
+        "annotation": {
+          "command": true
+        },
+        "desc": "删除最后一个字符串。",
+        "name": "calculator_remove_char",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "calculator_t*",
+            "name": "calculator",
+            "desc": "calculator对象。"
+          }
+        ],
+        "annotation": {},
+        "desc": "检查remove_char命令是否可以执行。",
+        "name": "calculator_can_remove_char",
+        "return": {
+          "type": "bool_t",
+          "desc": "返回FALSE表示不能执行，否则表示可以执行。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "calculator_t*",
+            "name": "calculator",
+            "desc": "calculator对象。"
+          }
+        ],
+        "annotation": {
+          "command": true
+        },
+        "desc": "计算表达式。",
+        "name": "calculator_eval",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "calculator_t*",
+            "name": "calculator",
+            "desc": "calculator对象。"
+          }
+        ],
+        "annotation": {},
+        "desc": "检查eval命令是否可以执行。",
+        "name": "calculator_can_eval",
+        "return": {
+          "type": "bool_t",
+          "desc": "返回FALSE表示不能执行，否则表示可以执行。"
+        }
+      }
+    ],
+    "events": [],
+    "properties": [
+      {
+        "name": "expr",
+        "desc": "表达式。",
+        "type": "const char*",
+        "annotation": {
+          "fake": true
+        }
+      }
+    ],
+    "header": "demo7/calculator.h",
+    "desc": "计算器。",
+    "name": "calculator_t",
+    "level": 1
+  }
+]

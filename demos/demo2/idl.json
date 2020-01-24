@@ -1,0 +1,22 @@
+[
+  {
+    "type": "class",
+    "methods": [],
+    "events": [],
+    "properties": [
+      {
+        "name": "value",
+        "desc": "值。",
+        "type": "double",
+        "annotation": {
+          "readable": true,
+          "writable": true
+        }
+      }
+    ],
+    "header": "demo2/temperature.h",
+    "desc": "温度控制器。",
+    "name": "temperature_t",
+    "level": 1
+  }
+]
