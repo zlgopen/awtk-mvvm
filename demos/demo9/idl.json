@@ -1,0 +1,204 @@
+[
+  {
+    "type": "class",
+    "methods": [
+      {
+        "params": [],
+        "annotation": {
+          "constructor": true
+        },
+        "desc": "创建humidity对象。",
+        "name": "humidity_create",
+        "return": {
+          "type": "humidity_t*",
+          "desc": "返回humidity对象。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "humidity_t*",
+            "name": "humidity",
+            "desc": "humidity对象。"
+          }
+        ],
+        "annotation": {
+          "destructor": true
+        },
+        "desc": "销毁humidity对象。",
+        "name": "humidity_destroy",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "humidity_t*",
+            "name": "humidity",
+            "desc": "humidity对象。"
+          }
+        ],
+        "annotation": {},
+        "desc": "设置湿度。",
+        "name": "humidity_set_value",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "humidity_t*",
+            "name": "humidity",
+            "desc": "humidity对象。"
+          }
+        ],
+        "annotation": {
+          "command": true
+        },
+        "desc": "使用新设置的值生效。",
+        "name": "humidity_apply",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "humidity_t*",
+            "name": "humidity",
+            "desc": "humidity对象。"
+          }
+        ],
+        "annotation": {},
+        "desc": "检查apply命令是否可以执行。",
+        "name": "humidity_can_apply",
+        "return": {
+          "type": "bool_t",
+          "desc": "返回FALSE表示不能执行，否则表示可以执行。"
+        }
+      }
+    ],
+    "events": [],
+    "properties": [
+      {
+        "name": "value",
+        "desc": "值。",
+        "type": "double",
+        "annotation": {
+          "readable": true,
+          "writable": true
+        }
+      }
+    ],
+    "header": "demo9/humidity.h",
+    "desc": "湿度控制器。",
+    "name": "humidity_t",
+    "level": 1
+  },
+  {
+    "type": "class",
+    "methods": [
+      {
+        "params": [],
+        "annotation": {
+          "constructor": true
+        },
+        "desc": "创建temperature对象。",
+        "name": "temperature_create",
+        "return": {
+          "type": "temperature_t*",
+          "desc": "返回temperature对象。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "temperature_t*",
+            "name": "temperature",
+            "desc": "temperature对象。"
+          }
+        ],
+        "annotation": {
+          "destructor": true
+        },
+        "desc": "销毁temperature对象。",
+        "name": "temperature_destroy",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "temperature_t*",
+            "name": "temperature",
+            "desc": "temperature对象。"
+          }
+        ],
+        "annotation": {},
+        "desc": "设置温度。",
+        "name": "temperature_set_value",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "temperature_t*",
+            "name": "temperature",
+            "desc": "temperature对象。"
+          }
+        ],
+        "annotation": {
+          "command": true
+        },
+        "desc": "使用新设置的值生效。",
+        "name": "temperature_apply",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "temperature_t*",
+            "name": "temperature",
+            "desc": "temperature对象。"
+          }
+        ],
+        "annotation": {},
+        "desc": "检查apply命令是否可以执行。",
+        "name": "temperature_can_apply",
+        "return": {
+          "type": "bool_t",
+          "desc": "返回FALSE表示不能执行，否则表示可以执行。"
+        }
+      }
+    ],
+    "events": [],
+    "properties": [
+      {
+        "name": "value",
+        "desc": "值。",
+        "type": "double",
+        "annotation": {
+          "readable": true,
+          "writable": true
+        }
+      }
+    ],
+    "header": "demo9/temperature.h",
+    "desc": "温度控制器。",
+    "name": "temperature_t",
+    "level": 1
+  }
+]

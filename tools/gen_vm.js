@@ -62,7 +62,11 @@ END_C_DECLS
     }
 
     if (this.isWritable(prop)) {
-      result += `${clsName}->${prop.name} = ${value};\n`
+      if(prop.type.indexOf('char*') >= 0) {
+        result += `${clsName}->${prop.name} = tk_str_copy(${clsName}->${prop.name}, ${value});\n`
+      } else {
+        result += `${clsName}->${prop.name} = ${value};\n`
+      }
     } else if (this.hasSetterFor(json, prop.name)) {
       result += `${clsName}_set_${prop.name}(${clsName}, ${value});\n`
     } else {
@@ -211,7 +215,13 @@ END_C_DECLS
     if (this.hasSingleton(json)) {
       return `${clsName}()`;
     } else if (this.hasCreate(json)) {
-      return `${clsName}_create()`;
+      const name = `${clsName}_create`;
+      const info = this.findMethod(json, name);
+      if(info.params.length === 1) {
+        return `${name}(req)`;
+      } else {
+        return `${name}()`;
+      }
     } else {
       return `TKMEM_ZALLOC(${clsName}_t)`;
     }

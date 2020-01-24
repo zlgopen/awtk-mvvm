@@ -1,0 +1,95 @@
+[
+  {
+    "type": "class",
+    "methods": [
+      {
+        "params": [
+          {
+            "type": "navigator_request_t*",
+            "name": "req",
+            "desc": "请求对象。"
+          }
+        ],
+        "annotation": {
+          "constructor": true
+        },
+        "desc": "创建room_settings对象。",
+        "name": "room_settings_create",
+        "return": {
+          "type": "room_settings_t*",
+          "desc": "返回room_settings对象。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "room_settings_t*",
+            "name": "room_settings",
+            "desc": "room_settings对象。"
+          }
+        ],
+        "annotation": {
+          "command": true
+        },
+        "desc": "返回值。",
+        "name": "room_settings_return",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "room_settings_t*",
+            "name": "room_settings",
+            "desc": "room_settings对象。"
+          }
+        ],
+        "annotation": {
+          "destructor": true
+        },
+        "desc": "销毁room_settings对象。",
+        "name": "room_settings_destroy",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      }
+    ],
+    "events": [],
+    "properties": [
+      {
+        "name": "temp",
+        "desc": "温度。",
+        "type": "double",
+        "annotation": {
+          "readable": true,
+          "writable": true
+        }
+      },
+      {
+        "name": "humidity",
+        "desc": "湿度。",
+        "type": "double",
+        "annotation": {
+          "readable": true,
+          "writable": true
+        }
+      },
+      {
+        "name": "room",
+        "desc": "房间名称。",
+        "type": "char*",
+        "annotation": {
+          "readable": true,
+          "writable": true
+        }
+      }
+    ],
+    "header": "demo12/room_settings.h",
+    "desc": "温度控制器。",
+    "name": "room_settings_t",
+    "level": 1
+  }
+]

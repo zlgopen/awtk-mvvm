@@ -1,7 +1,7 @@
 ﻿/**
- * File:   temperature.h
+ * File:   humidity.h
  * Author: AWTK Develop Team
- * Brief:  temperature
+ * Brief:  humidity
  *
  * Copyright (c) 2020 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
@@ -15,24 +15,24 @@
 /**
  * History:
  * ================================================================
- * 2020-01-23 Li XianJing <xianjimli@hotmail.com> created
+ * 2020-01-24 Li XianJing <xianjimli@hotmail.com> created
  *
  */
 
-#ifndef TEMPERATURE_H
-#define TEMPERATURE_H
+#ifndef HUMIDITY_H
+#define HUMIDITY_H
 
 #include "tkc/types_def.h"
 
 BEGIN_C_DECLS
 
 /**
- * @class temperature_t
+ * @class humidity_t
  *
- * 温度控制器。
+ * 湿度控制器。
  *
  */
-typedef struct _temperature_t {
+typedef struct _humidity_t {
   /**
    * @property {double} value
    * @annotation ["readable", "writable"]
@@ -42,60 +42,60 @@ typedef struct _temperature_t {
 
   /*private*/
   double saved_value;
-} temperature_t;
+} humidity_t;
 
 /**
- * @method temperature_create
- * 创建temperature对象。
+ * @method humidity_create
+ * 创建humidity对象。
  *
  * @annotation ["constructor"]
- * @return {temperature_t*} 返回temperature对象。 
+ * @return {humidity_t*} 返回humidity对象。 
  */ 
-temperature_t* temperature_create(void);
+humidity_t* humidity_create(void);
 
 /**
- * @method temperature_destroy
- * 销毁temperature对象。
+ * @method humidity_destroy
+ * 销毁humidity对象。
  *
  * @annotation ["destructor"]
- * @param {temperature_t*} temperature temperature对象。
+ * @param {humidity_t*} humidity humidity对象。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */ 
-ret_t temperature_destroy(temperature_t* temperature);
+ret_t humidity_destroy(humidity_t* humidity);
 
 /**
- * @method temperature_set_value
- * 设置温度。
+ * @method humidity_set_value
+ * 设置湿度。
  *
- * @param {temperature_t*} temperature temperature对象。
+ * @param {humidity_t*} humidity humidity对象。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */ 
-ret_t temperature_set_value(temperature_t* temperature, double value);
+ret_t humidity_set_value(humidity_t* humidity, double value);
 
 /**
- * @method temperature_apply
+ * @method humidity_apply
  * 使用新设置的值生效。
  *
  * @annotation ["command"]
- * @param {temperature_t*} temperature temperature对象。
+ * @param {humidity_t*} humidity humidity对象。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */ 
-ret_t temperature_apply(temperature_t* temperature);
+ret_t humidity_apply(humidity_t* humidity);
 
 /**
- * @method temperature_can_apply
+ * @method humidity_can_apply
  * 检查apply命令是否可以执行。
  *
- * @param {temperature_t*} temperature temperature对象。
+ * @param {humidity_t*} humidity humidity对象。
  *
  * @return {bool_t} 返回FALSE表示不能执行，否则表示可以执行。
  */ 
-bool_t temperature_can_apply(temperature_t* temperature);
+bool_t humidity_can_apply(humidity_t* humidity);
 
 END_C_DECLS
 
-#endif /*TEMPERATURE_H*/
+#endif /*HUMIDITY_H*/
 
