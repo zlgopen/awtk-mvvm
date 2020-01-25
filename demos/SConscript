@@ -16,11 +16,12 @@ env.Program(os.path.join(BIN_DIR, 'demo9'), Glob('demo9/*.c') + ["assets.c"])
 env.Program(os.path.join(BIN_DIR, 'demo10'), Glob('demo10/*.c') + ["assets.c"])
 env.Program(os.path.join(BIN_DIR, 'demo11'), Glob('demo11/*.c') + ["assets.c"])
 env.Program(os.path.join(BIN_DIR, 'demo12'), Glob('demo12/*.c') + ["assets.c"])
+env.Program(os.path.join(BIN_DIR, 'demo14'), Glob('demo14/*.c') + ["assets.c"])
+env.Program(os.path.join(BIN_DIR, 'demo20'), Glob('demo20/*.c') + ["assets.c"])
 
 
 env.Program(os.path.join(BIN_DIR, 'demo13'), Glob('demo13/*.c') + ["assets.c", 
   "common/books.c"])
-env.Program(os.path.join(BIN_DIR, 'demo14'), Glob('demo14/*.c') + ["assets.c", "common/temperature.c"])
 env.Program(os.path.join(BIN_DIR, 'demo15'), Glob('demo15/*.c') + ["assets.c"])
 env.Program(os.path.join(BIN_DIR, 'demo16'), Glob('demo16/*.c') + ["assets.c", "common/temperature.c"])
 env.Program(os.path.join(BIN_DIR, 'demo17'), Glob('demo17/*.c') + ["assets.c", "common/temperature.c"])
@@ -59,5 +60,3 @@ env.Program(os.path.join(BIN_DIR, 'cppdemo11'), Glob('cppdemo11/*.cpp') + ["asse
 env.Program(os.path.join(BIN_DIR, 'cppdemo12'), Glob('cppdemo12/*.cpp') + ["assets.c", "cppcommon/room_settings.cpp", "cppcommon/home.cpp"])
 env.Program(os.path.join(BIN_DIR, 'cppdemo13'), Glob('cppdemo13/*.cpp') + ["assets.c", "cppcommon/books.cpp"])
 
-env.Program(os.path.join(BIN_DIR, 'demo20'), Glob('demo20/*.c') + ["assets.c",
-  "common/temperature.c"])

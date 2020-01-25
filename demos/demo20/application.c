@@ -21,7 +21,8 @@
 
 #include "awtk.h"
 #include "mvvm/mvvm.h"
-#include "temperature.h"
+#include "temperature_timer.h"
+#include "temperature_view_model.h"
 
 ret_t application_init() {
   view_model_factory_register("temperature", temperature_view_model_timer_create);
