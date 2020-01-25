@@ -9,11 +9,9 @@
 static ret_t calculator_view_model_set_prop(object_t* obj, const char* name, const value_t* v) {
   calculator_view_model_t* vm = (calculator_view_model_t*)(obj);
   calculator_t* calculator = vm->calculator;
-  str_t* str = &(vm->temp);
 
   if (tk_str_eq("expr", name)) {
-     str_from_value(str, v);
-     calculator_set_expr(calculator, str->str);
+     calculator_set_expr(calculator, value_str(v));
 
      return RET_OK;
   }
@@ -36,9 +34,9 @@ static ret_t calculator_view_model_get_prop(object_t* obj, const char* name, val
 
 
 static bool_t calculator_view_model_can_exec(object_t* obj, const char* name, const char* args) {
+ 
   calculator_view_model_t* vm = (calculator_view_model_t*)(obj);
   calculator_t* calculator = vm->calculator;
-
   if (tk_str_eq("add_char", name)) {
     return TRUE;
 
@@ -48,14 +46,13 @@ static bool_t calculator_view_model_can_exec(object_t* obj, const char* name, co
   } else if (tk_str_eq("eval", name)) {
     return calculator_can_eval(calculator);
   }
-
   return FALSE;
 }
 
 static ret_t calculator_view_model_exec(object_t* obj, const char* name, const char* args) {
+ 
   calculator_view_model_t* vm = (calculator_view_model_t*)(obj);
   calculator_t* calculator = vm->calculator;
-
   if (tk_str_eq("add_char", name)) {
     calculator_add_char(calculator, args);
     return RET_OBJECT_CHANGED;
@@ -68,7 +65,6 @@ static ret_t calculator_view_model_exec(object_t* obj, const char* name, const c
     calculator_eval(calculator);
     return RET_OBJECT_CHANGED;
   }
-
   return RET_NOT_FOUND;
 }
 
@@ -77,7 +73,6 @@ static ret_t calculator_view_model_on_destroy(object_t* obj) {
   return_value_if_fail(vm != NULL, RET_BAD_PARAMS);
 
   calculator_destroy(vm->calculator);
-  str_reset(&(vm->temp));
 
   return view_model_deinit(VIEW_MODEL(obj));
 }
@@ -102,7 +97,6 @@ view_model_t* calculator_view_model_create(navigator_request_t* req) {
 
   calculator_view_model->calculator = calculator_create();
   ENSURE(calculator_view_model->calculator != NULL);
-  str_init(&(calculator_view_model->temp), 0);
 
   return vm;
 }

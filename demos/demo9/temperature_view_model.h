@@ -19,7 +19,6 @@ typedef struct _temperature_view_model_t {
 
   /*model object*/
   temperature_t* temperature;
-  str_t temp;
 } temperature_view_model_t;
 
 /**

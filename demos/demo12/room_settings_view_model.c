@@ -9,7 +9,6 @@
 static ret_t room_settings_view_model_set_prop(object_t* obj, const char* name, const value_t* v) {
   room_settings_view_model_t* vm = (room_settings_view_model_t*)(obj);
   room_settings_t* room_settings = vm->room_settings;
-  str_t* str = &(vm->temp);
 
   if (tk_str_eq("temp", name)) {
      room_settings->temp = value_double(v);
@@ -20,8 +19,7 @@ static ret_t room_settings_view_model_set_prop(object_t* obj, const char* name, 
 
      return RET_OK;
   } else if (tk_str_eq("room", name)) {
-     str_from_value(str, v);
-     room_settings->room = tk_str_copy(room_settings->room, str->str);
+     room_settings->room = tk_str_copy(room_settings->room, value_str(v));
 
      return RET_OK;
   }
@@ -50,25 +48,23 @@ static ret_t room_settings_view_model_get_prop(object_t* obj, const char* name, 
 
 
 static bool_t room_settings_view_model_can_exec(object_t* obj, const char* name, const char* args) {
+ 
   room_settings_view_model_t* vm = (room_settings_view_model_t*)(obj);
   room_settings_t* room_settings = vm->room_settings;
-
   if (tk_str_eq("return", name)) {
     return TRUE;
   }
-
   return FALSE;
 }
 
 static ret_t room_settings_view_model_exec(object_t* obj, const char* name, const char* args) {
+ 
   room_settings_view_model_t* vm = (room_settings_view_model_t*)(obj);
   room_settings_t* room_settings = vm->room_settings;
-
   if (tk_str_eq("return", name)) {
     room_settings_return(room_settings);
     return RET_OBJECT_CHANGED;
   }
-
   return RET_NOT_FOUND;
 }
 
@@ -77,7 +73,6 @@ static ret_t room_settings_view_model_on_destroy(object_t* obj) {
   return_value_if_fail(vm != NULL, RET_BAD_PARAMS);
 
   room_settings_destroy(vm->room_settings);
-  str_reset(&(vm->temp));
 
   return view_model_deinit(VIEW_MODEL(obj));
 }
@@ -102,7 +97,6 @@ view_model_t* room_settings_view_model_create(navigator_request_t* req) {
 
   room_settings_view_model->room_settings = room_settings_create(req);
   ENSURE(room_settings_view_model->room_settings != NULL);
-  str_init(&(room_settings_view_model->temp), 0);
 
   return vm;
 }

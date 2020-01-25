@@ -9,10 +9,9 @@
 static ret_t humidity_view_model_set_prop(object_t* obj, const char* name, const value_t* v) {
   humidity_view_model_t* vm = (humidity_view_model_t*)(obj);
   humidity_t* humidity = vm->humidity;
-  str_t* str = &(vm->temp);
 
   if (tk_str_eq("value", name)) {
-     humidity->value = value_double(v);
+     humidity_set_value(humidity, value_double(v));
 
      return RET_OK;
   }
@@ -35,25 +34,23 @@ static ret_t humidity_view_model_get_prop(object_t* obj, const char* name, value
 
 
 static bool_t humidity_view_model_can_exec(object_t* obj, const char* name, const char* args) {
+ 
   humidity_view_model_t* vm = (humidity_view_model_t*)(obj);
   humidity_t* humidity = vm->humidity;
-
   if (tk_str_eq("apply", name)) {
     return humidity_can_apply(humidity);
   }
-
   return FALSE;
 }
 
 static ret_t humidity_view_model_exec(object_t* obj, const char* name, const char* args) {
+ 
   humidity_view_model_t* vm = (humidity_view_model_t*)(obj);
   humidity_t* humidity = vm->humidity;
-
   if (tk_str_eq("apply", name)) {
     humidity_apply(humidity);
     return RET_OBJECT_CHANGED;
   }
-
   return RET_NOT_FOUND;
 }
 
@@ -62,7 +59,6 @@ static ret_t humidity_view_model_on_destroy(object_t* obj) {
   return_value_if_fail(vm != NULL, RET_BAD_PARAMS);
 
   humidity_destroy(vm->humidity);
-  str_reset(&(vm->temp));
 
   return view_model_deinit(VIEW_MODEL(obj));
 }
@@ -87,7 +83,6 @@ view_model_t* humidity_view_model_create(navigator_request_t* req) {
 
   humidity_view_model->humidity = humidity_create();
   ENSURE(humidity_view_model->humidity != NULL);
-  str_init(&(humidity_view_model->temp), 0);
 
   return vm;
 }

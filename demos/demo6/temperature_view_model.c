@@ -34,25 +34,23 @@ static ret_t temperature_view_model_get_prop(object_t* obj, const char* name, va
 
 
 static bool_t temperature_view_model_can_exec(object_t* obj, const char* name, const char* args) {
+ 
   temperature_view_model_t* vm = (temperature_view_model_t*)(obj);
   temperature_t* temperature = vm->temperature;
-
   if (tk_str_eq("apply", name)) {
     return temperature_can_apply(temperature);
   }
-
   return FALSE;
 }
 
 static ret_t temperature_view_model_exec(object_t* obj, const char* name, const char* args) {
+ 
   temperature_view_model_t* vm = (temperature_view_model_t*)(obj);
   temperature_t* temperature = vm->temperature;
-
   if (tk_str_eq("apply", name)) {
     temperature_apply(temperature);
     return RET_OBJECT_CHANGED;
   }
-
   return RET_NOT_FOUND;
 }
 

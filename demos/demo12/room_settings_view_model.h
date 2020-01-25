@@ -19,7 +19,6 @@ typedef struct _room_settings_view_model_t {
 
   /*model object*/
   room_settings_t* room_settings;
-  str_t temp;
 } room_settings_view_model_t;
 
 /**

@@ -34,21 +34,13 @@ static ret_t temperature_view_model_get_prop(object_t* obj, const char* name, va
 
 
 static bool_t temperature_view_model_can_exec(object_t* obj, const char* name, const char* args) {
-  temperature_view_model_t* vm = (temperature_view_model_t*)(obj);
-  temperature_t* temperature = vm->temperature;
 
-
-
-  return RET_OK;
+  return FALSE;
 }
 
 static ret_t temperature_view_model_exec(object_t* obj, const char* name, const char* args) {
-  temperature_view_model_t* vm = (temperature_view_model_t*)(obj);
-  temperature_t* temperature = vm->temperature;
 
-
-
-  return RET_OK;
+  return RET_NOT_FOUND;
 }
 
 static ret_t temperature_view_model_on_destroy(object_t* obj) {
@@ -61,8 +53,8 @@ static ret_t temperature_view_model_on_destroy(object_t* obj) {
 }
 
 static const object_vtable_t s_temperature_view_model_vtable = {
-  .type = "temperature",
-  .desc = "temperature",
+  .type = "temperature_view_model_t",
+  .desc = "temperature_view_model_t",
   .size = sizeof(temperature_view_model_t),
   .exec = temperature_view_model_exec,
   .can_exec = temperature_view_model_can_exec,

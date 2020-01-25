@@ -19,7 +19,6 @@ typedef struct _calculator_view_model_t {
 
   /*model object*/
   calculator_t* calculator;
-  str_t temp;
 } calculator_view_model_t;
 
 /**

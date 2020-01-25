@@ -19,7 +19,6 @@ typedef struct _shape_view_model_t {
 
   /*model object*/
   shape_t* shape;
-  str_t temp;
 } shape_view_model_t;
 
 /**

@@ -7,11 +7,11 @@
         "annotation": {
           "constructor": true
         },
-        "desc": "",
+        "desc": "创建temperature对象。",
         "name": "temperature_create",
         "return": {
           "type": "temperature_t*",
-          "desc": ""
+          "desc": "返回temperature对象。"
         }
       },
       {
@@ -25,24 +25,8 @@
         "annotation": {
           "destructor": true
         },
-        "desc": "",
+        "desc": "销毁temperature对象。",
         "name": "temperature_destroy",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "temperature_t*",
-            "name": "temperature",
-            "desc": "temperature对象。"
-          }
-        ],
-        "annotation": {},
-        "desc": "",
-        "name": "temperature_set_value",
         "return": {
           "type": "ret_t",
           "desc": "返回RET_OK表示成功，否则表示失败。"

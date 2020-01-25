@@ -19,7 +19,6 @@ typedef struct _humidity_view_model_t {
 
   /*model object*/
   humidity_t* humidity;
-  str_t temp;
 } humidity_view_model_t;
 
 /**

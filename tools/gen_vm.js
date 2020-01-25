@@ -29,7 +29,6 @@ typedef struct _${clsName}_view_model_t {
 
   /*model object*/
   ${clsName}_t* ${clsName};
-  str_t temp;
 } ${clsName}_view_model_t;
 
 /**
@@ -55,11 +54,6 @@ END_C_DECLS
     let result = ''; 
     const clsName = this.toClassName(json.name);
     let value = this.genFromValue(prop.type, prop.name);
-
-    if(prop.type.indexOf('char*') >= 0) {
-      result = 'str_from_value(str, v);\n     '
-      value = 'str->str';
-    }
 
     if (this.hasSetterFor(json, prop.name)) {
       result += `${clsName}_set_${prop.name}(${clsName}, ${value});\n`
@@ -125,22 +119,31 @@ END_C_DECLS
     let commands = json.commands || json.methods || [];
     commands = commands.filter(iter => this.isCommand(iter));
 
-    let result = commands.map((iter, index) => {
-      let exec = '';
-      const cmdName = iter.name.replace(`${clsName}_`, '');
+    if(commands.length > 0) {
+      let result =` 
+  ${clsName}_view_model_t* vm = (${clsName}_view_model_t*)(obj);
+  ${clsName}_t* ${clsName} = vm->${clsName};
+`;
 
-      if (index) {
-        exec = `\n  } else if (tk_str_eq("${cmdName}", name)) {\n`
-      } else {
-        exec = `  if (tk_str_eq("${cmdName}", name)) {\n`
-      }
-      exec += `    return ${this.genCanExec(json, iter)}\n`;
-      return exec;
-    }).join('');
+      result += commands.map((iter, index) => {
+        let exec = '';
+        const cmdName = iter.name.replace(`${clsName}_`, '');
 
-    result += '  }';
+        if (index) {
+          exec = `\n  } else if (tk_str_eq("${cmdName}", name)) {\n`
+        } else {
+          exec = `  if (tk_str_eq("${cmdName}", name)) {\n`
+        }
+        exec += `    return ${this.genCanExec(json, iter)}\n`;
+        return exec;
+      }).join('');
 
-    return result;
+      result += '  }';
+
+      return result;
+    } else {
+      return '';
+    }
   }
 
   genCmdArg(type) {
@@ -174,23 +177,31 @@ END_C_DECLS
     let commands = json.commands || json.methods || [];
     commands = commands.filter(iter => this.isCommand(iter));
 
-    let result = commands.map((iter, index) => {
-      let exec = '';
-      const cmdName = iter.name.replace(`${clsName}_`, '');
+    if(commands.length > 0) {
+      let result =` 
+  ${clsName}_view_model_t* vm = (${clsName}_view_model_t*)(obj);
+  ${clsName}_t* ${clsName} = vm->${clsName};
+`;
+      result += commands.map((iter, index) => {
+        let exec = '';
+        const cmdName = iter.name.replace(`${clsName}_`, '');
 
-      if (index) {
-        exec = `\n  } else if (tk_str_eq("${cmdName}", name)) {\n`
-      } else {
-        exec = `  if (tk_str_eq("${cmdName}", name)) {\n`
-      }
-      exec += `    ${this.genExec(json, iter)}\n`;
-      exec += `    return RET_OBJECT_CHANGED;\n`;
-      return exec;
-    }).join('');
+        if (index) {
+          exec = `\n  } else if (tk_str_eq("${cmdName}", name)) {\n`
+        } else {
+          exec = `  if (tk_str_eq("${cmdName}", name)) {\n`
+        }
+        exec += `    ${this.genExec(json, iter)}\n`;
+        exec += `    return RET_OBJECT_CHANGED;\n`;
+        return exec;
+      }).join('');
 
-    result += '  }';
+      result += '  }';
 
-    return result;
+      return result;
+    } else {
+      return '';
+    }
   }
 
   genGetProp(json, prop) {
@@ -285,7 +296,6 @@ END_C_DECLS
 static ret_t ${clsName}_view_model_set_prop(object_t* obj, const char* name, const value_t* v) {
   ${clsName}_view_model_t* vm = (${clsName}_view_model_t*)(obj);
   ${clsName}_t* ${clsName} = vm->${clsName};
-  str_t* str = &(vm->temp);
 
 ${setPropsDispatch}
   
@@ -304,20 +314,12 @@ ${getPropsDispatch}
 
 
 static bool_t ${clsName}_view_model_can_exec(object_t* obj, const char* name, const char* args) {
-  ${clsName}_view_model_t* vm = (${clsName}_view_model_t*)(obj);
-  ${clsName}_t* ${clsName} = vm->${clsName};
-
 ${canExecDispatch}
-
   return FALSE;
 }
 
 static ret_t ${clsName}_view_model_exec(object_t* obj, const char* name, const char* args) {
-  ${clsName}_view_model_t* vm = (${clsName}_view_model_t*)(obj);
-  ${clsName}_t* ${clsName} = vm->${clsName};
-
 ${execDispatch}
-
   return RET_NOT_FOUND;
 }
 
@@ -326,7 +328,6 @@ static ret_t ${clsName}_view_model_on_destroy(object_t* obj) {
   return_value_if_fail(vm != NULL, RET_BAD_PARAMS);
 
   ${destructor}(vm->${clsName});
-  str_reset(&(vm->temp));
 
   return view_model_deinit(VIEW_MODEL(obj));
 }
@@ -351,7 +352,6 @@ view_model_t* ${clsName}_view_model_create(navigator_request_t* req) {
 
   ${clsName}_view_model->${clsName} = ${constructor};
   ENSURE(${clsName}_view_model->${clsName} != NULL);
-  str_init(&(${clsName}_view_model->temp), 0);
 
   return vm;
 }

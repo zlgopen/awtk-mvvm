@@ -9,7 +9,6 @@
 static ret_t temperature_view_model_set_prop(object_t* obj, const char* name, const value_t* v) {
   temperature_view_model_t* vm = (temperature_view_model_t*)(obj);
   temperature_t* temperature = vm->temperature;
-  str_t* str = &(vm->temp);
 
   if (tk_str_eq("value", name)) {
      temperature->value = value_double(v);
@@ -35,25 +34,23 @@ static ret_t temperature_view_model_get_prop(object_t* obj, const char* name, va
 
 
 static bool_t temperature_view_model_can_exec(object_t* obj, const char* name, const char* args) {
+ 
   temperature_view_model_t* vm = (temperature_view_model_t*)(obj);
   temperature_t* temperature = vm->temperature;
-
   if (tk_str_eq("apply", name)) {
     return temperature_can_apply(temperature);
   }
-
   return FALSE;
 }
 
 static ret_t temperature_view_model_exec(object_t* obj, const char* name, const char* args) {
+ 
   temperature_view_model_t* vm = (temperature_view_model_t*)(obj);
   temperature_t* temperature = vm->temperature;
-
   if (tk_str_eq("apply", name)) {
     temperature_apply(temperature);
     return RET_OBJECT_CHANGED;
   }
-
   return RET_NOT_FOUND;
 }
 
@@ -62,7 +59,6 @@ static ret_t temperature_view_model_on_destroy(object_t* obj) {
   return_value_if_fail(vm != NULL, RET_BAD_PARAMS);
 
   temperature_destroy(vm->temperature);
-  str_reset(&(vm->temp));
 
   return view_model_deinit(VIEW_MODEL(obj));
 }
@@ -87,7 +83,6 @@ view_model_t* temperature_view_model_create(navigator_request_t* req) {
 
   temperature_view_model->temperature = temperature_create();
   ENSURE(temperature_view_model->temperature != NULL);
-  str_init(&(temperature_view_model->temp), 0);
 
   return vm;
 }
