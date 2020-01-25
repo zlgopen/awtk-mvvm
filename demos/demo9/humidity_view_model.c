@@ -11,7 +11,7 @@ static ret_t humidity_view_model_set_prop(object_t* obj, const char* name, const
   humidity_t* humidity = vm->humidity;
 
   if (tk_str_eq("value", name)) {
-     humidity_set_value(humidity, value_double(v));
+     humidity->value = value_double(v);
 
      return RET_OK;
   }

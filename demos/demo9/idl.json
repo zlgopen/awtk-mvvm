@@ -40,22 +40,6 @@
             "desc": "humidity对象。"
           }
         ],
-        "annotation": {},
-        "desc": "设置湿度。",
-        "name": "humidity_set_value",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "humidity_t*",
-            "name": "humidity",
-            "desc": "humidity对象。"
-          }
-        ],
         "annotation": {
           "command": true
         },
