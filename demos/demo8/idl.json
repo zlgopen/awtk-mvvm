@@ -1,0 +1,219 @@
+[
+  {
+    "type": "class",
+    "methods": [
+      {
+        "params": [],
+        "annotation": {
+          "constructor": true
+        },
+        "desc": "创建shape对象。",
+        "name": "shape_create",
+        "return": {
+          "type": "shape_t*",
+          "desc": "返回shape对象。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "shape_t*",
+            "name": "shape",
+            "desc": "shape对象。"
+          }
+        ],
+        "annotation": {
+          "destructor": true
+        },
+        "desc": "销毁shape对象。",
+        "name": "shape_destroy",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "shape_t*",
+            "name": "shape",
+            "desc": "shape对象。"
+          },
+          {
+            "type": "const char*",
+            "name": "name",
+            "desc": "名称。"
+          }
+        ],
+        "annotation": {},
+        "desc": "设置名称。",
+        "name": "shape_set_name",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "shape_t*",
+            "name": "shape",
+            "desc": "shape对象。"
+          }
+        ],
+        "annotation": {},
+        "desc": "获取overview。",
+        "name": "shape_get_overview",
+        "return": {
+          "type": "const char*",
+          "desc": "返回overview"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "shape_t*",
+            "name": "shape",
+            "desc": "shape对象。"
+          },
+          {
+            "type": "int32_t",
+            "name": "type",
+            "desc": "类型。"
+          }
+        ],
+        "annotation": {
+          "command": true
+        },
+        "desc": "改变shape的类型。",
+        "name": "shape_change_type",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "shape_t*",
+            "name": "shape",
+            "desc": "shape对象。"
+          }
+        ],
+        "annotation": {
+          "command": true
+        },
+        "desc": "保存设置。",
+        "name": "shape_save",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "shape_t*",
+            "name": "shape",
+            "desc": "shape对象。"
+          }
+        ],
+        "annotation": {},
+        "desc": "检查是否可以保存。",
+        "name": "shape_can_save",
+        "return": {
+          "type": "bool_t",
+          "desc": "返回FALSE表示不能保存，否则表示可以保存。"
+        }
+      }
+    ],
+    "events": [],
+    "properties": [
+      {
+        "name": "type",
+        "desc": "类型。",
+        "type": "int32_t",
+        "annotation": {
+          "readable": true,
+          "writable": true
+        }
+      },
+      {
+        "name": "x",
+        "desc": "x。",
+        "type": "int32_t",
+        "annotation": {
+          "readable": true,
+          "writable": true
+        }
+      },
+      {
+        "name": "y",
+        "desc": "y。",
+        "type": "int32_t",
+        "annotation": {
+          "readable": true,
+          "writable": true
+        }
+      },
+      {
+        "name": "w",
+        "desc": "w。",
+        "type": "int32_t",
+        "annotation": {
+          "readable": true,
+          "writable": true
+        }
+      },
+      {
+        "name": "h",
+        "desc": "h。",
+        "type": "int32_t",
+        "annotation": {
+          "readable": true,
+          "writable": true
+        }
+      },
+      {
+        "name": "opacity",
+        "desc": "不透明度。",
+        "type": "int32_t",
+        "annotation": {
+          "readable": true,
+          "writable": true
+        }
+      },
+      {
+        "name": "text_align",
+        "desc": "文本对齐。",
+        "type": "int32_t",
+        "annotation": {
+          "readable": true,
+          "writable": true
+        }
+      },
+      {
+        "name": "name",
+        "desc": "name。",
+        "type": "str_t",
+        "annotation": {
+          "readable": true,
+          "writable": true
+        }
+      },
+      {
+        "name": "overview",
+        "desc": "overview。",
+        "type": "str_t",
+        "annotation": {
+          "readable": true,
+          "writable": true
+        }
+      }
+    ],
+    "header": "demo8/shape.h",
+    "desc": "温度控制器。",
+    "name": "shape_t",
+    "level": 1
+  }
+]

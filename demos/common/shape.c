@@ -158,7 +158,7 @@ static ret_t shape_view_model_exec(object_t* obj, const char* name, const char* 
   shape_t* shape = vm->shape;
 
   if (tk_str_eq("change_type", name)) {
-    return shape_change_type(shape, args);
+    return TRUE;
   } else if (tk_str_eq("save", name)) {
     return shape_save(shape, args);
   } else {

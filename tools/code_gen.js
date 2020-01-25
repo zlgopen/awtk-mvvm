@@ -152,6 +152,8 @@ class CodeGen {
           return `value_set_str(v, ${name});`;
         } else if(type.indexOf('void*') >= 0) {
           return `value_set_pointer(v, ${name});`;
+        } else if(type === 'str_t') {
+          return `value_set_str(v, ${name});`;
         } else {
           console.log(`not supported ${type} for ${name}`);
           process.exit(0);
@@ -183,6 +185,8 @@ class CodeGen {
           typeName = 'str';
         } else if(type.indexOf('void*') >= 0) {
           typeName = 'pointer';
+        } else if(type === 'str_t') {
+          typeName = 'str';
         } else {
           console.log(`not supported ${type} for ${name}`);
           process.exit(0);

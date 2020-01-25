@@ -61,14 +61,17 @@ END_C_DECLS
       value = 'str->str';
     }
 
-    if (this.isWritable(prop)) {
+    if (this.hasSetterFor(json, prop.name)) {
+      result += `${clsName}_set_${prop.name}(${clsName}, ${value});\n`
+    } else if (this.isWritable(prop)) {
       if(prop.type.indexOf('char*') >= 0) {
         result += `${clsName}->${prop.name} = tk_str_copy(${clsName}->${prop.name}, ${value});\n`
+      } else if(prop.type === 'str_t') {
+        result += `str_set(&(${clsName}->${prop.name}), ${value});\n`
+
       } else {
         result += `${clsName}->${prop.name} = ${value};\n`
       }
-    } else if (this.hasSetterFor(json, prop.name)) {
-      result += `${clsName}_set_${prop.name}(${clsName}, ${value});\n`
     } else {
       result = '';
     }
@@ -106,7 +109,9 @@ END_C_DECLS
       if(cmd.params.length == 1) {
         return `${name}(${clsName});`;
       } else if(cmd.params.length == 2) {
-        return `${name}(${clsName}, args);`;
+        let type = cmd.params[1].type;
+        let args = this.genCmdArg(type);
+        return `${name}(${clsName}, ${args});`;
       } else {
         return 'TRUE;';
       }
@@ -138,12 +143,27 @@ END_C_DECLS
     return result;
   }
 
+  genCmdArg(type) {
+    let args = 'args'
+    if(type.indexOf('int') >= 0) {
+      args = 'tk_atoi(args)';
+    } else if(type.indexOf('float') >= 0) {
+      args = 'tk_atof(args)';
+    } else if(type.indexOf('bool') >= 0) {
+      args = 'tk_atob(args)';
+    }
+
+    return args;
+  }
+
   genExec(json, cmd) {
     const clsName = this.toClassName(json.name);
     if(cmd.params.length == 1) {
       return `${cmd.name}(${clsName});`;
     } else if(cmd.params.length == 2) {
-      return `${cmd.name}(${clsName}, args);`;
+      let type = cmd.params[1].type;
+      let args = this.genCmdArg(type);
+      return `${cmd.name}(${clsName}, ${args});`;
     } else {
       return 'RET_FAIL;';
     }
@@ -177,10 +197,14 @@ END_C_DECLS
     let value = '';
     const clsName = this.toClassName(json.name);
 
-    if (this.isReadable(prop)) {
-      value = `${clsName}->${prop.name}`
-    } else if (this.hasSetterFor(json, prop.name)) {
+    if (this.hasGetterFor(json, prop.name)) {
       value = `${clsName}_get_${prop.name}(${clsName})`
+    } else if (this.isReadable(prop)) {
+      if(prop.type === 'str_t') {
+        value = `${clsName}->${prop.name}.str`
+      } else {
+        value = `${clsName}->${prop.name}`
+      }
     } else {
       return '';
     }

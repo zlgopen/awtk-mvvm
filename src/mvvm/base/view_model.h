@@ -58,6 +58,7 @@ struct _view_model_t {
   object_t object;
 
   /*private*/
+  str_t temp;
   str_t last_error;
   const view_model_vtable_t* vt;
 

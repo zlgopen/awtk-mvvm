@@ -27,6 +27,7 @@
 view_model_t* view_model_init(view_model_t* view_model) {
   return_value_if_fail(view_model != NULL, NULL);
 
+  str_init(&(view_model->temp), 0);
   str_init(&(view_model->last_error), 0);
   view_model->preprocess_expr = NULL;
   view_model->preprocess_prop = NULL;
@@ -37,6 +38,7 @@ view_model_t* view_model_init(view_model_t* view_model) {
 ret_t view_model_deinit(view_model_t* view_model) {
   return_value_if_fail(view_model != NULL, RET_BAD_PARAMS);
 
+  str_reset(&(view_model->temp));
   str_reset(&(view_model->last_error));
 
   return RET_OK;
@@ -132,12 +134,19 @@ ret_t view_model_get_prop(view_model_t* view_model, const char* name, value_t* v
 
 static ret_t object_set_prop_if_diff(object_t* object, const char* name, const value_t* v) {
   value_t old;
+  view_model_t* view_model = VIEW_MODEL(object);
 
   value_set_int(&old, 0);
   if (object_get_prop(object, name, &old) == RET_OK) {
     if (value_equal(&old, v)) {
       return RET_OK;
     }
+  }
+
+  if(v->type == VALUE_TYPE_WSTRING) {
+    str_t* str = &(view_model->temp);
+    return_value_if_fail(str_from_value(str, v) == RET_OK, RET_OOM);
+    value_set_str(v, str->str);
   }
 
   return object_set_prop(object, name, v);

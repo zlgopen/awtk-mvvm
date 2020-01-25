@@ -21,7 +21,7 @@
 
 #include "awtk.h"
 #include "mvvm/mvvm.h"
-#include "../common/shape.h"
+#include "shape_view_model.h"
 
 ret_t application_init() {
   view_model_factory_register("shape", shape_view_model_create);
