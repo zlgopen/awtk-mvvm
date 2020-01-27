@@ -175,6 +175,9 @@
     "header": "demo7/calculator.h",
     "desc": "计算器。",
     "name": "calculator_t",
+    "annotation": {
+      "model": true
+    },
     "level": 1
   }
 ]

@@ -40,22 +40,6 @@
             "desc": "humidity对象。"
           }
         ],
-        "annotation": {},
-        "desc": "设置湿度。",
-        "name": "humidity_set_value",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "humidity_t*",
-            "name": "humidity",
-            "desc": "humidity对象。"
-          }
-        ],
         "annotation": {
           "command": true
         },
@@ -98,6 +82,9 @@
     "header": "demo11/humidity.h",
     "desc": "湿度控制器。",
     "name": "humidity_t",
+    "annotation": {
+      "model": true
+    },
     "level": 1
   },
   {
@@ -128,22 +115,6 @@
         },
         "desc": "销毁temperature对象。",
         "name": "temperature_destroy",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "temperature_t*",
-            "name": "temperature",
-            "desc": "temperature对象。"
-          }
-        ],
-        "annotation": {},
-        "desc": "设置温度。",
-        "name": "temperature_set_value",
         "return": {
           "type": "ret_t",
           "desc": "返回RET_OK表示成功，否则表示失败。"
@@ -199,6 +170,9 @@
     "header": "demo11/temperature.h",
     "desc": "温度控制器。",
     "name": "temperature_t",
+    "annotation": {
+      "model": true
+    },
     "level": 1
   }
 ]

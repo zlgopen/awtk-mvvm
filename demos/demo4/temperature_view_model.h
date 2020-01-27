@@ -32,6 +32,28 @@ typedef struct _temperature_view_model_t {
  */
 view_model_t* temperature_view_model_create(navigator_request_t* req);
 
+/**
+ * @method temperature_view_model_create_with
+ * 创建temperature view model对象。
+ *
+ * @annotation ["constructor"]
+ * @param {navigator_request_t*} req 请求参数。
+ *
+ * @return {view_model_t} 返回view_model_t对象。
+ */
+view_model_t* temperature_view_model_create_with(temperature_t* temperature);
+
+/**
+ * @method temperature_view_model_attach
+ * 关联到temperature对象。
+ *
+ * @param {view_model_t*} view_model view_model对象。
+ * @param {temperature_t*} temperature temperature对象。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t temperature_view_model_attach(view_model_t* vm, temperature_t* temperature);
+
 END_C_DECLS
 
 #endif /*TK_TEMPERATURE_VIEW_MODEL_H*/

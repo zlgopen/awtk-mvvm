@@ -74,15 +74,29 @@ static const object_vtable_t s_humidity_view_model_vtable = {
   .on_destroy = humidity_view_model_on_destroy
 };
 
-view_model_t* humidity_view_model_create(navigator_request_t* req) {
+view_model_t* humidity_view_model_create_with(humidity_t* humidity) {
   object_t* obj = object_create(&s_humidity_view_model_vtable);
   view_model_t* vm = view_model_init(VIEW_MODEL(obj));
   humidity_view_model_t* humidity_view_model = (humidity_view_model_t*)(vm);
 
   return_value_if_fail(vm != NULL, NULL);
 
-  humidity_view_model->humidity = humidity_create();
+  humidity_view_model->humidity = humidity;
   ENSURE(humidity_view_model->humidity != NULL);
 
   return vm;
+}
+
+ret_t humidity_view_model_attach(view_model_t* vm,
+      humidity_t* humidity) {
+  humidity_view_model_t* humidity_view_model = (humidity_view_model_t*)(vm);
+  return_value_if_fail(vm != NULL, RET_BAD_PARAMS);
+
+  humidity_view_model->humidity = humidity;
+
+  return RET_OK;
+}
+
+view_model_t* humidity_view_model_create(navigator_request_t* req) {
+  return humidity_view_model_create_with(humidity_create());
 }

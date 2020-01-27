@@ -29,6 +29,7 @@ BEGIN_C_DECLS
 /**
  * @class humidity_t
  *
+ * @annotation ["model"]
  * 湿度控制器。
  *
  */

@@ -94,3 +94,32 @@ ret_t view_model_array_deinit(view_model_t* view_model) {
 ret_t view_model_array_notify_items_changed(view_model_t* view_model) {
   return emitter_dispatch_simple_event(EMITTER(view_model), EVT_ITEMS_CHANGED);
 }
+
+ret_t view_model_array_default_set_prop(view_model_t* view_model, 
+    const char* name, const value_t* value) {
+  view_model_array_t* vm_array = VIEW_MODEL_ARRAY(view_model);
+  return_value_if_fail(vm_array != NULL, RET_BAD_PARAMS);
+  return_value_if_fail(name != NULL && value != NULL, RET_BAD_PARAMS);
+
+  if (tk_str_eq(VIEW_MODEL_PROP_CURSOR, name)) {
+    value_set_int(value, vm_array->cursor);
+    return RET_OK;
+  }
+
+  return RET_NOT_IMPL;
+}
+
+ret_t view_model_array_default_get_prop(view_model_t* view_model, 
+    const char* name, value_t* value) {
+  view_model_array_t* vm_array = VIEW_MODEL_ARRAY(view_model);
+  return_value_if_fail(vm_array != NULL, RET_BAD_PARAMS);
+  return_value_if_fail(name != NULL && value != NULL, RET_BAD_PARAMS);
+
+  if (tk_str_eq(VIEW_MODEL_PROP_CURSOR, name)) {
+    view_model_array_set_cursor(view_model, value_int(value));
+    return RET_OK;
+  }
+
+  return RET_NOT_IMPL;
+}
+

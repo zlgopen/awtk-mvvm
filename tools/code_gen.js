@@ -2,6 +2,15 @@ const fs = require('fs')
 const path = require('path')
 
 class CodeGen {
+  isModel(obj) {
+    return obj.annotation && obj.annotation.model;
+  }
+
+  isCollectionModel(obj) {
+    return obj.annotation && obj.annotation.model &&
+      obj.annotation.collection;
+  }
+
   isReadable(obj) {
     return obj.annotation && obj.annotation.readable;
   }
@@ -9,11 +18,11 @@ class CodeGen {
   isWritable(obj) {
     return obj.annotation && obj.annotation.writable;
   }
-  
+
   isCommand(obj) {
     return obj.annotation && obj.annotation.command;
   }
-  
+
   findMethod(cls, name) {
     return cls.methods.find(iter => (iter.name === name));
   }
@@ -69,6 +78,7 @@ class CodeGen {
   }
 
   genJson(json) {
+    console.log('-----------------------------------------------------');
     json.forEach(iter => {
       let includes = iter.includes;
       let header = this.genHeader(iter);
@@ -80,54 +90,6 @@ class CodeGen {
 
   toClassName(name) {
     return name.replace(/_t$/, '');
-  }
-
-  genFileComment(json, ext) {
-    const now = new Date();
-    const team = json.team;
-    const author = json.author || "codegen";
-    const clsName = json.name;
-    const desc = json.desc || "";
-    const copyright = json.copyright;
-
-    const day = now.getDate();
-    const year = now.getFullYear();
-    const month = now.getMonth() + 1;
-    const date = json.date || `${year}-${month}-${day}`
-
-    return `/**
- * File:   ${clsName}.${ext}
- * Author: AWTK Develop Team
- * Brief:  ${desc}
- *
- * Copyright (c) ${year} - ${year} ${copyright}
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * License file for more details.
- *
- */
-
-/**
- * History:
- * ================================================================
- * ${date} ${author} created
- *
- */
-`
-  }
-
-  mapType(type) {
-    if (type.indexOf("char*") >= 0) {
-      return `const char*`;
-    } else {
-      return type;
-    }
-  }
-
-  genParamDecl(type, name) {
-    return `${this.mapType(type)} ${name}`;
   }
 
   genToValue(type, name) {
@@ -148,12 +110,18 @@ class CodeGen {
         return `value_set_${typeName}(v, ${name});`;
       }
       default: {
-        if(type.indexOf('char*') >= 0) {
+        if (type.indexOf('char*') >= 0) {
           return `value_set_str(v, ${name});`;
-        } else if(type.indexOf('void*') >= 0) {
+        } else if (type.indexOf('int') >= 0) {
+          return `value_set_int(v, ${name});`;
+        } else if (type.indexOf('long') >= 0) {
+          return `value_set_int(v, ${name});`;
+        } else if (type.indexOf('void*') >= 0) {
           return `value_set_pointer(v, ${name});`;
-        } else if(type === 'str_t') {
+        } else if (type === 'str_t') {
           return `value_set_str(v, ${name});`;
+        } else if (type === 'time_t') {
+          return `value_set_int64(v, ${name});`;
         } else {
           console.log(`not supported ${type} for ${name}`);
           process.exit(0);
@@ -181,12 +149,18 @@ class CodeGen {
         break;
       }
       default: {
-        if(type.indexOf('char*') >= 0) {
+        if (type.indexOf('char*') >= 0) {
           typeName = 'str';
-        } else if(type.indexOf('void*') >= 0) {
+        } else if (type.indexOf('void*') >= 0) {
           typeName = 'pointer';
-        } else if(type === 'str_t') {
+        } else if (type === 'str_t') {
           typeName = 'str';
+        } else if (type.indexOf('int') >= 0) {
+          typeName = 'int';
+        } else if (type.indexOf('long') >= 0) {
+          typeName = 'int';
+        } else if (type === 'time_t') {
+          typeName = 'int64';
         } else {
           console.log(`not supported ${type} for ${name}`);
           process.exit(0);
@@ -203,6 +177,236 @@ class CodeGen {
     } else {
       return `${name} = ${value};`;
     }
+  }
+
+  genConstructor(json) {
+    let clsName = this.toClassName(json.name);
+
+    if (this.hasSingleton(json)) {
+      return `${clsName}()`;
+    } else if (this.hasCreate(json)) {
+      const name = `${clsName}_create`;
+      const info = this.findMethod(json, name);
+      if (info.params.length === 1) {
+        return `${name}(req)`;
+      } else {
+        return `${name}()`;
+      }
+    } else {
+      return `TKMEM_ZALLOC(${clsName}_t)`;
+    }
+  }
+
+  genDestructor(json) {
+    const clsName = this.toClassName(json.name);
+
+    if (this.hasSingleton(json)) {
+      return `TK_SET_NULL`;
+    } else if (this.hasCreate(json)) {
+      return `${clsName}_destroy`;
+    } else {
+      return `TKMEM_FREE`;
+    }
+  }
+
+  genSetProp(json, prop) {
+    let result = '';
+    const clsName = this.toClassName(json.name);
+    let value = this.genFromValue(prop.type, prop.name);
+
+    if (this.hasSetterFor(json, prop.name)) {
+      result += `${clsName}_set_${prop.name}(${clsName}, ${value});\n`
+    } else if (this.isWritable(prop)) {
+      if (prop.type.indexOf('char*') >= 0) {
+        result += `${clsName}->${prop.name} = tk_str_copy(${clsName}->${prop.name}, ${value});\n`
+      } else if (prop.type === 'str_t') {
+        result += `str_set(&(${clsName}->${prop.name}), ${value});\n`
+
+      } else {
+        result += `${clsName}->${prop.name} = ${value};\n`
+      }
+    } else {
+      result = '';
+    }
+
+    return result;
+  }
+
+  genSetPropDispatch(json) {
+    const clsName = this.toClassName(json.name);
+    const props = json.props || json.properties || [];
+    let result = props.map((iter, index) => {
+      let setProp = '';
+      if (index) {
+        setProp = `\n  } else if (tk_str_eq("${iter.name}", name)) {\n`
+      } else {
+        setProp = `  if (tk_str_eq("${iter.name}", name)) {\n`
+      }
+      setProp += `     ${this.genSetProp(json, iter)}\n`;
+      setProp += '     return RET_OK;';
+      return setProp;
+    }).join('');
+
+    result += '\n  }';
+
+    return result;
+  }
+
+  genCanExec(json, cmd) {
+    const clsName = this.toClassName(json.name);
+    const cmdName = cmd.name.replace(`${clsName}_`, '');
+    const name = `${clsName}_can_${cmdName}`;
+
+    cmd = this.findMethod(json, name);
+    if (cmd) {
+      if (cmd.params.length == 1) {
+        return `${name}(${clsName});`;
+      } else if (cmd.params.length == 2) {
+        let type = cmd.params[1].type;
+        let args = this.genCmdArg(type);
+        return `${name}(${clsName}, ${args});`;
+      } else {
+        return 'TRUE;';
+      }
+    } else {
+      return 'TRUE;';
+    }
+  }
+
+  genCanExecDispatch(json) {
+    const clsName = this.toClassName(json.name);
+    let commands = json.commands || json.methods || [];
+    commands = commands.filter(iter => this.isCommand(iter));
+
+    if (commands.length > 0) {
+      let result = ` 
+  ${clsName}_view_model_t* vm = (${clsName}_view_model_t*)(obj);
+  ${clsName}_t* ${clsName} = vm->${clsName};
+`;
+
+      result += commands.map((iter, index) => {
+        let exec = '';
+        const cmdName = iter.name.replace(`${clsName}_`, '');
+
+        if (index) {
+          exec = `\n  } else if (tk_str_eq("${cmdName}", name)) {\n`
+        } else {
+          exec = `  if (tk_str_eq("${cmdName}", name)) {\n`
+        }
+        exec += `    return ${this.genCanExec(json, iter)}\n`;
+        return exec;
+      }).join('');
+
+      result += '  }';
+
+      return result;
+    } else {
+      return '';
+    }
+  }
+
+  genCmdArg(type) {
+    let args = 'args'
+    if (type.indexOf('int') >= 0) {
+      args = 'tk_atoi(args)';
+    } else if (type.indexOf('float') >= 0) {
+      args = 'tk_atof(args)';
+    } else if (type.indexOf('bool') >= 0) {
+      args = 'tk_atob(args)';
+    }
+
+    return args;
+  }
+
+  genExec(json, cmd) {
+    const clsName = this.toClassName(json.name);
+    if (cmd.params.length == 1) {
+      return `${cmd.name}(${clsName});`;
+    } else if (cmd.params.length == 2) {
+      let type = cmd.params[1].type;
+      let args = this.genCmdArg(type);
+      return `${cmd.name}(${clsName}, ${args});`;
+    } else {
+      return 'RET_FAIL;';
+    }
+  }
+
+  genExecDispatch(json) {
+    const clsName = this.toClassName(json.name);
+    let commands = json.commands || json.methods || [];
+    commands = commands.filter(iter => this.isCommand(iter));
+
+    if (commands.length > 0) {
+      let result = ` 
+  ${clsName}_view_model_t* vm = (${clsName}_view_model_t*)(obj);
+  ${clsName}_t* ${clsName} = vm->${clsName};
+`;
+      result += commands.map((iter, index) => {
+        let exec = '';
+        const cmdName = iter.name.replace(`${clsName}_`, '');
+
+        if (index) {
+          exec = `\n  } else if (tk_str_eq("${cmdName}", name)) {\n`
+        } else {
+          exec = `  if (tk_str_eq("${cmdName}", name)) {\n`
+        }
+        exec += `    ${this.genExec(json, iter)}\n`;
+        exec += `    return RET_OBJECT_CHANGED;\n`;
+        return exec;
+      }).join('');
+
+      result += '  }';
+
+      return result;
+    } else {
+      return '';
+    }
+  }
+
+  genGetProp(json, prop) {
+    let value = '';
+    const clsName = this.toClassName(json.name);
+
+    if (this.hasGetterFor(json, prop.name)) {
+      value = `${clsName}_get_${prop.name}(${clsName})`
+    } else if (this.isReadable(prop)) {
+      if (prop.type === 'str_t') {
+        value = `${clsName}->${prop.name}.str`
+      } else {
+        value = `${clsName}->${prop.name}`
+      }
+    } else {
+      return '';
+    }
+
+    return this.genToValue(prop.type, value);
+  }
+
+  genGetPropDispatch(json) {
+    const clsName = this.toClassName(json.name);
+    const props = json.props || json.properties || [];
+
+    let result = props.map((iter, index) => {
+      let getProp = '';
+      if (index) {
+        getProp = `\n  } else if (tk_str_eq("${iter.name}", name)) {\n`
+      } else {
+        getProp = `  if (tk_str_eq("${iter.name}", name)) {\n`
+      }
+      getProp += `     ${this.genGetProp(json, iter)}\n`;
+      getProp += '     return RET_OK;';
+      return getProp;
+    }).join('');
+
+    result += '\n  }';
+
+    return result;
+  }
+
+  genFile(filename) {
+    let json = JSON.parse(fs.readFileSync(filename).toString());
+
+    this.genJson(this.filter(json));
   }
 }
 

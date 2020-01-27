@@ -29,6 +29,7 @@ BEGIN_C_DECLS
 /**
  * @class temperature_t
  *
+ * @annotation ["model"]
  * 温度控制器。
  *
  */
@@ -63,16 +64,6 @@ temperature_t* temperature_create(void);
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */ 
 ret_t temperature_destroy(temperature_t* temperature);
-
-/**
- * @method temperature_set_value
- * 设置温度。
- *
- * @param {temperature_t*} temperature temperature对象。
- *
- * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
- */ 
-ret_t temperature_set_value(temperature_t* temperature, double value);
 
 /**
  * @method temperature_apply

@@ -19,7 +19,6 @@ typedef struct _humidity_view_model_t {
 
   /*model object*/
   humidity_t* humidity;
-  str_t temp;
 } humidity_view_model_t;
 
 /**
@@ -32,6 +31,28 @@ typedef struct _humidity_view_model_t {
  * @return {view_model_t} 返回view_model_t对象。
  */
 view_model_t* humidity_view_model_create(navigator_request_t* req);
+
+/**
+ * @method humidity_view_model_create_with
+ * 创建humidity view model对象。
+ *
+ * @annotation ["constructor"]
+ * @param {navigator_request_t*} req 请求参数。
+ *
+ * @return {view_model_t} 返回view_model_t对象。
+ */
+view_model_t* humidity_view_model_create_with(humidity_t* humidity);
+
+/**
+ * @method humidity_view_model_attach
+ * 关联到humidity对象。
+ *
+ * @param {view_model_t*} view_model view_model对象。
+ * @param {humidity_t*} humidity humidity对象。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t humidity_view_model_attach(view_model_t* vm, humidity_t* humidity);
 
 END_C_DECLS
 

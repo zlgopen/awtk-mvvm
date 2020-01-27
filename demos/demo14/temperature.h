@@ -29,6 +29,7 @@ BEGIN_C_DECLS
 /**
  * @class temperature_t
  *
+ * @annotation ["model"]
  * 温度控制器。
  *
  */

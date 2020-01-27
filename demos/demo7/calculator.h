@@ -29,6 +29,7 @@ BEGIN_C_DECLS
 /**
  * @class calculator_t
  *
+ * @annotation ["model"]
  * 计算器。
  *
  */

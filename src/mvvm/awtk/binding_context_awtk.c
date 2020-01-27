@@ -24,6 +24,7 @@
 #include "tkc/utils.h"
 #include "tkc/int_str.h"
 #include "tkc/darray.h"
+#include "awtk_global.h"
 #include "base/idle.h"
 #include "base/enums.h"
 #include "base/widget.h"

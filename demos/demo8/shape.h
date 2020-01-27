@@ -29,6 +29,7 @@ BEGIN_C_DECLS
 /**
  * @class shape_t
  *
+ * @annotation ["model"]
  * 温度控制器。
  *
  */

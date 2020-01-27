@@ -29,6 +29,7 @@ BEGIN_C_DECLS
 /**
  * @class humidity_t
  *
+ * @annotation ["model"]
  * 湿度控制器。
  *
  */
@@ -63,16 +64,6 @@ humidity_t* humidity_create(void);
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */ 
 ret_t humidity_destroy(humidity_t* humidity);
-
-/**
- * @method humidity_set_value
- * 设置湿度。
- *
- * @param {humidity_t*} humidity humidity对象。
- *
- * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
- */ 
-ret_t humidity_set_value(humidity_t* humidity, double value);
 
 /**
  * @method humidity_apply

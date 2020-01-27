@@ -137,15 +137,29 @@ static const object_vtable_t s_shape_view_model_vtable = {
   .on_destroy = shape_view_model_on_destroy
 };
 
-view_model_t* shape_view_model_create(navigator_request_t* req) {
+view_model_t* shape_view_model_create_with(shape_t* shape) {
   object_t* obj = object_create(&s_shape_view_model_vtable);
   view_model_t* vm = view_model_init(VIEW_MODEL(obj));
   shape_view_model_t* shape_view_model = (shape_view_model_t*)(vm);
 
   return_value_if_fail(vm != NULL, NULL);
 
-  shape_view_model->shape = shape_create();
+  shape_view_model->shape = shape;
   ENSURE(shape_view_model->shape != NULL);
 
   return vm;
+}
+
+ret_t shape_view_model_attach(view_model_t* vm,
+      shape_t* shape) {
+  shape_view_model_t* shape_view_model = (shape_view_model_t*)(vm);
+  return_value_if_fail(vm != NULL, RET_BAD_PARAMS);
+
+  shape_view_model->shape = shape;
+
+  return RET_OK;
+}
+
+view_model_t* shape_view_model_create(navigator_request_t* req) {
+  return shape_view_model_create_with(shape_create());
 }

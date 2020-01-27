@@ -74,15 +74,29 @@ static const object_vtable_t s_temperature_view_model_vtable = {
   .on_destroy = temperature_view_model_on_destroy
 };
 
-view_model_t* temperature_view_model_create(navigator_request_t* req) {
+view_model_t* temperature_view_model_create_with(temperature_t* temperature) {
   object_t* obj = object_create(&s_temperature_view_model_vtable);
   view_model_t* vm = view_model_init(VIEW_MODEL(obj));
   temperature_view_model_t* temperature_view_model = (temperature_view_model_t*)(vm);
 
   return_value_if_fail(vm != NULL, NULL);
 
-  temperature_view_model->temperature = temperature_create();
+  temperature_view_model->temperature = temperature;
   ENSURE(temperature_view_model->temperature != NULL);
 
   return vm;
+}
+
+ret_t temperature_view_model_attach(view_model_t* vm,
+      temperature_t* temperature) {
+  temperature_view_model_t* temperature_view_model = (temperature_view_model_t*)(vm);
+  return_value_if_fail(vm != NULL, RET_BAD_PARAMS);
+
+  temperature_view_model->temperature = temperature;
+
+  return RET_OK;
+}
+
+view_model_t* temperature_view_model_create(navigator_request_t* req) {
+  return temperature_view_model_create_with(temperature_create());
 }

@@ -214,6 +214,9 @@
     "header": "demo8/shape.h",
     "desc": "温度控制器。",
     "name": "shape_t",
+    "annotation": {
+      "model": true
+    },
     "level": 1
   }
 ]
