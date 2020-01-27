@@ -46,8 +46,7 @@ static ret_t temperature_view_model_exec(object_t* obj, const char* name, const 
   temperature_view_model_t* vm = (temperature_view_model_t*)(obj);
   temperature_t* temperature = vm->temperature;
   if (tk_str_eq("apply", name)) {
-    temperature_apply(temperature);
-    return RET_OBJECT_CHANGED;
+    return temperature_apply(temperature);
   }
   return RET_NOT_FOUND;
 }
@@ -80,7 +79,6 @@ view_model_t* temperature_view_model_create_with(temperature_t* temperature) {
   return_value_if_fail(vm != NULL, NULL);
 
   temperature_view_model->temperature = temperature;
-  ENSURE(temperature_view_model->temperature != NULL);
 
   return vm;
 }
@@ -95,5 +93,8 @@ ret_t temperature_view_model_attach(view_model_t* vm, temperature_t* temperature
 }
 
 view_model_t* temperature_view_model_create(navigator_request_t* req) {
-  return temperature_view_model_create_with(temperature_create());
+  temperature_t* temperature = temperature_create();
+  return_value_if_fail(temperature != NULL, NULL);
+
+  return temperature_view_model_create_with(temperature);
 }

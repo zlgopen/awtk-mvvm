@@ -105,12 +105,10 @@ static ret_t shape_view_model_exec(object_t* obj, const char* name, const char* 
   shape_view_model_t* vm = (shape_view_model_t*)(obj);
   shape_t* shape = vm->shape;
   if (tk_str_eq("change_type", name)) {
-    shape_change_type(shape, tk_atoi(args));
-    return RET_OBJECT_CHANGED;
+    return shape_change_type(shape, tk_atoi(args));
 
   } else if (tk_str_eq("save", name)) {
-    shape_save(shape);
-    return RET_OBJECT_CHANGED;
+    return shape_save(shape);
   }
   return RET_NOT_FOUND;
 }
@@ -143,7 +141,6 @@ view_model_t* shape_view_model_create_with(shape_t* shape) {
   return_value_if_fail(vm != NULL, NULL);
 
   shape_view_model->shape = shape;
-  ENSURE(shape_view_model->shape != NULL);
 
   return vm;
 }
@@ -158,5 +155,8 @@ ret_t shape_view_model_attach(view_model_t* vm, shape_t* shape) {
 }
 
 view_model_t* shape_view_model_create(navigator_request_t* req) {
-  return shape_view_model_create_with(shape_create());
+  shape_t* shape = shape_create();
+  return_value_if_fail(shape != NULL, NULL);
+
+  return shape_view_model_create_with(shape);
 }

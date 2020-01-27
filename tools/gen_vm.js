@@ -147,7 +147,6 @@ view_model_t* ${clsName}_view_model_create_with(${clsName}_t* ${clsName}) {
   return_value_if_fail(vm != NULL, NULL);
 
   ${clsName}_view_model->${clsName} = ${clsName};
-  ENSURE(${clsName}_view_model->${clsName} != NULL);
 
   return vm;
 }
@@ -162,7 +161,10 @@ ret_t ${clsName}_view_model_attach(view_model_t* vm, ${clsName}_t* ${clsName}) {
 }
 
 view_model_t* ${clsName}_view_model_create(navigator_request_t* req) {
-  return ${clsName}_view_model_create_with(${constructor});
+  ${clsName}_t* ${clsName} = ${constructor};
+  return_value_if_fail(${clsName} != NULL, NULL);
+
+  return ${clsName}_view_model_create_with(${clsName});
 }
 `;
 

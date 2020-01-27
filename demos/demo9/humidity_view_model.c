@@ -46,8 +46,7 @@ static ret_t humidity_view_model_exec(object_t* obj, const char* name, const cha
   humidity_view_model_t* vm = (humidity_view_model_t*)(obj);
   humidity_t* humidity = vm->humidity;
   if (tk_str_eq("apply", name)) {
-    humidity_apply(humidity);
-    return RET_OBJECT_CHANGED;
+    return humidity_apply(humidity);
   }
   return RET_NOT_FOUND;
 }
@@ -80,7 +79,6 @@ view_model_t* humidity_view_model_create_with(humidity_t* humidity) {
   return_value_if_fail(vm != NULL, NULL);
 
   humidity_view_model->humidity = humidity;
-  ENSURE(humidity_view_model->humidity != NULL);
 
   return vm;
 }
@@ -95,5 +93,8 @@ ret_t humidity_view_model_attach(view_model_t* vm, humidity_t* humidity) {
 }
 
 view_model_t* humidity_view_model_create(navigator_request_t* req) {
-  return humidity_view_model_create_with(humidity_create());
+  humidity_t* humidity = humidity_create();
+  return_value_if_fail(humidity != NULL, NULL);
+
+  return humidity_view_model_create_with(humidity);
 }

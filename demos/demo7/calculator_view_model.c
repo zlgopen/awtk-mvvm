@@ -52,16 +52,13 @@ static ret_t calculator_view_model_exec(object_t* obj, const char* name, const c
   calculator_view_model_t* vm = (calculator_view_model_t*)(obj);
   calculator_t* calculator = vm->calculator;
   if (tk_str_eq("add_char", name)) {
-    calculator_add_char(calculator, args);
-    return RET_OBJECT_CHANGED;
+    return calculator_add_char(calculator, args);
 
   } else if (tk_str_eq("remove_char", name)) {
-    calculator_remove_char(calculator);
-    return RET_OBJECT_CHANGED;
+    return calculator_remove_char(calculator);
 
   } else if (tk_str_eq("eval", name)) {
-    calculator_eval(calculator);
-    return RET_OBJECT_CHANGED;
+    return calculator_eval(calculator);
   }
   return RET_NOT_FOUND;
 }
@@ -94,7 +91,6 @@ view_model_t* calculator_view_model_create_with(calculator_t* calculator) {
   return_value_if_fail(vm != NULL, NULL);
 
   calculator_view_model->calculator = calculator;
-  ENSURE(calculator_view_model->calculator != NULL);
 
   return vm;
 }
@@ -109,5 +105,8 @@ ret_t calculator_view_model_attach(view_model_t* vm, calculator_t* calculator) {
 }
 
 view_model_t* calculator_view_model_create(navigator_request_t* req) {
-  return calculator_view_model_create_with(calculator_create());
+  calculator_t* calculator = calculator_create();
+  return_value_if_fail(calculator != NULL, NULL);
+
+  return calculator_view_model_create_with(calculator);
 }

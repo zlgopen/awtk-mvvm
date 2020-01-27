@@ -47,7 +47,9 @@ ret_t calculator_destroy(calculator_t* calculator) {
 ret_t calculator_add_char(calculator_t* calculator, const char* args) {
   return_value_if_fail(calculator != NULL, RET_BAD_PARAMS);
 
-  return str_append(&(calculator->expr), args);
+  str_append(&(calculator->expr), args);
+
+  return RET_OBJECT_CHANGED;
 }
 
 bool_t calculator_can_remove_char(calculator_t* calculator) {
@@ -61,7 +63,7 @@ ret_t calculator_remove_char(calculator_t* calculator) {
 
   str_pop(&(calculator->expr));
 
-  return RET_OK;
+  return RET_OBJECT_CHANGED;
 }
 
 bool_t calculator_can_eval(calculator_t* calculator) {
@@ -73,7 +75,9 @@ bool_t calculator_can_eval(calculator_t* calculator) {
 ret_t calculator_eval(calculator_t* calculator) {
   return_value_if_fail(calculator != NULL, RET_BAD_PARAMS);
 
-  return str_from_float(&(calculator->expr), tk_expr_eval(calculator->expr.str));
+  str_from_float(&(calculator->expr), tk_expr_eval(calculator->expr.str));
+
+  return RET_OBJECT_CHANGED;
 }
 
 const char* calculator_get_expr(calculator_t* calculator) {

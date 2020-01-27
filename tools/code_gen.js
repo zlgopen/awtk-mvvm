@@ -350,8 +350,7 @@ class CodeGen {
         } else {
           exec = `  if (tk_str_eq("${cmdName}", name)) {\n`
         }
-        exec += `    ${this.genExec(json, iter)}\n`;
-        exec += `    return RET_OBJECT_CHANGED;\n`;
+        exec += `    return ${this.genExec(json, iter)}\n`;
         return exec;
       }).join('');
 

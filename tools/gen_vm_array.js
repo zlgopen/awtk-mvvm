@@ -149,7 +149,7 @@ ${execDispatch}
 
   view_model = ${clsName}_view_model_attach(obj, index);
 
-  return view_model_can_exec(view_model, name, NULL);
+  return view_model_exec(view_model, name, NULL);
 }
 
 static ret_t ${clsName}_view_model_on_destroy(object_t* obj) {
@@ -160,7 +160,7 @@ static ret_t ${clsName}_view_model_on_destroy(object_t* obj) {
   OBJECT_UNREF(vm->${elmClsName}_view_model);
   ${destructor}(vm->${clsName});
 
-  return view_model_deinit(VIEW_MODEL(obj));
+  return view_model_array_deinit(VIEW_MODEL(obj));
 }
 
 static const object_vtable_t s_${clsName}_view_model_vtable = {
@@ -177,7 +177,7 @@ static const object_vtable_t s_${clsName}_view_model_vtable = {
 
 view_model_t* ${clsName}_view_model_create_with(${clsName}_t* ${clsName}) {
   object_t* obj = object_create(&s_${clsName}_view_model_vtable);
-  view_model_t* vm = view_model_init(VIEW_MODEL(obj));
+  view_model_t* vm = view_model_array_init(VIEW_MODEL(obj));
   ${clsName}_view_model_t* ${clsName}_view_model = (${clsName}_view_model_t*)(vm);
   
   ${clsName}_view_model->${elmClsName}_view_model = ${elmClsName}_view_model_create_with(NULL);
