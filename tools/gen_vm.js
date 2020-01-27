@@ -152,8 +152,7 @@ view_model_t* ${clsName}_view_model_create_with(${clsName}_t* ${clsName}) {
   return vm;
 }
 
-ret_t ${clsName}_view_model_attach(view_model_t* vm,
-      ${clsName}_t* ${clsName}) {
+ret_t ${clsName}_view_model_attach(view_model_t* vm, ${clsName}_t* ${clsName}) {
   ${clsName}_view_model_t* ${clsName}_view_model = (${clsName}_view_model_t*)(vm);
   return_value_if_fail(vm != NULL, RET_BAD_PARAMS);
 

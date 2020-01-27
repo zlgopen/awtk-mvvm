@@ -7,8 +7,7 @@
 #include "shape_view_model.h"
 
 static ret_t shape_view_model_set_prop(object_t* obj, const char* name, const value_t* v) {
-  shape_view_model_t* vm = (shape_view_model_t*)(obj);
-  shape_t* shape = vm->shape;
+  shape_t* shape = ((shape_view_model_t*)(obj))->shape;
 
   if (tk_str_eq("type", name)) {
      shape->type = value_int32(v);
@@ -53,8 +52,7 @@ static ret_t shape_view_model_set_prop(object_t* obj, const char* name, const va
 
 
 static ret_t shape_view_model_get_prop(object_t* obj, const char* name, value_t* v) {
-  shape_view_model_t* vm = (shape_view_model_t*)(obj);
-  shape_t* shape = vm->shape;
+  shape_t* shape = ((shape_view_model_t*)(obj))->shape;
 
   if (tk_str_eq("type", name)) {
      value_set_int32(v, shape->type);
@@ -150,8 +148,7 @@ view_model_t* shape_view_model_create_with(shape_t* shape) {
   return vm;
 }
 
-ret_t shape_view_model_attach(view_model_t* vm,
-      shape_t* shape) {
+ret_t shape_view_model_attach(view_model_t* vm, shape_t* shape) {
   shape_view_model_t* shape_view_model = (shape_view_model_t*)(vm);
   return_value_if_fail(vm != NULL, RET_BAD_PARAMS);
 

@@ -7,8 +7,7 @@
 #include "calculator_view_model.h"
 
 static ret_t calculator_view_model_set_prop(object_t* obj, const char* name, const value_t* v) {
-  calculator_view_model_t* vm = (calculator_view_model_t*)(obj);
-  calculator_t* calculator = vm->calculator;
+  calculator_t* calculator = ((calculator_view_model_t*)(obj))->calculator;
 
   if (tk_str_eq("expr", name)) {
      calculator_set_expr(calculator, value_str(v));
@@ -21,8 +20,7 @@ static ret_t calculator_view_model_set_prop(object_t* obj, const char* name, con
 
 
 static ret_t calculator_view_model_get_prop(object_t* obj, const char* name, value_t* v) {
-  calculator_view_model_t* vm = (calculator_view_model_t*)(obj);
-  calculator_t* calculator = vm->calculator;
+  calculator_t* calculator = ((calculator_view_model_t*)(obj))->calculator;
 
   if (tk_str_eq("expr", name)) {
      value_set_str(v, calculator_get_expr(calculator));
@@ -101,8 +99,7 @@ view_model_t* calculator_view_model_create_with(calculator_t* calculator) {
   return vm;
 }
 
-ret_t calculator_view_model_attach(view_model_t* vm,
-      calculator_t* calculator) {
+ret_t calculator_view_model_attach(view_model_t* vm, calculator_t* calculator) {
   calculator_view_model_t* calculator_view_model = (calculator_view_model_t*)(vm);
   return_value_if_fail(vm != NULL, RET_BAD_PARAMS);
 

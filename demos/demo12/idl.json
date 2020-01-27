@@ -90,6 +90,9 @@
     "header": "demo12/room_settings.h",
     "desc": "温度控制器。",
     "name": "room_settings_t",
+    "annotation": {
+      "model": true
+    },
     "level": 1
   }
 ]

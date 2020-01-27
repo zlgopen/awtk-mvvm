@@ -7,8 +7,7 @@
 #include "room_settings_view_model.h"
 
 static ret_t room_settings_view_model_set_prop(object_t* obj, const char* name, const value_t* v) {
-  room_settings_view_model_t* vm = (room_settings_view_model_t*)(obj);
-  room_settings_t* room_settings = vm->room_settings;
+  room_settings_t* room_settings = ((room_settings_view_model_t*)(obj))->room_settings;
 
   if (tk_str_eq("temp", name)) {
      room_settings->temp = value_double(v);
@@ -29,8 +28,7 @@ static ret_t room_settings_view_model_set_prop(object_t* obj, const char* name, 
 
 
 static ret_t room_settings_view_model_get_prop(object_t* obj, const char* name, value_t* v) {
-  room_settings_view_model_t* vm = (room_settings_view_model_t*)(obj);
-  room_settings_t* room_settings = vm->room_settings;
+  room_settings_t* room_settings = ((room_settings_view_model_t*)(obj))->room_settings;
 
   if (tk_str_eq("temp", name)) {
      value_set_double(v, room_settings->temp);
@@ -88,15 +86,28 @@ static const object_vtable_t s_room_settings_view_model_vtable = {
   .on_destroy = room_settings_view_model_on_destroy
 };
 
-view_model_t* room_settings_view_model_create(navigator_request_t* req) {
+view_model_t* room_settings_view_model_create_with(room_settings_t* room_settings) {
   object_t* obj = object_create(&s_room_settings_view_model_vtable);
   view_model_t* vm = view_model_init(VIEW_MODEL(obj));
   room_settings_view_model_t* room_settings_view_model = (room_settings_view_model_t*)(vm);
 
   return_value_if_fail(vm != NULL, NULL);
 
-  room_settings_view_model->room_settings = room_settings_create(req);
+  room_settings_view_model->room_settings = room_settings;
   ENSURE(room_settings_view_model->room_settings != NULL);
 
   return vm;
+}
+
+ret_t room_settings_view_model_attach(view_model_t* vm, room_settings_t* room_settings) {
+  room_settings_view_model_t* room_settings_view_model = (room_settings_view_model_t*)(vm);
+  return_value_if_fail(vm != NULL, RET_BAD_PARAMS);
+
+  room_settings_view_model->room_settings = room_settings;
+
+  return RET_OK;
+}
+
+view_model_t* room_settings_view_model_create(navigator_request_t* req) {
+  return room_settings_view_model_create_with(room_settings_create(req));
 }

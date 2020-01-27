@@ -112,7 +112,6 @@ ${setPropsDispatch}
   return view_model_set_prop(view_model, name, v);
 }
 
-
 static ret_t ${clsName}_view_model_get_prop(object_t* obj, const char* name, value_t* v) {
   uint32_t index = 0;
   view_model_t* view_model = VIEW_MODEL(obj);
@@ -159,7 +158,6 @@ static ret_t ${clsName}_view_model_on_destroy(object_t* obj) {
 
   ${elmClsName}_view_model_attach(vm->${elmClsName}_view_model, NULL);
   OBJECT_UNREF(vm->${elmClsName}_view_model);
-
   ${destructor}(vm->${clsName});
 
   return view_model_deinit(VIEW_MODEL(obj));

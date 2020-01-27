@@ -37,7 +37,7 @@ view_model_t* humidity_view_model_create(navigator_request_t* req);
  * 创建humidity view model对象。
  *
  * @annotation ["constructor"]
- * @param {navigator_request_t*} req 请求参数。
+ * @param {humidity_t*}  humidity humidity对象。
  *
  * @return {view_model_t} 返回view_model_t对象。
  */

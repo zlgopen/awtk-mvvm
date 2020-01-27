@@ -7,8 +7,7 @@
 #include "humidity_view_model.h"
 
 static ret_t humidity_view_model_set_prop(object_t* obj, const char* name, const value_t* v) {
-  humidity_view_model_t* vm = (humidity_view_model_t*)(obj);
-  humidity_t* humidity = vm->humidity;
+  humidity_t* humidity = ((humidity_view_model_t*)(obj))->humidity;
 
   if (tk_str_eq("value", name)) {
      humidity->value = value_double(v);
@@ -21,8 +20,7 @@ static ret_t humidity_view_model_set_prop(object_t* obj, const char* name, const
 
 
 static ret_t humidity_view_model_get_prop(object_t* obj, const char* name, value_t* v) {
-  humidity_view_model_t* vm = (humidity_view_model_t*)(obj);
-  humidity_t* humidity = vm->humidity;
+  humidity_t* humidity = ((humidity_view_model_t*)(obj))->humidity;
 
   if (tk_str_eq("value", name)) {
      value_set_double(v, humidity->value);
@@ -87,8 +85,7 @@ view_model_t* humidity_view_model_create_with(humidity_t* humidity) {
   return vm;
 }
 
-ret_t humidity_view_model_attach(view_model_t* vm,
-      humidity_t* humidity) {
+ret_t humidity_view_model_attach(view_model_t* vm, humidity_t* humidity) {
   humidity_view_model_t* humidity_view_model = (humidity_view_model_t*)(vm);
   return_value_if_fail(vm != NULL, RET_BAD_PARAMS);
 

@@ -7,8 +7,7 @@
 #include "temperature_view_model.h"
 
 static ret_t temperature_view_model_set_prop(object_t* obj, const char* name, const value_t* v) {
-  temperature_view_model_t* vm = (temperature_view_model_t*)(obj);
-  temperature_t* temperature = vm->temperature;
+  temperature_t* temperature = ((temperature_view_model_t*)(obj))->temperature;
 
   if (tk_str_eq("value", name)) {
      temperature->value = value_double(v);
@@ -21,8 +20,7 @@ static ret_t temperature_view_model_set_prop(object_t* obj, const char* name, co
 
 
 static ret_t temperature_view_model_get_prop(object_t* obj, const char* name, value_t* v) {
-  temperature_view_model_t* vm = (temperature_view_model_t*)(obj);
-  temperature_t* temperature = vm->temperature;
+  temperature_t* temperature = ((temperature_view_model_t*)(obj))->temperature;
 
   if (tk_str_eq("value", name)) {
      value_set_double(v, temperature->value);
@@ -76,8 +74,7 @@ view_model_t* temperature_view_model_create_with(temperature_t* temperature) {
   return vm;
 }
 
-ret_t temperature_view_model_attach(view_model_t* vm,
-      temperature_t* temperature) {
+ret_t temperature_view_model_attach(view_model_t* vm, temperature_t* temperature) {
   temperature_view_model_t* temperature_view_model = (temperature_view_model_t*)(vm);
   return_value_if_fail(vm != NULL, RET_BAD_PARAMS);
 
