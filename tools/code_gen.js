@@ -401,14 +401,24 @@ class CodeGen {
 
     return result;
   }
+  
+  genOffEvents(json) {
+    let result = '';
+    if(json.parent === 'emitter_t' || json.parent === 'object_t') {
+      let clsName = this.toClassName(json.name);
+      result += `emitter_off_by_ctx(EMITTER(vm->${clsName}), vm);`
+    }
+
+    return result;
+  }
 
   genForwardEvents(json) {
     let result = '';
     if(json.parent === 'emitter_t' || json.parent === 'object_t') {
       let clsName = this.toClassName(json.name);
       result += `
-  emitter_on(EMITTER(${clsName}), EVT_PROPS_CHANGED, emitter_forward, ${clsName});
-  emitter_on(EMITTER(${clsName}), EVT_ITEMS_CHANGED, emitter_forward, ${clsName});
+  emitter_on(EMITTER(${clsName}), EVT_PROPS_CHANGED, emitter_forward, vm);
+  emitter_on(EMITTER(${clsName}), EVT_ITEMS_CHANGED, emitter_forward, vm);
 `
     }
 
