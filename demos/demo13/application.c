@@ -21,10 +21,11 @@
 
 #include "awtk.h"
 #include "mvvm/mvvm.h"
-#include "../common/books.h"
+#include "book_view_model.h"
+#include "book_store_view_model.h"
 
 ret_t application_init() {
-  view_model_factory_register("books", books_view_model_create);
+  view_model_factory_register("books", book_store_view_model_create);
 
   return navigator_to("books");
 }
