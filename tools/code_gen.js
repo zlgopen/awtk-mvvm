@@ -402,6 +402,19 @@ class CodeGen {
     return result;
   }
 
+  genForwardEvents(json) {
+    let result = '';
+    if(json.parent === 'emitter_t' || json.parent === 'object_t') {
+      let clsName = this.toClassName(json.name);
+      result += `
+  emitter_on(EMITTER(${clsName}), EVT_PROPS_CHANGED, emitter_forward, ${clsName});
+  emitter_on(EMITTER(${clsName}), EVT_ITEMS_CHANGED, emitter_forward, ${clsName});
+`
+    }
+
+    return result;
+  }
+
   genFile(filename) {
     let json = JSON.parse(fs.readFileSync(filename).toString());
 
