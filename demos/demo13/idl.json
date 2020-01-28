@@ -1,0 +1,271 @@
+[
+  {
+    "type": "class",
+    "methods": [
+      {
+        "params": [],
+        "annotation": {
+          "constructor": true
+        },
+        "desc": "创建book_store对象。",
+        "name": "book_store_create",
+        "return": {
+          "type": "book_store_t*",
+          "desc": "返回book_store对象。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "book_store_t*",
+            "name": "book_store",
+            "desc": "book_store对象。"
+          }
+        ],
+        "annotation": {
+          "destructor": true
+        },
+        "desc": "销毁book_store对象。",
+        "name": "book_store_destroy",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "book_store_t*",
+            "name": "book_store",
+            "desc": "book_store对象。"
+          }
+        ],
+        "annotation": {
+          "command": true
+        },
+        "desc": "清除全部数据。",
+        "name": "book_store_clear",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "book_store_t*",
+            "name": "book_store",
+            "desc": "book_store对象。"
+          },
+          {
+            "type": "uint32_t",
+            "name": "index",
+            "desc": "序数。"
+          }
+        ],
+        "annotation": {
+          "command": true
+        },
+        "desc": "删除指定序数的book。",
+        "name": "book_store_remove",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "book_store_t*",
+            "name": "book_store",
+            "desc": "book_store对象。"
+          },
+          {
+            "type": "uint32_t",
+            "name": "index",
+            "desc": "序数。"
+          }
+        ],
+        "annotation": {},
+        "desc": "检查remove命令是否可以执行。",
+        "name": "book_store_can_remove",
+        "return": {
+          "type": "bool_t",
+          "desc": "返回FALSE表示不能执行，否则表示可以执行。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "book_store_t*",
+            "name": "book_store",
+            "desc": "book_store对象。"
+          }
+        ],
+        "annotation": {},
+        "desc": "获取总数。",
+        "name": "book_store_get_items",
+        "return": {
+          "type": "uint32_t",
+          "desc": "返回用户数。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "book_store_t*",
+            "name": "book_store",
+            "desc": "book_store对象。"
+          },
+          {
+            "type": "uint32_t",
+            "name": "index",
+            "desc": "序数。"
+          }
+        ],
+        "annotation": {},
+        "desc": "获取指定序数的图书。",
+        "name": "book_store_get",
+        "return": {
+          "type": "book_t*",
+          "desc": "返回book对象。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "book_store_t*",
+            "name": "book_store",
+            "desc": "book_store对象。"
+          }
+        ],
+        "annotation": {
+          "command": true
+        },
+        "desc": "增加一本图书。",
+        "name": "book_store_add",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      }
+    ],
+    "events": [],
+    "properties": [
+      {
+        "name": "items",
+        "desc": "总数量。",
+        "type": "uint32_t",
+        "annotation": {
+          "fake": true,
+          "readable": true
+        }
+      }
+    ],
+    "header": "demo13/book_store.h",
+    "desc": "book store。",
+    "name": "book_store_t",
+    "annotation": {
+      "collection": "book",
+      "model": true
+    },
+    "level": 1
+  },
+  {
+    "type": "class",
+    "methods": [
+      {
+        "params": [],
+        "annotation": {
+          "constructor": true
+        },
+        "desc": "创建book对象。",
+        "name": "book_create",
+        "return": {
+          "type": "book_t*",
+          "desc": "返回book对象。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "book_t*",
+            "name": "book",
+            "desc": "book对象。"
+          }
+        ],
+        "annotation": {
+          "destructor": true
+        },
+        "desc": "销毁book对象。",
+        "name": "book_destroy",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "book_t*",
+            "name": "book",
+            "desc": "book对象。"
+          }
+        ],
+        "annotation": {
+          "command": true
+        },
+        "desc": "卖掉一本。",
+        "name": "book_sale",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "book_t*",
+            "name": "book",
+            "desc": "book对象。"
+          }
+        ],
+        "annotation": {},
+        "desc": "检查sale命令是否可以执行。",
+        "name": "book_can_sale",
+        "return": {
+          "type": "bool_t",
+          "desc": "返回FALSE表示不能执行，否则表示可以执行。"
+        }
+      }
+    ],
+    "events": [],
+    "properties": [
+      {
+        "name": "name",
+        "desc": "书名。",
+        "type": "str_t",
+        "annotation": {
+          "readable": true,
+          "writable": true
+        }
+      },
+      {
+        "name": "stock",
+        "desc": "库存。",
+        "type": "uint32_t",
+        "annotation": {
+          "readable": true,
+          "writable": true
+        }
+      }
+    ],
+    "header": "demo13/book.h",
+    "desc": "图书信息。",
+    "name": "book_t",
+    "annotation": {
+      "model": true
+    },
+    "level": 1
+  }
+]
