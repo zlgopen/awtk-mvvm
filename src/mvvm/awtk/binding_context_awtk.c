@@ -39,6 +39,27 @@
 #include "mvvm/base/binding_rule_parser.h"
 #include "mvvm/awtk/binding_context_awtk.h"
 
+static ret_t binding_context_put_widget(binding_context_t* ctx, widget_t* widget) {
+  darray_t* cache = &(ctx->cache_widgets);
+
+  if(darray_push(cache, widget) != RET_OK) {
+    widget_unref(widget);
+  }
+  
+  return RET_OK;
+}
+
+static widget_t* binding_context_get_widget(binding_context_t* ctx) {
+  darray_t* cache = &(ctx->cache_widgets);
+  widget_t* widget = darray_pop(cache);
+  if(widget == NULL) {
+    widget_t* template_widget = WIDGET(ctx->template_widget);
+    widget = widget_clone(template_widget, NULL);
+  }
+
+  return widget;
+}
+
 #define EVENT_TAG 0x11223300
 static ret_t binding_context_bind_for_widget(widget_t* widget, navigator_request_t* req);
 
@@ -352,7 +373,8 @@ static ret_t binding_context_awtk_bind_widget(binding_context_t* ctx, widget_t* 
   return RET_OK;
 }
 
-static ret_t widget_trim_children(widget_t* widget, uint32_t nr) {
+static ret_t widget_trim_children(binding_context_t* ctx, 
+    widget_t* widget, uint32_t nr) {
   int32_t i = 0;
   int32_t real_nr = widget_count_children(widget);
 
@@ -377,7 +399,7 @@ static ret_t widget_trim_children(widget_t* widget, uint32_t nr) {
       widget->key_target = NULL;
     }
 
-    widget_destroy(child);
+    binding_context_put_widget(ctx, child);
   }
 
   widget->children->size = nr;
@@ -398,10 +420,9 @@ static ret_t binding_context_prepare_children(binding_context_t* ctx, widget_t* 
     widget_remove_child(widget, template_widget);
   }
 
-  widget_trim_children(widget, items);
-
+  widget_trim_children(ctx, widget, items);
   for (i = widget_count_children(widget); i < items; i++) {
-    widget_clone(template_widget, widget);
+    widget_add_child(widget, binding_context_get_widget(ctx));
   }
   return_value_if_fail(items == widget_count_children(widget), RET_OOM);
 
@@ -604,6 +625,7 @@ static ret_t binding_context_awtk_update_to_model(binding_context_t* ctx) {
 }
 
 static ret_t binding_context_awtk_destroy(binding_context_t* ctx) {
+  darray_deinit(&(ctx->cache_widgets));
   if (ctx->template_widget != NULL) {
     widget_destroy(WIDGET(ctx->template_widget));
   }
@@ -678,6 +700,10 @@ binding_context_t* binding_context_awtk_create(widget_t* widget, navigator_reque
       }
     }
     object_unref(OBJECT(view_model));
+  }
+
+  if(ctx != NULL) {
+    darray_init(&(ctx->cache_widgets), 10, (tk_destroy_t)widget_unref, NULL);
   }
 
   return ctx;

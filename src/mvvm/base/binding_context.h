@@ -127,6 +127,7 @@ struct _binding_context_t {
   /*private*/
   /*列表绑定的模板*/
   void* template_widget;
+  darray_t cache_widgets;
 
   const binding_context_vtable_t* vt;
 };
