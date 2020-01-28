@@ -143,7 +143,7 @@ static ret_t object_set_prop_if_diff(object_t* object, const char* name, const v
     }
   }
 
-  if(v->type == VALUE_TYPE_WSTRING) {
+  if (v->type == VALUE_TYPE_WSTRING) {
     value_t t;
     str_t* str = &(view_model->temp);
     return_value_if_fail(str_from_value(str, v) == RET_OK, RET_OOM);

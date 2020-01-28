@@ -10,29 +10,26 @@ static ret_t humidity_view_model_set_prop(object_t* obj, const char* name, const
   humidity_t* humidity = ((humidity_view_model_t*)(obj))->humidity;
 
   if (tk_str_eq("value", name)) {
-     humidity->value = value_double(v);
+    humidity->value = value_double(v);
 
-     return RET_OK;
+    return RET_OK;
   }
-  
+
   return RET_NOT_FOUND;
 }
-
 
 static ret_t humidity_view_model_get_prop(object_t* obj, const char* name, value_t* v) {
   humidity_t* humidity = ((humidity_view_model_t*)(obj))->humidity;
 
   if (tk_str_eq("value", name)) {
-     value_set_double(v, humidity->value);
-     return RET_OK;
+    value_set_double(v, humidity->value);
+    return RET_OK;
   }
 
   return RET_NOT_FOUND;
 }
 
-
 static bool_t humidity_view_model_can_exec(object_t* obj, const char* name, const char* args) {
- 
   humidity_view_model_t* vm = (humidity_view_model_t*)(obj);
   humidity_t* humidity = vm->humidity;
   if (tk_str_eq("apply", name)) {
@@ -42,7 +39,6 @@ static bool_t humidity_view_model_can_exec(object_t* obj, const char* name, cons
 }
 
 static ret_t humidity_view_model_exec(object_t* obj, const char* name, const char* args) {
- 
   humidity_view_model_t* vm = (humidity_view_model_t*)(obj);
   humidity_t* humidity = vm->humidity;
   if (tk_str_eq("apply", name)) {
@@ -61,15 +57,14 @@ static ret_t humidity_view_model_on_destroy(object_t* obj) {
 }
 
 static const object_vtable_t s_humidity_view_model_vtable = {
-  .type = "humidity_view_model_t",
-  .desc = "humidity_view_model_t",
-  .size = sizeof(humidity_view_model_t),
-  .exec = humidity_view_model_exec,
-  .can_exec = humidity_view_model_can_exec,
-  .get_prop = humidity_view_model_get_prop,
-  .set_prop = humidity_view_model_set_prop,
-  .on_destroy = humidity_view_model_on_destroy
-};
+    .type = "humidity_view_model_t",
+    .desc = "humidity_view_model_t",
+    .size = sizeof(humidity_view_model_t),
+    .exec = humidity_view_model_exec,
+    .can_exec = humidity_view_model_can_exec,
+    .get_prop = humidity_view_model_get_prop,
+    .set_prop = humidity_view_model_set_prop,
+    .on_destroy = humidity_view_model_on_destroy};
 
 view_model_t* humidity_view_model_create_with(humidity_t* humidity) {
   object_t* obj = object_create(&s_humidity_view_model_vtable);

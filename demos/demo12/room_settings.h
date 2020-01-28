@@ -35,14 +35,14 @@ BEGIN_C_DECLS
  */
 typedef struct _room_settings_t {
   /**
-   * @property {double} temp 
+   * @property {double} temp
    * @annotation ["readable", "writable"]
    * 温度。
    */
   double temp;
 
   /**
-   * @property {double} humidity 
+   * @property {double} humidity
    * @annotation ["readable", "writable"]
    * 湿度。
    */
@@ -63,10 +63,10 @@ typedef struct _room_settings_t {
  * @method room_settings_create
  * 创建room_settings对象。
  *
- * @param {navigator_request_t*} req 请求对象。 
+ * @param {navigator_request_t*} req 请求对象。
  * @annotation ["constructor"]
- * @return {room_settings_t*} 返回room_settings对象。 
- */ 
+ * @return {room_settings_t*} 返回room_settings对象。
+ */
 room_settings_t* room_settings_create(navigator_request_t* req);
 
 /**
@@ -77,7 +77,7 @@ room_settings_t* room_settings_create(navigator_request_t* req);
  * @param {room_settings_t*} room_settings room_settings对象。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
- */ 
+ */
 ret_t room_settings_return(room_settings_t* room_settings);
 
 /**
@@ -88,7 +88,7 @@ ret_t room_settings_return(room_settings_t* room_settings);
  * @param {room_settings_t*} room_settings room_settings对象。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
- */ 
+ */
 ret_t room_settings_destroy(room_settings_t* room_settings);
 
 END_C_DECLS

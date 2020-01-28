@@ -44,7 +44,6 @@ ret_t temperature_apply(temperature_t* temperature) {
 
 bool_t temperature_can_apply(temperature_t* temperature) {
   return_value_if_fail(temperature != NULL, FALSE);
-  
+
   return temperature->saved_value != temperature->value;
 }
-

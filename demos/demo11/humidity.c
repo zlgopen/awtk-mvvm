@@ -44,7 +44,6 @@ ret_t humidity_apply(humidity_t* humidity) {
 
 bool_t humidity_can_apply(humidity_t* humidity) {
   return_value_if_fail(humidity != NULL, FALSE);
-  
+
   return humidity->saved_value != humidity->value;
 }
-

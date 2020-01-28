@@ -50,8 +50,8 @@ typedef struct _humidity_t {
  * 创建humidity对象。
  *
  * @annotation ["constructor"]
- * @return {humidity_t*} 返回humidity对象。 
- */ 
+ * @return {humidity_t*} 返回humidity对象。
+ */
 humidity_t* humidity_create(void);
 
 /**
@@ -62,7 +62,7 @@ humidity_t* humidity_create(void);
  * @param {humidity_t*} humidity humidity对象。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
- */ 
+ */
 ret_t humidity_destroy(humidity_t* humidity);
 
 /**
@@ -73,7 +73,7 @@ ret_t humidity_destroy(humidity_t* humidity);
  * @param {humidity_t*} humidity humidity对象。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
- */ 
+ */
 ret_t humidity_apply(humidity_t* humidity);
 
 /**
@@ -83,10 +83,9 @@ ret_t humidity_apply(humidity_t* humidity);
  * @param {humidity_t*} humidity humidity对象。
  *
  * @return {bool_t} 返回FALSE表示不能执行，否则表示可以执行。
- */ 
+ */
 bool_t humidity_can_apply(humidity_t* humidity);
 
 END_C_DECLS
 
 #endif /*HUMIDITY_H*/
-

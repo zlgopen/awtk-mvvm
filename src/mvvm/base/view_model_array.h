@@ -104,10 +104,9 @@ ret_t view_model_array_set_cursor(view_model_t* view_model, uint32_t cursor);
 ret_t view_model_array_notify_items_changed(view_model_t* view_model);
 
 /*for subclass*/
-ret_t view_model_array_default_set_prop(view_model_t* view_model, 
-    const char* name, const value_t* value);
-ret_t view_model_array_default_get_prop(view_model_t* view_model, 
-    const char* name, value_t* value);
+ret_t view_model_array_default_set_prop(view_model_t* view_model, const char* name,
+                                        const value_t* value);
+ret_t view_model_array_default_get_prop(view_model_t* view_model, const char* name, value_t* value);
 
 #define VIEW_MODEL_ARRAY(view_model) ((view_model_array_t*)(view_model))
 

@@ -44,9 +44,9 @@ static ret_t custom_handlers_choose(custom_handlers_t* custom_handlers, const ch
   str_init(&str, 0);
   str_set(&str, "./");
 
-  if(tk_str_eq(args, "file_for_save")) {
+  if (tk_str_eq(args, "file_for_save")) {
     navigator_pick_file("Choose...", ".txt", TRUE, &str);
-  } else if(tk_str_eq(args, "file_for_open")) {
+  } else if (tk_str_eq(args, "file_for_open")) {
     navigator_pick_file("Choose...", ".txt", FALSE, &str);
   } else {
     navigator_pick_dir("Choose...", &str);

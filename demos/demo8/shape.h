@@ -40,51 +40,51 @@ typedef struct _shape_t {
    * 类型。
    */
   int32_t type;
-  
+
   /**
    * @property {int32_t} x
    * @annotation ["readable", "writable"]
    * x。
    */
   int32_t x;
-  
+
   /**
    * @property {int32_t} y
    * @annotation ["readable", "writable"]
    * y。
    */
   int32_t y;
-  
+
   /**
    * @property {int32_t} w
    * @annotation ["readable", "writable"]
    * w。
    */
   int32_t w;
-  
+
   /**
    * @property {int32_t} h
    * @annotation ["readable", "writable"]
    * h。
    */
   int32_t h;
-  
+
   /**
    * @property {int32_t} opacity
    * @annotation ["readable", "writable"]
    * 不透明度。
    */
   int32_t opacity;
-  
+
   /**
    * @property {int32_t} text_align
    * @annotation ["readable", "writable"]
    * 文本对齐。
    */
   int32_t text_align;
-  
+
   /**
-   * @property {str_t} name 
+   * @property {str_t} name
    * @annotation ["readable", "writable"]
    * name。
    */
@@ -106,8 +106,8 @@ typedef struct _shape_t {
  * 创建shape对象。
  *
  * @annotation ["constructor"]
- * @return {shape_t*} 返回shape对象。 
- */ 
+ * @return {shape_t*} 返回shape对象。
+ */
 shape_t* shape_create(void);
 
 /**
@@ -118,7 +118,7 @@ shape_t* shape_create(void);
  * @param {shape_t*} shape shape对象。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
- */ 
+ */
 ret_t shape_destroy(shape_t* shape);
 
 /**
@@ -129,7 +129,7 @@ ret_t shape_destroy(shape_t* shape);
  * @param {const char*} name 名称。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
- */ 
+ */
 ret_t shape_set_name(shape_t* shape, const char* name);
 
 /**
@@ -139,7 +139,7 @@ ret_t shape_set_name(shape_t* shape, const char* name);
  * @param {shape_t*} shape shape对象。
  *
  * @return {const char*} 返回overview
- */ 
+ */
 const char* shape_get_overview(shape_t* shape);
 
 /**
@@ -151,8 +151,8 @@ const char* shape_get_overview(shape_t* shape);
  * @param {int32_t} type 类型。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
- */ 
-ret_t shape_change_type(shape_t* shape, int32_t type); 
+ */
+ret_t shape_change_type(shape_t* shape, int32_t type);
 
 /**
  * @method shape_save
@@ -162,7 +162,7 @@ ret_t shape_change_type(shape_t* shape, int32_t type);
  * @param {shape_t*} shape shape对象。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
- */ 
+ */
 ret_t shape_save(shape_t* shape);
 
 /**
@@ -172,10 +172,9 @@ ret_t shape_save(shape_t* shape);
  * @param {shape_t*} shape shape对象。
  *
  * @return {bool_t} 返回FALSE表示不能保存，否则表示可以保存。
- */ 
+ */
 bool_t shape_can_save(shape_t* shape);
 
 END_C_DECLS
 
 #endif /*SHAPE_H*/
-

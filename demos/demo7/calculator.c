@@ -82,7 +82,7 @@ ret_t calculator_eval(calculator_t* calculator) {
 
 const char* calculator_get_expr(calculator_t* calculator) {
   return_value_if_fail(calculator != NULL, NULL);
-  
+
   return calculator->expr.str;
 }
 
@@ -91,4 +91,3 @@ ret_t calculator_set_expr(calculator_t* calculator, const char* expr) {
 
   return str_set(&(calculator->expr), expr);
 }
-

@@ -175,23 +175,23 @@ navigator_handler_t* navigator_handler_awtk_back_create(void) {
 }
 
 static ret_t tk_on_choose_file_result(void* ctx, event_t* e) {
-	navigator_request_t* req = (navigator_request_t*)ctx;
+  navigator_request_t* req = (navigator_request_t*)ctx;
   file_chooser_t* chooser = (file_chooser_t*)(e->target);
 
   if (!file_chooser_is_aborted(chooser)) {
     value_t v;
-		str_t str;
-		const char* filename = file_chooser_get_filename(chooser);
+    str_t str;
+    const char* filename = file_chooser_get_filename(chooser);
 
-		str_init(&str, MAX_PATH);
-		str_append(&str, file_chooser_get_dir(chooser));
-    if(filename != NULL && *filename) {
+    str_init(&str, MAX_PATH);
+    str_append(&str, file_chooser_get_dir(chooser));
+    if (filename != NULL && *filename) {
       str_append_char(&str, TK_PATH_SEP);
       str_append(&str, filename);
     }
     value_set_str(&v, str.str);
     navigator_request_on_result(req, &v);
-		str_reset(&str);
+    str_reset(&str);
   }
 
   return RET_OK;

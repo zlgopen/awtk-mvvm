@@ -50,8 +50,8 @@ typedef struct _temperature_t {
  * 创建temperature对象。
  *
  * @annotation ["constructor"]
- * @return {temperature_t*} 返回temperature对象。 
- */ 
+ * @return {temperature_t*} 返回temperature对象。
+ */
 temperature_t* temperature_create(void);
 
 /**
@@ -62,7 +62,7 @@ temperature_t* temperature_create(void);
  * @param {temperature_t*} temperature temperature对象。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
- */ 
+ */
 ret_t temperature_destroy(temperature_t* temperature);
 
 /**
@@ -73,7 +73,7 @@ ret_t temperature_destroy(temperature_t* temperature);
  * @param {temperature_t*} temperature temperature对象。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
- */ 
+ */
 ret_t temperature_apply(temperature_t* temperature);
 
 /**
@@ -83,10 +83,9 @@ ret_t temperature_apply(temperature_t* temperature);
  * @param {temperature_t*} temperature temperature对象。
  *
  * @return {bool_t} 返回FALSE表示不能执行，否则表示可以执行。
- */ 
+ */
 bool_t temperature_can_apply(temperature_t* temperature);
 
 END_C_DECLS
 
 #endif /*TEMPERATURE_H*/
-

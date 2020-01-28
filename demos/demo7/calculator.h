@@ -39,7 +39,7 @@ typedef struct _calculator_t {
    * @annotation ["fake"]
    * 表达式。
    */
-  
+
   /*private*/
   str_t expr;
 
@@ -50,8 +50,8 @@ typedef struct _calculator_t {
  * 创建calculator对象。
  *
  * @annotation ["constructor"]
- * @return {calculator_t*} 返回calculator对象。 
- */ 
+ * @return {calculator_t*} 返回calculator对象。
+ */
 calculator_t* calculator_create(void);
 
 /**
@@ -62,7 +62,7 @@ calculator_t* calculator_create(void);
  * @param {calculator_t*} calculator calculator对象。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
- */ 
+ */
 ret_t calculator_destroy(calculator_t* calculator);
 
 /**
@@ -71,7 +71,7 @@ ret_t calculator_destroy(calculator_t* calculator);
  * @param {calculator_t*} calculator calculator对象。
  *
  * @return {const char*} 返回表达式。
- */ 
+ */
 const char* calculator_get_expr(calculator_t* calculator);
 
 /**
@@ -82,7 +82,7 @@ const char* calculator_get_expr(calculator_t* calculator);
  * @param {const char*} expr 表达式。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
- */ 
+ */
 ret_t calculator_set_expr(calculator_t* calculator, const char* expr);
 
 /**
@@ -94,7 +94,7 @@ ret_t calculator_set_expr(calculator_t* calculator, const char* expr);
  * @param {const char*} args 参数。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
- */ 
+ */
 ret_t calculator_add_char(calculator_t* calculator, const char* args);
 
 /**
@@ -105,7 +105,7 @@ ret_t calculator_add_char(calculator_t* calculator, const char* args);
  * @param {calculator_t*} calculator calculator对象。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
- */ 
+ */
 ret_t calculator_remove_char(calculator_t* calculator);
 
 /**
@@ -115,7 +115,7 @@ ret_t calculator_remove_char(calculator_t* calculator);
  * @param {calculator_t*} calculator calculator对象。
  *
  * @return {bool_t} 返回FALSE表示不能执行，否则表示可以执行。
- */ 
+ */
 bool_t calculator_can_remove_char(calculator_t* calculator);
 
 /**
@@ -126,7 +126,7 @@ bool_t calculator_can_remove_char(calculator_t* calculator);
  * @param {calculator_t*} calculator calculator对象。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
- */ 
+ */
 ret_t calculator_eval(calculator_t* calculator);
 
 /**
@@ -136,10 +136,9 @@ ret_t calculator_eval(calculator_t* calculator);
  * @param {calculator_t*} calculator calculator对象。
  *
  * @return {bool_t} 返回FALSE表示不能执行，否则表示可以执行。
- */ 
+ */
 bool_t calculator_can_eval(calculator_t* calculator);
 
 END_C_DECLS
 
 #endif /*CALCULATOR_H*/
-
