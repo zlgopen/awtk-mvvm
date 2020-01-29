@@ -82,11 +82,11 @@ ret_t binding_context_destroy(binding_context_t* ctx) {
   darray_deinit(&(ctx->command_bindings));
 
   if (ctx->navigator_request != NULL) {
-    object_unref(OBJECT(ctx->navigator_request));
+    OBJECT_UNREF(ctx->navigator_request);
   }
 
   if (ctx->view_model != NULL) {
-    object_unref(OBJECT(ctx->view_model));
+    OBJECT_UNREF(ctx->view_model);
   }
 
   if (ctx->vt->destroy != NULL) {

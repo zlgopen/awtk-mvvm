@@ -67,6 +67,7 @@ static ret_t value_converter_factory_destroy(value_converter_factory_t* factory)
   object_unref(factory->cache);
   object_unref(factory->creators);
   slist_deinit(&(factory->generic_creators));
+  TKMEM_FREE(factory);
 
   return RET_OK;
 }

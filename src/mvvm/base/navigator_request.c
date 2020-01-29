@@ -28,6 +28,7 @@ static ret_t navigator_request_on_destroy(object_t* obj) {
   navigator_request_t* req = NAVIGATOR_REQUEST(obj);
 
   value_reset(&(req->result));
+  OBJECT_UNREF(req->args);
 
   return RET_OK;
 }

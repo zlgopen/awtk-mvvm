@@ -40,5 +40,7 @@ ret_t mvvm_deinit(void) {
   mvvm_awtk_deinit();
   mvvm_base_deinit();
 
+  log_debug("mvvm_deinit\n");
+
   return RET_OK;
 }
