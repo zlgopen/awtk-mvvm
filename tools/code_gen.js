@@ -83,7 +83,7 @@ class CodeGen {
       let includes = iter.includes;
       let header = this.genHeader(iter);
       let content = this.genContent(iter);
-      let name = this.toClassName(iter.name) + '_view_model';
+      let name = this.toViewModelClassName(iter.name);
       this.saveResult(name, includes, header, content);
     });
   }
@@ -96,6 +96,12 @@ class CodeGen {
     let clsName = this.toClassName(name).toLowerCase();
 
     return `${clsName}_view_model`
+  }
+  
+  toViewModelClassType(name) {
+    let clsName = this.toClassName(name).toLowerCase();
+
+    return `${clsName}_view_model_t`
   }
 
   genToValue(type, name) {
