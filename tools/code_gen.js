@@ -91,6 +91,12 @@ class CodeGen {
   toClassName(name) {
     return name.replace(/_t$/, '');
   }
+  
+  toViewModelClassName(name) {
+    let clsName = this.toClassName(name).toLowerCase();
+
+    return `${clsName}_view_model`
+  }
 
   genToValue(type, name) {
     switch (type) {
