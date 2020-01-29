@@ -21,10 +21,12 @@
 
 #include "tkc/mem.h"
 #include "tkc/utils.h"
+#include "mvvm/base/utils.h"
 #include "mvvm/base/binding_context.h"
 #include "mvvm/base/data_binding.h"
 #include "mvvm/base/value_converter.h"
 #include "mvvm/base/value_validator.h"
+#include "mvvm/base/view_model_array.h"
 
 #define BINDING_STR_CHANGED "Changed"
 #define BINDING_STR_CHANGING "Changing"
@@ -38,6 +40,10 @@ static ret_t data_binding_on_destroy(object_t* obj) {
   data_binding_t* rule = data_binding_cast(obj);
   return_value_if_fail(rule != NULL, RET_BAD_PARAMS);
 
+  TKMEM_FREE(rule->path);
+  TKMEM_FREE(rule->prop);
+  TKMEM_FREE(rule->validator);
+  TKMEM_FREE(rule->converter);
   if (rule->props != NULL) {
     object_unref(rule->props);
   }

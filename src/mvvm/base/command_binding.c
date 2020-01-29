@@ -25,6 +25,7 @@
 #include "mvvm/base/navigator.h"
 #include "mvvm/base/binding_context.h"
 #include "mvvm/base/command_binding.h"
+#include "mvvm/base/view_model_array.h"
 
 #define equal tk_str_ieq
 
@@ -34,6 +35,10 @@ static ret_t command_binding_on_destroy(object_t* obj) {
   command_binding_t* rule = command_binding_cast(obj);
   return_value_if_fail(rule != NULL, RET_BAD_PARAMS);
 
+  TKMEM_FREE(rule->command);
+  TKMEM_FREE(rule->args);
+  TKMEM_FREE(rule->event);
+  TKMEM_FREE(rule->key_filter);
   if (rule->props != NULL) {
     object_unref(rule->props);
   }
