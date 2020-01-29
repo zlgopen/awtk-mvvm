@@ -7,6 +7,7 @@ class ViewModelGen extends CodeGen {
     const desc = json.desc || "";
     const clsType = json.name;
     const clsName = this.toClassName(json.name);
+    const objName = this.toObjName(json.name);
     const uclsName = clsName.toUpperCase();
     const vmClsName = this.toViewModelClassName(json.name);
     const vmClsType = this.toViewModelClassType(json.name);
@@ -31,7 +32,7 @@ typedef struct _${vmClsType} {
   view_model_t view_model;
 
   /*model object*/
-  ${clsType}* ${clsName};
+  ${clsType}* ${objName};
 } ${vmClsType};
 
 /**
@@ -50,11 +51,11 @@ view_model_t* ${vmClsName}_create(navigator_request_t* req);
  * 创建${clsName} view model对象。
  *
  * @annotation ["constructor"]
- * @param {${clsType}*}  ${clsName} ${clsName}对象。
+ * @param {${clsType}*}  ${objName} ${clsName}对象。
  *
  * @return {view_model_t} 返回view_model_t对象。
  */
-view_model_t* ${vmClsName}_create_with(${clsType}* ${clsName});
+view_model_t* ${vmClsName}_create_with(${clsType}* ${objName});
 
 /**
  * @method ${vmClsName}_attach
@@ -65,7 +66,7 @@ view_model_t* ${vmClsName}_create_with(${clsType}* ${clsName});
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
-ret_t ${vmClsName}_attach(view_model_t* vm, ${clsType}* ${clsName});
+ret_t ${vmClsName}_attach(view_model_t* vm, ${clsType}* ${objName});
 
 END_C_DECLS
 
@@ -78,6 +79,7 @@ END_C_DECLS
   genContent(json) {
     const desc = json.desc || "";
     const clsType = json.name;
+    const objName = this.toObjName(json.name);
     const clsName = this.toClassName(json.name);
     const uclsName = clsName.toUpperCase();
     const setPropsDispatch = this.genSetPropDispatch(json);
@@ -100,7 +102,7 @@ END_C_DECLS
 #include "${vmClsName}.h"
 
 static ret_t ${vmClsName}_set_prop(object_t* obj, const char* name, const value_t* v) {
-  ${clsType}* ${clsName} = ((${vmClsType}*)(obj))->${clsName};
+  ${clsType}* ${objName} = ((${vmClsType}*)(obj))->${objName};
 
 ${setPropsDispatch}
   
@@ -109,7 +111,7 @@ ${setPropsDispatch}
 
 
 static ret_t ${vmClsName}_get_prop(object_t* obj, const char* name, value_t* v) {
-  ${clsType}* ${clsName} = ((${vmClsType}*)(obj))->${clsName};
+  ${clsType}* ${objName} = ((${vmClsType}*)(obj))->${objName};
 
 ${getPropsDispatch}
 
@@ -132,7 +134,7 @@ static ret_t ${vmClsName}_on_destroy(object_t* obj) {
   return_value_if_fail(vm != NULL, RET_BAD_PARAMS);
 
   ${offEvents}
-  ${destructor}(vm->${clsName});
+  ${destructor}(vm->${objName});
 
   return view_model_deinit(VIEW_MODEL(obj));
 }
@@ -148,33 +150,33 @@ static const object_vtable_t s_${vmClsName}_vtable = {
   .on_destroy = ${vmClsName}_on_destroy
 };
 
-view_model_t* ${vmClsName}_create_with(${clsType}* ${clsName}) {
+view_model_t* ${vmClsName}_create_with(${clsType}* ${objName}) {
   object_t* obj = object_create(&s_${vmClsName}_vtable);
   view_model_t* vm = view_model_init(VIEW_MODEL(obj));
   ${vmClsType}* ${vmClsName} = (${vmClsType}*)(vm);
 
   return_value_if_fail(vm != NULL, NULL);
 
-  ${vmClsName}->${clsName} = ${clsName};
+  ${vmClsName}->${objName} = ${objName};
   ${forwardEvents}
 
   return vm;
 }
 
-ret_t ${vmClsName}_attach(view_model_t* vm, ${clsType}* ${clsName}) {
+ret_t ${vmClsName}_attach(view_model_t* vm, ${clsType}* ${objName}) {
   ${vmClsType}* ${vmClsName} = (${vmClsType}*)(vm);
   return_value_if_fail(vm != NULL, RET_BAD_PARAMS);
 
-  ${vmClsName}->${clsName} = ${clsName};
+  ${vmClsName}->${objName} = ${objName};
 
   return RET_OK;
 }
 
 view_model_t* ${vmClsName}_create(navigator_request_t* req) {
-  ${clsType}* ${clsName} = ${constructor};
-  return_value_if_fail(${clsName} != NULL, NULL);
+  ${clsType}* ${objName} = ${constructor};
+  return_value_if_fail(${objName} != NULL, NULL);
 
-  return ${vmClsName}_create_with(${clsName});
+  return ${vmClsName}_create_with(${objName});
 }
 `;
 

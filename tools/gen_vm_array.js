@@ -7,6 +7,7 @@ class ViewModelGen extends CodeGen {
     const desc = json.desc || "";
     const clsType = json.name;
     const clsName = this.toClassName(json.name);
+    const objName = this.toObjName(json.name);
     const uclsName = clsName.toUpperCase();
     const elmClsName = this.toClassName(json.annotation.collection);
     const vmClsName = this.toViewModelClassName(json.name);
@@ -33,7 +34,7 @@ typedef struct _${vmClsType} {
   view_model_array_t view_model_array;
 
   /*model object*/
-  ${clsType}* ${clsName};
+  ${clsType}* ${objName};
   view_model_t* ${elmClsName}_view_model;
 } ${vmClsType};
 
@@ -53,11 +54,11 @@ view_model_t* ${vmClsName}_create(navigator_request_t* req);
  * 创建${clsName} view model对象。
  *
  * @annotation ["constructor"]
- * @param {${clsType}*}  ${clsName} ${clsName}对象。
+ * @param {${clsType}*}  ${objName} ${clsName}对象。
  *
  * @return {view_model_t} 返回view_model_t对象。
  */
-view_model_t* ${vmClsName}_create_with(${clsType}* ${clsName});
+view_model_t* ${vmClsName}_create_with(${clsType}* ${objName});
 
 END_C_DECLS
 
@@ -70,6 +71,7 @@ END_C_DECLS
   genContent(json) {
     const desc = json.desc || "";
     const clsType = json.name;
+    const objName = this.toObjName(json.name);
     const clsName = this.toClassName(json.name);
     const uclsName = clsName.toUpperCase();
     const setPropsDispatch = this.genSetPropDispatch(json);
@@ -95,7 +97,7 @@ END_C_DECLS
 view_model_t* ${vmClsName}_attach(object_t* obj, uint32_t index) {
   view_model_t* vm = VIEW_MODEL(obj);
   ${vmClsType}* ${vmClsName} = (${vmClsType}*)(vm);
-  ${elmClsName}_t* ${elmClsName} = ${clsName}_get(${vmClsName}->${clsName}, index);
+  ${elmClsName}_t* ${elmClsName} = ${clsName}_get(${vmClsName}->${objName}, index);
   view_model_t* ${elmClsName}_view_model = ${vmClsName}->${elmClsName}_view_model;
 
   ${elmClsName}_view_model_attach(${elmClsName}_view_model, ${elmClsName});
@@ -106,7 +108,7 @@ view_model_t* ${vmClsName}_attach(object_t* obj, uint32_t index) {
 static ret_t ${vmClsName}_set_prop(object_t* obj, const char* name, const value_t* v) {
   uint32_t index = 0;
   view_model_t* view_model = VIEW_MODEL(obj);
-  ${clsType}* ${clsName} = ((${vmClsType}*)(obj))->${clsName};
+  ${clsType}* ${objName} = ((${vmClsType}*)(obj))->${objName};
   
   if(view_model_array_default_set_prop(view_model, name, v) == RET_OK) {
     return RET_OK;
@@ -123,7 +125,7 @@ ${setPropsDispatch}
 static ret_t ${vmClsName}_get_prop(object_t* obj, const char* name, value_t* v) {
   uint32_t index = 0;
   view_model_t* view_model = VIEW_MODEL(obj);
-  ${clsType}* ${clsName} = ((${vmClsType}*)(obj))->${clsName};
+  ${clsType}* ${objName} = ((${vmClsType}*)(obj))->${objName};
   
   if(view_model_array_default_get_prop(view_model, name, v) == RET_OK) {
     return RET_OK;
@@ -167,7 +169,7 @@ static ret_t ${vmClsName}_on_destroy(object_t* obj) {
   ${offEvents}
   ${elmClsName}_view_model_attach(vm->${elmClsName}_view_model, NULL);
   OBJECT_UNREF(vm->${elmClsName}_view_model);
-  ${destructor}(vm->${clsName});
+  ${destructor}(vm->${objName});
 
   return view_model_array_deinit(VIEW_MODEL(obj));
 }
@@ -184,7 +186,7 @@ static const object_vtable_t s_${vmClsName}_vtable = {
   .on_destroy = ${vmClsName}_on_destroy
 };
 
-view_model_t* ${vmClsName}_create_with(${clsType}* ${clsName}) {
+view_model_t* ${vmClsName}_create_with(${clsType}* ${objName}) {
   object_t* obj = object_create(&s_${vmClsName}_vtable);
   view_model_t* vm = view_model_array_init(VIEW_MODEL(obj));
   ${vmClsType}* ${vmClsName} = (${vmClsType}*)(vm);
@@ -192,15 +194,18 @@ view_model_t* ${vmClsName}_create_with(${clsType}* ${clsName}) {
   ${vmClsName}->${elmClsName}_view_model = ${elmClsName}_view_model_create_with(NULL);
   return_value_if_fail(vm != NULL, NULL);
 
-  ${vmClsName}->${clsName} = ${clsName};
-  ENSURE(${vmClsName}->${clsName} != NULL);
+  ${vmClsName}->${objName} = ${objName};
+  ENSURE(${vmClsName}->${objName} != NULL);
   ${forwardEvents}
 
   return vm;
 }
 
 view_model_t* ${vmClsName}_create(navigator_request_t* req) {
-  return ${vmClsName}_create_with(${constructor});
+  ${clsType}* ${objName} = ${constructor};
+  return_value_if_fail(${objName} != NULL, NULL);
+
+  return ${vmClsName}_create_with(${objName});
 }
 `;
 

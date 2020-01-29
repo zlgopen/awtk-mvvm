@@ -92,6 +92,10 @@ class CodeGen {
     return name.replace(/_t$/, '');
   }
   
+  toObjName(name) {
+    return 'a'+name.replace(/_t$/, '');
+  }
+  
   toViewModelClassName(name) {
     let clsName = this.toClassName(name).toLowerCase();
 
@@ -224,18 +228,19 @@ class CodeGen {
   genSetProp(json, prop) {
     let result = '';
     const clsName = this.toClassName(json.name);
+    const objName = this.toObjName(json.name);
     let value = this.genFromValue(prop.type, prop.name);
 
     if (this.hasSetterFor(json, prop.name)) {
-      result += `${clsName}_set_${prop.name}(${clsName}, ${value});\n`
+      result += `${clsName}_set_${prop.name}(${objName}, ${value});\n`
     } else if (this.isWritable(prop)) {
       if (prop.type.indexOf('char*') >= 0) {
-        result += `${clsName}->${prop.name} = tk_str_copy(${clsName}->${prop.name}, ${value});\n`
+        result += `${objName}->${prop.name} = tk_str_copy(${objName}->${prop.name}, ${value});\n`
       } else if (prop.type === 'str_t') {
-        result += `str_set(&(${clsName}->${prop.name}), ${value});\n`
+        result += `str_set(&(${objName}->${prop.name}), ${value});\n`
 
       } else {
-        result += `${clsName}->${prop.name} = ${value};\n`
+        result += `${objName}->${prop.name} = ${value};\n`
       }
     } else {
       result = '';
@@ -266,17 +271,18 @@ class CodeGen {
 
   genCanExec(json, cmd) {
     const clsName = this.toClassName(json.name);
+    const objName = this.toObjName(json.name);
     const cmdName = cmd.name.replace(`${clsName}_`, '');
     const name = `${clsName}_can_${cmdName}`;
 
     cmd = this.findMethod(json, name);
     if (cmd) {
       if (cmd.params.length == 1) {
-        return `${name}(${clsName});`;
+        return `${name}(${objName});`;
       } else if (cmd.params.length == 2) {
         let type = cmd.params[1].type;
         let args = this.genCmdArg(type);
-        return `${name}(${clsName}, ${args});`;
+        return `${name}(${objName}, ${args});`;
       } else {
         return 'TRUE;';
       }
@@ -287,13 +293,14 @@ class CodeGen {
 
   genCanExecDispatch(json) {
     const clsName = this.toClassName(json.name);
+    const objName = this.toObjName(json.name);
     let commands = json.commands || json.methods || [];
     commands = commands.filter(iter => this.isCommand(iter));
 
     if (commands.length > 0) {
       let result = ` 
   ${clsName}_view_model_t* vm = (${clsName}_view_model_t*)(obj);
-  ${clsName}_t* ${clsName} = vm->${clsName};
+  ${clsName}_t* ${objName} = vm->${objName};
 `;
 
       result += commands.map((iter, index) => {
@@ -332,12 +339,13 @@ class CodeGen {
 
   genExec(json, cmd) {
     const clsName = this.toClassName(json.name);
+    const objName = this.toObjName(json.name);
     if (cmd.params.length == 1) {
-      return `${cmd.name}(${clsName});`;
+      return `${cmd.name}(${objName});`;
     } else if (cmd.params.length == 2) {
       let type = cmd.params[1].type;
       let args = this.genCmdArg(type);
-      return `${cmd.name}(${clsName}, ${args});`;
+      return `${cmd.name}(${objName}, ${args});`;
     } else {
       return 'RET_FAIL;';
     }
@@ -345,13 +353,14 @@ class CodeGen {
 
   genExecDispatch(json) {
     const clsName = this.toClassName(json.name);
+    const objName = this.toObjName(json.name);
     let commands = json.commands || json.methods || [];
     commands = commands.filter(iter => this.isCommand(iter));
 
     if (commands.length > 0) {
       let result = ` 
   ${clsName}_view_model_t* vm = (${clsName}_view_model_t*)(obj);
-  ${clsName}_t* ${clsName} = vm->${clsName};
+  ${clsName}_t* ${objName} = vm->${objName};
 `;
       result += commands.map((iter, index) => {
         let exec = '';
@@ -377,14 +386,15 @@ class CodeGen {
   genGetProp(json, prop) {
     let value = '';
     const clsName = this.toClassName(json.name);
+    const objName = this.toObjName(json.name);
 
     if (this.hasGetterFor(json, prop.name)) {
-      value = `${clsName}_get_${prop.name}(${clsName})`
+      value = `${clsName}_get_${prop.name}(${objName})`
     } else if (this.isReadable(prop)) {
       if (prop.type === 'str_t') {
-        value = `${clsName}->${prop.name}.str`
+        value = `${objName}->${prop.name}.str`
       } else {
-        value = `${clsName}->${prop.name}`
+        value = `${objName}->${prop.name}`
       }
     } else {
       return '';
@@ -417,8 +427,8 @@ class CodeGen {
   genOffEvents(json) {
     let result = '';
     if(json.parent === 'emitter_t' || json.parent === 'object_t') {
-      let clsName = this.toClassName(json.name);
-      result += `emitter_off_by_ctx(EMITTER(vm->${clsName}), vm);`
+      let objName = this.toObjName(json.name);
+      result += `emitter_off_by_ctx(EMITTER(vm->${objName}), vm);`
     }
 
     return result;
