@@ -1,0 +1,161 @@
+[
+  {
+    "type": "class",
+    "methods": [
+      {
+        "params": [],
+        "annotation": {
+          "constructor": true
+        },
+        "desc": "构造函数。",
+        "name": "Shape",
+        "return": {
+          "type": "void",
+          "desc": "返回无。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "int32_t",
+            "name": "type",
+            "desc": "类型。"
+          }
+        ],
+        "annotation": {
+          "command": "change_type"
+        },
+        "desc": "修改类型。",
+        "name": "ChangeType",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [],
+        "annotation": {
+          "command": true
+        },
+        "desc": "保存。",
+        "name": "Save",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [],
+        "annotation": {},
+        "desc": "检查Save命令是否可以执行。",
+        "name": "CanSave",
+        "return": {
+          "type": "bool_t",
+          "desc": "返回FALSE表示不能执行，否则表示可以执行。"
+        }
+      },
+      {
+        "params": [],
+        "annotation": {},
+        "desc": "获取overview。",
+        "name": "GetOverview",
+        "return": {
+          "type": "const char*",
+          "desc": "返回overview。"
+        }
+      }
+    ],
+    "events": [],
+    "properties": [
+      {
+        "name": "type",
+        "desc": "类型。",
+        "type": "int32_t",
+        "annotation": {
+          "readable": true,
+          "writable": true
+        }
+      },
+      {
+        "name": "x",
+        "desc": "x。",
+        "type": "int32_t",
+        "annotation": {
+          "readable": true,
+          "writable": true
+        }
+      },
+      {
+        "name": "y",
+        "desc": "y。",
+        "type": "int32_t",
+        "annotation": {
+          "readable": true,
+          "writable": true
+        }
+      },
+      {
+        "name": "w",
+        "desc": "w。",
+        "type": "int32_t",
+        "annotation": {
+          "readable": true,
+          "writable": true
+        }
+      },
+      {
+        "name": "h",
+        "desc": "h。",
+        "type": "int32_t",
+        "annotation": {
+          "readable": true,
+          "writable": true
+        }
+      },
+      {
+        "name": "opacity",
+        "desc": "opacity。",
+        "type": "int32_t",
+        "annotation": {
+          "readable": true,
+          "writable": true
+        }
+      },
+      {
+        "name": "text_align",
+        "desc": "text_align。",
+        "type": "int32_t",
+        "annotation": {
+          "readable": true,
+          "writable": true
+        }
+      },
+      {
+        "name": "name",
+        "desc": "name。",
+        "type": "string",
+        "annotation": {
+          "readable": true,
+          "writable": true
+        }
+      },
+      {
+        "name": "overview",
+        "desc": "overview。",
+        "type": "string",
+        "annotation": {
+          "readable": true,
+          "writable": true
+        }
+      }
+    ],
+    "header": "cppdemo8/shape.h",
+    "desc": "温度控制器。",
+    "name": "Shape",
+    "annotation": {
+      "model": true,
+      "cpp": true
+    },
+    "level": 1
+  }
+]
