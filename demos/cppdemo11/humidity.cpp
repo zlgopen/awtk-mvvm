@@ -1,8 +1,8 @@
 
 /**
- * File:  temperature.cpp
+ * File:  humidity.cpp
  * Author: AWTK Develop Team
- * Brief:  temperature
+ * Brief:  humidity
  *
  * Copyright (c) 2020 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
@@ -20,19 +20,19 @@
  *
  */
 
-#include "temperature.h"
+#include "humidity.h"
 
-Temperature::Temperature(void) {
+Humidity::Humidity(void) {
   this->value = 20;
   this->old_value = 0;
 }
 
-ret_t Temperature::Apply(void) {
+ret_t Humidity::Apply(void) {
   this->old_value = this->value;
 
   return RET_OBJECT_CHANGED;
 }
 
-bool_t Temperature::CanApply(void) const {
+bool_t Humidity::CanApply(void) const {
   return this->old_value != this->value;
 }
