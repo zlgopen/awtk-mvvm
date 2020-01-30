@@ -63,8 +63,7 @@ book_store_t* book_store_create(void) {
   book_store_t* book_store = TKMEM_ZALLOC(book_store_t);
   return_value_if_fail(book_store != NULL, NULL);
 
-  darray_init(&(book_store->books), 100, 
-      (tk_destroy_t)book_destroy, (tk_compare_t)book_cmp);
+  darray_init(&(book_store->books), 100, (tk_destroy_t)book_destroy, (tk_compare_t)book_cmp);
 
   return book_store;
 }

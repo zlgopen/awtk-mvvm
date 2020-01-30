@@ -18,7 +18,7 @@ typedef struct _book_view_model_t {
   view_model_t view_model;
 
   /*model object*/
-  book_t* book;
+  book_t* abook;
 } book_view_model_t;
 
 /**
@@ -37,11 +37,11 @@ view_model_t* book_view_model_create(navigator_request_t* req);
  * 创建book view model对象。
  *
  * @annotation ["constructor"]
- * @param {book_t*}  book book对象。
+ * @param {book_t*}  abook book对象。
  *
  * @return {view_model_t} 返回view_model_t对象。
  */
-view_model_t* book_view_model_create_with(book_t* book);
+view_model_t* book_view_model_create_with(book_t* abook);
 
 /**
  * @method book_view_model_attach
@@ -52,7 +52,7 @@ view_model_t* book_view_model_create_with(book_t* book);
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
-ret_t book_view_model_attach(view_model_t* vm, book_t* book);
+ret_t book_view_model_attach(view_model_t* vm, book_t* abook);
 
 END_C_DECLS
 

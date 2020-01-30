@@ -1,5 +1,6 @@
 #include "tkc/mem.h"
 #include "tkc/utils.h"
+#include "mvvm/base/utils.h"
 
 #include "book.h"
 
@@ -36,4 +37,3 @@ int book_cmp(book_t* a, book_t* b) {
   return_value_if_fail(a != NULL && b != NULL, -1);
   return strcmp(a->name.str, b->name.str);
 }
-

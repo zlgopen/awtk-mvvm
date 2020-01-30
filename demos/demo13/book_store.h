@@ -23,7 +23,7 @@ typedef struct _book_store_t {
 
   /*private*/
   darray_t books;
-} book_store_t; 
+} book_store_t;
 
 /**
  * @method book_store_create

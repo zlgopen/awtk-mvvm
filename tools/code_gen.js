@@ -5,6 +5,10 @@ class CodeGen {
   isModel(obj) {
     return obj.annotation && obj.annotation.model;
   }
+  
+  isCpp(obj) {
+    return obj.annotation && obj.annotation.cpp;
+  }
 
   isCollectionModel(obj) {
     return obj.annotation && obj.annotation.model &&
@@ -25,6 +29,19 @@ class CodeGen {
 
   findMethod(cls, name) {
     return cls.methods.find(iter => (iter.name === name));
+  }
+
+  upperCamelName(name) {
+    name = name.replace(/_t$/, '');
+    name = name.replace(/(^|_)[a-z]/g, r => {
+      if (r.length > 1) {
+        r = r.substr(1);
+      }   
+
+      return r.toUpperCase();
+    }); 
+
+    return name;
   }
 
   hasCreate(cls) {
@@ -48,16 +65,41 @@ class CodeGen {
     return cls.methods.find(iter => (iter.name === methodName));
   }
 
-  hasSetterFor(cls, name) {
+  toSetterName(cls, name) {
     let clsName = this.toClassName(cls.name);
-    let methodName = clsName + '_set_' + name;
+    if(this.isCpp(cls)) {
+      return this.upperCamelName('set_' + name);
+    } else {
+      return clsName + '_set_' + name;
+    }
+  }
+  
+  toCanExecName(cls, name) {
+    let clsName = this.toClassName(cls.name);
+    if(this.isCpp(cls)) {
+      return 'Can' + name;
+    } else {
+      return clsName + '_can_' + name;
+    }
+  }
+  
+  toGetterName(cls, name) {
+    let clsName = this.toClassName(cls.name);
+    if(this.isCpp(cls)) {
+      return this.upperCamelName('get_' + name);
+    } else {
+      return clsName + '_get_' + name;
+    }
+  }
+
+  hasSetterFor(cls, name) {
+    let methodName = this.toSetterName(cls, name); 
 
     return cls.methods.find(iter => (iter.name === methodName));
   }
 
   hasGetterFor(cls, name) {
-    let clsName = this.toClassName(cls.name);
-    let methodName = clsName + '_get_' + name;
+    let methodName = this.toGetterName(cls, name); 
 
     return cls.methods.find(iter => (iter.name === methodName));
   }
@@ -65,16 +107,21 @@ class CodeGen {
   genIncludes(name) {
     let result = `#include "tkc/mem.h"\n`;
     result += `#include "tkc/utils.h"\n`;
-    result += `#include "${name}.h"`;
+    result += `#include "${name.toLowerCase()}.h"`;
 
     return result;
   }
 
-  saveResult(name, includes, header, content) {
-    fs.writeFileSync(`${name}.h`, "\ufeff" + header);
-    fs.writeFileSync(`${name}.c`, "\ufeff" + content);
-
-    console.log(`output to ${name}.h and ${name}.c`);
+  saveResult(name, cpp, includes, header, content) {
+    if(cpp) {
+      fs.writeFileSync(`${name}.h`, "\ufeff" + header);
+      fs.writeFileSync(`${name}.cpp`, "\ufeff" + content);
+      console.log(`output to ${name}.h and ${name}.cpp`);
+    } else {
+      fs.writeFileSync(`${name}.h`, "\ufeff" + header);
+      fs.writeFileSync(`${name}.c`, "\ufeff" + content);
+      console.log(`output to ${name}.h and ${name}.c`);
+    }
   }
 
   genJson(json) {
@@ -84,7 +131,7 @@ class CodeGen {
       let header = this.genHeader(iter);
       let content = this.genContent(iter);
       let name = this.toViewModelClassName(iter.name);
-      this.saveResult(name, includes, header, content);
+      this.saveResult(name, this.isCpp(iter), includes, header, content);
     });
   }
 
@@ -128,6 +175,8 @@ class CodeGen {
       default: {
         if (type.indexOf('char*') >= 0) {
           return `value_set_str(v, ${name});`;
+        } else if (type.indexOf('string') >= 0) {
+          return `value_set_str(v, ${name}.c_str());`;
         } else if (type.indexOf('int') >= 0) {
           return `value_set_int(v, ${name});`;
         } else if (type.indexOf('long') >= 0) {
@@ -167,6 +216,8 @@ class CodeGen {
       default: {
         if (type.indexOf('char*') >= 0) {
           typeName = 'str';
+        }else if (type.indexOf('string') >= 0) {
+          typeName = 'str';
         } else if (type.indexOf('void*') >= 0) {
           typeName = 'pointer';
         } else if (type === 'str_t') {
@@ -195,7 +246,7 @@ class CodeGen {
     }
   }
 
-  genConstructor(json) {
+  genConstructorC(json) {
     let clsName = this.toClassName(json.name);
 
     if (this.hasSingleton(json)) {
@@ -212,8 +263,24 @@ class CodeGen {
       return `TKMEM_ZALLOC(${clsName}_t)`;
     }
   }
+  
+  genConstructorCPP(json) {
+    const info = this.findMethod(json, json.name);
+    if(info && info.params.length == 1) {
+      return `new ${json.name}(req)`;
+    }
+    return `new ${json.name}()`;
+  }
+  
+  genConstructor(json) {
+    if(this.isCpp(json)) {
+      return this.genConstructorCPP(json);
+    } else {
+      return this.genConstructorC(json);
+    }
+  }
 
-  genDestructor(json) {
+  genDestructorC(json) {
     const clsName = this.toClassName(json.name);
 
     if (this.hasSingleton(json)) {
@@ -224,21 +291,87 @@ class CodeGen {
       return `TKMEM_FREE`;
     }
   }
+  
+  genDestructorCPP(json) {
+    return `delete `;
+  }
 
-  genSetProp(json, prop) {
+  genDestructor(json) {
+    if(this.isCpp(json)) {
+      return this.genDestructorCPP(json);
+    } else {
+      return this.genDestructorC(json);
+    }
+  }
+  
+  genGetProp(cls, prop) {
+    let value = '';
+    const clsName = this.toClassName(cls.name);
+    const objName = this.toObjName(cls.name);
+    const isCpp = this.isCpp(cls);
+
+    if (this.hasGetterFor(cls, prop.name)) {
+      const getter = this.toGetterName(cls, prop.name);
+      if(isCpp) {
+        value = `${objName}->${getter}()`
+      } else {
+        value = `${getter}(${objName})`
+      }
+    } else if (this.isReadable(prop)) {
+      if (prop.type === 'str_t') {
+        value = `${objName}->${prop.name}.str`
+      } else if (prop.type.indexOf('string') >= 0) {
+        value = `${objName}->${prop.name}.c_str()`
+      } else {
+        value = `${objName}->${prop.name}`
+      }
+    } else {
+      return '';
+    }
+
+    return this.genToValue(prop.type, value);
+  }
+
+  genGetPropDispatch(cls) {
+    const clsName = this.toClassName(cls.name);
+    const props = cls.props || cls.properties || [];
+
+    let result = props.map((iter, index) => {
+      let getProp = '';
+      if (index) {
+        getProp = `\n  } else if (tk_str_ieq("${iter.name}", name)) {\n`
+      } else {
+        getProp = `  if (tk_str_ieq("${iter.name}", name)) {\n`
+      }
+      getProp += `     ${this.genGetProp(cls, iter)}\n`;
+      getProp += '     return RET_OK;';
+      return getProp;
+    }).join('');
+
+    result += '\n  }';
+
+    return result;
+  }
+  
+  genSetProp(cls, prop) {
     let result = '';
-    const clsName = this.toClassName(json.name);
-    const objName = this.toObjName(json.name);
+    const clsName = this.toClassName(cls.name);
+    const objName = this.toObjName(cls.name);
+    const isCpp = this.isCpp(cls);
     let value = this.genFromValue(prop.type, prop.name);
 
-    if (this.hasSetterFor(json, prop.name)) {
-      result += `${clsName}_set_${prop.name}(${objName}, ${value});\n`
+    if (this.hasSetterFor(cls, prop.name)) {
+      const setter = this.toSetterName(cls, prop.name);
+      if(isCpp) {
+        result += `${objName}->${setter}(${value});\n`
+      } else {
+        result += `${setter}(${objName}, ${value});\n`
+      }
     } else if (this.isWritable(prop)) {
       if (prop.type.indexOf('char*') >= 0) {
         result += `${objName}->${prop.name} = tk_str_copy(${objName}->${prop.name}, ${value});\n`
       } else if (prop.type === 'str_t') {
         result += `str_set(&(${objName}->${prop.name}), ${value});\n`
-
       } else {
         result += `${objName}->${prop.name} = ${value};\n`
       }
@@ -249,17 +382,17 @@ class CodeGen {
     return result;
   }
 
-  genSetPropDispatch(json) {
-    const clsName = this.toClassName(json.name);
-    const props = json.props || json.properties || [];
+  genSetPropDispatch(cls) {
+    const clsName = this.toClassName(cls.name);
+    const props = cls.props || cls.properties || [];
     let result = props.map((iter, index) => {
       let setProp = '';
       if (index) {
-        setProp = `\n  } else if (tk_str_eq("${iter.name}", name)) {\n`
+        setProp = `\n  } else if (tk_str_ieq("${iter.name}", name)) {\n`
       } else {
-        setProp = `  if (tk_str_eq("${iter.name}", name)) {\n`
+        setProp = `  if (tk_str_ieq("${iter.name}", name)) {\n`
       }
-      setProp += `     ${this.genSetProp(json, iter)}\n`;
+      setProp += `     ${this.genSetProp(cls, iter)}\n`;
       setProp += '     return RET_OK;';
       return setProp;
     }).join('');
@@ -269,20 +402,27 @@ class CodeGen {
     return result;
   }
 
-  genCanExec(json, cmd) {
-    const clsName = this.toClassName(json.name);
-    const objName = this.toObjName(json.name);
+  genCanExec(cls, cmd) {
+    const clsName = this.toClassName(cls.name);
+    const objName = this.toObjName(cls.name);
     const cmdName = cmd.name.replace(`${clsName}_`, '');
-    const name = `${clsName}_can_${cmdName}`;
+    const name = this.toCanExecName(cls, cmdName);
+    const isCpp = this.isCpp(cls);
 
-    cmd = this.findMethod(json, name);
+    cmd = this.findMethod(cls, name);
     if (cmd) {
       if (cmd.params.length == 1) {
-        return `${name}(${objName});`;
+        if(isCpp) {
+          return `${objName}->${name}(${args});`;
+        } else {
+          return `${name}(${objName});`;
+        }
       } else if (cmd.params.length == 2) {
         let type = cmd.params[1].type;
         let args = this.genCmdArg(type);
         return `${name}(${objName}, ${args});`;
+      } else if (cmd.params.length == 0 && isCpp) {
+        return `${objName}->${name}();`;
       } else {
         return 'TRUE;';
       }
@@ -291,16 +431,20 @@ class CodeGen {
     }
   }
 
-  genCanExecDispatch(json) {
-    const clsName = this.toClassName(json.name);
-    const objName = this.toObjName(json.name);
-    let commands = json.commands || json.methods || [];
+  genCanExecDispatch(cls) {
+    const clsType = cls.name;
+    const clsName = this.toClassName(cls.name);
+    const objName = this.toObjName(cls.name);
+    const vmClsName = this.toViewModelClassName(cls.name);
+    const vmClsType = this.toViewModelClassType(cls.name);
+
+    let commands = cls.commands || cls.methods || [];
     commands = commands.filter(iter => this.isCommand(iter));
 
     if (commands.length > 0) {
       let result = ` 
-  ${clsName}_view_model_t* vm = (${clsName}_view_model_t*)(obj);
-  ${clsName}_t* ${objName} = vm->${objName};
+  ${vmClsType}* vm = (${vmClsType}*)(obj);
+  ${clsType}* ${objName} = vm->${objName};
 `;
 
       result += commands.map((iter, index) => {
@@ -308,11 +452,11 @@ class CodeGen {
         const cmdName = iter.name.replace(`${clsName}_`, '');
 
         if (index) {
-          exec = `\n  } else if (tk_str_eq("${cmdName}", name)) {\n`
+          exec = `\n  } else if (tk_str_ieq("${cmdName}", name)) {\n`
         } else {
-          exec = `  if (tk_str_eq("${cmdName}", name)) {\n`
+          exec = `  if (tk_str_ieq("${cmdName}", name)) {\n`
         }
-        exec += `    return ${this.genCanExec(json, iter)}\n`;
+        exec += `    return ${this.genCanExec(cls, iter)}\n`;
         return exec;
       }).join('');
 
@@ -337,41 +481,53 @@ class CodeGen {
     return args;
   }
 
-  genExec(json, cmd) {
-    const clsName = this.toClassName(json.name);
-    const objName = this.toObjName(json.name);
+  genExec(cls, cmd) {
+    const clsName = this.toClassName(cls.name);
+    const objName = this.toObjName(cls.name);
+    const name = cmd.name;
+    const isCpp = this.isCpp(cls);
+
     if (cmd.params.length == 1) {
-      return `${cmd.name}(${objName});`;
+      if(isCpp) {
+        return `${objName}->${name}(${args});`;
+      } else {
+        return `${cmd.name}(${objName});`;
+      }
     } else if (cmd.params.length == 2) {
       let type = cmd.params[1].type;
       let args = this.genCmdArg(type);
       return `${cmd.name}(${objName}, ${args});`;
+    } else if (cmd.params.length == 0 && isCpp) {
+      return `${objName}->${name}();`;
     } else {
       return 'RET_FAIL;';
     }
   }
 
-  genExecDispatch(json) {
-    const clsName = this.toClassName(json.name);
-    const objName = this.toObjName(json.name);
-    let commands = json.commands || json.methods || [];
+  genExecDispatch(cls) {
+    const clsType = cls.name;
+    const clsName = this.toClassName(cls.name);
+    const objName = this.toObjName(cls.name);
+    const vmClsName = this.toViewModelClassName(cls.name);
+    const vmClsType = this.toViewModelClassType(cls.name);
+    let commands = cls.commands || cls.methods || [];
     commands = commands.filter(iter => this.isCommand(iter));
 
     if (commands.length > 0) {
       let result = ` 
-  ${clsName}_view_model_t* vm = (${clsName}_view_model_t*)(obj);
-  ${clsName}_t* ${objName} = vm->${objName};
+  ${vmClsType}* vm = (${vmClsType}*)(obj);
+  ${clsType}* ${objName} = vm->${objName};
 `;
       result += commands.map((iter, index) => {
         let exec = '';
         const cmdName = iter.name.replace(`${clsName}_`, '');
 
         if (index) {
-          exec = `\n  } else if (tk_str_eq("${cmdName}", name)) {\n`
+          exec = `\n  } else if (tk_str_ieq("${cmdName}", name)) {\n`
         } else {
-          exec = `  if (tk_str_eq("${cmdName}", name)) {\n`
+          exec = `  if (tk_str_ieq("${cmdName}", name)) {\n`
         }
-        exec += `    return ${this.genExec(json, iter)}\n`;
+        exec += `    return ${this.genExec(cls, iter)}\n`;
         return exec;
       }).join('');
 
@@ -383,61 +539,20 @@ class CodeGen {
     }
   }
 
-  genGetProp(json, prop) {
-    let value = '';
-    const clsName = this.toClassName(json.name);
-    const objName = this.toObjName(json.name);
-
-    if (this.hasGetterFor(json, prop.name)) {
-      value = `${clsName}_get_${prop.name}(${objName})`
-    } else if (this.isReadable(prop)) {
-      if (prop.type === 'str_t') {
-        value = `${objName}->${prop.name}.str`
-      } else {
-        value = `${objName}->${prop.name}`
-      }
-    } else {
-      return '';
-    }
-
-    return this.genToValue(prop.type, value);
-  }
-
-  genGetPropDispatch(json) {
-    const clsName = this.toClassName(json.name);
-    const props = json.props || json.properties || [];
-
-    let result = props.map((iter, index) => {
-      let getProp = '';
-      if (index) {
-        getProp = `\n  } else if (tk_str_eq("${iter.name}", name)) {\n`
-      } else {
-        getProp = `  if (tk_str_eq("${iter.name}", name)) {\n`
-      }
-      getProp += `     ${this.genGetProp(json, iter)}\n`;
-      getProp += '     return RET_OK;';
-      return getProp;
-    }).join('');
-
-    result += '\n  }';
-
-    return result;
-  }
-  
-  genOffEvents(json) {
+  genOffEvents(cls) {
     let result = '';
-    if(json.parent === 'emitter_t' || json.parent === 'object_t') {
-      let objName = this.toObjName(json.name);
+    if(cls.parent === 'emitter_t' || cls.parent === 'object_t') {
+      let objName = this.toObjName(cls.name);
       result += `emitter_off_by_ctx(EMITTER(vm->${objName}), vm);`
     }
 
     return result;
   }
 
-  genForwardEvents(json) {
+  genForwardEvents(cls) {
     let result = '';
-    if(json.parent === 'emitter_t' || json.parent === 'object_t') {
-      let clsName = this.toClassName(json.name);
+    if(cls.parent === 'emitter_t' || cls.parent === 'object_t') {
+      let clsName = this.toClassName(cls.name);
       result += `
   emitter_on(EMITTER(${clsName}), EVT_PROPS_CHANGED, emitter_forward, vm);
   emitter_on(EMITTER(${clsName}), EVT_ITEMS_CHANGED, emitter_forward, vm);

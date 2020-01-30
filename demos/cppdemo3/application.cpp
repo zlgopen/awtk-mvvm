@@ -21,7 +21,7 @@
 
 #include "awtk.h"
 #include "mvvm/mvvm.h"
-#include "../cppcommon/temperature.hpp"
+#include "temperature_view_model.h"
 #include "temperature_converter.hpp"
 
 ret_t application_init() {

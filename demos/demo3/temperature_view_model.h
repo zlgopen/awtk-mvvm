@@ -18,7 +18,7 @@ typedef struct _temperature_view_model_t {
   view_model_t view_model;
 
   /*model object*/
-  temperature_t* temperature;
+  temperature_t* atemperature;
 } temperature_view_model_t;
 
 /**
@@ -37,11 +37,11 @@ view_model_t* temperature_view_model_create(navigator_request_t* req);
  * 创建temperature view model对象。
  *
  * @annotation ["constructor"]
- * @param {temperature_t*}  temperature temperature对象。
+ * @param {temperature_t*}  atemperature temperature对象。
  *
  * @return {view_model_t} 返回view_model_t对象。
  */
-view_model_t* temperature_view_model_create_with(temperature_t* temperature);
+view_model_t* temperature_view_model_create_with(temperature_t* atemperature);
 
 /**
  * @method temperature_view_model_attach
@@ -52,7 +52,7 @@ view_model_t* temperature_view_model_create_with(temperature_t* temperature);
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
-ret_t temperature_view_model_attach(view_model_t* vm, temperature_t* temperature);
+ret_t temperature_view_model_attach(view_model_t* vm, temperature_t* atemperature);
 
 END_C_DECLS
 

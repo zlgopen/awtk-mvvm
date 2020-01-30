@@ -19,7 +19,7 @@ typedef struct _book_store_view_model_t {
   view_model_array_t view_model_array;
 
   /*model object*/
-  book_store_t* book_store;
+  book_store_t* abook_store;
   view_model_t* book_view_model;
 } book_store_view_model_t;
 
@@ -39,11 +39,11 @@ view_model_t* book_store_view_model_create(navigator_request_t* req);
  * 创建book_store view model对象。
  *
  * @annotation ["constructor"]
- * @param {book_store_t*}  book_store book_store对象。
+ * @param {book_store_t*}  abook_store book_store对象。
  *
  * @return {view_model_t} 返回view_model_t对象。
  */
-view_model_t* book_store_view_model_create_with(book_store_t* book_store);
+view_model_t* book_store_view_model_create_with(book_store_t* abook_store);
 
 END_C_DECLS
 
