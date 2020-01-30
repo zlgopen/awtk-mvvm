@@ -22,8 +22,8 @@
 #include "awtk.h"
 #include "mvvm/mvvm.h"
 
-#include "../cppcommon/humidity.hpp"
-#include "../cppcommon/temperature.hpp"
+#include "humidity_view_model.h"
+#include "temperature_view_model.h"
 
 ret_t application_init() {
   view_model_factory_register("humidity", humidity_view_model_create);
