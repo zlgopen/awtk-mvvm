@@ -18,7 +18,7 @@ typedef struct _calculator_view_model_t {
   view_model_t view_model;
 
   /*model object*/
-  calculator_t* calculator;
+  calculator_t* acalculator;
 } calculator_view_model_t;
 
 /**
@@ -37,11 +37,11 @@ view_model_t* calculator_view_model_create(navigator_request_t* req);
  * 创建calculator view model对象。
  *
  * @annotation ["constructor"]
- * @param {calculator_t*}  calculator calculator对象。
+ * @param {calculator_t*}  acalculator calculator对象。
  *
  * @return {view_model_t} 返回view_model_t对象。
  */
-view_model_t* calculator_view_model_create_with(calculator_t* calculator);
+view_model_t* calculator_view_model_create_with(calculator_t* acalculator);
 
 /**
  * @method calculator_view_model_attach
@@ -52,7 +52,7 @@ view_model_t* calculator_view_model_create_with(calculator_t* calculator);
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
-ret_t calculator_view_model_attach(view_model_t* vm, calculator_t* calculator);
+ret_t calculator_view_model_attach(view_model_t* vm, calculator_t* acalculator);
 
 END_C_DECLS
 

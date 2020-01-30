@@ -39,7 +39,7 @@ ret_t temperature_apply(temperature_t* temperature) {
 
   temperature->saved_value = temperature->value;
 
-  return RET_OK;
+  return RET_OBJECT_CHANGED;
 }
 
 bool_t temperature_can_apply(temperature_t* temperature) {

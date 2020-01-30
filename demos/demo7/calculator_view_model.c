@@ -7,10 +7,10 @@
 #include "calculator_view_model.h"
 
 static ret_t calculator_view_model_set_prop(object_t* obj, const char* name, const value_t* v) {
-  calculator_t* calculator = ((calculator_view_model_t*)(obj))->calculator;
+  calculator_t* acalculator = ((calculator_view_model_t*)(obj))->acalculator;
 
-  if (tk_str_eq("expr", name)) {
-    calculator_set_expr(calculator, value_str(v));
+  if (tk_str_ieq("expr", name)) {
+    calculator_set_expr(acalculator, value_str(v));
 
     return RET_OK;
   }
@@ -19,10 +19,10 @@ static ret_t calculator_view_model_set_prop(object_t* obj, const char* name, con
 }
 
 static ret_t calculator_view_model_get_prop(object_t* obj, const char* name, value_t* v) {
-  calculator_t* calculator = ((calculator_view_model_t*)(obj))->calculator;
+  calculator_t* acalculator = ((calculator_view_model_t*)(obj))->acalculator;
 
-  if (tk_str_eq("expr", name)) {
-    value_set_str(v, calculator_get_expr(calculator));
+  if (tk_str_ieq("expr", name)) {
+    value_set_str(v, calculator_get_expr(acalculator));
     return RET_OK;
   }
 
@@ -31,30 +31,30 @@ static ret_t calculator_view_model_get_prop(object_t* obj, const char* name, val
 
 static bool_t calculator_view_model_can_exec(object_t* obj, const char* name, const char* args) {
   calculator_view_model_t* vm = (calculator_view_model_t*)(obj);
-  calculator_t* calculator = vm->calculator;
-  if (tk_str_eq("add_char", name)) {
+  calculator_t* acalculator = vm->acalculator;
+  if (tk_str_ieq("add_char", name)) {
     return TRUE;
 
-  } else if (tk_str_eq("remove_char", name)) {
-    return calculator_can_remove_char(calculator);
+  } else if (tk_str_ieq("remove_char", name)) {
+    return calculator_can_remove_char(acalculator);
 
-  } else if (tk_str_eq("eval", name)) {
-    return calculator_can_eval(calculator);
+  } else if (tk_str_ieq("eval", name)) {
+    return calculator_can_eval(acalculator);
   }
   return FALSE;
 }
 
 static ret_t calculator_view_model_exec(object_t* obj, const char* name, const char* args) {
   calculator_view_model_t* vm = (calculator_view_model_t*)(obj);
-  calculator_t* calculator = vm->calculator;
-  if (tk_str_eq("add_char", name)) {
-    return calculator_add_char(calculator, args);
+  calculator_t* acalculator = vm->acalculator;
+  if (tk_str_ieq("add_char", name)) {
+    return calculator_add_char(acalculator, args);
 
-  } else if (tk_str_eq("remove_char", name)) {
-    return calculator_remove_char(calculator);
+  } else if (tk_str_ieq("remove_char", name)) {
+    return calculator_remove_char(acalculator);
 
-  } else if (tk_str_eq("eval", name)) {
-    return calculator_eval(calculator);
+  } else if (tk_str_ieq("eval", name)) {
+    return calculator_eval(acalculator);
   }
   return RET_NOT_FOUND;
 }
@@ -63,7 +63,7 @@ static ret_t calculator_view_model_on_destroy(object_t* obj) {
   calculator_view_model_t* vm = (calculator_view_model_t*)(obj);
   return_value_if_fail(vm != NULL, RET_BAD_PARAMS);
 
-  calculator_destroy(vm->calculator);
+  calculator_destroy(vm->acalculator);
 
   return view_model_deinit(VIEW_MODEL(obj));
 }
@@ -78,30 +78,30 @@ static const object_vtable_t s_calculator_view_model_vtable = {
     .set_prop = calculator_view_model_set_prop,
     .on_destroy = calculator_view_model_on_destroy};
 
-view_model_t* calculator_view_model_create_with(calculator_t* calculator) {
+view_model_t* calculator_view_model_create_with(calculator_t* acalculator) {
   object_t* obj = object_create(&s_calculator_view_model_vtable);
   view_model_t* vm = view_model_init(VIEW_MODEL(obj));
   calculator_view_model_t* calculator_view_model = (calculator_view_model_t*)(vm);
 
   return_value_if_fail(vm != NULL, NULL);
 
-  calculator_view_model->calculator = calculator;
+  calculator_view_model->acalculator = acalculator;
 
   return vm;
 }
 
-ret_t calculator_view_model_attach(view_model_t* vm, calculator_t* calculator) {
+ret_t calculator_view_model_attach(view_model_t* vm, calculator_t* acalculator) {
   calculator_view_model_t* calculator_view_model = (calculator_view_model_t*)(vm);
   return_value_if_fail(vm != NULL, RET_BAD_PARAMS);
 
-  calculator_view_model->calculator = calculator;
+  calculator_view_model->acalculator = acalculator;
 
   return RET_OK;
 }
 
 view_model_t* calculator_view_model_create(navigator_request_t* req) {
-  calculator_t* calculator = calculator_create();
-  return_value_if_fail(calculator != NULL, NULL);
+  calculator_t* acalculator = calculator_create();
+  return_value_if_fail(acalculator != NULL, NULL);
 
-  return calculator_view_model_create_with(calculator);
+  return calculator_view_model_create_with(acalculator);
 }

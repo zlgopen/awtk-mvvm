@@ -1,7 +1,7 @@
 /**
  * File:  temperature.h
  * Author: AWTK Develop Team
- * Brief:  temperature 
+ * Brief:  temperature
  *
  * Copyright (c) 2020 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
@@ -25,53 +25,52 @@
 #include "tkc/types_def.h"
 
 /**
- * @class Temperature 
+ * @class Temperature
  *
  * @annotation ["model", "cpp"]
  * 温度控制器。
  *
  */
 class Temperature {
-  public:
-    /**
-     * @method Temperature
-     * 构造函数。
-     *
-     * @annotation ["constructor"]
-     * @return {void} 返回无。
-     */
-    Temperature();
-  
-  public:
-    /**
-     * @property {double} value
-     * @annotation ["readable", "writable"]
-     * 值。
-     */
-     double value;
+ public:
+  /**
+   * @method Temperature
+   * 构造函数。
+   *
+   * @annotation ["constructor"]
+   * @return {void} 返回无。
+   */
+  Temperature();
 
-  public:
-    /**
-     * @method Apply 
-     * 使用新设置的值生效。
-     *
-     * @annotation ["command"]
-     *
-     * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
-     */
-    ret_t Apply(void);
+ public:
+  /**
+   * @property {double} value
+   * @annotation ["readable", "writable"]
+   * 值。
+   */
+  double value;
 
-    /**
-     * @method CanApply 
-     * 检查apply命令是否可以执行。
-     *
-     * @return {bool_t} 返回FALSE表示不能执行，否则表示可以执行。
-     */
-    bool_t CanApply(void) const;
+ public:
+  /**
+   * @method Apply
+   * 使用新设置的值生效。
+   *
+   * @annotation ["command"]
+   *
+   * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+   */
+  ret_t Apply(void);
 
-  private:
-    double old_value;
+  /**
+   * @method CanApply
+   * 检查apply命令是否可以执行。
+   *
+   * @return {bool_t} 返回FALSE表示不能执行，否则表示可以执行。
+   */
+  bool_t CanApply(void) const;
+
+ private:
+  double old_value;
 };
 
-#endif/*TK_TEMPERATURE_H*/
-
+#endif /*TK_TEMPERATURE_H*/

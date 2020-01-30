@@ -18,7 +18,7 @@ typedef struct _shape_view_model_t {
   view_model_t view_model;
 
   /*model object*/
-  shape_t* shape;
+  shape_t* ashape;
 } shape_view_model_t;
 
 /**
@@ -37,11 +37,11 @@ view_model_t* shape_view_model_create(navigator_request_t* req);
  * 创建shape view model对象。
  *
  * @annotation ["constructor"]
- * @param {shape_t*}  shape shape对象。
+ * @param {shape_t*}  ashape shape对象。
  *
  * @return {view_model_t} 返回view_model_t对象。
  */
-view_model_t* shape_view_model_create_with(shape_t* shape);
+view_model_t* shape_view_model_create_with(shape_t* ashape);
 
 /**
  * @method shape_view_model_attach
@@ -52,7 +52,7 @@ view_model_t* shape_view_model_create_with(shape_t* shape);
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
-ret_t shape_view_model_attach(view_model_t* vm, shape_t* shape);
+ret_t shape_view_model_attach(view_model_t* vm, shape_t* ashape);
 
 END_C_DECLS
 

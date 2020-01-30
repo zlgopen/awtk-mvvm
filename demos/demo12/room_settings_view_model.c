@@ -7,18 +7,18 @@
 #include "room_settings_view_model.h"
 
 static ret_t room_settings_view_model_set_prop(object_t* obj, const char* name, const value_t* v) {
-  room_settings_t* room_settings = ((room_settings_view_model_t*)(obj))->room_settings;
+  room_settings_t* aroom_settings = ((room_settings_view_model_t*)(obj))->aroom_settings;
 
-  if (tk_str_eq("temp", name)) {
-    room_settings->temp = value_double(v);
-
-    return RET_OK;
-  } else if (tk_str_eq("humidity", name)) {
-    room_settings->humidity = value_double(v);
+  if (tk_str_ieq("temp", name)) {
+    aroom_settings->temp = value_double(v);
 
     return RET_OK;
-  } else if (tk_str_eq("room", name)) {
-    room_settings->room = tk_str_copy(room_settings->room, value_str(v));
+  } else if (tk_str_ieq("humidity", name)) {
+    aroom_settings->humidity = value_double(v);
+
+    return RET_OK;
+  } else if (tk_str_ieq("room", name)) {
+    aroom_settings->room = tk_str_copy(aroom_settings->room, value_str(v));
 
     return RET_OK;
   }
@@ -27,16 +27,16 @@ static ret_t room_settings_view_model_set_prop(object_t* obj, const char* name, 
 }
 
 static ret_t room_settings_view_model_get_prop(object_t* obj, const char* name, value_t* v) {
-  room_settings_t* room_settings = ((room_settings_view_model_t*)(obj))->room_settings;
+  room_settings_t* aroom_settings = ((room_settings_view_model_t*)(obj))->aroom_settings;
 
-  if (tk_str_eq("temp", name)) {
-    value_set_double(v, room_settings->temp);
+  if (tk_str_ieq("temp", name)) {
+    value_set_double(v, aroom_settings->temp);
     return RET_OK;
-  } else if (tk_str_eq("humidity", name)) {
-    value_set_double(v, room_settings->humidity);
+  } else if (tk_str_ieq("humidity", name)) {
+    value_set_double(v, aroom_settings->humidity);
     return RET_OK;
-  } else if (tk_str_eq("room", name)) {
-    value_set_str(v, room_settings->room);
+  } else if (tk_str_ieq("room", name)) {
+    value_set_str(v, aroom_settings->room);
     return RET_OK;
   }
 
@@ -45,8 +45,8 @@ static ret_t room_settings_view_model_get_prop(object_t* obj, const char* name, 
 
 static bool_t room_settings_view_model_can_exec(object_t* obj, const char* name, const char* args) {
   room_settings_view_model_t* vm = (room_settings_view_model_t*)(obj);
-  room_settings_t* room_settings = vm->room_settings;
-  if (tk_str_eq("return", name)) {
+  room_settings_t* aroom_settings = vm->aroom_settings;
+  if (tk_str_ieq("return", name)) {
     return TRUE;
   }
   return FALSE;
@@ -54,10 +54,9 @@ static bool_t room_settings_view_model_can_exec(object_t* obj, const char* name,
 
 static ret_t room_settings_view_model_exec(object_t* obj, const char* name, const char* args) {
   room_settings_view_model_t* vm = (room_settings_view_model_t*)(obj);
-  room_settings_t* room_settings = vm->room_settings;
-  if (tk_str_eq("return", name)) {
-    room_settings_return(room_settings);
-    return RET_OBJECT_CHANGED;
+  room_settings_t* aroom_settings = vm->aroom_settings;
+  if (tk_str_ieq("return", name)) {
+    return room_settings_return(aroom_settings);
   }
   return RET_NOT_FOUND;
 }
@@ -66,7 +65,7 @@ static ret_t room_settings_view_model_on_destroy(object_t* obj) {
   room_settings_view_model_t* vm = (room_settings_view_model_t*)(obj);
   return_value_if_fail(vm != NULL, RET_BAD_PARAMS);
 
-  room_settings_destroy(vm->room_settings);
+  room_settings_destroy(vm->aroom_settings);
 
   return view_model_deinit(VIEW_MODEL(obj));
 }
@@ -81,28 +80,30 @@ static const object_vtable_t s_room_settings_view_model_vtable = {
     .set_prop = room_settings_view_model_set_prop,
     .on_destroy = room_settings_view_model_on_destroy};
 
-view_model_t* room_settings_view_model_create_with(room_settings_t* room_settings) {
+view_model_t* room_settings_view_model_create_with(room_settings_t* aroom_settings) {
   object_t* obj = object_create(&s_room_settings_view_model_vtable);
   view_model_t* vm = view_model_init(VIEW_MODEL(obj));
   room_settings_view_model_t* room_settings_view_model = (room_settings_view_model_t*)(vm);
 
   return_value_if_fail(vm != NULL, NULL);
 
-  room_settings_view_model->room_settings = room_settings;
-  ENSURE(room_settings_view_model->room_settings != NULL);
+  room_settings_view_model->aroom_settings = aroom_settings;
 
   return vm;
 }
 
-ret_t room_settings_view_model_attach(view_model_t* vm, room_settings_t* room_settings) {
+ret_t room_settings_view_model_attach(view_model_t* vm, room_settings_t* aroom_settings) {
   room_settings_view_model_t* room_settings_view_model = (room_settings_view_model_t*)(vm);
   return_value_if_fail(vm != NULL, RET_BAD_PARAMS);
 
-  room_settings_view_model->room_settings = room_settings;
+  room_settings_view_model->aroom_settings = aroom_settings;
 
   return RET_OK;
 }
 
 view_model_t* room_settings_view_model_create(navigator_request_t* req) {
-  return room_settings_view_model_create_with(room_settings_create(req));
+  room_settings_t* aroom_settings = room_settings_create(req);
+  return_value_if_fail(aroom_settings != NULL, NULL);
+
+  return room_settings_view_model_create_with(aroom_settings);
 }

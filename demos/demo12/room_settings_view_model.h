@@ -18,7 +18,7 @@ typedef struct _room_settings_view_model_t {
   view_model_t view_model;
 
   /*model object*/
-  room_settings_t* room_settings;
+  room_settings_t* aroom_settings;
 } room_settings_view_model_t;
 
 /**
@@ -37,11 +37,11 @@ view_model_t* room_settings_view_model_create(navigator_request_t* req);
  * 创建room_settings view model对象。
  *
  * @annotation ["constructor"]
- * @param {room_settings_t*}  room_settings room_settings对象。
+ * @param {room_settings_t*}  aroom_settings room_settings对象。
  *
  * @return {view_model_t} 返回view_model_t对象。
  */
-view_model_t* room_settings_view_model_create_with(room_settings_t* room_settings);
+view_model_t* room_settings_view_model_create_with(room_settings_t* aroom_settings);
 
 /**
  * @method room_settings_view_model_attach
@@ -52,7 +52,7 @@ view_model_t* room_settings_view_model_create_with(room_settings_t* room_setting
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
-ret_t room_settings_view_model_attach(view_model_t* vm, room_settings_t* room_settings);
+ret_t room_settings_view_model_attach(view_model_t* vm, room_settings_t* aroom_settings);
 
 END_C_DECLS
 

@@ -2,7 +2,7 @@
 /**
  * File:  temperature.cpp
  * Author: AWTK Develop Team
- * Brief:  temperature 
+ * Brief:  temperature
  *
  * Copyright (c) 2020 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
