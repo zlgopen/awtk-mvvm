@@ -176,7 +176,7 @@ class CodeGen {
         if (type.indexOf('char*') >= 0) {
           return `value_set_str(v, ${name});`;
         } else if (type.indexOf('string') >= 0) {
-          return `value_set_str(v, ${name}.c_str());`;
+          return `value_set_str(v, ${name});`;
         } else if (type.indexOf('int') >= 0) {
           return `value_set_int(v, ${name});`;
         } else if (type.indexOf('long') >= 0) {
@@ -413,6 +413,8 @@ class CodeGen {
     if (cmd) {
       if (cmd.params.length == 1) {
         if(isCpp) {
+          let type = cmd.params[0].type;
+          let args = this.genCmdArg(type);
           return `${objName}->${name}(${args});`;
         } else {
           return `${name}(${objName});`;
@@ -449,7 +451,10 @@ class CodeGen {
 
       result += commands.map((iter, index) => {
         let exec = '';
-        const cmdName = iter.name.replace(`${clsName}_`, '');
+        let cmdName = iter.name.replace(`${clsName}_`, '');
+        if(typeof(iter.annotation.command) === 'string') {
+          cmdName = iter.annotation.command;
+        }
 
         if (index) {
           exec = `\n  } else if (tk_str_ieq("${cmdName}", name)) {\n`
@@ -474,6 +479,8 @@ class CodeGen {
       args = 'tk_atoi(args)';
     } else if (type.indexOf('float') >= 0) {
       args = 'tk_atof(args)';
+    } else if (type == 'char') {
+      args = 'args[0]';
     } else if (type.indexOf('bool') >= 0) {
       args = 'tk_atob(args)';
     }
@@ -489,6 +496,8 @@ class CodeGen {
 
     if (cmd.params.length == 1) {
       if(isCpp) {
+      let type = cmd.params[0].type;
+      let args = this.genCmdArg(type);
         return `${objName}->${name}(${args});`;
       } else {
         return `${cmd.name}(${objName});`;
@@ -520,7 +529,11 @@ class CodeGen {
 `;
       result += commands.map((iter, index) => {
         let exec = '';
-        const cmdName = iter.name.replace(`${clsName}_`, '');
+        let cmdName = iter.name.replace(`${clsName}_`, '');
+
+        if(typeof(iter.annotation.command) === 'string') {
+          cmdName = iter.annotation.command;
+        }
 
         if (index) {
           exec = `\n  } else if (tk_str_ieq("${cmdName}", name)) {\n`

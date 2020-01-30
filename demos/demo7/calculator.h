@@ -36,11 +36,9 @@ BEGIN_C_DECLS
 typedef struct _calculator_t {
   /**
    * @property {const char*} expr
-   * @annotation ["fake"]
+   * @annotation ["readable", "writable"]
    * 表达式。
    */
-
-  /*private*/
   str_t expr;
 
 } calculator_t;

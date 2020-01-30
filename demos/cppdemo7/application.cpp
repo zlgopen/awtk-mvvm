@@ -21,7 +21,7 @@
 
 #include "awtk.h"
 #include "mvvm/mvvm.h"
-#include "../cppcommon/calculator.hpp"
+#include "calculator_view_model.h"
 
 ret_t application_init() {
   view_model_factory_register("calculator", calculator_view_model_create);

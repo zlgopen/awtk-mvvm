@@ -1,0 +1,101 @@
+[
+  {
+    "type": "class",
+    "methods": [
+      {
+        "params": [],
+        "annotation": {
+          "constructor": true
+        },
+        "desc": "构造函数。",
+        "name": "Calculator",
+        "return": {
+          "type": "void",
+          "desc": "返回无。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "char",
+            "name": "c",
+            "desc": "字符。"
+          }
+        ],
+        "annotation": {
+          "command": "add_char"
+        },
+        "desc": "追加一个字符。",
+        "name": "AddChar",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [],
+        "annotation": {
+          "command": "remove_char"
+        },
+        "desc": "删除最后一个字符。",
+        "name": "RemoveChar",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [],
+        "annotation": {},
+        "desc": "检查RemoveChar命令是否可以执行。",
+        "name": "CanRemoveChar",
+        "return": {
+          "type": "bool_t",
+          "desc": "返回FALSE表示不能执行，否则表示可以执行。"
+        }
+      },
+      {
+        "params": [],
+        "annotation": {
+          "command": true
+        },
+        "desc": "计算当前表达式的值。",
+        "name": "Eval",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [],
+        "annotation": {},
+        "desc": "检查eval命令是否可以执行。",
+        "name": "CanEval",
+        "return": {
+          "type": "bool_t",
+          "desc": "返回FALSE表示不能执行，否则表示可以执行。"
+        }
+      }
+    ],
+    "events": [],
+    "properties": [
+      {
+        "name": "expr",
+        "desc": "表达式。",
+        "type": "string",
+        "annotation": {
+          "readable": true,
+          "writable": true
+        }
+      }
+    ],
+    "header": "cppdemo7/calculator.h",
+    "desc": "计算器。",
+    "name": "Calculator",
+    "annotation": {
+      "model": true,
+      "cpp": true
+    },
+    "level": 1
+  }
+]

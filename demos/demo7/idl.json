@@ -168,7 +168,8 @@
         "desc": "表达式。",
         "type": "const char*",
         "annotation": {
-          "fake": true
+          "readable": true,
+          "writable": true
         }
       }
     ],

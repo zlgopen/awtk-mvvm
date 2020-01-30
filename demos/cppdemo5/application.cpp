@@ -21,8 +21,8 @@
 
 #include "awtk.h"
 #include "mvvm/mvvm.h"
-#include "../cppcommon/temperature.hpp"
 #include "temperature_validator.hpp"
+#include "temperature_view_model.h"
 
 ret_t application_init() {
   temperature_validator_init();
