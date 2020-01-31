@@ -80,7 +80,7 @@ class RoomSettings {
   ret_t Return(void);
 
  private:
-   navigator_request_t* request;
+  navigator_request_t* request;
 };
 
 #endif /*TK_ROOM_SETTINGS_H*/

@@ -1,0 +1,186 @@
+[
+  {
+    "type": "class",
+    "methods": [
+      {
+        "params": [],
+        "annotation": {
+          "constructor": true
+        },
+        "desc": "构造函数。",
+        "name": "BookStore",
+        "return": {
+          "type": "void",
+          "desc": "返回无。"
+        }
+      },
+      {
+        "params": [],
+        "annotation": {},
+        "desc": "获取指定序数的图书。",
+        "name": "Get",
+        "return": {
+          "type": "Book*",
+          "desc": "返回指定序数的图书。"
+        }
+      },
+      {
+        "params": [],
+        "annotation": {},
+        "desc": "获取总数。",
+        "name": "GetItems",
+        "return": {
+          "type": "uint32_t",
+          "desc": "返回总数。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "uint32_t",
+            "name": "index",
+            "desc": "序数。"
+          }
+        ],
+        "annotation": {
+          "command": true
+        },
+        "desc": "删除指定的图书。",
+        "name": "Remove",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "uint32_t",
+            "name": "index",
+            "desc": "序数。"
+          }
+        ],
+        "annotation": {},
+        "desc": "检查Remove命令是否可以执行。",
+        "name": "CanRemove",
+        "return": {
+          "type": "bool_t",
+          "desc": "返回FALSE表示不能执行，否则表示可以执行。"
+        }
+      },
+      {
+        "params": [],
+        "annotation": {
+          "command": true
+        },
+        "desc": "清除全部图书。",
+        "name": "Clear",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [],
+        "annotation": {
+          "command": true
+        },
+        "desc": "增加一本书。",
+        "name": "Add",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      }
+    ],
+    "events": [],
+    "properties": [
+      {
+        "name": "items",
+        "desc": "总数。",
+        "type": "uint32_t",
+        "annotation": {
+          "readable": true,
+          "fake": true
+        }
+      }
+    ],
+    "header": "cppdemo13/book_store.h",
+    "desc": "book store。",
+    "name": "BookStore",
+    "annotation": {
+      "model": true,
+      "cpp": true,
+      "collection": "Book"
+    },
+    "level": 1
+  },
+  {
+    "type": "class",
+    "methods": [
+      {
+        "params": [],
+        "annotation": {
+          "constructor": true
+        },
+        "desc": "构造函数。",
+        "name": "Book",
+        "return": {
+          "type": "void",
+          "desc": "返回无。"
+        }
+      },
+      {
+        "params": [],
+        "annotation": {
+          "command": true
+        },
+        "desc": "卖掉一本。",
+        "name": "Sale",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [],
+        "annotation": {},
+        "desc": "检查sale命令是否可以执行。",
+        "name": "CanSale",
+        "return": {
+          "type": "bool_t",
+          "desc": "返回FALSE表示不能执行，否则表示可以执行。"
+        }
+      }
+    ],
+    "events": [],
+    "properties": [
+      {
+        "name": "name",
+        "desc": "书名。",
+        "type": "string",
+        "annotation": {
+          "readable": true,
+          "writable": true
+        }
+      },
+      {
+        "name": "stock",
+        "desc": "库存。",
+        "type": "uint32_t",
+        "annotation": {
+          "readable": true,
+          "writable": true
+        }
+      }
+    ],
+    "header": "cppdemo13/book.h",
+    "desc": "图书信息。",
+    "name": "Book",
+    "annotation": {
+      "model": true,
+      "cpp": true
+    },
+    "level": 1
+  }
+]

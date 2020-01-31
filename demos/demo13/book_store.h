@@ -11,7 +11,7 @@ BEGIN_C_DECLS
  * @class book_store_t
  * book store。
  *
- * @annotation ["collection:book", "model"]
+ * @annotation ["collection:book_t", "model"]
  *
  */
 typedef struct _book_store_t {

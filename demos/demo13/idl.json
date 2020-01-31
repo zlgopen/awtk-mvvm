@@ -166,7 +166,7 @@
     "desc": "book store。",
     "name": "book_store_t",
     "annotation": {
-      "collection": "book",
+      "collection": "book_t",
       "model": true
     },
     "level": 1
