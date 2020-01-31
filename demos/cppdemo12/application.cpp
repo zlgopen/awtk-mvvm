@@ -22,8 +22,8 @@
 #include "awtk.h"
 #include "mvvm/mvvm.h"
 
-#include "../cppcommon/home.hpp"
-#include "../cppcommon/room_settings.hpp"
+#include "home_view_model.h"
+#include "room_settings_view_model.h"
 
 ret_t application_init() {
   view_model_factory_register("home", home_view_model_create);

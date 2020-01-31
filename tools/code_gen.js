@@ -31,6 +31,16 @@ class CodeGen {
     return cls.methods.find(iter => (iter.name === name));
   }
 
+  underLineName(name) {
+    name = name.replace(/[A-Z]/g, r => {
+      r = '_' + r;
+      return r.toLowerCase();
+    }); 
+    name = name.replace(/^_/, '');
+
+    return name;
+  }
+
   upperCamelName(name) {
     name = name.replace(/_t$/, '');
     name = name.replace(/(^|_)[a-z]/g, r => {
@@ -144,13 +154,13 @@ class CodeGen {
   }
   
   toViewModelClassName(name) {
-    let clsName = this.toClassName(name).toLowerCase();
+    let clsName = this.underLineName(this.toClassName(name));
 
     return `${clsName}_view_model`
   }
   
   toViewModelClassType(name) {
-    let clsName = this.toClassName(name).toLowerCase();
+    let clsName = this.underLineName(this.toClassName(name));
 
     return `${clsName}_view_model_t`
   }

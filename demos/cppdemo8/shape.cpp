@@ -52,12 +52,10 @@ bool_t Shape::CanSave() const {
 
 const char* Shape::GetOverview() {
   char buff[256];
-  tk_snprintf(buff, sizeof(buff), 
-       "%s: type=%d (%d %d %d %d) opacity=%d align=%d", this->name.c_str(),
-      this->type, this->x, this->y, this->w, this->h, this->opacity, 
-      this->text_align);
+  tk_snprintf(buff, sizeof(buff), "%s: type=%d (%d %d %d %d) opacity=%d align=%d",
+              this->name.c_str(), this->type, this->x, this->y, this->w, this->h, this->opacity,
+              this->text_align);
   this->overview = buff;
 
   return this->overview.c_str();
 }
-

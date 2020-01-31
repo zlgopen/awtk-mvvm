@@ -24,7 +24,7 @@
 #include "tkc/utils.h"
 #include "calculator.h"
 
-Calculator::Calculator(){
+Calculator::Calculator() {
 }
 
 Calculator::~Calculator() {
@@ -61,4 +61,3 @@ ret_t Calculator::Eval() {
 bool_t Calculator::CanEval() const {
   return this->expr.size() > 0;
 }
-

@@ -1,9 +1,9 @@
-﻿/**
- * File:   temperature.h
+/**
+ * File:  home.h
  * Author: AWTK Develop Team
- * Brief:  temperature
+ * Brief:  home
  *
- * Copyright (c) 2019 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2020 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -15,39 +15,93 @@
 /**
  * History:
  * ================================================================
- * 2019-02-20 Li XianJing <xianjimli@hotmail.com> created
+ * 2020-01-30 Li XianJing <xianjimli@hotmail.com> created
  *
  */
 
 #ifndef TK_HOME_H
 #define TK_HOME_H
 
-#include "mvvm/base/view_model.h"
+#include <string>
+#include "tkc/types_def.h"
+#include "mvvm/base/navigator_request.h"
 
-BEGIN_C_DECLS
+using std::string;
 
-typedef struct _room_info_t {
-  double temp;
+class RoomInfo {
+ public:
+  RoomInfo();
+  void Init(double humidity, double temp);
+
   double humidity;
-} room_info_t;
+  double temp;
+};
 
 /**
- * @class home_t
- *
- * home对象。
+ * @class Home
+ * @parent emitter_t
+ * @annotation ["model", "cpp"]
+ * 房间控制器。
  *
  */
-typedef struct _home_t {
-  view_model_t view_model;
+class Home : public emitter_t {
+ public:
+  /**
+   * @method Home
+   * 构造函数。
+   *
+   * @annotation ["constructor"]
+   * @return {void} 返回无。
+   */
+  Home();
+  ~Home();
 
-  room_info_t bed_room;
-  room_info_t living_room;
-} home_t;
+ public:
+  /**
+   * @property {string} bed_room_info
+   * @annotation ["readable", "writable"]
+   * bed_room_info。
+   */
+  string bed_room_info;
 
-view_model_t* home_create(navigator_request_t* req);
+  /**
+   * @property {string} living_room_info
+   * @annotation ["readable", "writable"]
+   * living_room_info。
+   */
+  string living_room_info;
 
-#define HOME(t) ((home_t*)(t))
+ public:
+  /**
+   * @method AdjustBedRoom
+   * 设置客厅参数。
+   *
+   * @annotation ["command"]
+   *
+   * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+   */
+  ret_t AdjustBedRoom(void);
 
-END_C_DECLS
+  /**
+   * @method AdjustLivingRoom
+   * 设置客厅参数。
+   *
+   * @annotation ["command"]
+   *
+   * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+   */
+  ret_t AdjustLivingRoom(void);
+
+  void NotifyObjectChanged(void);
+  ret_t AdjustRoomSettings(const char* room_name, RoomInfo* info);
+  static ret_t OnResult(navigator_request_t* req, const value_t* result);
+
+ private:
+  void Sync();
+
+ private:
+  RoomInfo bed_room;
+  RoomInfo living_room;
+};
 
 #endif /*TK_HOME_H*/

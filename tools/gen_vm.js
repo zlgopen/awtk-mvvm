@@ -185,6 +185,7 @@ view_model_t* ${vmClsName}_create(navigator_request_t* req) {
   }
 
   filter(json) {
+    console.log(this.underLineName('RoomSettings'));
     return json.filter(iter => {
       return this.isModel(iter) && !this.isCollectionModel(iter)
     });

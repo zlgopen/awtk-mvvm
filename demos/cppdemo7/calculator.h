@@ -84,7 +84,7 @@ class Calculator {
    * @return {bool_t} 返回FALSE表示不能执行，否则表示可以执行。
    */
   bool_t CanRemoveChar(void) const;
-  
+
   /**
    * @method Eval
    * 计算当前表达式的值。
@@ -104,5 +104,4 @@ class Calculator {
   bool_t CanEval(void) const;
 };
 
-#endif/*TK_CALCULATOR_HPP*/
-
+#endif /*TK_CALCULATOR_HPP*/

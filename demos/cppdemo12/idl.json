@@ -1,0 +1,146 @@
+[
+  {
+    "type": "class",
+    "methods": [
+      {
+        "params": [
+          {
+            "type": "navigator_request_t*",
+            "name": "",
+            "desc": "t"
+          }
+        ],
+        "annotation": {
+          "constructor": true
+        },
+        "desc": "构造函数。",
+        "name": "RoomSettings",
+        "return": {
+          "type": "void",
+          "desc": "返回无。"
+        }
+      },
+      {
+        "params": [],
+        "annotation": {
+          "command": true
+        },
+        "desc": "返回设置给调用者。",
+        "name": "Return",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      }
+    ],
+    "events": [],
+    "properties": [
+      {
+        "name": "temp",
+        "desc": "温度。",
+        "type": "double",
+        "annotation": {
+          "readable": true,
+          "writable": true
+        }
+      },
+      {
+        "name": "humidity",
+        "desc": "湿度。",
+        "type": "double",
+        "annotation": {
+          "readable": true,
+          "writable": true
+        }
+      },
+      {
+        "name": "room",
+        "desc": "房间。",
+        "type": "string",
+        "annotation": {
+          "readable": true,
+          "writable": true
+        }
+      }
+    ],
+    "header": "cppdemo12/room_settings.h",
+    "desc": "房间设置。",
+    "name": "RoomSettings",
+    "annotation": {
+      "model": true,
+      "cpp": true
+    },
+    "level": 1
+  },
+  {
+    "type": "class",
+    "methods": [
+      {
+        "params": [],
+        "annotation": {
+          "constructor": true
+        },
+        "desc": "构造函数。",
+        "name": "Home",
+        "return": {
+          "type": "void",
+          "desc": "返回无。"
+        }
+      },
+      {
+        "params": [],
+        "annotation": {
+          "command": true
+        },
+        "desc": "设置客厅参数。",
+        "name": "AdjustBedRoom",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [],
+        "annotation": {
+          "command": true
+        },
+        "desc": "设置客厅参数。",
+        "name": "AdjustLivingRoom",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      }
+    ],
+    "events": [],
+    "properties": [
+      {
+        "name": "bed_room_info",
+        "desc": "bed_room_info。",
+        "type": "string",
+        "annotation": {
+          "readable": true,
+          "writable": true
+        }
+      },
+      {
+        "name": "living_room_info",
+        "desc": "living_room_info。",
+        "type": "string",
+        "annotation": {
+          "readable": true,
+          "writable": true
+        }
+      }
+    ],
+    "header": "cppdemo12/home.h",
+    "desc": "房间控制器。",
+    "name": "Home",
+    "parent": "emitter_t",
+    "annotation": {
+      "model": true,
+      "cpp": true
+    },
+    "level": 2
+  }
+]

@@ -35,7 +35,7 @@ using std::string;
  *
  */
 class Shape {
-  public:
+ public:
   /**
    * @method Shape
    * 构造函数。
@@ -43,67 +43,67 @@ class Shape {
    * @annotation ["constructor"]
    * @return {void} 返回无。
    */
-   Shape(void);
-   ~Shape(void);
-  
-  public:
-    /**
-     * @property {int32_t} type
-     * @annotation ["readable", "writable"]
-     * 类型。
-     */
-    int32_t type;
+  Shape(void);
+  ~Shape(void);
 
-    /**
-     * @property {int32_t} x
-     * @annotation ["readable", "writable"]
-     * x。
-     */
-    int32_t x;
-    /**
-     * @property {int32_t} y
-     * @annotation ["readable", "writable"]
-     * y。
-     */
-    int32_t y;
-    /**
-     * @property {int32_t} w
-     * @annotation ["readable", "writable"]
-     * w。
-     */
-    int32_t w;
-    /**
-     * @property {int32_t} h
-     * @annotation ["readable", "writable"]
-     * h。
-     */
-    int32_t h;
-    /**
-     * @property {int32_t} opacity
-     * @annotation ["readable", "writable"]
-     * opacity。
-     */
-    int32_t opacity;
-    /**
-     * @property {int32_t} text_align
-     * @annotation ["readable", "writable"]
-     * text_align。
-     */
-    int32_t text_align;
-    /**
-     * @property {string} name
-     * @annotation ["readable", "writable"]
-     * name。
-     */
-    string name;
-    /**
-     * @property {string} overview
-     * @annotation ["readable", "writable"]
-     * overview。
-     */
-    string overview;
+ public:
+  /**
+   * @property {int32_t} type
+   * @annotation ["readable", "writable"]
+   * 类型。
+   */
+  int32_t type;
 
-public:
+  /**
+   * @property {int32_t} x
+   * @annotation ["readable", "writable"]
+   * x。
+   */
+  int32_t x;
+  /**
+   * @property {int32_t} y
+   * @annotation ["readable", "writable"]
+   * y。
+   */
+  int32_t y;
+  /**
+   * @property {int32_t} w
+   * @annotation ["readable", "writable"]
+   * w。
+   */
+  int32_t w;
+  /**
+   * @property {int32_t} h
+   * @annotation ["readable", "writable"]
+   * h。
+   */
+  int32_t h;
+  /**
+   * @property {int32_t} opacity
+   * @annotation ["readable", "writable"]
+   * opacity。
+   */
+  int32_t opacity;
+  /**
+   * @property {int32_t} text_align
+   * @annotation ["readable", "writable"]
+   * text_align。
+   */
+  int32_t text_align;
+  /**
+   * @property {string} name
+   * @annotation ["readable", "writable"]
+   * name。
+   */
+  string name;
+  /**
+   * @property {string} overview
+   * @annotation ["readable", "writable"]
+   * overview。
+   */
+  string overview;
+
+ public:
   /**
    * @method ChangeType
    * 修改类型。
@@ -129,7 +129,7 @@ public:
    * @return {bool_t} 返回FALSE表示不能执行，否则表示可以执行。
    */
   bool_t CanSave(void) const;
-  
+
   /**
    * @method GetOverview
    * 获取overview。
@@ -139,5 +139,4 @@ public:
   const char* GetOverview();
 };
 
-#endif/*TK_SHAPE_HPP*/
-
+#endif /*TK_SHAPE_HPP*/
