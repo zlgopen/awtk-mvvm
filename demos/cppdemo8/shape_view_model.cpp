@@ -10,82 +10,85 @@ static ret_t shape_view_model_set_prop(object_t* obj, const char* name, const va
   Shape* aShape = ((shape_view_model_t*)(obj))->aShape;
 
   if (tk_str_ieq("type", name)) {
-    aShape->type = value_int32(v);
+     aShape->type = value_int32(v);
 
-    return RET_OK;
+     return RET_OK;
   } else if (tk_str_ieq("x", name)) {
-    aShape->x = value_int32(v);
+     aShape->x = value_int32(v);
 
-    return RET_OK;
+     return RET_OK;
   } else if (tk_str_ieq("y", name)) {
-    aShape->y = value_int32(v);
+     aShape->y = value_int32(v);
 
-    return RET_OK;
+     return RET_OK;
   } else if (tk_str_ieq("w", name)) {
-    aShape->w = value_int32(v);
+     aShape->w = value_int32(v);
 
-    return RET_OK;
+     return RET_OK;
   } else if (tk_str_ieq("h", name)) {
-    aShape->h = value_int32(v);
+     aShape->h = value_int32(v);
 
-    return RET_OK;
+     return RET_OK;
   } else if (tk_str_ieq("opacity", name)) {
-    aShape->opacity = value_int32(v);
+     aShape->opacity = value_int32(v);
 
-    return RET_OK;
+     return RET_OK;
   } else if (tk_str_ieq("text_align", name)) {
-    aShape->text_align = value_int32(v);
+     aShape->text_align = value_int32(v);
 
-    return RET_OK;
+     return RET_OK;
   } else if (tk_str_ieq("name", name)) {
-    aShape->name = value_str(v);
+     aShape->name = value_str(v);
 
-    return RET_OK;
+     return RET_OK;
   } else if (tk_str_ieq("overview", name)) {
-    aShape->overview = value_str(v);
+     aShape->overview = value_str(v);
 
-    return RET_OK;
+     return RET_OK;
   }
-
+  
   return RET_NOT_FOUND;
 }
+
 
 static ret_t shape_view_model_get_prop(object_t* obj, const char* name, value_t* v) {
   Shape* aShape = ((shape_view_model_t*)(obj))->aShape;
 
   if (tk_str_ieq("type", name)) {
-    value_set_int32(v, aShape->type);
-    return RET_OK;
+     value_set_int32(v, aShape->type);
+     return RET_OK;
   } else if (tk_str_ieq("x", name)) {
-    value_set_int32(v, aShape->x);
-    return RET_OK;
+     value_set_int32(v, aShape->x);
+     return RET_OK;
   } else if (tk_str_ieq("y", name)) {
-    value_set_int32(v, aShape->y);
-    return RET_OK;
+     value_set_int32(v, aShape->y);
+     return RET_OK;
   } else if (tk_str_ieq("w", name)) {
-    value_set_int32(v, aShape->w);
-    return RET_OK;
+     value_set_int32(v, aShape->w);
+     return RET_OK;
   } else if (tk_str_ieq("h", name)) {
-    value_set_int32(v, aShape->h);
-    return RET_OK;
+     value_set_int32(v, aShape->h);
+     return RET_OK;
   } else if (tk_str_ieq("opacity", name)) {
-    value_set_int32(v, aShape->opacity);
-    return RET_OK;
+     value_set_int32(v, aShape->opacity);
+     return RET_OK;
   } else if (tk_str_ieq("text_align", name)) {
-    value_set_int32(v, aShape->text_align);
-    return RET_OK;
+     value_set_int32(v, aShape->text_align);
+     return RET_OK;
   } else if (tk_str_ieq("name", name)) {
-    value_set_str(v, aShape->name.c_str());
-    return RET_OK;
+     value_set_str(v, aShape->name.c_str());
+     return RET_OK;
   } else if (tk_str_ieq("overview", name)) {
-    value_set_str(v, aShape->GetOverview());
-    return RET_OK;
+     value_set_str(v, aShape->GetOverview());
+     return RET_OK;
   }
 
   return RET_NOT_FOUND;
 }
 
+
 static bool_t shape_view_model_can_exec(object_t* obj, const char* name, const char* args) {
+ 
   shape_view_model_t* vm = (shape_view_model_t*)(obj);
   Shape* aShape = vm->aShape;
   if (tk_str_ieq("change_type", name)) {
@@ -98,6 +101,7 @@ static bool_t shape_view_model_can_exec(object_t* obj, const char* name, const c
 }
 
 static ret_t shape_view_model_exec(object_t* obj, const char* name, const char* args) {
+ 
   shape_view_model_t* vm = (shape_view_model_t*)(obj);
   Shape* aShape = vm->aShape;
   if (tk_str_ieq("change_type", name)) {
@@ -113,20 +117,26 @@ static ret_t shape_view_model_on_destroy(object_t* obj) {
   shape_view_model_t* vm = (shape_view_model_t*)(obj);
   return_value_if_fail(vm != NULL, RET_BAD_PARAMS);
 
+  
   delete (vm->aShape);
 
   return view_model_deinit(VIEW_MODEL(obj));
 }
 
 static const object_vtable_t s_shape_view_model_vtable = {
-    .type = "shape_view_model_t",
-    .desc = "shape_view_model_t",
-    .size = sizeof(shape_view_model_t),
-    .exec = shape_view_model_exec,
-    .can_exec = shape_view_model_can_exec,
-    .get_prop = shape_view_model_get_prop,
-    .set_prop = shape_view_model_set_prop,
-    .on_destroy = shape_view_model_on_destroy};
+  "shape_view_model_t",
+  "shape_view_model_t",
+  sizeof(shape_view_model_t),
+  FALSE,
+  shape_view_model_on_destroy,
+  NULL,
+  shape_view_model_get_prop,
+  shape_view_model_set_prop,
+  NULL,
+  NULL,
+  shape_view_model_can_exec,
+  shape_view_model_exec
+};
 
 view_model_t* shape_view_model_create_with(Shape* aShape) {
   object_t* obj = object_create(&s_shape_view_model_vtable);
@@ -136,6 +146,7 @@ view_model_t* shape_view_model_create_with(Shape* aShape) {
   return_value_if_fail(vm != NULL, NULL);
 
   shape_view_model->aShape = aShape;
+  
 
   return vm;
 }

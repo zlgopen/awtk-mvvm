@@ -141,14 +141,18 @@ static ret_t ${vmClsName}_on_destroy(object_t* obj) {
 }
 
 static const object_vtable_t s_${vmClsName}_vtable = {
-  .type = "${vmClsType}",
-  .desc = "${vmClsType}",
-  .size = sizeof(${vmClsType}),
-  .exec = ${vmClsName}_exec,
-  .can_exec = ${vmClsName}_can_exec,
-  .get_prop = ${vmClsName}_get_prop,
-  .set_prop = ${vmClsName}_set_prop,
-  .on_destroy = ${vmClsName}_on_destroy
+  "${vmClsType}",
+  "${vmClsType}",
+  sizeof(${vmClsType}),
+  FALSE,
+  ${vmClsName}_on_destroy,
+  NULL,
+  ${vmClsName}_get_prop,
+  ${vmClsName}_set_prop,
+  NULL,
+  NULL,
+  ${vmClsName}_can_exec,
+  ${vmClsName}_exec
 };
 
 view_model_t* ${vmClsName}_create_with(${clsType}* ${objName}) {
