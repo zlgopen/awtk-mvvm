@@ -21,9 +21,9 @@ env.Program(os.path.join(BIN_DIR, 'demo14'), Glob('demo14/*.c') + ["assets.c"])
 env.Program(os.path.join(BIN_DIR, 'demo20'), Glob('demo20/*.c') + ["assets.c"])
 
 env.Program(os.path.join(BIN_DIR, 'demo15'), Glob('demo15/*.c') + ["assets.c"])
-env.Program(os.path.join(BIN_DIR, 'demo16'), Glob('demo16/*.c') + ["assets.c", "common/temperature.c"])
-env.Program(os.path.join(BIN_DIR, 'demo17'), Glob('demo17/*.c') + ["assets.c", "common/temperature.c"])
-env.Program(os.path.join(BIN_DIR, 'demo19'), Glob('demo19/*.c') + ["assets.c", "common/temperature.c"])
+env.Program(os.path.join(BIN_DIR, 'demo16'), Glob('demo16/*.c') + ["assets.c"])
+env.Program(os.path.join(BIN_DIR, 'demo17'), Glob('demo17/*.c') + ["assets.c"])
+env.Program(os.path.join(BIN_DIR, 'demo19'), Glob('demo19/*.c') + ["assets.c"])
 
 env.Program(os.path.join(BIN_DIR, 'jsdemo1'), Glob('jsdemo1/*.c') + ["assets.c"])
 env.Program(os.path.join(BIN_DIR, 'jsdemo2'), Glob('jsdemo2/*.c') + ["assets.c"])
@@ -53,9 +53,9 @@ env.Program(os.path.join(BIN_DIR, 'cppdemo6'), Glob('cppdemo6/*.cpp') + ["assets
 env.Program(os.path.join(BIN_DIR, 'cppdemo7'), Glob('cppdemo7/*.cpp') + ["assets.c"])
 env.Program(os.path.join(BIN_DIR, 'cppdemo8'), Glob('cppdemo8/*.cpp') + ["assets.c"])
 
-env.Program(os.path.join(BIN_DIR, 'cppdemo9'), Glob('cppdemo9/*.cpp') + ["assets.c", "cppcommon/temperature.cpp", "cppcommon/humidity.cpp"])
-env.Program(os.path.join(BIN_DIR, 'cppdemo10'), Glob('cppdemo10/*.cpp') + ["assets.c", "cppcommon/temperature.cpp"])
-env.Program(os.path.join(BIN_DIR, 'cppdemo11'), Glob('cppdemo11/*.cpp') + ["assets.c", "cppcommon/temperature.cpp", "cppcommon/humidity.cpp"])
+env.Program(os.path.join(BIN_DIR, 'cppdemo9'), Glob('cppdemo9/*.cpp') + ["assets.c"])
+env.Program(os.path.join(BIN_DIR, 'cppdemo10'), Glob('cppdemo10/*.cpp') + ["assets.c"])
+env.Program(os.path.join(BIN_DIR, 'cppdemo11'), Glob('cppdemo11/*.cpp') + ["assets.c"])
 env.Program(os.path.join(BIN_DIR, 'cppdemo12'), Glob('cppdemo12/*.cpp') + ["assets.c"])
 env.Program(os.path.join(BIN_DIR, 'cppdemo13'), Glob('cppdemo13/*.cpp') + ["assets.c"])
 

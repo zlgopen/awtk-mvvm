@@ -16,6 +16,7 @@ cd ./demo11; . gen.sh; cd -
 cd ./demo12; . gen.sh; cd -
 cd ./demo13; . gen.sh; cd -
 cd ./demo14; . gen.sh; cd -
+cd ./demo16; . gen.sh; cd -
 cd ./demo1; . gen.sh; cd -
 cd ./demo20; . gen.sh; cd -
 cd ./demo2; . gen.sh; cd -

@@ -22,7 +22,6 @@
 #include "awtk.h"
 #include "mvvm/mvvm.h"
 #include "custom_handlers.h"
-#include "../common/temperature.h"
 
 extern ret_t register_custom_handlers(void);
 

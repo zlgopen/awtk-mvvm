@@ -26,7 +26,6 @@ env['LIBS'] = ['jerryscript'] + env['LIBS']
 
 SOURCES = [
  os.path.join(GTEST_ROOT, 'src/gtest-all.cc'),
- '../demos/common/books.c'
 ] + Glob('*.cc') + Glob('*.c')
 
 env.Program(os.path.join(BIN_DIR, 'runTest'), SOURCES);

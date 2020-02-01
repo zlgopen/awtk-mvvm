@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  temperature
  *
- * Copyright (c) 2019 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2020 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -15,30 +15,35 @@
 /**
  * History:
  * ================================================================
- * 2019-02-13 Li XianJing <xianjimli@hotmail.com> created
+ * 2020-01-23 Li XianJing <xianjimli@hotmail.com> created
  *
  */
 
-#include "awtk.h"
-#include "../common/temperature.h"
-
+#include "tkc/mem.h"
 #include "temperature.h"
 
-#define PROP_TEMP "value"
-
-static ret_t on_timer(const timer_info_t* info) {
-  object_t* view_model = OBJECT(info->ctx);
-
-  int32_t temp = object_get_prop_int(view_model, PROP_TEMP, 0) + 1;
-  object_set_prop_int(view_model, PROP_TEMP, temp);
-
-  return temp < 10 ? RET_REPEAT : RET_REMOVE;
+temperature_t* temperature_create(void) {
+  return TKMEM_ZALLOC(temperature_t);
 }
 
-view_model_t* temperature_view_model_timer_create(navigator_request_t* req) {
-  view_model_t* view_model = temperature_view_model_create(req);
+ret_t temperature_destroy(temperature_t* temperature) {
+  return_value_if_fail(temperature != NULL, RET_BAD_PARAMS);
 
-  timer_add(on_timer, view_model, 1000);
+  TKMEM_FREE(temperature);
 
-  return view_model;
+  return RET_OK;
+}
+
+ret_t temperature_apply(temperature_t* temperature) {
+  return_value_if_fail(temperature != NULL, RET_BAD_PARAMS);
+
+  temperature->saved_value = temperature->value;
+
+  return RET_OBJECT_CHANGED;
+}
+
+bool_t temperature_can_apply(temperature_t* temperature) {
+  return_value_if_fail(temperature != NULL, FALSE);
+
+  return temperature->saved_value != temperature->value;
 }

@@ -21,7 +21,7 @@
 
 #include "awtk.h"
 #include "mvvm/mvvm.h"
-#include "../common/temperature.h"
+#include "temperature_view_model.h"
 
 extern ret_t hardware_init(void);
 
