@@ -72,8 +72,7 @@ ret_t temperature_destroy(temperature_t* temperature);
  * @annotation ["command"]
  * @param {temperature_t*} temperature temperature对象。
  *
- * @return {ret_t}
- * 返回RET_OK表示成功；返回RET_OBJECT_CHANGED表示模型有变化，View需要刷新；返回其它表示失败。
+ * @return {ret_t} 返回RET_OBJECT_CHANGED表示模型有变化，View需要刷新；返回其它表示失败。
  */
 ret_t temperature_apply(temperature_t* temperature);
 

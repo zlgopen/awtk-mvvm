@@ -85,11 +85,11 @@
         "annotation": {
           "command": true
         },
-        "desc": "追加一个字符。",
+        "desc": "追加一个字符。\n\n\n返回RET_OK表示成功；返回RET_OBJECT_CHANGED表示模型有变化，View需要刷新；返回其它表示失败。",
         "name": "calculator_add_char",
         "return": {
           "type": "ret_t",
-          "desc": "返回RET_OK表示成功；返回RET_OBJECT_CHANGED表示模型有变化，View需要刷新；返回其它表示失败。"
+          "desc": ""
         }
       },
       {
@@ -103,11 +103,11 @@
         "annotation": {
           "command": true
         },
-        "desc": "删除最后一个字符串。",
+        "desc": "删除最后一个字符串。\n\n\n返回RET_OK表示成功；返回RET_OBJECT_CHANGED表示模型有变化，View需要刷新；返回其它表示失败。",
         "name": "calculator_remove_char",
         "return": {
           "type": "ret_t",
-          "desc": "返回RET_OK表示成功；返回RET_OBJECT_CHANGED表示模型有变化，View需要刷新；返回其它表示失败。"
+          "desc": ""
         }
       },
       {
@@ -137,11 +137,11 @@
         "annotation": {
           "command": true
         },
-        "desc": "计算表达式。",
+        "desc": "计算表达式。\n\n\n返回RET_OK表示成功；返回RET_OBJECT_CHANGED表示模型有变化，View需要刷新；返回其它表示失败。",
         "name": "calculator_eval",
         "return": {
           "type": "ret_t",
-          "desc": "返回RET_OK表示成功；返回RET_OBJECT_CHANGED表示模型有变化，View需要刷新；返回其它表示失败。"
+          "desc": ""
         }
       },
       {

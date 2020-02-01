@@ -215,11 +215,11 @@
         "annotation": {
           "command": true
         },
-        "desc": "卖掉一本。",
+        "desc": "卖掉一本。\n\n\n返回RET_OK表示成功；返回RET_OBJECT_CHANGED表示模型有变化，View需要刷新；返回其它表示失败。",
         "name": "book_sale",
         "return": {
           "type": "ret_t",
-          "desc": "返回RET_OK表示成功；返回RET_OBJECT_CHANGED表示模型有变化，View需要刷新；返回其它表示失败。"
+          "desc": ""
         }
       },
       {

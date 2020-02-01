@@ -85,11 +85,11 @@
         "annotation": {
           "command": true
         },
-        "desc": "改变shape的类型。",
+        "desc": "改变shape的类型。\n\n\n返回RET_OK表示成功；返回RET_OBJECT_CHANGED表示模型有变化，View需要刷新；返回其它表示失败。",
         "name": "shape_change_type",
         "return": {
           "type": "ret_t",
-          "desc": "返回RET_OK表示成功；返回RET_OBJECT_CHANGED表示模型有变化，View需要刷新；返回其它表示失败。"
+          "desc": ""
         }
       },
       {
