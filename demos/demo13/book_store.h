@@ -53,7 +53,7 @@ ret_t book_store_destroy(book_store_t* book_store);
  * @annotation ["command"]
  * @param {book_store_t*} book_store book_store对象。
  *
- * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ * @return {ret_t} 返回RET_ITEMS_CHANGED表示模型有变化，View需要刷新；返回其它表示失败。
  */
 ret_t book_store_clear(book_store_t* book_store);
 
@@ -65,7 +65,7 @@ ret_t book_store_clear(book_store_t* book_store);
  * @param {book_store_t*} book_store book_store对象。
  * @param {uint32_t} index 序数。
  *
- * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ * @return {ret_t} 返回RET_ITEMS_CHANGED表示模型有变化，View需要刷新；返回其它表示失败。
  */
 ret_t book_store_remove(book_store_t* book_store, uint32_t index);
 
@@ -86,7 +86,7 @@ bool_t book_store_can_remove(book_store_t* book_store, uint32_t index);
  *
  * @param {book_store_t*} book_store book_store对象。
  *
- * @return {uint32_t} 返回用户数。
+ * @return {uint32_t} 返回总数。
  */
 uint32_t book_store_get_items(book_store_t* book_store);
 
@@ -108,7 +108,7 @@ book_t* book_store_get(book_store_t* book_store, uint32_t index);
  * @annotation ["command"]
  * @param {book_store_t*} book_store book_store对象。
  *
- * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ * @return {ret_t} 返回RET_ITEMS_CHANGED表示模型有变化，View需要刷新；返回其它表示失败。
  */
 ret_t book_store_add(book_store_t* book_store);
 

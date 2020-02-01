@@ -54,7 +54,8 @@ ret_t book_destroy(book_t* book);
  * @annotation ["command"]
  * @param {book_t*} book book对象。
  *
- * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ * @return {ret_t}
+ * 返回RET_OK表示成功；返回RET_OBJECT_CHANGED表示模型有变化，View需要刷新；返回其它表示失败。
  */
 ret_t book_sale(book_t* book);
 

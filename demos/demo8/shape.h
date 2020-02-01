@@ -150,7 +150,8 @@ const char* shape_get_overview(shape_t* shape);
  * @param {shape_t*} shape shape对象。
  * @param {int32_t} type 类型。
  *
- * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ * @return {ret_t}
+ * 返回RET_OK表示成功；返回RET_OBJECT_CHANGED表示模型有变化，View需要刷新；返回其它表示失败。
  */
 ret_t shape_change_type(shape_t* shape, int32_t type);
 

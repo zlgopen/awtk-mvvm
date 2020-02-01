@@ -91,7 +91,8 @@ ret_t calculator_set_expr(calculator_t* calculator, const char* expr);
  * @param {calculator_t*} calculator calculator对象。
  * @param {const char*} args 参数。
  *
- * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ * @return {ret_t}
+ * 返回RET_OK表示成功；返回RET_OBJECT_CHANGED表示模型有变化，View需要刷新；返回其它表示失败。
  */
 ret_t calculator_add_char(calculator_t* calculator, const char* args);
 
@@ -102,7 +103,8 @@ ret_t calculator_add_char(calculator_t* calculator, const char* args);
  * @annotation ["command"]
  * @param {calculator_t*} calculator calculator对象。
  *
- * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ * @return {ret_t}
+ * 返回RET_OK表示成功；返回RET_OBJECT_CHANGED表示模型有变化，View需要刷新；返回其它表示失败。
  */
 ret_t calculator_remove_char(calculator_t* calculator);
 
@@ -123,7 +125,8 @@ bool_t calculator_can_remove_char(calculator_t* calculator);
  * @annotation ["command"]
  * @param {calculator_t*} calculator calculator对象。
  *
- * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ * @return {ret_t}
+ * 返回RET_OK表示成功；返回RET_OBJECT_CHANGED表示模型有变化，View需要刷新；返回其它表示失败。
  */
 ret_t calculator_eval(calculator_t* calculator);
 
