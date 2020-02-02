@@ -63,7 +63,7 @@ class Calculator {
    * @annotation ["command:add_char"]
    * @param {char} c 字符。
    *
-   * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+   * @return {ret_t} 返回RET_OBJECT_CHANGED表示模型有变化，View需要刷新；返回其它表示失败。
    */
   ret_t AddChar(char c);
 
@@ -73,7 +73,7 @@ class Calculator {
    *
    * @annotation ["command:remove_char"]
    *
-   * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+   * @return {ret_t} 返回RET_OBJECT_CHANGED表示模型有变化，View需要刷新；返回其它表示失败。
    */
   ret_t RemoveChar(void);
 
@@ -91,7 +91,7 @@ class Calculator {
    *
    * @annotation ["command"]
    *
-   * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+   * @return {ret_t} 返回RET_OBJECT_CHANGED表示模型有变化，View需要刷新；返回其它表示失败。
    */
   ret_t Eval(void);
 
