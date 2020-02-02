@@ -74,7 +74,7 @@ class Home : public emitter_t {
  public:
   /**
    * @method AdjustBedRoom
-   * 设置客厅参数。
+   * 设置卧室参数。
    *
    * @annotation ["command"]
    *

@@ -30,7 +30,7 @@ BEGIN_C_DECLS
  * @class room_settings_t
  *
  * @annotation ["model"]
- * 温度控制器。
+ * 房间设置。
  *
  */
 typedef struct _room_settings_t {

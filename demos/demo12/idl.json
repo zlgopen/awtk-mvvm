@@ -5,6 +5,96 @@
       {
         "params": [
           {
+            "type": "const char*",
+            "name": "name",
+            "desc": "名称。。"
+          }
+        ],
+        "annotation": {
+          "constructor": true
+        },
+        "desc": "创建room_info对象。",
+        "name": "room_info_create",
+        "return": {
+          "type": "room_info_t*",
+          "desc": "返回room_info对象。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "room_info_t*",
+            "name": "room_info",
+            "desc": "room_info对象。"
+          }
+        ],
+        "annotation": {},
+        "desc": "获取summary。",
+        "name": "room_info_get_summary",
+        "return": {
+          "type": "const char*",
+          "desc": "返回summary。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "room_info_t*",
+            "name": "room_info",
+            "desc": "room_info对象。"
+          }
+        ],
+        "annotation": {
+          "destructor": true
+        },
+        "desc": "销毁room_info对象。",
+        "name": "room_info_destroy",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      }
+    ],
+    "events": [],
+    "properties": [
+      {
+        "name": "temp",
+        "desc": "温度。",
+        "type": "double",
+        "annotation": {
+          "readable": true,
+          "writable": true
+        }
+      },
+      {
+        "name": "humidity",
+        "desc": "湿度。",
+        "type": "double",
+        "annotation": {
+          "readable": true,
+          "writable": true
+        }
+      },
+      {
+        "name": "name",
+        "desc": "房间名称。",
+        "type": "char*",
+        "annotation": {
+          "readable": true
+        }
+      }
+    ],
+    "header": "demo12/room_info.h",
+    "desc": "房间信息(用于在home和room_settings之间传递数据)。",
+    "name": "room_info_t",
+    "level": 1
+  },
+  {
+    "type": "class",
+    "methods": [
+      {
+        "params": [
+          {
             "type": "navigator_request_t*",
             "name": "req",
             "desc": "请求对象。"
@@ -88,11 +178,143 @@
       }
     ],
     "header": "demo12/room_settings.h",
-    "desc": "温度控制器。",
+    "desc": "房间设置。",
     "name": "room_settings_t",
     "annotation": {
       "model": true
     },
     "level": 1
+  },
+  {
+    "type": "class",
+    "methods": [
+      {
+        "params": [],
+        "annotation": {
+          "constructor": true
+        },
+        "desc": "创建home对象。",
+        "name": "home_create",
+        "return": {
+          "type": "home_t*",
+          "desc": "返回home对象。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "home_t*",
+            "name": "home",
+            "desc": "home对象。"
+          }
+        ],
+        "annotation": {
+          "destructor": true
+        },
+        "desc": "销毁home对象。",
+        "name": "home_destroy",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "home_t*",
+            "name": "home",
+            "desc": "home对象。"
+          }
+        ],
+        "annotation": {
+          "command": "adjustBedRoom"
+        },
+        "desc": "设置卧室参数",
+        "name": "home_adjust_bed_room",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "home_t*",
+            "name": "home",
+            "desc": "home对象。"
+          }
+        ],
+        "annotation": {
+          "command": "adjustLivingRoom"
+        },
+        "desc": "设置客厅参数。",
+        "name": "home_adjust_living_room",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "home_t*",
+            "name": "home",
+            "desc": "home对象。"
+          }
+        ],
+        "annotation": {},
+        "desc": "获取卧室参数。",
+        "name": "home_get_bed_room_info",
+        "return": {
+          "type": "const char*",
+          "desc": "返回卧室参数。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "home_t*",
+            "name": "home",
+            "desc": "home对象。"
+          }
+        ],
+        "annotation": {},
+        "desc": "获取客厅参数。",
+        "name": "home_get_living_room_info",
+        "return": {
+          "type": "const char*",
+          "desc": "返回客厅参数。"
+        }
+      }
+    ],
+    "events": [],
+    "properties": [
+      {
+        "name": "bed_room_info",
+        "desc": "bed_room_info。",
+        "type": "str_t",
+        "annotation": {
+          "readable": true,
+          "fake": true
+        }
+      },
+      {
+        "name": "living_room_info",
+        "desc": "living_room_info。",
+        "type": "str_t",
+        "annotation": {
+          "readable": true,
+          "fake": true
+        }
+      }
+    ],
+    "header": "demo12/home.h",
+    "desc": "房间控制器。",
+    "name": "home_t",
+    "parent": "emitter_t",
+    "annotation": {
+      "model": true
+    },
+    "level": 2
   }
 ]

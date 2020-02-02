@@ -22,6 +22,7 @@
 #ifndef TK_ROOM_SETTINGS_DEFINES_H
 #define TK_ROOM_SETTINGS_DEFINES_H
 
+#define STR_HOME "home"
 #define PROP_TEMP "temp"
 #define PROP_ROOM "room"
 #define PROP_HUMIDITY "humidity"
@@ -34,7 +35,5 @@
 /*返回的参数*/
 #define ROOM_SETTINGS_RESULT_TEMP PROP_TEMP
 #define ROOM_SETTINGS_RESULT_HUMIDITY PROP_HUMIDITY
-
-#define ROOM_SETTINGS(t) ((room_settings_t*)(t))
 
 #endif /*TK_ROOM_SETTINGS_DEFINES_H*/
