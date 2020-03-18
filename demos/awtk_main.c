@@ -25,6 +25,8 @@
 #define GLOBAL_INIT() mvvm_init()
 #define GLOBAL_EXIT() mvvm_deinit()
 
+extern ret_t application_init();
+
 ret_t application_exit() {
   log_debug("application_exit\n");
   return RET_OK;

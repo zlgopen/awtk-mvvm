@@ -15,7 +15,7 @@ os.chdir(APP_ROOT);
 AWTK_ROOT=common.joinPath(APP_ROOT, '../awtk');
 ASSETS_ROOT=common.joinPath(APP_ROOT, 'assets')
 ASSET_C=common.joinPath(APP_ROOT, 'demos/assets.c')
-themes = ['default', 'dark']
+themes = ['default']
 
 for theme in themes:
     print('========================='+theme+' begin =========================')
