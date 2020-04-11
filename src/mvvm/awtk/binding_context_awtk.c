@@ -544,17 +544,15 @@ static ret_t visit_data_binding_update_to_view(void* ctx, const void* data) {
     return RET_OK;
   }
 
-  if ((rule->mode == BINDING_ONCE && !(bctx->bound)) || rule->mode == BINDING_ONE_WAY ||
-      rule->mode == BINDING_TWO_WAY) {
-    return_value_if_fail(data_binding_get_prop(rule, &v) == RET_OK, RET_OK);
-
-    if (bctx->bound) {
+  if (bctx->bound) {
+    if ((rule->mode == BINDING_ONCE && !(bctx->bound)) || rule->mode == BINDING_ONE_WAY ||
+        rule->mode == BINDING_TWO_WAY) {
+      return_value_if_fail(data_binding_get_prop(rule, &v) == RET_OK, RET_OK);
       ENSURE(widget_set_prop_if_diff(widget, rule->prop, &v) == RET_OK);
-    } else {
-      ENSURE(widget_set_prop(widget, rule->prop, &v) == RET_OK);
+      value_reset(&v);
     }
-
-    value_reset(&v);
+  } else {
+    ENSURE(widget_set_prop(widget, rule->prop, &v) == RET_OK);
   }
 
   return RET_OK;
