@@ -57,4 +57,3 @@ ret_t room_info_destroy(room_info_t* room_info) {
 
   return RET_OK;
 }
-

@@ -10,29 +10,26 @@ static ret_t calculator_view_model_set_prop(object_t* obj, const char* name, con
   calculator_t* acalculator = ((calculator_view_model_t*)(obj))->acalculator;
 
   if (tk_str_ieq("expr", name)) {
-     calculator_set_expr(acalculator, value_str(v));
+    calculator_set_expr(acalculator, value_str(v));
 
-     return RET_OK;
+    return RET_OK;
   }
-  
+
   return RET_NOT_FOUND;
 }
-
 
 static ret_t calculator_view_model_get_prop(object_t* obj, const char* name, value_t* v) {
   calculator_t* acalculator = ((calculator_view_model_t*)(obj))->acalculator;
 
   if (tk_str_ieq("expr", name)) {
-     value_set_str(v, calculator_get_expr(acalculator));
-     return RET_OK;
+    value_set_str(v, calculator_get_expr(acalculator));
+    return RET_OK;
   }
 
   return RET_NOT_FOUND;
 }
 
-
 static bool_t calculator_view_model_can_exec(object_t* obj, const char* name, const char* args) {
- 
   calculator_view_model_t* vm = (calculator_view_model_t*)(obj);
   calculator_t* acalculator = vm->acalculator;
   if (tk_str_ieq("add_char", name)) {
@@ -48,7 +45,6 @@ static bool_t calculator_view_model_can_exec(object_t* obj, const char* name, co
 }
 
 static ret_t calculator_view_model_exec(object_t* obj, const char* name, const char* args) {
- 
   calculator_view_model_t* vm = (calculator_view_model_t*)(obj);
   calculator_t* acalculator = vm->acalculator;
   if (tk_str_ieq("add_char", name)) {
@@ -67,26 +63,23 @@ static ret_t calculator_view_model_on_destroy(object_t* obj) {
   calculator_view_model_t* vm = (calculator_view_model_t*)(obj);
   return_value_if_fail(vm != NULL, RET_BAD_PARAMS);
 
-  
   calculator_destroy(vm->acalculator);
 
   return view_model_deinit(VIEW_MODEL(obj));
 }
 
-static const object_vtable_t s_calculator_view_model_vtable = {
-  "calculator_view_model_t",
-  "calculator_view_model_t",
-  sizeof(calculator_view_model_t),
-  FALSE,
-  calculator_view_model_on_destroy,
-  NULL,
-  calculator_view_model_get_prop,
-  calculator_view_model_set_prop,
-  NULL,
-  NULL,
-  calculator_view_model_can_exec,
-  calculator_view_model_exec
-};
+static const object_vtable_t s_calculator_view_model_vtable = {"calculator_view_model_t",
+                                                               "calculator_view_model_t",
+                                                               sizeof(calculator_view_model_t),
+                                                               FALSE,
+                                                               calculator_view_model_on_destroy,
+                                                               NULL,
+                                                               calculator_view_model_get_prop,
+                                                               calculator_view_model_set_prop,
+                                                               NULL,
+                                                               NULL,
+                                                               calculator_view_model_can_exec,
+                                                               calculator_view_model_exec};
 
 view_model_t* calculator_view_model_create_with(calculator_t* acalculator) {
   object_t* obj = object_create(&s_calculator_view_model_vtable);
@@ -96,7 +89,6 @@ view_model_t* calculator_view_model_create_with(calculator_t* acalculator) {
   return_value_if_fail(vm != NULL, NULL);
 
   calculator_view_model->acalculator = acalculator;
-  
 
   return vm;
 }

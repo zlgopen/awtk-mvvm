@@ -39,13 +39,13 @@ BEGIN_C_DECLS
 typedef struct _home_t {
   emitter_t emitter;
 
-  /** 
+  /**
    * @property {str_t} bed_room_info
    * @annotation ["readable", "fake"]
    * bed_room_info。
    */
 
-  /** 
+  /**
    * @property {str_t} living_room_info
    * @annotation ["readable", "fake"]
    * living_room_info。

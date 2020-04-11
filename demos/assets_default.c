@@ -334,7 +334,7 @@
 #include "assets/default/inc/images/arrow_left_n.data"
 #include "assets/default/inc/images/edit_clear_p.data"
 #include "assets/default/inc/images/battery_2.data"
-#endif/*WITH_STB_IMAGE*/
+#endif /*WITH_STB_IMAGE*/
 #ifdef WITH_VGCANVAS
 #include "assets/default/inc/images/pointer_4.bsvg"
 #include "assets/default/inc/images/ball.bsvg"
@@ -342,19 +342,19 @@
 #include "assets/default/inc/images/pointer_1.bsvg"
 #include "assets/default/inc/images/pointer.bsvg"
 #include "assets/default/inc/images/girl.bsvg"
-#endif/*WITH_VGCANVAS*/
+#endif /*WITH_VGCANVAS*/
 #if defined(WITH_STB_FONT) || defined(WITH_FT_FONT)
 #include "assets/default/inc/fonts/ap.res"
 #include "assets/default/inc/fonts/default_full.res"
 #include "assets/default/inc/fonts/default.res"
-#else/*WITH_STB_FONT or WITH_FT_FONT*/
+#else /*WITH_STB_FONT or WITH_FT_FONT*/
 #include "assets/default/inc/fonts/default_20.data"
 #include "assets/default/inc/fonts/default_16.data"
 #include "assets/default/inc/fonts/default_18.data"
 #include "assets/default/inc/fonts/default_96.data"
 #include "assets/default/inc/fonts/default_32.data"
 #include "assets/default/inc/fonts/default_24.data"
-#endif/*WITH_STB_FONT or WITH_FT_FONT*/
+#endif /*WITH_STB_FONT or WITH_FT_FONT*/
 #include "assets/default/inc/scripts/home.res"
 #include "assets/default/inc/scripts/shape.res"
 #include "assets/default/inc/scripts/temperature.res"
@@ -366,7 +366,7 @@
 #include "assets/default/inc/scripts/com_settings.res"
 #include "assets/default/inc/scripts/room_settings.res"
 #include "assets/default/inc/scripts/calculator.res"
-#endif/*WITH_FS_RES*/
+#endif /*WITH_FS_RES*/
 
 ret_t assets_init_default(void) {
   assets_manager_t* am = assets_manager();
@@ -577,14 +577,14 @@ ret_t assets_init_default(void) {
   assets_manager_add(am, font_ap);
   assets_manager_add(am, font_default_full);
   assets_manager_add(am, font_default);
-#else/*WITH_STB_FONT or WITH_FT_FONT*/
+#else  /*WITH_STB_FONT or WITH_FT_FONT*/
   assets_manager_add(am, font_default_20);
   assets_manager_add(am, font_default_16);
   assets_manager_add(am, font_default_18);
   assets_manager_add(am, font_default_96);
   assets_manager_add(am, font_default_32);
   assets_manager_add(am, font_default_24);
-#endif/*WITH_STB_FONT or WITH_FT_FONT*/
+#endif /*WITH_STB_FONT or WITH_FT_FONT*/
 #ifdef WITH_VGCANVAS
   assets_manager_add(am, image_pointer_4);
   assets_manager_add(am, image_ball);
@@ -592,7 +592,7 @@ ret_t assets_init_default(void) {
   assets_manager_add(am, image_pointer_1);
   assets_manager_add(am, image_pointer);
   assets_manager_add(am, image_girl);
-#endif/*WITH_VGCANVAS*/
+#endif /*WITH_VGCANVAS*/
   assets_manager_add(am, script_home);
   assets_manager_add(am, script_shape);
   assets_manager_add(am, script_temperature);

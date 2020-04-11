@@ -31,7 +31,7 @@ home_t* home_create(void) {
   emitter_init(EMITTER(home));
   home->bed_room = room_info_create("bed room");
   home->living_room = room_info_create("living room");
-  
+
   return home;
 }
 
@@ -53,12 +53,14 @@ static ret_t home_on_room_result(navigator_request_t* req, const value_t* result
   double temp = object_get_prop_float(res, ROOM_SETTINGS_RESULT_TEMP, 0);
   double humidity = object_get_prop_float(res, ROOM_SETTINGS_RESULT_HUMIDITY, 0);
 
-  if(tk_str_eq(room_name, h->bed_room->name)) {
+  if (tk_str_eq(room_name, h->bed_room->name)) {
     h->bed_room->temp = temp;
-    h->bed_room->humidity = humidity;;
+    h->bed_room->humidity = humidity;
+    ;
   } else {
     h->living_room->temp = temp;
-    h->living_room->humidity = humidity;;
+    h->living_room->humidity = humidity;
+    ;
   }
 
   emitter_dispatch_simple_event(EMITTER(h), EVT_PROPS_CHANGED);
@@ -97,6 +99,6 @@ const char* home_get_bed_room_info(home_t* home) {
 
 const char* home_get_living_room_info(home_t* home) {
   return_value_if_fail(home != NULL, NULL);
-  
+
   return room_info_get_summary(home->living_room);
 }
