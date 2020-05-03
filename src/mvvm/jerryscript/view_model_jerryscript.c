@@ -22,6 +22,7 @@
 #include "tkc/mem.h"
 #include "tkc/utils.h"
 #include "mvvm/jerryscript/jsobj.h"
+#include "mvvm/jerryscript/jerry_script_helper.h"
 #include "mvvm/jerryscript/view_model_jerryscript.h"
 #include "mvvm/jerryscript/view_model_array_jerryscript.h"
 #include "mvvm/jerryscript/view_model_normal_jerryscript.h"
@@ -95,23 +96,7 @@ static jerry_value_t jsobj_create_model(const char* name, navigator_request_t* r
 }
 
 ret_t view_model_jerryscript_load(const char* name, const char* code, uint32_t code_size) {
-  ret_t ret = RET_FAIL;
-  jerry_value_t jsret = 0;
-  jerry_value_t jscode = 0;
-
-  jscode = jerry_parse((const jerry_char_t*)name, strlen(name), (const jerry_char_t*)code,
-                       code_size, JERRY_PARSE_NO_OPTS);
-
-  if (jerry_value_check(jscode) == RET_OK) {
-    jsret = jerry_run(jscode);
-    if (jerry_value_check(jscode) == RET_OK) {
-      ret = RET_OK;
-    }
-    jerry_release_value(jsret);
-  }
-  jerry_release_value(jscode);
-
-  return ret;
+  return jerry_script_eval_buff(code, code_size, name, TRUE);
 }
 
 #define STR_NATIVE_MODEL "nativeModel"
