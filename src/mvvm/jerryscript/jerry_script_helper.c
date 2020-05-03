@@ -1,7 +1,7 @@
 /**
  * File:   jerry_script_helper.c
  * Author: AWTK Develop Team
- * Brief:  jerry_script_helper 
+ * Brief:  jerry_script_helper
  *
  * Copyright (c) 2020 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
@@ -252,7 +252,7 @@ ret_t jerry_script_eval_buff(const char* script, uint32_t size, const char* file
   if (jerry_value_check(parsed_code) == RET_OK) {
     jerry_value_t ret_value = jerry_run(parsed_code);
     ret = jerry_value_check(ret_value);
-    if(ret == RET_OK) {
+    if (ret == RET_OK) {
       jerry_release_value(ret_value);
     }
   }
@@ -314,3 +314,4 @@ ret_t jerry_script_register_builtins(void) {
 
   return RET_OK;
 }
+

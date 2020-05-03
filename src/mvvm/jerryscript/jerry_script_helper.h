@@ -1,7 +1,7 @@
 /**
  * File:   jerry_script_helper.h
  * Author: AWTK Develop Team
- * Brief:  jerry_script_helper 
+ * Brief:  jerry_script_helper
  *
  * Copyright (c) 2020 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *

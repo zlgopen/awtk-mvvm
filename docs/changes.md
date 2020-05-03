@@ -2,6 +2,7 @@
 
 * 2020/05/03
   * javascript 支持加载模块(参考temperature_ex.js)。
+  * 完善 mvvm，修改jsdemo15的问题。
 
 * 2019/12/03
   * 修改view model array的CURSOR不应该触发prop changed事件的问题

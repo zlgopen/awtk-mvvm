@@ -114,8 +114,10 @@ static ret_t on_widget_prop_change(void* ctx, event_t* e) {
   data_binding_t* rule = DATA_BINDING(ctx);
   prop_change_event_t* evt = prop_change_event_cast(e);
 
-  data_binding_set_prop(rule, evt->value);
-  binding_context_update_error_of(rule);
+  if (tk_str_eq(evt->name, rule->prop)) {
+    data_binding_set_prop(rule, evt->value);
+    binding_context_update_error_of(rule);
+  }
 
   return RET_OK;
 }
@@ -124,7 +126,7 @@ static ret_t on_widget_value_change(void* ctx, event_t* e) {
   value_t v;
   widget_t* widget = WIDGET(e->target);
   data_binding_t* rule = DATA_BINDING(ctx);
-  return_value_if_fail(widget_get_prop(widget, WIDGET_PROP_VALUE, &v) == RET_OK, RET_OK);
+  return_value_if_fail(widget_get_prop(widget, rule->prop, &v) == RET_OK, RET_OK);
 
   data_binding_set_prop(rule, &v);
   binding_context_update_error_of(rule);
@@ -150,10 +152,10 @@ static ret_t binding_context_bind_data(binding_context_t* ctx, const char* name,
 
   if (rule->trigger != UPDATE_WHEN_EXPLICIT) {
     if (rule->mode == BINDING_TWO_WAY || rule->mode == BINDING_ONE_WAY_TO_VIEW_MODEL) {
-      bool_t is_edit = tk_str_eq(widget_get_type(widget), WIDGET_TYPE_EDIT);
+      bool_t inputable = widget->vt->inputable;
 
       if (tk_str_eq(rule->prop, WIDGET_PROP_VALUE) ||
-          (tk_str_eq(rule->prop, WIDGET_PROP_TEXT) && is_edit)) {
+          (tk_str_eq(rule->prop, WIDGET_PROP_TEXT) && inputable)) {
         if (rule->trigger == UPDATE_WHEN_CHANGING) {
           widget_on_with_tag(widget, EVT_VALUE_CHANGING, on_widget_value_change, rule, EVENT_TAG);
         }
@@ -544,15 +546,11 @@ static ret_t visit_data_binding_update_to_view(void* ctx, const void* data) {
     return RET_OK;
   }
 
-  if (bctx->bound) {
-    if ((rule->mode == BINDING_ONCE && !(bctx->bound)) || rule->mode == BINDING_ONE_WAY ||
-        rule->mode == BINDING_TWO_WAY) {
-      return_value_if_fail(data_binding_get_prop(rule, &v) == RET_OK, RET_OK);
-      ENSURE(widget_set_prop_if_diff(widget, rule->prop, &v) != RET_FAIL);
-      value_reset(&v);
-    }
-  } else {
-    ENSURE(widget_set_prop(widget, rule->prop, &v) != RET_FAIL);
+  if ((rule->mode == BINDING_ONCE && !(bctx->bound)) || rule->mode == BINDING_ONE_WAY ||
+      rule->mode == BINDING_TWO_WAY) {
+    return_value_if_fail(data_binding_get_prop(rule, &v) == RET_OK, RET_OK);
+    ENSURE(widget_set_prop_if_diff(widget, rule->prop, &v) != RET_FAIL);
+    value_reset(&v);
   }
 
   return RET_OK;

@@ -1,7 +1,10 @@
 <window v-model="address.js"> 
-  <combo_box x="center" y="middle:-80" w="60%" h="30" v-data:options="{province_list}" v-data:text="{province}"/>
-  <combo_box x="center" y="middle:-40" w="60%" h="30" v-data:options="{city_list}" v-data:text="{city}"/>
-  <combo_box x="center" y="middle" w="60%" h="30" v-data:options="{country_list}" v-data:text="{country}"/>
+  <combo_box x="center" y="middle:-80" w="60%" h="30" 
+    readonly="true" v-data:options="{province_list}" v-data:text="{province}"/>
+  <combo_box x="center" y="middle:-40" w="60%" h="30" 
+    readonly="true" v-data:options="{city_list}" v-data:text="{city}"/>
+  <combo_box x="center" y="middle" w="60%" h="30" 
+    readonly="true" v-data:options="{country_list}" v-data:text="{country}"/>
   <edit x="center" y="middle:40" w="60%" h="30" v-data:value="{detail, Trigger=Changing}" tips="detail address"/>
   <hscroll_label x="center" y="middle:80" w="90%" h="30" v-data:text="{address}"/>
 </window>

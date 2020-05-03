@@ -66,7 +66,6 @@ jerry_value_t jsobj_get_prop_value(jerry_value_t obj, const char* name) {
   jerry_value_t prop_name = jerry_create_string((const jerry_char_t*)name);
   jerry_value_t prop_value = jerry_get_property(obj, prop_name);
   jerry_release_value(prop_name);
-  jerry_value_check(prop_value);
 
   return prop_value;
 }
@@ -103,8 +102,11 @@ char* jerry_get_utf8_value(jerry_value_t value, str_t* temp) {
 ret_t jsobj_get_prop(jerry_value_t obj, const char* name, value_t* v, str_t* temp) {
   ret_t ret = RET_FAIL;
   jerry_value_t prop_value = jsobj_get_prop_value(obj, name);
-  ret = jerry_value_to_value(prop_value, v, temp);
-  jerry_release_value(prop_value);
+
+  if (jerry_value_check(prop_value) == RET_OK) {
+    ret = jerry_value_to_value(prop_value, v, temp);
+    jerry_release_value(prop_value);
+  }
 
   return ret;
 }
