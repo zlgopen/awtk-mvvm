@@ -72,15 +72,8 @@ static ret_t widget_hardware_on_paint_self(widget_t* widget, canvas_t* c) {
   return RET_OK;
 }
 
-widget_t* widget_hardware_create_internal(widget_t* parent, xy_t x, xy_t y, wh_t w, wh_t h) {
-  widget_t* widget = widget_create(parent, TK_REF_VTABLE(widget_hardware), x, y, w, h);
-  widget_hardware_t* widget_hardware = WIDGET_HARDWARE(widget);
-  return_value_if_fail(widget_hardware != NULL, NULL);
-
-  return widget;
-}
-
 const char* s_widget_hardware_properties[] = {NULL};
+widget_t* widget_hardware_create_internal(widget_t* parent, xy_t x, xy_t y, wh_t w, wh_t h);
 
 TK_DECL_VTABLE(widget_hardware) = {.size = sizeof(widget_hardware_t),
                                    .type = WIDGET_TYPE_WIDGET_HARDWARE,
@@ -92,6 +85,14 @@ TK_DECL_VTABLE(widget_hardware) = {.size = sizeof(widget_hardware_t),
                                    .set_prop = widget_hardware_set_prop,
                                    .get_prop = widget_hardware_get_prop,
                                    .on_destroy = widget_hardware_on_destroy};
+
+widget_t* widget_hardware_create_internal(widget_t* parent, xy_t x, xy_t y, wh_t w, wh_t h) {
+  widget_t* widget = widget_create(parent, TK_REF_VTABLE(widget_hardware), x, y, w, h);
+  widget_hardware_t* widget_hardware = WIDGET_HARDWARE(widget);
+  return_value_if_fail(widget_hardware != NULL, NULL);
+
+  return widget;
+}
 
 #include "mvvm/hardware/device_factory.h"
 
