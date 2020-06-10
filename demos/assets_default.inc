@@ -37,6 +37,7 @@
 #include "assets/default/inc/ui/js_temperature6.data"
 #include "assets/default/inc/ui/js_com_settings.data"
 #include "assets/default/inc/ui/temperature4.data"
+#include "assets/default/inc/ui/app_conf_sub_vm.data"
 #include "assets/default/inc/ui/file_chooser_for_open.data"
 #include "assets/default/inc/ui/js_temperature9.data"
 #include "assets/default/inc/ui/app_conf.data"
@@ -348,7 +349,7 @@
 #include "assets/default/inc/fonts/ap.res"
 #include "assets/default/inc/fonts/default_full.res"
 #include "assets/default/inc/fonts/default.res"
-#else/*WITH_STB_FONT or WITH_FT_FONT*/
+#else /*WITH_STB_FONT or WITH_FT_FONT*/
 #include "assets/default/inc/fonts/default_20.data"
 #include "assets/default/inc/fonts/default_16.data"
 #include "assets/default/inc/fonts/default_18.data"
@@ -412,6 +413,7 @@ ret_t assets_init_default(void) {
   assets_manager_add(am, ui_js_temperature6);
   assets_manager_add(am, ui_js_com_settings);
   assets_manager_add(am, ui_temperature4);
+  assets_manager_add(am, ui_app_conf_sub_vm);
   assets_manager_add(am, ui_file_chooser_for_open);
   assets_manager_add(am, ui_js_temperature9);
   assets_manager_add(am, ui_app_conf);
@@ -579,7 +581,7 @@ ret_t assets_init_default(void) {
   assets_manager_add(am, font_ap);
   assets_manager_add(am, font_default_full);
   assets_manager_add(am, font_default);
-#else /*WITH_STB_FONT or WITH_FT_FONT*/
+#else  /*WITH_STB_FONT or WITH_FT_FONT*/
   assets_manager_add(am, font_default_20);
   assets_manager_add(am, font_default_16);
   assets_manager_add(am, font_default_18);

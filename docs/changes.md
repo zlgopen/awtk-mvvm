@@ -1,9 +1,14 @@
 # 最新动态
 
+* 2020/06/11
+  * rule 的patch支持多级，如font.name
+  * 增加demo22
+
 * 2020/06/10
   * 支持sub view model
   * 完善view\_model\_object\_wrapper支持sub view model
   * 增加app\_conf的例子。
+  * 增加demo21
 
 * 2020/05/03
   * javascript 支持加载模块(参考temperature_ex.js)。

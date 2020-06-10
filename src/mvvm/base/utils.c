@@ -49,7 +49,21 @@ ret_t str_random(str_t* str, const char* format, uint32_t max) {
 }
 
 bool_t tk_is_valid_prop_name(const char* name) {
+  const char* p = name;
   return_value_if_fail(name != NULL, FALSE);
 
-  return tk_is_valid_name(name) || tk_str_start_with(name, "item.");
+  if (tk_str_start_with(name, "item.")) {
+    return TRUE;
+  }
+
+  while (*p) {
+    if ((*p >= 'a' && *p <= 'z') || (*p >= 'A' && *p <= 'Z') || (*p >= '0' && *p <= '9') ||
+        *p == '_' || *p == '.' || *p == '[' || *p == ']') {
+      p++;
+    } else {
+      return FALSE;
+    }
+  }
+
+  return TRUE;
 }

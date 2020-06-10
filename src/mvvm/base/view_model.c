@@ -22,6 +22,7 @@
 #include "tkc/str.h"
 #include "tkc/utils.h"
 #include "tkc/expr_eval.h"
+#include "mvvm/base/utils.h"
 #include "mvvm/base/view_model.h"
 
 view_model_t* view_model_init(view_model_t* view_model) {
@@ -238,7 +239,7 @@ ret_t view_model_eval(view_model_t* view_model, const char* expr, value_t* v) {
   return_value_if_fail(obj != NULL && obj->vt != NULL && obj->ref_count >= 0, RET_BAD_PARAMS);
 
   expr = view_model_preprocess_expr(view_model, expr);
-  if (tk_is_valid_name(expr)) {
+  if (tk_is_valid_prop_name(expr)) {
     return view_model_get_prop(view_model, expr, v);
   } else {
     EvalHooks hooks;
