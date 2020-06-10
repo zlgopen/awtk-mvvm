@@ -1,0 +1,29 @@
+<window v-model="app_conf">
+  <tab_control x="0" y="0" w="100%" h="100%" >
+    <pages x="0" y="0" w="100%" h="-60" style="at_top">
+      <view w="100%" h="100%" children_layout="default(c=2,h=40,s=10,m=5)" v-model="sub_view_model:font">
+        <label text="Name" />
+        <edit text="default" v-data:value="{name, Trigger=Changed}"/>
+        <label text="Size" />
+        <edit text="20" v-data:value="{size, Trigger=Changed}"/>
+        <check_button text="Bold" v-data:value="{bold, Trigger=Changed}"/>
+        <check_button text="Italic" v-data:value="{italic, Trigger=Changed}"/>
+      </view>
+      <view w="100%" h="100%" children_layout="default(c=2,h=40,s=10,m=5)" v-model="sub_view_model:color">
+        <label text="Background Color" />
+        <edit text="#f0f0f0" v-data:value="{backgroup, Trigger=Changed}"/>
+        <label text="Text Color" />
+        <edit text="black" v-data:value="{text, Trigger=Changed}"/>
+        <label text="Border Color" />
+        <edit text="black" v-data:value="{border, Trigger=Changed}"/>
+      </view>
+    </pages>
+    <tab_button_group x="0" y="bottom" w="100%" h="60" >
+      <tab_button text="Font" value="true"/>
+      <tab_button text="Color"/>
+    </tab_button_group>
+  </tab_control>
+
+  <button text="Save" floating="true" self_layout="default(x=c, y=b:80, w=80, h=30)" v-on:click="{save}"/>
+</window>
+

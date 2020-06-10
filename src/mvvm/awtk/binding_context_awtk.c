@@ -39,6 +39,8 @@
 #include "mvvm/base/binding_rule_parser.h"
 #include "mvvm/awtk/binding_context_awtk.h"
 
+#define STR_SUB_VIEW_MODEL "sub_view_model:"
+
 static ret_t binding_context_put_widget(binding_context_t* ctx, widget_t* widget) {
   darray_t* cache = &(ctx->cache_widgets);
 
@@ -61,7 +63,8 @@ static widget_t* binding_context_get_widget(binding_context_t* ctx) {
 }
 
 #define EVENT_TAG 0x11223300
-static ret_t binding_context_bind_for_widget(widget_t* widget, navigator_request_t* req);
+static ret_t binding_context_bind_for_widget(widget_t* widget, binding_context_t* parent_ctx,
+                                             navigator_request_t* req);
 
 static const char* widget_get_prop_vmodel(widget_t* widget) {
   value_t v;
@@ -303,32 +306,40 @@ static ret_t on_view_model_prop_change(void* ctx, event_t* e) {
 }
 
 static view_model_t* binding_context_awtk_create_view_model(widget_t* widget,
+                                                            binding_context_t* parent_ctx,
                                                             navigator_request_t* req) {
   view_model_t* view_model = NULL;
   widget_t* win = widget_get_window(widget);
   const char* vmodel = widget_get_prop_vmodel(widget);
 
   if (vmodel != NULL) {
-    char name[TK_NAME_LEN + 1];
-    char* ext_name = NULL;
-    tk_strncpy(name, vmodel, TK_NAME_LEN);
-
-    if (req != NULL) {
-      object_set_prop_pointer(OBJECT(req), NAVIGATOR_ARG_VIEW, widget);
-    }
-
-    ext_name = strrchr(name, '.');
-    if (ext_name != NULL) {
-      *ext_name = '\0';
-      view_model = view_model_factory_create_model(name, req);
-      if (view_model == NULL) {
-        *ext_name = '.';
-        view_model = view_model_factory_create_model(ext_name, req);
-      }
-      return_value_if_fail(view_model != NULL, NULL);
+    if (tk_str_start_with(vmodel, STR_SUB_VIEW_MODEL)) {
+      const char* name = strchr(vmodel, ':');
+      return_value_if_fail(name != NULL, NULL);
+      name++;
+      view_model = view_model_create_sub_view_model(parent_ctx->view_model, name);
     } else {
-      view_model = view_model_factory_create_model(name, req);
-      return_value_if_fail(view_model != NULL, NULL);
+      char name[TK_NAME_LEN + 1];
+      char* ext_name = NULL;
+      tk_strncpy(name, vmodel, TK_NAME_LEN);
+
+      if (req != NULL) {
+        object_set_prop_pointer(OBJECT(req), NAVIGATOR_ARG_VIEW, widget);
+      }
+
+      ext_name = strrchr(name, '.');
+      if (ext_name != NULL) {
+        *ext_name = '\0';
+        view_model = view_model_factory_create_model(name, req);
+        if (view_model == NULL) {
+          *ext_name = '.';
+          view_model = view_model_factory_create_model(ext_name, req);
+        }
+        return_value_if_fail(view_model != NULL, NULL);
+      } else {
+        view_model = view_model_factory_create_model(name, req);
+        return_value_if_fail(view_model != NULL, NULL);
+      }
     }
   }
 
@@ -350,7 +361,7 @@ static ret_t binding_context_awtk_bind_widget(binding_context_t* ctx, widget_t* 
   const char* vmodel = widget_get_prop_vmodel(widget);
 
   if (vmodel != NULL && ctx->widget != widget) {
-    return binding_context_bind_for_widget(widget, ctx->navigator_request);
+    return binding_context_bind_for_widget(widget, ctx, ctx->navigator_request);
   } else {
     view_model = ctx->view_model;
   }
@@ -678,12 +689,13 @@ static const binding_context_vtable_t s_binding_context_vtable = {
     .can_exec = binding_context_awtk_can_exec,
     .destroy = binding_context_awtk_destroy};
 
-binding_context_t* binding_context_awtk_create(widget_t* widget, navigator_request_t* req) {
+binding_context_t* binding_context_awtk_create(widget_t* widget, binding_context_t* parent_ctx,
+                                               navigator_request_t* req) {
   view_model_t* view_model = NULL;
   binding_context_t* ctx = NULL;
   return_value_if_fail(widget != NULL && req != NULL, NULL);
 
-  view_model = binding_context_awtk_create_view_model(widget, req);
+  view_model = binding_context_awtk_create_view_model(widget, parent_ctx, req);
 
   if (view_model != NULL) {
     ctx = TKMEM_ZALLOC(binding_context_t);
@@ -726,11 +738,12 @@ static ret_t binding_context_on_widget_destroy(void* ctx, event_t* e) {
   return RET_REMOVE;
 }
 
-static ret_t binding_context_bind_for_widget(widget_t* widget, navigator_request_t* req) {
+static ret_t binding_context_bind_for_widget(widget_t* widget, binding_context_t* parent_ctx,
+                                             navigator_request_t* req) {
   binding_context_t* ctx = NULL;
   return_value_if_fail(widget != NULL && req != NULL, RET_BAD_PARAMS);
 
-  ctx = binding_context_awtk_create(widget, req);
+  ctx = binding_context_awtk_create(widget, parent_ctx, req);
   return_value_if_fail(ctx != NULL, RET_BAD_PARAMS);
 
   goto_error_if_fail(binding_context_awtk_bind(ctx, widget) == RET_OK);
@@ -744,7 +757,7 @@ error:
 }
 
 ret_t binding_context_bind_for_window(widget_t* widget, navigator_request_t* req) {
-  return binding_context_bind_for_widget(widget, req);
+  return binding_context_bind_for_widget(widget, NULL, req);
 }
 
 ret_t awtk_open_window(navigator_request_t* req) {

@@ -48,12 +48,24 @@ static ret_t view_model_object_wrapper_set_prop(object_t* obj, const char* name,
   view_model_object_wrapper_t* object_wrapper = VIEW_MODEL_OBJECT_WRAPPPER(obj);
   return_value_if_fail(obj != NULL && name != NULL && v != NULL, RET_BAD_PARAMS);
 
+  if (object_wrapper->prop_prefix != NULL) {
+    char path[MAX_PATH + 1];
+    tk_snprintf(path, MAX_PATH, "%s.%s", object_wrapper->prop_prefix, name);
+    name = path;
+  }
+
   return object_set_prop(OBJECT(object_wrapper->obj), name, v);
 }
 
 static ret_t view_model_object_wrapper_get_prop(object_t* obj, const char* name, value_t* v) {
   view_model_object_wrapper_t* object_wrapper = VIEW_MODEL_OBJECT_WRAPPPER(obj);
   return_value_if_fail(obj != NULL && name != NULL && v != NULL, RET_BAD_PARAMS);
+
+  if (object_wrapper->prop_prefix != NULL) {
+    char path[MAX_PATH + 1];
+    tk_snprintf(path, MAX_PATH, "%s.%s", object_wrapper->prop_prefix, name);
+    name = path;
+  }
 
   return object_get_prop(OBJECT(object_wrapper->obj), name, v);
 }
@@ -63,6 +75,12 @@ static bool_t view_model_object_wrapper_can_exec(object_t* obj, const char* name
   view_model_object_wrapper_t* object_wrapper = VIEW_MODEL_OBJECT_WRAPPPER(obj);
   return_value_if_fail(obj != NULL && name != NULL, FALSE);
 
+  if (object_wrapper->prop_prefix != NULL) {
+    char path[MAX_PATH + 1];
+    tk_snprintf(path, MAX_PATH, "%s.%s", object_wrapper->prop_prefix, name);
+    name = path;
+  }
+
   return object_can_exec(OBJECT(object_wrapper->obj), name, args);
 }
 
@@ -70,8 +88,37 @@ static ret_t view_model_object_wrapper_exec(object_t* obj, const char* name, con
   view_model_object_wrapper_t* object_wrapper = VIEW_MODEL_OBJECT_WRAPPPER(obj);
   return_value_if_fail(obj != NULL && name != NULL, RET_BAD_PARAMS);
 
+  if (object_wrapper->prop_prefix != NULL) {
+    char path[MAX_PATH + 1];
+    tk_snprintf(path, MAX_PATH, "%s.%s", object_wrapper->prop_prefix, name);
+    name = path;
+  }
+
   return object_exec(OBJECT(object_wrapper->obj), name, args);
 }
+
+view_model_t* view_model_object_wrapper_create_ex(object_t* obj, const char* prop_prefix);
+
+static view_model_t* view_model_object_create_sub_view_model(view_model_t* view_model,
+                                                             const char* name) {
+  str_t str;
+  view_model_t* sub = NULL;
+  view_model_object_wrapper_t* object_wrapper = VIEW_MODEL_OBJECT_WRAPPPER(view_model);
+
+  if (object_wrapper->prop_prefix != NULL) {
+    str_init(&str, 100);
+    str_append_more(&str, object_wrapper->prop_prefix, ".", name, NULL);
+    sub = view_model_object_wrapper_create_ex(object_wrapper->obj, name);
+    str_reset(&str);
+  } else {
+    sub = view_model_object_wrapper_create_ex(object_wrapper->obj, name);
+  }
+
+  return sub;
+}
+
+static const view_model_vtable_t s_view_model_vtable = {
+    .create_sub_view_model = view_model_object_create_sub_view_model};
 
 static const object_vtable_t s_model_object_wrapper_vtable = {
     .type = "view_model_object_wrapper",
@@ -85,14 +132,21 @@ static const object_vtable_t s_model_object_wrapper_vtable = {
     .can_exec = view_model_object_wrapper_can_exec,
     .exec = view_model_object_wrapper_exec};
 
-view_model_t* view_model_object_wrapper_create(object_t* obj) {
+view_model_t* view_model_object_wrapper_create_ex(object_t* obj, const char* prop_prefix) {
   object_t* model = object_create(&s_model_object_wrapper_vtable);
-  view_model_object_wrapper_t* object_wrapper = VIEW_MODEL_OBJECT_WRAPPPER(obj);
+  view_model_object_wrapper_t* object_wrapper = VIEW_MODEL_OBJECT_WRAPPPER(model);
+  view_model_t* view_model = VIEW_MODEL(model);
   return_value_if_fail(object_wrapper != NULL && obj != NULL, NULL);
 
   object_ref(obj);
   object_wrapper->obj = obj;
+  object_wrapper->prop_prefix = tk_strdup(prop_prefix);
   emitter_on(EMITTER(obj), EVT_PROPS_CHANGED, view_model_object_wrapper_on_changed, model);
+  view_model->vt = &s_view_model_vtable;
 
-  return VIEW_MODEL(model);
+  return view_model;
+}
+
+view_model_t* view_model_object_wrapper_create(object_t* obj) {
+  return view_model_object_wrapper_create_ex(obj, NULL);
 }

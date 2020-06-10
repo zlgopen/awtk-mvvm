@@ -38,6 +38,8 @@ typedef ret_t (*view_model_on_unmount_t)(view_model_t* view_model);
 typedef const char* (*view_model_preprocess_expr_t)(view_model_t* view_model, const char* expr);
 typedef const char* (*view_model_preprocess_prop_t)(view_model_t* view_model, const char* prop);
 
+typedef view_model_t* (*view_model_create_sub_view_model_t)(view_model_t* view_model,
+                                                            const char* name);
 typedef view_model_t* (*view_model_create_t)(navigator_request_t* req);
 
 typedef struct _model_vtable_t {
@@ -45,6 +47,7 @@ typedef struct _model_vtable_t {
   view_model_on_mount_t on_mount;
   view_model_on_will_unmount_t on_will_unmount;
   view_model_on_unmount_t on_unmount;
+  view_model_create_sub_view_model_t create_sub_view_model;
 } view_model_vtable_t;
 
 /**
@@ -229,6 +232,17 @@ ret_t view_model_exec(view_model_t* view_model, const char* name, const char* ar
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
 ret_t view_model_notify_props_changed(view_model_t* view_model);
+
+/**
+ * @method view_model_create_sub_view_model
+ * 创建子ViewModel。
+ *
+ * @param {view_model_t*} view_model view_model对象。
+ * @param {const char*} name 名称。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+view_model_t* view_model_create_sub_view_model(view_model_t* view_model, const char* name);
 
 #define VIEW_MODEL(view_model) ((view_model_t*)(view_model))
 

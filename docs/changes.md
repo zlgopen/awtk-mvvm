@@ -1,5 +1,10 @@
 # 最新动态
 
+* 2020/06/10
+  * 支持sub view model
+  * 完善view\_model\_object\_wrapper支持sub view model
+  * 增加app\_conf的例子。
+
 * 2020/05/03
   * javascript 支持加载模块(参考temperature_ex.js)。
   * 完善 mvvm，修改jsdemo15的问题。

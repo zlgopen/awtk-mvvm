@@ -314,4 +314,3 @@ ret_t jerry_script_register_builtins(void) {
 
   return RET_OK;
 }
-

@@ -40,6 +40,7 @@ struct _model_object_wrapper_t {
   view_model_t view_model;
 
   object_t* obj;
+  char* prop_prefix;
 };
 
 /**

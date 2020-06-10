@@ -274,3 +274,9 @@ ret_t view_model_eval(view_model_t* view_model, const char* expr, value_t* v) {
 ret_t view_model_notify_props_changed(view_model_t* view_model) {
   return emitter_dispatch_simple_event(EMITTER(view_model), EVT_PROPS_CHANGED);
 }
+
+view_model_t* view_model_create_sub_view_model(view_model_t* view_model, const char* name) {
+  return_value_if_fail(view_model != NULL && name != NULL, NULL);
+
+  return view_model->vt->create_sub_view_model(view_model, name);
+}

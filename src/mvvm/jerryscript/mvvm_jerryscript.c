@@ -52,7 +52,6 @@ ret_t mvvm_jerryscript_init(void) {
   return RET_OK;
 }
 
-
 ret_t mvvm_jerryscript_deinit(void) {
   value_converter_jerryscript_deinit();
   value_validator_jerryscript_deinit();
