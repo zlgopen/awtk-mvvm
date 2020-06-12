@@ -42,6 +42,7 @@
 
 #define STR_SUB_VIEW_MODEL "sub_view_model:"
 #define STR_SUB_VIEW_MODEL_ARRAY "sub_view_model_array:"
+#define WIDGET_PROP_TEMPLATE_WIDGET "template_widget"
 
 static ret_t binding_context_put_widget(binding_context_t* ctx, widget_t* widget) {
   darray_t* cache = &(ctx->cache_widgets);
@@ -53,11 +54,12 @@ static ret_t binding_context_put_widget(binding_context_t* ctx, widget_t* widget
   return RET_OK;
 }
 
-static widget_t* binding_context_get_widget(binding_context_t* ctx) {
+static widget_t* binding_context_get_widget(binding_context_t* ctx, widget_t* container) {
   darray_t* cache = &(ctx->cache_widgets);
   widget_t* widget = darray_pop(cache);
   if (widget == NULL) {
-    widget_t* template_widget = WIDGET(ctx->template_widget);
+    widget_t* template_widget =
+        WIDGET(widget_get_prop_pointer(container, WIDGET_PROP_TEMPLATE_WIDGET));
     widget = widget_clone(template_widget, NULL);
   }
 
@@ -424,22 +426,31 @@ static ret_t widget_trim_children(binding_context_t* ctx, widget_t* widget, uint
   return RET_OK;
 }
 
+static ret_t binding_context_on_container_destroy(void* ctx, event_t* e) {
+  widget_t* widget = WIDGET(ctx);
+  widget_t* template_widget = WIDGET(widget_get_prop_pointer(widget, WIDGET_PROP_TEMPLATE_WIDGET));
+  widget_destroy(template_widget);
+
+  return RET_REMOVE;
+}
+
 static ret_t binding_context_prepare_children(binding_context_t* ctx, widget_t* widget) {
   uint32_t i = 0;
   view_model_t* view_model = ctx->view_model;
-  widget_t* template_widget = WIDGET(ctx->template_widget);
   uint32_t items = object_get_prop_int(OBJECT(view_model), VIEW_MODEL_PROP_ITEMS, 0);
+  widget_t* template_widget = WIDGET(widget_get_prop_pointer(widget, WIDGET_PROP_TEMPLATE_WIDGET));
 
-  if (ctx->template_widget == NULL) {
+  if (template_widget == NULL) {
     template_widget = widget_get_child(widget, 0);
+    widget_set_prop_pointer(widget, WIDGET_PROP_TEMPLATE_WIDGET, template_widget);
+    widget_on(widget, EVT_DESTROY, binding_context_on_container_destroy, widget);
 
-    ctx->template_widget = template_widget;
     widget_remove_child(widget, template_widget);
   }
 
   widget_trim_children(ctx, widget, items);
   for (i = widget_count_children(widget); i < items; i++) {
-    widget_add_child(widget, binding_context_get_widget(ctx));
+    widget_add_child(widget, binding_context_get_widget(ctx, widget));
   }
   return_value_if_fail(items == widget_count_children(widget), RET_OOM);
 
@@ -642,10 +653,6 @@ static ret_t binding_context_awtk_update_to_model(binding_context_t* ctx) {
 
 static ret_t binding_context_awtk_destroy(binding_context_t* ctx) {
   darray_deinit(&(ctx->cache_widgets));
-  if (ctx->template_widget != NULL) {
-    widget_destroy(WIDGET(ctx->template_widget));
-  }
-
   TKMEM_FREE(ctx);
 
   return RET_OK;
