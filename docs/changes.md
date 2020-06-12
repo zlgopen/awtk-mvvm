@@ -1,5 +1,8 @@
 # 最新动态
 
+* 2020/06/12
+  * 增加view\_model\_array\_object\_wrapper
+
 * 2020/06/11
   * rule 的patch支持多级，如font.name
   * 增加demo22
