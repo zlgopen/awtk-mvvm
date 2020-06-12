@@ -26,8 +26,8 @@
 
 BEGIN_C_DECLS
 
-struct _model_object_wrapper_t;
-typedef struct _model_object_wrapper_t view_model_object_wrapper_t;
+struct _view_model_object_wrapper_t;
+typedef struct _view_model_object_wrapper_t view_model_object_wrapper_t;
 
 /**
  * @class view_model_object_wrapper_t
@@ -36,7 +36,7 @@ typedef struct _model_object_wrapper_t view_model_object_wrapper_t;
  * 把object包装成view model。
  *
  */
-struct _model_object_wrapper_t {
+struct _view_model_object_wrapper_t {
   view_model_t view_model;
 
   object_t* obj;
@@ -52,6 +52,17 @@ struct _model_object_wrapper_t {
  * @return {view_model_t*} 返回view_model对象。
  */
 view_model_t* view_model_object_wrapper_create(object_t* obj);
+
+/**
+ * @method view_model_object_wrapper_create_ex
+ * 创建view_model对象。
+ *
+ * @param {object_t*} obj 对象。
+ * @param {const char*} prop_prefix 属性前缀。
+ *
+ * @return {view_model_t*} 返回view_model对象。
+ */
+view_model_t* view_model_object_wrapper_create_ex(object_t* obj, const char* prop_prefix);
 
 #define VIEW_MODEL_OBJECT_WRAPPPER(view_model) ((view_model_object_wrapper_t*)(view_model))
 

@@ -281,3 +281,9 @@ view_model_t* view_model_create_sub_view_model(view_model_t* view_model, const c
 
   return view_model->vt->create_sub_view_model(view_model, name);
 }
+
+view_model_t* view_model_create_sub_view_model_array(view_model_t* view_model, const char* name) {
+  return_value_if_fail(view_model != NULL && name != NULL, NULL);
+
+  return view_model->vt->create_sub_view_model_array(view_model, name);
+}

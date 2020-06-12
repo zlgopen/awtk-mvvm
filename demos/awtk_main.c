@@ -21,6 +21,7 @@
 
 #include "awtk.h"
 #include "mvvm/mvvm.h"
+#include "conf_io/app_conf.h"
 
 #define GLOBAL_INIT() mvvm_init()
 #define GLOBAL_EXIT() mvvm_deinit()
@@ -29,6 +30,10 @@ extern ret_t application_init();
 
 ret_t application_exit() {
   log_debug("application_exit\n");
+  if (app_conf_get_instance() != NULL) {
+    app_conf_save();
+  }
+
   return RET_OK;
 }
 

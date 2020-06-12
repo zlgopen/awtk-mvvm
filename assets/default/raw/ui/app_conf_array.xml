@@ -1,0 +1,23 @@
+<window v-model="app_conf">
+  <tab_control x="0" y="0" w="100%" h="100%">
+    <pages x="0" y="0" w="100%" h="-60" style="at_top" v-for-items="true" 
+      v-model="sub_view_model_array:network">
+      <view w="100%" h="100%" children_layout="default(c=2,h=40,s=10,m=5)">
+        <label text="Name" />
+        <edit text="default" v-data:value="{item.name}" readonly="true"/>
+        <label text="IP" />
+        <edit text="" v-data:value="{item.ip, Trigger=Changed}"/>
+        <label text="Mask" />
+        <edit text="" v-data:value="{item.mask, Trigger=Changed}"/>
+        <label text="GateWay" />
+        <edit text="" v-data:value="{item.gateway, Trigger=Changed}"/>
+      </view>
+    </pages>
+
+    <tab_button_group x="0" y="bottom" w="100%" h="60" v-for-items="true" 
+      v-model="sub_view_model_array:network">
+      <tab_button v-data:text="{item.name}" v-data:value="{$index == 0}"/>
+    </tab_button_group>
+  </tab_control>
+</window>
+

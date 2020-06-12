@@ -31,6 +31,7 @@
 #include "base/window.h"
 #include "base/window_manager.h"
 #include "mvvm/base/data_binding.h"
+#include "ui_loader/ui_serializer.h"
 #include "mvvm/base/view_model_dummy.h"
 #include "mvvm/base/view_model_array.h"
 #include "mvvm/base/view_model_factory.h"
@@ -40,6 +41,7 @@
 #include "mvvm/awtk/binding_context_awtk.h"
 
 #define STR_SUB_VIEW_MODEL "sub_view_model:"
+#define STR_SUB_VIEW_MODEL_ARRAY "sub_view_model_array:"
 
 static ret_t binding_context_put_widget(binding_context_t* ctx, widget_t* widget) {
   darray_t* cache = &(ctx->cache_widgets);
@@ -316,8 +318,11 @@ static view_model_t* binding_context_awtk_create_view_model(widget_t* widget,
     if (tk_str_start_with(vmodel, STR_SUB_VIEW_MODEL)) {
       const char* name = strchr(vmodel, ':');
       return_value_if_fail(name != NULL, NULL);
-      name++;
-      view_model = view_model_create_sub_view_model(parent_ctx->view_model, name);
+      view_model = view_model_create_sub_view_model(parent_ctx->view_model, name + 1);
+    } else if (tk_str_start_with(vmodel, STR_SUB_VIEW_MODEL_ARRAY)) {
+      const char* name = strchr(vmodel, ':');
+      return_value_if_fail(name != NULL, NULL);
+      view_model = view_model_create_sub_view_model_array(parent_ctx->view_model, name + 1);
     } else {
       char name[TK_NAME_LEN + 1];
       char* ext_name = NULL;
@@ -478,6 +483,7 @@ static ret_t binding_context_awtk_bind_widget_array(binding_context_t* ctx, widg
     binding_context_awtk_bind_widget_array(ctx, iter);
     view_model_array_inc_cursor(view_model);
     WIDGET_FOR_EACH_CHILD_END();
+    widget_layout(widget);
   } else {
     WIDGET_FOR_EACH_CHILD_BEGIN(widget, iter, i)
     binding_context_awtk_bind_widget_array(ctx, iter);
@@ -760,6 +766,16 @@ ret_t binding_context_bind_for_window(widget_t* widget, navigator_request_t* req
   return binding_context_bind_for_widget(widget, NULL, req);
 }
 
+static ret_t window_dump(widget_t* win) {
+  str_t str;
+  str_init(&str, 100000);
+  widget_to_xml(win, &str);
+  log_debug("%s\n", str.str);
+  str_reset(&str);
+
+  return RET_OK;
+}
+
 ret_t awtk_open_window(navigator_request_t* req) {
   widget_t* win = NULL;
   return_value_if_fail(req != NULL && req->target != NULL, RET_BAD_PARAMS);
@@ -767,5 +783,8 @@ ret_t awtk_open_window(navigator_request_t* req) {
   win = window_open(req->target);
   return_value_if_fail(win != NULL, RET_NOT_FOUND);
 
-  return binding_context_bind_for_window(win, req);
+  binding_context_bind_for_window(win, req);
+  window_dump(win);
+
+  return RET_OK;
 }
