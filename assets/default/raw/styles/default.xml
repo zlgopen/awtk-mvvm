@@ -435,20 +435,17 @@
 </list_item>
 
 <tab_button>
-  <style name="default" border_color="#a0a0a0"  text_color="black">
-    <normal     bg_color="#d0d0d0" />
-    <pressed    bg_color="#f0f0f0" />
-    <over       bg_color="#e0e0e0" />
-    <normal_of_active     bg_color="#f0f0f0" />
-    <pressed_of_active    bg_color="#f0f0f0" />
-    <over_of_active       bg_color="#f0f0f0" />
+  <style name="default" margin="4" bg_color="#d0d0d0" border_color="gray">
+    <normal     text_color="black"/>
+    <pressed    text_color="black"/>
+    <over       text_color="black"/>
+    <normal_of_active     text_color="#00aa00" bg_color="#f0f0f0"/>
+    <pressed_of_active    text_color="#00aa00" bg_color="#f0f0f0"/>
+    <over_of_active       text_color="#00aa00" bg_color="#f0f0f0"/>
   </style>
 </tab_button>
 
 <tab_button_group>
-  <style name="default" >
-    <normal/>
-  </style>
 
   <style name="scrollable" border_color="#a0a0a0" border="left|right">
     <normal/>
