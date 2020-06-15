@@ -88,6 +88,7 @@ static bool_t view_model_object_wrapper_can_exec(object_t* obj, const char* name
 }
 
 static ret_t view_model_object_wrapper_exec(object_t* obj, const char* name, const char* args) {
+  ret_t ret = RET_FAIL;
   view_model_object_wrapper_t* object_wrapper = VIEW_MODEL_OBJECT_WRAPPPER(obj);
   return_value_if_fail(obj != NULL && name != NULL, RET_BAD_PARAMS);
 
@@ -97,7 +98,12 @@ static ret_t view_model_object_wrapper_exec(object_t* obj, const char* name, con
     name = path;
   }
 
-  return object_exec(OBJECT(object_wrapper->obj), name, args);
+  ret = object_exec(OBJECT(object_wrapper->obj), name, args);
+  if (ret == RET_ITEMS_CHANGED) {
+    emitter_dispatch_simple_event(EMITTER(object_wrapper->obj), EVT_PROPS_CHANGED);
+  }
+
+  return RET_OK;
 }
 
 view_model_t* view_model_object_wrapper_create_ex(object_t* obj, const char* prop_prefix);
