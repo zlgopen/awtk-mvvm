@@ -28,7 +28,7 @@
 static ret_t view_model_array_object_wrapper_on_changed(void* ctx, event_t* e) {
   view_model_array_object_wrapper_t* object_wrapper = VIEW_MODEL_ARRAY_OBJECT_WRAPPPER(ctx);
 
-  emitter_dispatch(EMITTER(object_wrapper->obj), e);
+  emitter_dispatch(EMITTER(object_wrapper), e);
 
   return RET_OK;
 }
@@ -186,6 +186,7 @@ view_model_t* view_model_array_object_wrapper_create_ex(object_t* obj, const cha
   object_wrapper->obj = object_ref(obj);
   object_wrapper->prop_prefix = tk_strdup(prop_prefix);
   emitter_on(EMITTER(obj), EVT_PROPS_CHANGED, view_model_array_object_wrapper_on_changed, model);
+  emitter_on(EMITTER(obj), EVT_PROP_CHANGED, view_model_array_object_wrapper_on_changed, model);
 
   return view_model;
 }

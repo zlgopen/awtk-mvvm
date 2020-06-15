@@ -587,5 +587,10 @@
     <normal   />
     <focused  />
   </style>
+  
+  <style name="prop_title" text_color="black" text_align_h="left">
+    <normal   />
+    <focused  />
+  </style>
 </hscroll_label>
 

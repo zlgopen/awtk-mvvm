@@ -269,7 +269,10 @@ ret_t data_binding_get_prop(data_binding_t* rule, value_t* v) {
     }
   }
 
-  return_value_if_fail(view_model_eval(view_model, rule->path, &raw) == RET_OK, RET_FAIL);
+  if (view_model_eval(view_model, rule->path, &raw) != RET_OK) {
+    log_debug("view_model_eval fail: %s\n", rule->path);
+    return RET_OK;
+  }
 
   return value_to_view(rule->converter, &raw, v);
 }

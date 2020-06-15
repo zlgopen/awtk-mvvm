@@ -1,5 +1,9 @@
 # 最新动态
 
+* 2020/06/15
+  * 完善view\_model\_object\_wrapper/view\_model\_object\_array\_wrapper
+  * 增加demo24
+
 * 2020/06/12
   * 增加view\_model\_array\_object\_wrapper
 

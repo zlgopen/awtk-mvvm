@@ -774,12 +774,13 @@ ret_t binding_context_bind_for_window(widget_t* widget, navigator_request_t* req
 }
 
 static ret_t window_dump(widget_t* win) {
-  str_t str;
-  str_init(&str, 100000);
-  widget_to_xml(win, &str);
-  log_debug("%s\n", str.str);
-  str_reset(&str);
-
+  if (widget_get_prop_bool(win, "debug", FALSE)) {
+    str_t str;
+    str_init(&str, 100000);
+    widget_to_xml(win, &str);
+    log_debug("%s\n", str.str);
+    str_reset(&str);
+  }
   return RET_OK;
 }
 

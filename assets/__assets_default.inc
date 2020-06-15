@@ -15,6 +15,7 @@
 #include "default/inc/styles/window1.data"
 #include "default/inc/ui/app_conf.data"
 #include "default/inc/ui/app_conf_array.data"
+#include "default/inc/ui/app_conf_reload.data"
 #include "default/inc/ui/app_conf_sub_vm.data"
 #include "default/inc/ui/books.data"
 #include "default/inc/ui/calculator.data"
@@ -56,6 +57,7 @@
 #include "default/inc/ui/kb_uint.data"
 #include "default/inc/ui/room_settings.data"
 #include "default/inc/ui/shape.data"
+#include "default/inc/ui/t.data"
 #include "default/inc/ui/temperature1.data"
 #include "default/inc/ui/temperature10.data"
 #include "default/inc/ui/temperature14.data"
@@ -397,6 +399,7 @@ ret_t assets_init_default(void) {
   assets_manager_add(am, style_window1);
   assets_manager_add(am, ui_app_conf);
   assets_manager_add(am, ui_app_conf_array);
+  assets_manager_add(am, ui_app_conf_reload);
   assets_manager_add(am, ui_app_conf_sub_vm);
   assets_manager_add(am, ui_books);
   assets_manager_add(am, ui_calculator);
@@ -438,6 +441,7 @@ ret_t assets_init_default(void) {
   assets_manager_add(am, ui_kb_uint);
   assets_manager_add(am, ui_room_settings);
   assets_manager_add(am, ui_shape);
+  assets_manager_add(am, ui_t);
   assets_manager_add(am, ui_temperature1);
   assets_manager_add(am, ui_temperature10);
   assets_manager_add(am, ui_temperature14);
