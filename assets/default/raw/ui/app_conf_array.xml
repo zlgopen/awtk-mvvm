@@ -17,5 +17,8 @@
       <tab_button v-data:text="{item.name}" v-data:value="{$index == 0}"/>
     </tab_button_group>
   </tab_control>
+  <button text="Save" floating="true" self_layout="default(x=20, y=b:80, w=80, h=30)" v-on:click="{save}"/>
+  <button text="Reload" floating="true" self_layout="default(x=c, y=b:80, w=80, h=30)" v-on:click="{reload}"/>
+  <button text="Close" floating="true" self_layout="default(x=r:20, y=b:80, w=80, h=30)" v-on:click="{nothing, QuitApp=true}"/>
 </window>
 

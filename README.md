@@ -104,5 +104,9 @@ sys.path.insert(0, '../awtk-linux-fb/')
 | (no)     | jsdemo18 | 复杂属性值的表示方法                |
 | demo19   | (no)     | 控制动画启停                        |
 | demo20   | (no)     | 串口读取数据                        |
+| demo21   | (no)     | 操作系统设置的基本用法(无需编写代码)        |
+| demo22   | (no)     | 通过sub view model操作系统设置的基本用法(无需编写代码)        |
+| demo23   | (no)     | 动态系统设置(无需编写代码)        |
+| demo24   | (no)     | 复杂的系统设置(无需编写代码)        |
 
 完整示例及模板项目：[awtk-mvvm-c-hello](https://github.com/zlgopen/awtk-mvvm-c-hello)

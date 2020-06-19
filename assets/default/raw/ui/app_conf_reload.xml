@@ -17,19 +17,19 @@
 		</row>
 		<row h="36" children_layout="default(r=1,c=0,m=3)">
 			<label style="prop_title" w="40%" text="Scan Time" />
-      <edit w="60%" text="" action_text="next" input_type="uint" v-data:text="{scan_time, Trigger=Changed}"  />
+      <edit w="60%" text="" action_text="next" input_type="uint" v-data:value="{scan_time, Trigger=Changed}"  />
 		</row>
 		<row h="36" children_layout="default(r=1,c=0,m=3)">
 			<label style="prop_title" w="40%" text="Time Out" />
-      <edit w="60%" text="" action_text="next" input_type="uint" v-data:text="{timeout, Trigger=Changed}"  />
+      <edit w="60%" text="" action_text="next" input_type="uint" v-data:value="{timeout, Trigger=Changed}"  />
 		</row>
 		<row h="36" children_layout="default(r=1,c=0,m=3)">
       <label style="prop_title" w="40%" text="Retry Times"/>
-      <edit w="60%" text="" action_text="next" input_type="uint" v-data:text="{retry_times, Trigger=Changed}"  />
+      <edit w="60%" text="" action_text="next" input_type="uint" v-data:value="{retry_times, Trigger=Changed}"  />
 		</row>
 		<row h="36" children_layout="default(r=1,c=0,m=3)">
       <label style="prop_title" w="40%" text="Reset Time"/>
-      <edit w="60%" text="" action_text="next" input_type="uint" v-data:text="{reset_time, Trigger=Changed}"  />
+      <edit w="60%" text="" action_text="next" input_type="uint" v-data:value="{reset_time, Trigger=Changed}"  />
 		</row>
 	</view>
 
@@ -56,13 +56,13 @@
 			</row>
 			<row style="empty" children_layout="default(r=1,c=0,m=3)">
 				<label style="prop_title" w="40%" text="Port" />
-        <edit w="60%" input_type="uint" max="60000" min="1024" v-data:text="{port, Trigger=Changed}"  />
+        <edit w="60%" input_type="uint" max="60000" min="1024" v-data:value="{port, Trigger=Changed}"  />
 			</row>
 		</view>
 	</pages>
   </row>
 
-  <button floating="true" name="save" x="20" y="bottom:10" w="60" h="30" text="Save" v-on:click="{save}"/>
-  <button floating="true" name="reload" x="center" y="bottom:10" w="60" h="30" text="Reload" v-on:click="{reload}"/>
-  <button floating="true" name="close" x="r:20" y="bottom:10" w="60" h="30" text="Close" v-on:click="{nothing, QuitApp=true}"/>
+  <button text="Save" floating="true" self_layout="default(x=20, y=b:80, w=80, h=30)" v-on:click="{save}"/>
+  <button text="Reload" floating="true" self_layout="default(x=c, y=b:80, w=80, h=30)" v-on:click="{reload}"/>
+  <button text="Close" floating="true" self_layout="default(x=r:20, y=b:80, w=80, h=30)" v-on:click="{nothing, QuitApp=true}"/>
 </window>
