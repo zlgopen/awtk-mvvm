@@ -56,6 +56,8 @@
 #include "default/inc/ui/kb_phone.data"
 #include "default/inc/ui/kb_ufloat.data"
 #include "default/inc/ui/kb_uint.data"
+#include "default/inc/ui/network_add.data"
+#include "default/inc/ui/network_edit.data"
 #include "default/inc/ui/room_settings.data"
 #include "default/inc/ui/shape.data"
 #include "default/inc/ui/t.data"
@@ -443,6 +445,8 @@ ret_t assets_init_default(void) {
   assets_manager_add(am, ui_kb_phone);
   assets_manager_add(am, ui_kb_ufloat);
   assets_manager_add(am, ui_kb_uint);
+  assets_manager_add(am, ui_network_add);
+  assets_manager_add(am, ui_network_edit);
   assets_manager_add(am, ui_room_settings);
   assets_manager_add(am, ui_shape);
   assets_manager_add(am, ui_t);

@@ -46,7 +46,7 @@ struct _model_array_t {
    * 当前可以访问的submodel。
    */
   uint32_t cursor;
-  
+
   /**
    * @property {uint32_t} selected_index
    * @annotation ["readable"]
@@ -126,7 +126,8 @@ ret_t view_model_array_default_set_prop(view_model_t* view_model, const char* na
                                         const value_t* value);
 ret_t view_model_array_default_get_prop(view_model_t* view_model, const char* name, value_t* value);
 ret_t view_model_array_default_exec(view_model_t* view_model, const char* name, const char* args);
-bool_t view_model_array_default_can_exec(view_model_t* view_model, const char* name, const char* args);
+bool_t view_model_array_default_can_exec(view_model_t* view_model, const char* name,
+                                         const char* args);
 
 #define VIEW_MODEL_ARRAY(view_model) ((view_model_array_t*)(view_model))
 

@@ -78,26 +78,14 @@ static bool_t view_model_object_wrapper_can_exec(object_t* obj, const char* name
   view_model_object_wrapper_t* object_wrapper = VIEW_MODEL_OBJECT_WRAPPPER(obj);
   return_value_if_fail(obj != NULL && name != NULL, FALSE);
 
-  if (object_wrapper->prop_prefix != NULL) {
-    char path[MAX_PATH + 1];
-    tk_snprintf(path, MAX_PATH, "%s.%s", object_wrapper->prop_prefix, name);
-    name = path;
-  }
-
-  return object_can_exec(OBJECT(object_wrapper->obj), name, args);
+  return object_can_exec(OBJECT(object_wrapper->obj), name, object_wrapper->prop_prefix);
 }
 
 static ret_t view_model_object_wrapper_exec(object_t* obj, const char* name, const char* args) {
   view_model_object_wrapper_t* object_wrapper = VIEW_MODEL_OBJECT_WRAPPPER(obj);
   return_value_if_fail(obj != NULL && name != NULL, RET_BAD_PARAMS);
 
-  if (object_wrapper->prop_prefix != NULL) {
-    char path[MAX_PATH + 1];
-    tk_snprintf(path, MAX_PATH, "%s.%s", object_wrapper->prop_prefix, name);
-    name = path;
-  }
-
-  return object_exec(OBJECT(object_wrapper->obj), name, args);
+  return object_exec(OBJECT(object_wrapper->obj), name, object_wrapper->prop_prefix);
 }
 
 view_model_t* view_model_object_wrapper_create_ex(object_t* obj, const char* prop_prefix);
@@ -138,9 +126,22 @@ static view_model_t* view_model_object_create_sub_view_model_array(view_model_t*
   return sub;
 }
 
+static ret_t view_model_object_wrapper_on_will_mount(view_model_t* view_model,
+                                                     navigator_request_t* req) {
+  const char* prefix = object_get_prop_str(OBJECT(req), STR_PATH_PREFIX);
+  view_model_object_wrapper_t* object_wrapper = VIEW_MODEL_OBJECT_WRAPPPER(view_model);
+
+  if (prefix != NULL) {
+    object_wrapper->prop_prefix = tk_str_copy(object_wrapper->prop_prefix, prefix);
+  }
+
+  return RET_OK;
+}
+
 static const view_model_vtable_t s_view_model_vtable = {
     .create_sub_view_model = view_model_object_create_sub_view_model,
-    .create_sub_view_model_array = view_model_object_create_sub_view_model_array};
+    .create_sub_view_model_array = view_model_object_create_sub_view_model_array,
+    .on_will_mount = view_model_object_wrapper_on_will_mount};
 
 static const object_vtable_t s_object_vtable = {.type = "view_model_object_wrapper",
                                                 .desc = "view_model_object_wrapper",

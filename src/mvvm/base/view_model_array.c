@@ -104,7 +104,7 @@ ret_t view_model_array_default_set_prop(view_model_t* view_model, const char* na
   if (tk_str_eq(VIEW_MODEL_PROP_SELECTED_INDEX, name)) {
     view_model_array_set_selected_index(view_model, value_int(value));
     return RET_OK;
-  }else if (tk_str_eq(VIEW_MODEL_PROP_CURSOR, name)) {
+  } else if (tk_str_eq(VIEW_MODEL_PROP_CURSOR, name)) {
     view_model_array_set_cursor(view_model, value_int(value));
     return RET_OK;
   }
@@ -139,17 +139,17 @@ ret_t view_model_array_set_selected_index(view_model_t* view_model, uint32_t ind
 }
 
 ret_t view_model_array_default_exec(view_model_t* view_model, const char* name, const char* args) {
-  if(tk_str_eq(name, VIEW_MODEL_CMD_SET_SELECTED)) {
+  if (tk_str_eq(name, VIEW_MODEL_CMD_SET_SELECTED)) {
     return view_model_array_set_selected_index(view_model, tk_atoi(args));
   }
 
   return RET_NOT_FOUND;
 }
 
-bool_t view_model_array_default_can_exec(view_model_t* view_model, const char* name, const char* args) {
-  if(tk_str_eq(name, VIEW_MODEL_CMD_SET_SELECTED)) {
+bool_t view_model_array_default_can_exec(view_model_t* view_model, const char* name,
+                                         const char* args) {
+  if (tk_str_eq(name, VIEW_MODEL_CMD_SET_SELECTED)) {
     return TRUE;
   }
   return FALSE;
 }
-
