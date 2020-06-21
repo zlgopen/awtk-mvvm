@@ -94,30 +94,63 @@ static ret_t view_model_array_object_wrapper_get_prop(object_t* obj, const char*
 
 static bool_t view_model_array_object_wrapper_can_exec(object_t* obj, const char* name,
                                                        const char* args) {
+  char path[MAX_PATH + 1];
+  view_model_array_t* vm_array = VIEW_MODEL_ARRAY(obj);
   view_model_array_object_wrapper_t* object_wrapper = VIEW_MODEL_ARRAY_OBJECT_WRAPPPER(obj);
+
   return_value_if_fail(obj != NULL && name != NULL, FALSE);
 
-  if (object_wrapper->prop_prefix != NULL) {
-    char path[MAX_PATH + 1];
-    tk_snprintf(path, MAX_PATH, "%s.%s", object_wrapper->prop_prefix, name);
-    name = path;
+  if (view_model_array_default_can_exec(VIEW_MODEL(obj), name, args)) {
+    return TRUE;
   }
 
-  return object_can_exec(OBJECT(object_wrapper->obj), name, args);
+  if (object_wrapper->prop_prefix != NULL) {
+    tk_snprintf(path, MAX_PATH, "%s.[%u]", object_wrapper->prop_prefix, vm_array->selected_index);
+  } else {
+    tk_snprintf(path, MAX_PATH, "[%u]", vm_array->selected_index);
+  }
+
+  return object_can_exec(OBJECT(object_wrapper->obj), name, path);
 }
 
 static ret_t view_model_array_object_wrapper_exec(object_t* obj, const char* name,
                                                   const char* args) {
+  ret_t ret = RET_OK;
+  char path[MAX_PATH + 1];
+  view_model_array_t* vm_array = VIEW_MODEL_ARRAY(obj);
   view_model_array_object_wrapper_t* object_wrapper = VIEW_MODEL_ARRAY_OBJECT_WRAPPPER(obj);
   return_value_if_fail(obj != NULL && name != NULL, RET_BAD_PARAMS);
 
-  if (object_wrapper->prop_prefix != NULL) {
-    char path[MAX_PATH + 1];
-    tk_snprintf(path, MAX_PATH, "%s.%s", object_wrapper->prop_prefix, name);
-    name = path;
+  ret = view_model_array_default_exec(VIEW_MODEL(obj), name, args);
+  if (ret != RET_NOT_FOUND) {
+    return ret;
   }
 
-  return object_exec(OBJECT(object_wrapper->obj), name, args);
+  if (object_wrapper->prop_prefix != NULL) {
+    tk_snprintf(path, MAX_PATH, "%s.[%u]", object_wrapper->prop_prefix, vm_array->selected_index);
+  } else {
+    tk_snprintf(path, MAX_PATH, "[%u]", vm_array->selected_index);
+  }
+
+  if (tk_str_eq(name, OBJECT_CMD_CLEAR)) {
+    memset(path, 0x00, sizeof(path));
+    tk_strncpy(path, object_wrapper->prop_prefix, MAX_PATH);
+  }
+
+  ret = object_exec(OBJECT(object_wrapper->obj), name, path);
+  if (tk_str_eq(name, OBJECT_CMD_MOVE_UP)) {
+    if (ret == RET_OK) {
+      vm_array->selected_index--;
+    }
+  } else if (tk_str_eq(name, OBJECT_CMD_MOVE_DOWN)) {
+    if (ret == RET_OK) {
+      vm_array->selected_index++;
+    }
+  } else if (tk_str_eq(name, OBJECT_CMD_CLEAR)) {
+    vm_array->selected_index = 0;
+  } else if (tk_str_eq(name, OBJECT_CMD_REMOVE)) {
+  }
+  return ret;
 }
 
 view_model_t* view_model_array_object_wrapper_create_ex(object_t* obj, const char* prop_prefix);
@@ -185,8 +218,9 @@ view_model_t* view_model_array_object_wrapper_create_ex(object_t* obj, const cha
   view_model->vt = &s_view_model_vtable;
   object_wrapper->obj = object_ref(obj);
   object_wrapper->prop_prefix = tk_strdup(prop_prefix);
-  emitter_on(EMITTER(obj), EVT_PROPS_CHANGED, view_model_array_object_wrapper_on_changed, model);
   emitter_on(EMITTER(obj), EVT_PROP_CHANGED, view_model_array_object_wrapper_on_changed, model);
+  emitter_on(EMITTER(obj), EVT_PROPS_CHANGED, view_model_array_object_wrapper_on_changed, model);
+  emitter_on(EMITTER(obj), EVT_ITEMS_CHANGED, view_model_array_object_wrapper_on_changed, model);
 
   return view_model;
 }
