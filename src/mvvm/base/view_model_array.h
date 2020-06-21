@@ -46,6 +46,13 @@ struct _model_array_t {
    * 当前可以访问的submodel。
    */
   uint32_t cursor;
+  
+  /**
+   * @property {uint32_t} selected_index
+   * @annotation ["readable"]
+   * 当前选择的项。
+   */
+  uint32_t selected_index;
 
   /*private*/
   str_t temp_prop;
@@ -94,6 +101,17 @@ ret_t view_model_array_inc_cursor(view_model_t* view_model);
 ret_t view_model_array_set_cursor(view_model_t* view_model, uint32_t cursor);
 
 /**
+ * @method view_model_array_set_selected_index
+ * 选中指定项。
+ *
+ * @param {view_model_t*} view_model view_model对象。
+ * @param {uint32_t} index 选定项的序数。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t view_model_array_set_selected_index(view_model_t* view_model, uint32_t index);
+
+/**
  * @method view_model_array_notify_items_changed
  * 触发items改变事件。
  *
@@ -107,6 +125,8 @@ ret_t view_model_array_notify_items_changed(view_model_t* view_model);
 ret_t view_model_array_default_set_prop(view_model_t* view_model, const char* name,
                                         const value_t* value);
 ret_t view_model_array_default_get_prop(view_model_t* view_model, const char* name, value_t* value);
+ret_t view_model_array_default_exec(view_model_t* view_model, const char* name, const char* args);
+bool_t view_model_array_default_can_exec(view_model_t* view_model, const char* name, const char* args);
 
 #define VIEW_MODEL_ARRAY(view_model) ((view_model_array_t*)(view_model))
 

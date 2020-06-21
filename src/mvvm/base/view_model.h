@@ -260,8 +260,11 @@ view_model_t* view_model_create_sub_view_model_array(view_model_t* view_model, c
 
 #define VIEW_MODEL(view_model) ((view_model_t*)(view_model))
 
-#define VIEW_MODEL_PROP_CURSOR "index"
 #define VIEW_MODEL_PROP_ITEMS "items"
+#define VIEW_MODEL_PROP_CURSOR "index"
+#define VIEW_MODEL_PROP_SELECTED_INDEX "selected_index"
+
+#define VIEW_MODEL_CMD_SET_SELECTED "set_selected"
 
 /**
  * @enum view_model_event_type_t
