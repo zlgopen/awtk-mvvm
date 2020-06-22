@@ -11,7 +11,9 @@
       </view>
       <view w="100%" h="100%" children_layout="default(c=2,h=40,s=10,m=5)" v-model="sub_view_model:color">
         <label text="Background Color" />
-        <edit text="#f0f0f0" v-data:value="{backgroup, Trigger=Changed}"/>
+        <edit text="#f0f0f0" v-data:value="{bg, Trigger=Changed}"/>
+        <label text="Foreground Color" />
+        <edit text="#f0f0f0" v-data:value="{color.fg, Trigger=Changed}"/>
         <label text="Text Color" />
         <edit text="black" v-data:value="{text, Trigger=Changed}"/>
         <label text="Border Color" />

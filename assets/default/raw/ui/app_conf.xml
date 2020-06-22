@@ -1,31 +1,23 @@
 <window v-model="app_conf">
-  <tab_control x="0" y="0" w="100%" h="100%" >
-    <pages x="0" y="0" w="100%" h="-60" style="at_top">
-      <view w="100%" h="100%" children_layout="default(c=2,h=40,s=10,m=5)">
-        <label text="Name" />
-        <edit text="default" v-data:value="{font.name, Trigger=Changed}"/>
-        <label text="Size" />
-        <edit text="20" v-data:value="{font.size, Trigger=Changed}"/>
-        <check_button text="Bold" v-data:value="{font.bold, Trigger=Changed}"/>
-        <check_button text="Italic" v-data:value="{font.italic, Trigger=Changed}"/>
-      </view>
-      <view w="100%" h="100%" children_layout="default(c=2,h=40,s=10,m=5)">
-        <label text="Background Color" />
-        <edit text="#f0f0f0" v-data:value="{color.backgroup, Trigger=Changed}"/>
-        <label text="Text Color" />
-        <edit text="black" v-data:value="{color.text, Trigger=Changed}"/>
-        <label text="Border Color" />
-        <edit text="black" v-data:value="{color.border, Trigger=Changed}"/>
-      </view>
-    </pages>
-    <tab_button_group x="0" y="bottom" w="100%" h="60" >
-      <tab_button text="Font" value="true"/>
-      <tab_button text="Color"/>
-    </tab_button_group>
-  </tab_control>
+  <view w="100%" h="-40" children_layout="default(c=2,h=40,s=10,m=5)">
+    <label text="Background Color" />
+    <edit text="#f0f0f0" v-data:value="{color.bg, Trigger=Changed}"/>
+    <label text="Foreground Color" />
+    <edit text="#f0f0f0" v-data:value="{color.fg, Trigger=Changed}"/>
+    <label text="Text Color" />
+    <edit text="black" v-data:value="{color.text, Trigger=Changed}"/>
+    <label text="Border Color" />
+    <edit text="black" v-data:value="{color.border, Trigger=Changed}"/>
+    <label text="Font Name" />
+    <edit text="default" v-data:value="{font.name, Trigger=Changed}"/>
+    <label text="Font Size" />
+    <edit text="20" v-data:value="{font.size, Trigger=Changed}"/>
+    <check_button text="Bold" v-data:value="{font.bold, Trigger=Changed}"/>
+    <check_button text="Italic" v-data:value="{font.italic, Trigger=Changed}"/>
+  </view>
 
-  <button text="Save" floating="true" self_layout="default(x=20, y=b:80, w=80, h=30)" v-on:click="{save}"/>
-  <button text="Reload" floating="true" self_layout="default(x=c, y=b:80, w=80, h=30)" v-on:click="{reload}"/>
-  <button text="Close" floating="true" self_layout="default(x=r:20, y=b:80, w=80, h=30)" v-on:click="{nothing, QuitApp=true}"/>
+  <button text="Save" floating="true" self_layout="default(x=20, y=b:10, w=80, h=30)" v-on:click="{save}"/>
+  <button text="Reload" floating="true" self_layout="default(x=c, y=b:10, w=80, h=30)" v-on:click="{reload}"/>
+  <button text="Close" floating="true" self_layout="default(x=r:20, y=b:10, w=80, h=30)" v-on:click="{nothing, QuitApp=true}"/>
 </window>
 
