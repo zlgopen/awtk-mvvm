@@ -1,3 +1,12 @@
+
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN 1
+#endif /*WIN32_LEAN_AND_MEAN*/
+
+#ifdef WIN32
+#pragma comment(lib, "ws2_32")
+#endif/*WIN32*/
+
 #include "./jerryscript/jerry-ext/handler/handler-assert.c"
 #include "./jerryscript/jerry-ext/handler/handler-resource-name.c"
 #include "./jerryscript/jerry-ext/handler/handler-register.c"
