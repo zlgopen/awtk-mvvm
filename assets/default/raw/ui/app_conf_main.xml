@@ -24,7 +24,7 @@
 
     <button text="Save" v-on:click="{save}"/>
     <button text="Reload" v-on:click="{reload}"/>
-    <button text="Quit" v-on:click="{quit}"/>
+    <button text="Quit" v-on:click="{nothing, QuitApp=true}"/>
   </column>
  </view>
 </window>

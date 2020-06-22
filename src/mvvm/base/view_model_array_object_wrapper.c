@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  view_model_array_object_wrapper
  *
- * Copyright (c) 2019 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2020 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -15,7 +15,7 @@
 /**
  * History:
  * ================================================================
- * 2019-04-21 Li XianJing <xianjimli@hotmail.com> created
+ * 2020-06-11 Li XianJing <xianjimli@hotmail.com> created
  *
  */
 
@@ -49,6 +49,7 @@ static int32_t view_model_array_object_wrapper_compare(object_t* obj, object_t* 
 
 static ret_t view_model_array_object_wrapper_set_prop(object_t* obj, const char* name,
                                                       const value_t* v) {
+  char path[MAX_PATH + 1];
   view_model_t* view_model = VIEW_MODEL(obj);
   view_model_array_object_wrapper_t* object_wrapper = VIEW_MODEL_ARRAY_OBJECT_WRAPPPER(obj);
   return_value_if_fail(obj != NULL && name != NULL && v != NULL, RET_BAD_PARAMS);
@@ -57,12 +58,7 @@ static ret_t view_model_array_object_wrapper_set_prop(object_t* obj, const char*
     return RET_OK;
   }
 
-  if (tk_str_ieq(VIEW_MODEL_PROP_ITEMS, name)) {
-    return RET_OK;
-  }
-
   if (object_wrapper->prop_prefix != NULL) {
-    char path[MAX_PATH + 1];
     tk_snprintf(path, MAX_PATH, "%s.%s", object_wrapper->prop_prefix, name);
     name = path;
   }
@@ -71,6 +67,7 @@ static ret_t view_model_array_object_wrapper_set_prop(object_t* obj, const char*
 }
 
 static ret_t view_model_array_object_wrapper_get_prop(object_t* obj, const char* name, value_t* v) {
+  char path[MAX_PATH + 1];
   view_model_t* view_model = VIEW_MODEL(obj);
   view_model_array_object_wrapper_t* object_wrapper = VIEW_MODEL_ARRAY_OBJECT_WRAPPPER(obj);
   return_value_if_fail(obj != NULL && name != NULL && v != NULL, RET_BAD_PARAMS);
@@ -84,7 +81,6 @@ static ret_t view_model_array_object_wrapper_get_prop(object_t* obj, const char*
   }
 
   if (object_wrapper->prop_prefix != NULL) {
-    char path[MAX_PATH + 1];
     tk_snprintf(path, MAX_PATH, "%s.%s", object_wrapper->prop_prefix, name);
     name = path;
   }
@@ -103,27 +99,30 @@ static bool_t view_model_array_object_wrapper_can_exec(object_t* obj, const char
   if (view_model_array_default_can_exec(VIEW_MODEL(obj), name, args)) {
     return TRUE;
   }
+  
+  if (tk_str_eq(name, OBJECT_CMD_EDIT)) {
+    return TRUE;
+  }
 
   if (tk_str_eq(name, OBJECT_CMD_ADD)) {
-    return TRUE;
-  } else if (tk_str_eq(name, OBJECT_CMD_EDIT)) {
-    return TRUE;
-  }
-
-  if (object_wrapper->prop_prefix != NULL) {
-    tk_snprintf(path, MAX_PATH, "%s.[%u]", object_wrapper->prop_prefix, vm_array->selected_index);
+    args = object_wrapper->prop_prefix;
   } else {
-    tk_snprintf(path, MAX_PATH, "[%u]", vm_array->selected_index);
+    if (object_wrapper->prop_prefix != NULL) {
+      tk_snprintf(path, MAX_PATH, "%s.[%u]", object_wrapper->prop_prefix, vm_array->selected_index);
+    } else {
+      tk_snprintf(path, MAX_PATH, "[%u]", vm_array->selected_index);
+    }
+
+    args = path;
   }
 
-  return object_can_exec(OBJECT(object_wrapper->obj), name, path);
+  return object_can_exec(OBJECT(object_wrapper->obj), name, args);
 }
 
 static const char* view_model_array_object_wrapper_get_target(char target[TK_NAME_LEN + 1],
                                                               const char* prefix,
                                                               const char* action) {
-  char* p = NULL;
-
+  const char* p = NULL;
   if (prefix != NULL) {
     p = strrchr(prefix, '.');
     if (p == NULL) {
@@ -168,21 +167,27 @@ static ret_t view_model_array_object_wrapper_exec(object_t* obj, const char* nam
     return ret;
   }
 
-  if (object_wrapper->prop_prefix != NULL) {
-    tk_snprintf(path, MAX_PATH, "%s.[%u]", object_wrapper->prop_prefix, vm_array->selected_index);
-  } else {
-    tk_snprintf(path, MAX_PATH, "[%u]", vm_array->selected_index);
-  }
-
   if (tk_str_eq(name, OBJECT_CMD_CLEAR) || tk_str_eq(name, OBJECT_CMD_ADD)) {
-    memset(path, 0x00, sizeof(path));
-    tk_strncpy(path, object_wrapper->prop_prefix, MAX_PATH);
+    args = object_wrapper->prop_prefix;
+  } else {
+    if (object_wrapper->prop_prefix != NULL) {
+      tk_snprintf(path, MAX_PATH, "%s.[%u]", object_wrapper->prop_prefix, vm_array->selected_index);
+    } else {
+      tk_snprintf(path, MAX_PATH, "[%u]", vm_array->selected_index);
+    }
+
+    args = path;
+  }
+  
+  if (tk_str_eq(name, OBJECT_CMD_ADD) || tk_str_eq(name, OBJECT_CMD_EDIT)) {
+    object_exec(object_wrapper->obj, OBJECT_CMD_SAVE, NULL);
   }
 
-  ret = object_exec(OBJECT(object_wrapper->obj), name, path);
-  if (ret == RET_OK && tk_str_eq(name, OBJECT_CMD_ADD)) {
+  ret = object_exec(OBJECT(object_wrapper->obj), name, args);
+  if (tk_str_eq(name, OBJECT_CMD_ADD)) {
     uint32_t nr = object_get_prop_int(OBJECT(obj), VIEW_MODEL_PROP_ITEMS, 0);
     int32_t last_index = nr - 1;
+    return_value_if_fail(ret == RET_OK, RET_FAIL);
     return_value_if_fail(last_index >= 0, RET_FAIL);
 
     if (object_wrapper->prop_prefix != NULL) {
@@ -199,18 +204,34 @@ static ret_t view_model_array_object_wrapper_exec(object_t* obj, const char* nam
       return view_model_array_object_wrapper_cmd_edit(object_wrapper->prop_prefix, path);
     }
   }
+
   if (tk_str_eq(name, OBJECT_CMD_MOVE_UP)) {
     if (ret == RET_OK) {
-      vm_array->selected_index--;
+      if (vm_array->selected_index > 0) {
+        vm_array->selected_index--;
+      }
     }
   } else if (tk_str_eq(name, OBJECT_CMD_MOVE_DOWN)) {
     if (ret == RET_OK) {
-      vm_array->selected_index++;
+      uint32_t nr = object_get_prop_int(OBJECT(obj), VIEW_MODEL_PROP_ITEMS, 0);
+      if ((vm_array->selected_index + 1) < nr) {
+        vm_array->selected_index++;
+      }
     }
   } else if (tk_str_eq(name, OBJECT_CMD_CLEAR)) {
     vm_array->selected_index = 0;
   } else if (tk_str_eq(name, OBJECT_CMD_REMOVE)) {
+    uint32_t nr = object_get_prop_int(OBJECT(obj), VIEW_MODEL_PROP_ITEMS, 0);
+
+    if (vm_array->selected_index >= nr) {
+      if (nr > 0) {
+        vm_array->selected_index = nr - 1;
+      } else {
+        vm_array->selected_index = 0;
+      }
+    }
   }
+
   return ret;
 }
 
@@ -294,6 +315,7 @@ view_model_t* view_model_array_object_wrapper_create_ex(object_t* obj, const cha
   emitter_on(EMITTER(obj), EVT_PROP_CHANGED, view_model_array_object_wrapper_on_changed, model);
   emitter_on(EMITTER(obj), EVT_PROPS_CHANGED, view_model_array_object_wrapper_on_changed, model);
   emitter_on(EMITTER(obj), EVT_ITEMS_CHANGED, view_model_array_object_wrapper_on_changed, model);
+
   return view_model;
 }
 

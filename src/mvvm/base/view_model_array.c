@@ -107,6 +107,8 @@ ret_t view_model_array_default_set_prop(view_model_t* view_model, const char* na
   } else if (tk_str_eq(VIEW_MODEL_PROP_CURSOR, name)) {
     view_model_array_set_cursor(view_model, value_int(value));
     return RET_OK;
+  } else if (tk_str_ieq(VIEW_MODEL_PROP_ITEMS, name)) {
+    return RET_OK;
   }
 
   return RET_NOT_IMPL;

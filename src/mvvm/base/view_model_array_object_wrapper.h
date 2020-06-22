@@ -33,7 +33,7 @@ typedef struct _view_model_array_object_wrapper_t view_model_array_object_wrappe
  * @class view_model_array_object_wrapper_t
  * @parent view_model_array_t
  *
- * 把object包装成view model。
+ * 把object包装成view model array。
  *
  */
 struct _view_model_array_object_wrapper_t {
@@ -41,6 +41,12 @@ struct _view_model_array_object_wrapper_t {
 
   /*private*/
   object_t* obj;
+
+  /**
+   * 属性路径的前缀。
+   * obj可能是树型结构，如conf-obj，有时把其某个子节点包装成ViewModel，可以带来很大方便性和灵活性。
+   * 属性路径的前缀用来指定子节点的位置。
+   **/
   char* prop_prefix;
 };
 
@@ -48,7 +54,7 @@ struct _view_model_array_object_wrapper_t {
  * @method view_model_array_object_wrapper_create
  * 创建view_model对象。
  *
- * @param {object_t*} obj 对象。
+ * @param {object_t*} obj 待包装的对象。
  *
  * @return {view_model_t*} 返回view_model对象。
  */
@@ -58,8 +64,8 @@ view_model_t* view_model_array_object_wrapper_create(object_t* obj);
  * @method view_model_array_object_wrapper_create_ex
  * 创建view_model对象。
  *
- * @param {object_t*} obj 对象。
- * @param {const char*} prop_prefix 属性前缀。
+ * @param {object_t*} obj 待包装的对象。
+ * @param {const char*} prop_prefix 属性路径的前缀(可以为NULL)。
  *
  * @return {view_model_t*} 返回view_model对象。
  */

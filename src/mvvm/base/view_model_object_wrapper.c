@@ -48,11 +48,11 @@ static int32_t view_model_object_wrapper_compare(object_t* obj, object_t* other)
 }
 
 static ret_t view_model_object_wrapper_set_prop(object_t* obj, const char* name, const value_t* v) {
+  char path[MAX_PATH + 1];
   view_model_object_wrapper_t* object_wrapper = VIEW_MODEL_OBJECT_WRAPPPER(obj);
   return_value_if_fail(obj != NULL && name != NULL && v != NULL, RET_BAD_PARAMS);
 
   if (object_wrapper->prop_prefix != NULL) {
-    char path[MAX_PATH + 1];
     tk_snprintf(path, MAX_PATH, "%s.%s", object_wrapper->prop_prefix, name);
     name = path;
   }
@@ -61,11 +61,11 @@ static ret_t view_model_object_wrapper_set_prop(object_t* obj, const char* name,
 }
 
 static ret_t view_model_object_wrapper_get_prop(object_t* obj, const char* name, value_t* v) {
+  char path[MAX_PATH + 1];
   view_model_object_wrapper_t* object_wrapper = VIEW_MODEL_OBJECT_WRAPPPER(obj);
   return_value_if_fail(obj != NULL && name != NULL && v != NULL, RET_BAD_PARAMS);
 
   if (object_wrapper->prop_prefix != NULL) {
-    char path[MAX_PATH + 1];
     tk_snprintf(path, MAX_PATH, "%s.%s", object_wrapper->prop_prefix, name);
     name = path;
   }
@@ -78,17 +78,15 @@ static bool_t view_model_object_wrapper_can_exec(object_t* obj, const char* name
   view_model_object_wrapper_t* object_wrapper = VIEW_MODEL_OBJECT_WRAPPPER(obj);
   return_value_if_fail(obj != NULL && name != NULL, FALSE);
 
-  return object_can_exec(OBJECT(object_wrapper->obj), name, object_wrapper->prop_prefix);
+  return object_can_exec(OBJECT(object_wrapper->obj), name, args);
 }
 
 static ret_t view_model_object_wrapper_exec(object_t* obj, const char* name, const char* args) {
   view_model_object_wrapper_t* object_wrapper = VIEW_MODEL_OBJECT_WRAPPPER(obj);
   return_value_if_fail(obj != NULL && name != NULL, RET_BAD_PARAMS);
 
-  return object_exec(OBJECT(object_wrapper->obj), name, object_wrapper->prop_prefix);
+  return object_exec(OBJECT(object_wrapper->obj), name, args);
 }
-
-view_model_t* view_model_object_wrapper_create_ex(object_t* obj, const char* prop_prefix);
 
 static view_model_t* view_model_object_create_sub_view_model(view_model_t* view_model,
                                                              const char* name) {
@@ -162,7 +160,7 @@ view_model_t* view_model_object_wrapper_create_ex(object_t* obj, const char* pro
 
   view_model->vt = &s_view_model_vtable;
   object_wrapper->obj = object_ref(obj);
-  object_wrapper->prop_prefix = tk_strdup(prop_prefix);
+  object_wrapper->prop_prefix = prop_prefix != NULL ? tk_strdup(prop_prefix) : NULL;
   emitter_on(EMITTER(obj), EVT_PROPS_CHANGED, view_model_object_wrapper_on_changed, model);
   emitter_on(EMITTER(obj), EVT_PROP_CHANGED, view_model_object_wrapper_on_changed, model);
 
