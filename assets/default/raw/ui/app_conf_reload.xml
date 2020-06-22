@@ -9,27 +9,33 @@
 		</row>
 		<row h="36" children_layout="default(r=1,c=0,m=3)">
 			<label style="prop_title" w="40%" text="Name" />
-      <edit w="60%" text="" action_text="next" v-data:text="{name, Trigger=Changed}"  />
+      <edit w="60%" text="COM1" action_text="next" 
+        v-data:text="{name, Trigger=Changed}"  />
 		</row>
 		<row h="80" children_layout="default(r=1,c=0,m=3)">
 			<label style="prop_title" w="40%" text="Desc" />
-      <mledit w="60%" text="" action_text="next" v-data:text="{desc, Trigger=Changed}"  />
+      <mledit w="60%" text="some desc" action_text="next" 
+        v-data:text="{desc, Trigger=Changed}"  />
 		</row>
 		<row h="36" children_layout="default(r=1,c=0,m=3)">
 			<label style="prop_title" w="40%" text="Scan Time" />
-      <edit w="60%" text="" action_text="next" input_type="uint" v-data:value="{scan_time, Trigger=Changed}"  />
+      <edit w="60%" text="1000" action_text="next" input_type="uint" 
+        v-data:value="{scan_time, Trigger=Changed}"  />
 		</row>
 		<row h="36" children_layout="default(r=1,c=0,m=3)">
 			<label style="prop_title" w="40%" text="Time Out" />
-      <edit w="60%" text="" action_text="next" input_type="uint" v-data:value="{timeout, Trigger=Changed}"  />
+      <edit w="60%" text="3000" action_text="next" input_type="uint" 
+        v-data:value="{timeout, Trigger=Changed}"  />
 		</row>
 		<row h="36" children_layout="default(r=1,c=0,m=3)">
       <label style="prop_title" w="40%" text="Retry Times"/>
-      <edit w="60%" text="" action_text="next" input_type="uint" v-data:value="{retry_times, Trigger=Changed}"  />
+      <edit w="60%" text="10" action_text="next" input_type="uint" 
+        v-data:value="{retry_times, Trigger=Changed}"  />
 		</row>
 		<row h="36" children_layout="default(r=1,c=0,m=3)">
       <label style="prop_title" w="40%" text="Reset Time"/>
-      <edit w="60%" text="" action_text="next" input_type="uint" v-data:value="{reset_time, Trigger=Changed}"  />
+      <edit w="60%" text="1000" action_text="next" input_type="uint" 
+        v-data:value="{reset_time, Trigger=Changed}"  />
 		</row>
 	</view>
 
