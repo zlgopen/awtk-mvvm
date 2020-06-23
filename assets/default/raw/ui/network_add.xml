@@ -9,6 +9,6 @@
     <label text="GateWay" />
     <edit text="192.168.1.1" v-data:value="{gateway}"/>
   </view>
-  <button text="Save" floating="true" self_layout="default(x=20, y=b:80, w=80, h=30)" v-on:click="{save, CloseWindow=true}"/>
-  <button text="Close" floating="true" self_layout="default(x=r:20, y=b:80, w=80, h=30)" v-on:click="{reload, CloseWindow=true}"/>
+  <button text="OK" floating="true" self_layout="default(x=20, y=b:80, w=80, h=30)" v-on:click="{save, CloseWindow=true}"/>
+  <button text="Cancel" floating="true" self_layout="default(x=r:20, y=b:80, w=80, h=30)" v-on:click="{reload, CloseWindow=true}"/>
 </window>
