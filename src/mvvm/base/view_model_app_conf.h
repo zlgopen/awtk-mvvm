@@ -1,7 +1,7 @@
-/**
- * File:   application.c
+﻿/**
+ * File:   view_model_app_conf.h
  * Author: AWTK Develop Team
- * Brief:  application
+ * Brief:  view_model_app_conf
  *
  * Copyright (c) 2020 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
@@ -15,17 +15,19 @@
 /**
  * History:
  * ================================================================
- * 2020-06-11 Li XianJing <xianjimli@hotmail.com> created
+ * 2020-06-23 Li XianJing <xianjimli@hotmail.com> created
  *
  */
 
-#include "awtk.h"
-#include "mvvm/mvvm.h"
+#ifndef TK_VIEW_MODEL_APP_CONF_H
+#define TK_VIEW_MODEL_APP_CONF_H
 
-ret_t application_init() {
-  app_conf_init_json("demo21");
+#include "mvvm/base/view_model.h"
 
-  return navigator_to("app_conf");
-}
+BEGIN_C_DECLS
 
-#include "../awtk_main.c"
+ret_t view_model_app_conf_register(void);
+
+END_C_DECLS
+
+#endif /*TK_VIEW_MODEL_APP_CONF_H*/

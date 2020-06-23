@@ -16,8 +16,11 @@
     <check_button text="Italic" v-data:value="{font.italic, Trigger=Changed}"/>
   </view>
 
-  <button text="Save" floating="true" self_layout="default(x=20, y=b:10, w=80, h=30)" v-on:click="{save}"/>
-  <button text="Reload" floating="true" self_layout="default(x=c, y=b:10, w=80, h=30)" v-on:click="{reload}"/>
-  <button text="Close" floating="true" self_layout="default(x=r:20, y=b:10, w=80, h=30)" v-on:click="{nothing, QuitApp=true}"/>
+  <button text="Save" floating="true" self_layout="default(x=20, y=b:10, w=80, h=30)" 
+    v-on:click="{save}"/>
+  <button text="Reload" floating="true" self_layout="default(x=c, y=b:10, w=80, h=30)" 
+    v-on:click="{reload}"/>
+  <button text="Close" floating="true" self_layout="default(x=r:20, y=b:10, w=80, h=30)" 
+        v-on:click="{nothing, QuitApp=true}"/>
 </window>
 

@@ -27,6 +27,7 @@ ret_t mvvm_base_init(void) {
   return_value_if_fail(value_validator_init() == RET_OK, RET_FAIL);
   navigator_set(navigator_create());
   return_value_if_fail(navigator() != NULL, RET_FAIL);
+  view_model_app_conf_register();
 
   return RET_OK;
 }
@@ -37,6 +38,6 @@ ret_t mvvm_base_deinit(void) {
   value_validator_deinit();
   object_unref(OBJECT(navigator()));
   navigator_set(NULL);
-
+  
   return RET_OK;
 }

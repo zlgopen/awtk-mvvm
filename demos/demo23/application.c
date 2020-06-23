@@ -21,20 +21,9 @@
 
 #include "awtk.h"
 #include "mvvm/mvvm.h"
-#include "conf_io/app_conf.h"
-#include "conf_io/app_conf_init_json.h"
-#include "mvvm/base/view_model_object_wrapper.h"
-
-view_model_t* app_conf_create_view_model(navigator_request_t* req) {
-  object_t* obj = app_conf_get_instance();
-
-  return view_model_object_wrapper_create(obj);
-}
 
 ret_t application_init() {
   app_conf_init_json("demo23");
-
-  view_model_factory_register("app_conf", app_conf_create_view_model);
 
   return navigator_to("app_conf_array");
 }
