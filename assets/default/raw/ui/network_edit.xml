@@ -3,13 +3,12 @@
     <label text="Name" />
     <edit text="default" v-data:value="{name}" readonly="true"/>
     <label text="IP" />
-    <edit text="" v-data:value="{ip, Trigger=Changed}"/>
+    <edit text="" v-data:value="{ip}"/>
     <label text="Mask" />
-    <edit text="" v-data:value="{mask, Trigger=Changed}"/>
+    <edit text="" v-data:value="{mask}"/>
     <label text="GateWay" />
-    <edit text="" v-data:value="{gateway, Trigger=Changed}"/>
+    <edit text="" v-data:value="{gateway}"/>
   </view>
   <button text="Save" floating="true" self_layout="default(x=20, y=b:80, w=80, h=30)" v-on:click="{save, CloseWindow=true}"/>
   <button text="Close" floating="true" self_layout="default(x=r:20, y=b:80, w=80, h=30)" v-on:click="{reload, CloseWindow=true}"/>
 </window>
-
