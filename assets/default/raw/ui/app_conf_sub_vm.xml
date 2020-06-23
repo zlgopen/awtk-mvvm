@@ -3,21 +3,21 @@
     <pages x="0" y="0" w="100%" h="-60" style="at_top">
       <view w="100%" h="100%" children_layout="default(c=2,h=40,s=10,m=5)" v-model="sub_view_model:font">
         <label text="Name" />
-        <edit text="default" v-data:value="{name, Trigger=Changed}"/>
+        <edit text="default" v-data:value="{name}"/>
         <label text="Size" />
-        <edit text="20" v-data:value="{size, Trigger=Changed}"/>
-        <check_button text="Bold" v-data:value="{bold, Trigger=Changed}"/>
-        <check_button text="Italic" v-data:value="{italic, Trigger=Changed}"/>
+        <edit text="20" v-data:value="{size}"/>
+        <check_button text="Bold" v-data:value="{bold}"/>
+        <check_button text="Italic" v-data:value="{italic}"/>
       </view>
       <view w="100%" h="100%" children_layout="default(c=2,h=40,s=10,m=5)" v-model="sub_view_model:color">
         <label text="Background Color" />
-        <edit text="#f0f0f0" v-data:value="{bg, Trigger=Changed}"/>
+        <edit text="#f0f0f0" v-data:value="{bg}"/>
         <label text="Foreground Color" />
-        <edit text="#f0f0f0" v-data:value="{color.fg, Trigger=Changed}"/>
+        <edit text="#f0f0f0" v-data:value="{color.fg}"/>
         <label text="Text Color" />
-        <edit text="black" v-data:value="{text, Trigger=Changed}"/>
+        <edit text="black" v-data:value="{text}"/>
         <label text="Border Color" />
-        <edit text="black" v-data:value="{border, Trigger=Changed}"/>
+        <edit text="black" v-data:value="{border}"/>
       </view>
     </pages>
     <tab_button_group x="0" y="bottom" w="100%" h="60" >
@@ -30,4 +30,3 @@
   <button text="Reload" floating="true" self_layout="default(x=c, y=b:80, w=80, h=30)" v-on:click="{reload}"/>
   <button text="Close" floating="true" self_layout="default(x=r:20, y=b:80, w=80, h=30)" v-on:click="{nothing, QuitApp=true}"/>
 </window>
-
