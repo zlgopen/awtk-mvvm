@@ -32,6 +32,7 @@ ret_t application_exit() {
   log_debug("application_exit\n");
   if (app_conf_get_instance() != NULL) {
     app_conf_save();
+    app_conf_deinit();
   }
 
   return RET_OK;

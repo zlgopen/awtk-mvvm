@@ -50,9 +50,8 @@ ret_t application_exit() {
   log_debug("application_exit\n");
   if (app_conf_get_instance() != NULL) {
     app_conf_save();
+    app_conf_deinit();
   }
-  app_conf_deinit();
-  tk_mem_dump();
 
   return RET_OK;
 }

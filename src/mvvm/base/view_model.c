@@ -95,7 +95,7 @@ ret_t view_model_on_unmount(view_model_t* view_model) {
   if (view_model->vt != NULL && view_model->vt->on_unmount != NULL) {
     return view_model->vt->on_unmount(view_model);
   }
-
+  str_reset(&(view_model->temp));
   return RET_OK;
 }
 
@@ -134,9 +134,8 @@ ret_t view_model_get_prop(view_model_t* view_model, const char* name, value_t* v
 }
 
 static ret_t object_set_prop_if_diff(object_t* object, const char* name, const value_t* v) {
-  value_t old;
   value_t t;
-  ret_t ret = RET_OK;
+  value_t old;
   view_model_t* view_model = VIEW_MODEL(object);
 
   value_set_int(&old, 0);
@@ -152,14 +151,9 @@ static ret_t object_set_prop_if_diff(object_t* object, const char* name, const v
     value_set_str(&t, str->str);
 
     v = &t;
-  } else {
-    value_set_int(&t, 0);
   }
 
-  ret = object_set_prop(object, name, v);
-  value_reset(&t);
-
-  return ret;
+  return object_set_prop(object, name, v);
 }
 
 ret_t view_model_set_prop(view_model_t* view_model, const char* name, const value_t* value) {
