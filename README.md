@@ -76,22 +76,23 @@ sys.path.insert(0, '../awtk-linux-fb/')
 * [窗口导航器](docs/12.navigate.md)
 * [JS 实现 Model](docs/13.js_model.md)
 * [高级用法](docs/14.advance_usages.md)
+* [针对系统配置的MVVM(无需编写代码)] (docs/15.app_conf.md)
 
 ## 五、示例
 
 |  C DEMO  | JS DEMO  | 说明 |
-| -------- | -------  | --------------------------------- |
-| demo1    | jsdemo1  | 数据绑定基本用法                  |
-| demo2    | jsdemo2  | trigger 参数的用法                 |
-| demo3    | jsdemo3  | converter 参数的用法               |
-| demo4    | jsdemo4  | 显式更新 (Trigger=Explicit) 的用法  |
-| demo5    | jsdemo5  | validator 参数的用法               |
-| demo6    | jsdemo6  | 命令绑定的基本用法                |
-| demo7    | jsdemo7  | 以计算器为例的综合用法            |
-| demo8    | jsdemo8  | 以 shape 编辑为例的综合用法         |
+| -------- | -------  | ---------------------------------    |
+| demo1    | jsdemo1  | 数据绑定基本用法                     |
+| demo2    | jsdemo2  | trigger 参数的用法                   |
+| demo3    | jsdemo3  | converter 参数的用法                 |
+| demo4    | jsdemo4  | 显式更新 (Trigger=Explicit) 的用法   |
+| demo5    | jsdemo5  | validator 参数的用法                 |
+| demo6    | jsdemo6  | 命令绑定的基本用法                   |
+| demo7    | jsdemo7  | 以计算器为例的综合用法               |
+| demo8    | jsdemo8  | 以 shape 编辑为例的综合用法          |
 | demo9    | jsdemo9  | 多窗口的基本用法                     |
 | demo10   | jsdemo10 | 定时器的基本用法                     |
-| demo11   | jsdemo11 | 一个视图多个 ViewModel 的用法          |
+| demo11   | jsdemo11 | 一个视图多个 ViewModel 的用法        |
 | demo12   | jsdemo12 | 多窗口之间参数传递                   |
 | demo13   | jsdemo13 | 列表视图的基本用法                   |
 | demo14   | jsdemo14 | 快捷键的基本用法                     |
@@ -99,14 +100,16 @@ sys.path.insert(0, '../awtk-linux-fb/')
 | (no)     | jsdemo15 | combox 数据联动                     |
 | (no)     | jsdemo16 | 动态界面                            |
 | demo16   | (no)     | 集成硬件外设                        |
-| demo17   | (no)     | 无 GUI 情况集成硬件外设               |
+| demo17   | (no)     | 无 GUI 情况集成硬件外设             |
 | (no)     | jsdemo17 | 控制控件的可见性                    |
 | (no)     | jsdemo18 | 复杂属性值的表示方法                |
 | demo19   | (no)     | 控制动画启停                        |
 | demo20   | (no)     | 串口读取数据                        |
-| demo21   | (no)     | 操作系统设置的基本用法(无需编写代码)        |
-| demo22   | (no)     | 通过sub view model操作系统设置的基本用法(无需编写代码)        |
-| demo23   | (no)     | 动态系统设置(无需编写代码)        |
+| demo21   | (no)     | 操作系统设置的基本用法(无需编写代码)|
+| demo22   | (no)     | 通过sub view model操作系统设置的基本用法(无需编写代码)    |
+| demo23   | (no)     | 动态系统设置(无需编写代码)          |
 | demo24   | (no)     | 复杂的系统设置(无需编写代码)        |
+| demo25   | (no)     | 系统设置增删改查(无需编写代码)      |
+| demo26   | (no)     | 让配置生效                          |
 
 完整示例及模板项目：[awtk-mvvm-c-hello](https://github.com/zlgopen/awtk-mvvm-c-hello)
