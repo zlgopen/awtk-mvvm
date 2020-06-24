@@ -23,7 +23,25 @@
 #include "mvvm/mvvm.h"
 #include "conf_io/app_conf.h"
 
-#define GLOBAL_INIT() mvvm_init()
+static ret_t on_key_down(void* ctx, event_t* e) {
+  key_event_t* evt = (key_event_t*)e;
+  if(evt->key == TK_KEY_ESCAPE) {
+    tk_quit();
+  } else if(evt->key == TK_KEY_F1) {
+    tk_mem_dump();
+  }
+  return RET_OK;
+}
+
+static ret_t install_quit_shortcut(void) {
+  widget_t* wm = window_manager();
+  widget_on(wm, EVT_KEY_DOWN, on_key_down, wm);
+
+  return RET_OK;
+}
+
+#define GLOBAL_INIT() mvvm_init();install_quit_shortcut();
+
 #define GLOBAL_EXIT() mvvm_deinit()
 
 extern ret_t application_init();
@@ -33,6 +51,8 @@ ret_t application_exit() {
   if (app_conf_get_instance() != NULL) {
     app_conf_save();
   }
+  app_conf_deinit();
+  tk_mem_dump();
 
   return RET_OK;
 }

@@ -222,6 +222,7 @@ static bool_t value_is_valid(view_model_t* view_model, const char* name, const v
   if (validator != NULL) {
     value_validator_set_context(validator, OBJECT(view_model));
     ret = value_validator_is_valid(validator, value, msg);
+    value_validator_set_context(validator, NULL);
     object_unref(OBJECT(validator));
   } else {
     log_debug("not found validator\n");
@@ -242,6 +243,7 @@ static ret_t value_fix(view_model_t* view_model, const char* name, value_t* valu
   if (validator != NULL) {
     value_validator_set_context(validator, OBJECT(view_model));
     ret = value_validator_fix(validator, value);
+    value_validator_set_context(validator, NULL);
     object_unref(OBJECT(validator));
   } else {
     log_debug("not found validator\n");

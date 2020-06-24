@@ -39,7 +39,7 @@ ret_t room_settings_return(room_settings_t* room_settings) {
   value_t v;
   return_value_if_fail(room_settings != NULL, RET_BAD_PARAMS);
 
-  value_set_object(&v, OBJECT(room_settings->req));
+  value_set_int(&v, 0);
   object_set_prop_int(OBJECT(room_settings->req), "temp", room_settings->temp);
   object_set_prop_int(OBJECT(room_settings->req), "humidity", room_settings->humidity);
 
