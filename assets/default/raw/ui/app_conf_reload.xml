@@ -58,7 +58,7 @@
 
 			<row style="empty" children_layout="default(r=1,c=0,m=3)">
 				<label style="prop_title" w="40%" text="Host" />
-        <edit w="60%" v-data:text="{host, Trigger=Changed}"  />
+        <edit w="60%" v-data:text="{host, Trigger=Changed}"  input_type="ipv4"/>
 			</row>
 			<row style="empty" children_layout="default(r=1,c=0,m=3)">
 				<label style="prop_title" w="40%" text="Port" />

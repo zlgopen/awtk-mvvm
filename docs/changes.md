@@ -1,5 +1,8 @@
 # 最新动态
 
+* 2020/06/26
+  * 基本实现无代码编辑和保存app conf。
+
 * 2020/06/15
   * 完善view\_model\_object\_wrapper/view\_model\_object\_array\_wrapper
   * 增加demo24

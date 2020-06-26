@@ -5,11 +5,11 @@
         <label text="Name" />
         <edit text="default" v-data:value="{item.name}" readonly="true"/>
         <label text="IP" />
-        <edit text="" v-data:value="{item.ip}"/>
+        <edit text="" v-data:value="{item.ip}" input_type="ipv4"/>
         <label text="Mask" />
-        <edit text="" v-data:value="{item.mask}"/>
+        <edit text="" v-data:value="{item.mask}" input_type="ipv4"/>
         <label text="GateWay" />
-        <edit text="" v-data:value="{item.gateway}"/>
+        <edit text="" v-data:value="{item.gateway}" input_type="ipv4"/>
       </view>
     </pages>
 

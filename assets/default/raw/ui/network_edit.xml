@@ -3,11 +3,11 @@
     <label text="Name" />
     <edit text="default" v-data:value="{name}" readonly="true"/>
     <label text="IP" />
-    <edit text="" v-data:value="{ip}"/>
+    <edit text="" v-data:value="{ip}" input_type="ipv4"/>
     <label text="Mask" />
-    <edit text="" v-data:value="{mask}"/>
+    <edit text="" v-data:value="{mask}" input_type="ipv4"/>
     <label text="GateWay" />
-    <edit text="" v-data:value="{gateway}"/>
+    <edit text="" v-data:value="{gateway}" input_type="ipv4"/>
   </view>
   <button text="OK" floating="true" self_layout="default(x=20, y=b:80, w=80, h=30)" v-on:click="{save, CloseWindow=true}"/>
   <button text="Cancel" floating="true" self_layout="default(x=r:20, y=b:80, w=80, h=30)" v-on:click="{reload, CloseWindow=true}"/>
