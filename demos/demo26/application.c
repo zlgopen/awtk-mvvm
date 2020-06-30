@@ -25,7 +25,7 @@
 
 static ret_t on_app_conf_events(void* ctx, event_t* e) {
   if (e->type == EVT_PROP_CHANGED) {
-    prop_change_event_t* evt  = prop_change_event_cast(e);
+    prop_change_event_t* evt = prop_change_event_cast(e);
     log_debug("prop %s changed\n", evt->name);
     log_debug("font: %s\n", app_conf_get_str("font.name", NULL));
   } else if (e->type == EVT_CMD_EXECED) {
@@ -35,11 +35,11 @@ static ret_t on_app_conf_events(void* ctx, event_t* e) {
     }
   }
 
-  return RET_OK; 
+  return RET_OK;
 }
 
 static ret_t on_app_conf_saved(void* ctx, event_t* e) {
-  return RET_OK; 
+  return RET_OK;
 }
 
 ret_t application_init() {

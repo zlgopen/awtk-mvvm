@@ -44,6 +44,7 @@
 #include "default/inc/ui/file_chooser_for_open.data"
 #include "default/inc/ui/js_temperature9.data"
 #include "default/inc/ui/app_conf.data"
+#include "default/inc/ui/compositor.data"
 #include "default/inc/ui/home.data"
 #include "default/inc/ui/network_add.data"
 #include "default/inc/ui/js_temperature5.data"
@@ -433,6 +434,7 @@ ret_t assets_init_default(void) {
   assets_manager_add(am, ui_file_chooser_for_open);
   assets_manager_add(am, ui_js_temperature9);
   assets_manager_add(am, ui_app_conf);
+  assets_manager_add(am, ui_compositor);
   assets_manager_add(am, ui_home);
   assets_manager_add(am, ui_network_add);
   assets_manager_add(am, ui_js_temperature5);

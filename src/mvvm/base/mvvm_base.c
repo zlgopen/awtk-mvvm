@@ -38,6 +38,6 @@ ret_t mvvm_base_deinit(void) {
   value_validator_deinit();
   object_unref(OBJECT(navigator()));
   navigator_set(NULL);
-  
+
   return RET_OK;
 }

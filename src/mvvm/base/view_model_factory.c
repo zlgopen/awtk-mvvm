@@ -21,8 +21,10 @@
 
 #include "tkc/mem.h"
 #include "tkc/utils.h"
+#include "tkc/tokenizer.h"
 #include "tkc/object_default.h"
 #include "mvvm/base/view_model_factory.h"
+#include "mvvm/base/view_model_compositor.h"
 
 static view_model_factory_t* s_model_factory;
 
@@ -59,7 +61,7 @@ ret_t view_model_factory_register(const char* type, view_model_create_t create) 
   return object_set_prop_pointer(s_model_factory->creators, type, create);
 }
 
-view_model_t* view_model_factory_create_model(const char* type, navigator_request_t* req) {
+view_model_t* view_model_factory_create_model_one(const char* type, navigator_request_t* req) {
   view_model_create_t create = NULL;
   return_value_if_fail(s_model_factory != NULL && type != NULL && req != NULL, NULL);
   create = (view_model_create_t)object_get_prop_pointer(s_model_factory->creators, type);
@@ -67,6 +69,37 @@ view_model_t* view_model_factory_create_model(const char* type, navigator_reques
     return create(req);
   } else {
     return NULL;
+  }
+}
+
+#define IS_COMPOSITOR_VIEW_MODEL(type) strchr(type, '+') != NULL
+
+view_model_t* view_model_factory_create_model(const char* type, navigator_request_t* req) {
+  return_value_if_fail(s_model_factory != NULL && type != NULL && req != NULL, NULL);
+
+  if (IS_COMPOSITOR_VIEW_MODEL(type)) {
+    tokenizer_t t;
+    view_model_t* compositor = view_model_compositor_create(req);
+    return_value_if_fail(compositor != NULL, NULL);
+
+    tokenizer_init(&t, type, strlen(type), "+");
+    while (tokenizer_has_more(&t)) {
+      const char* type1 = tokenizer_next(&t);
+      view_model_t* vm = view_model_factory_create_model_one(type1, req);
+      if (vm != NULL) {
+        if (view_model_compositor_add(compositor, vm) != RET_OK) {
+          log_warn("view_model_compositor_add failed\n");
+          OBJECT_UNREF(vm);
+        }
+      } else {
+        log_warn("create %s view_model failed\n", type1);
+      }
+    }
+    tokenizer_deinit(&t);
+
+    return compositor;
+  } else {
+    return view_model_factory_create_model_one(type, req);
   }
 }
 

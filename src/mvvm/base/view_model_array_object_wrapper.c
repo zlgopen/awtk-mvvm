@@ -99,7 +99,7 @@ static bool_t view_model_array_object_wrapper_can_exec(object_t* obj, const char
   if (view_model_array_default_can_exec(VIEW_MODEL(obj), name, args)) {
     return TRUE;
   }
-  
+
   if (tk_str_eq(name, OBJECT_CMD_EDIT)) {
     return TRUE;
   }
@@ -178,7 +178,7 @@ static ret_t view_model_array_object_wrapper_exec(object_t* obj, const char* nam
 
     args = path;
   }
-  
+
   if (tk_str_eq(name, OBJECT_CMD_ADD) || tk_str_eq(name, OBJECT_CMD_EDIT)) {
     object_exec(object_wrapper->obj, OBJECT_CMD_SAVE, NULL);
   }

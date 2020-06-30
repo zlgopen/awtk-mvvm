@@ -25,9 +25,9 @@
 
 static ret_t on_key_down(void* ctx, event_t* e) {
   key_event_t* evt = (key_event_t*)e;
-  if(evt->key == TK_KEY_ESCAPE) {
+  if (evt->key == TK_KEY_ESCAPE) {
     tk_quit();
-  } else if(evt->key == TK_KEY_F1) {
+  } else if (evt->key == TK_KEY_F1) {
     tk_mem_dump();
   }
   return RET_OK;
@@ -40,7 +40,9 @@ static ret_t install_quit_shortcut(void) {
   return RET_OK;
 }
 
-#define GLOBAL_INIT() mvvm_init();install_quit_shortcut();
+#define GLOBAL_INIT() \
+  mvvm_init();        \
+  install_quit_shortcut();
 
 #define GLOBAL_EXIT() mvvm_deinit()
 
