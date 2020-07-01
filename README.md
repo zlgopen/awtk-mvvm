@@ -76,7 +76,7 @@ sys.path.insert(0, '../awtk-linux-fb/')
 * [窗口导航器](docs/12.navigate.md)
 * [JS 实现 Model](docs/13.js_model.md)
 * [高级用法](docs/14.advance_usages.md)
-* [针对系统配置的 MVVM（无需编写代码）] (docs/15.app_conf.md)
+* [针对系统配置的 MVVM（无需编写代码）](docs/15.app_conf.md)
 
 ## 五、示例
 
