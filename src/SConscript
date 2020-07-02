@@ -6,9 +6,11 @@ BIN_DIR=os.environ['BIN_DIR'];
 sources= Glob('mvvm/base/*.c') + \
   Glob('mvvm/hardware/*.c') +  \
   Glob('mvvm/awtk/*.c') + \
-  Glob('mvvm/jerryscript/*.c') + \
   Glob('mvvm/cpp/*.cpp') + \
   Glob('mvvm/*.c')
+
+if 'WITH_JS' in os.environ:
+  sources += Glob('mvvm/jerryscript/*.c') 
 
 env=DefaultEnvironment().Clone()
 env.Library(os.path.join(LIB_DIR, 'mvvm'), sources)

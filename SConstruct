@@ -53,10 +53,18 @@ TK_3RD_DIRS = [
 ]
 
 APP_LIBPATH = [APP_LIB_DIR]
-APP_LIBS = ['mvvm', 'jerryscript', 'streams']
+APP_LIBS = ['mvvm','streams']
 APP_CPPPATH = TK_3RD_DIRS + [APP_SRC, APP_ROOT]
-APP_CFLAGS = '-DRES_ROOT=\"\\\"'+RES_ROOT+'\\\"\" -DWITH_JERRYSCRIPT -DJERRY_DEBUGGER '
-SConscripts = ['3rd/jerryscript/SConscript', 'src/SConscript', 'demos/SConscript', 'tests/SConscript']
+APP_CFLAGS = '-DRES_ROOT=\"\\\"'+RES_ROOT+'\\\"\" '
+
+os.environ['WITH_JS'] = 'true'
+
+if 'WITH_JS' in os.environ:
+  APP_LIBS += ['jerryscript']
+  APP_CFLAGS +=' -DWITH_JERRYSCRIPT -DJERRY_DEBUGGER '
+  SConscripts = ['3rd/jerryscript/SConscript', 'src/SConscript', 'demos/SConscript', 'tests/SConscript']
+else:
+  SConscripts = ['src/SConscript', 'demos/SConscript']
 
 APP_CCFLAGS = APP_CFLAGS
 
