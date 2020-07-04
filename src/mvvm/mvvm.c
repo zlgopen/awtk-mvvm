@@ -25,18 +25,12 @@
 ret_t mvvm_init(void) {
   mvvm_base_init();
 
-#ifdef WITH_JERRYSCRIPT
-  return_value_if_fail(mvvm_jerryscript_init() == RET_OK, RET_FAIL);
-#endif /*WITH_JERRYSCRIPT*/
   return_value_if_fail(mvvm_awtk_init() == RET_OK, RET_FAIL);
 
   return RET_OK;
 }
 
 ret_t mvvm_deinit(void) {
-#ifdef WITH_JERRYSCRIPT
-  mvvm_jerryscript_deinit();
-#endif /*WITH_JERRYSCRIPT*/
   mvvm_awtk_deinit();
   mvvm_base_deinit();
 
