@@ -61,7 +61,7 @@ os.environ['WITH_JS'] = 'true'
 
 if 'WITH_JS' in os.environ:
   APP_LIBS += ['jerryscript']
-  APP_CFLAGS +=' -DWITH_JERRYSCRIPT -DJERRY_DEBUGGER '
+  APP_CFLAGS +=' -DWITH_JERRYSCRIPT -DJERRY_DEBUGGER  -DJERRY_ESNEXT=0 '
   SConscripts = ['3rd/jerryscript/SConscript', 'src/SConscript', 'demos/SConscript', 'tests/SConscript']
 else:
   SConscripts = ['src/SConscript', 'demos/SConscript']
