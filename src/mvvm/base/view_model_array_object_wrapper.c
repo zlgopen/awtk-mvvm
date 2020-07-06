@@ -1,4 +1,4 @@
-﻿/**
+/**
  * File:   view_model_array_object_wrapper.c
  * Author: AWTK Develop Team
  * Brief:  view_model_array_object_wrapper
@@ -22,6 +22,7 @@
 #include "tkc/mem.h"
 #include "tkc/utils.h"
 #include "tkc/object_default.h"
+#include "mvvm/base/navigator.h"
 #include "mvvm/base/view_model_object_wrapper.h"
 #include "mvvm/base/view_model_array_object_wrapper.h"
 

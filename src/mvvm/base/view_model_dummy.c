@@ -1,4 +1,4 @@
-﻿/**
+/**
  * File:   view_model_dummy.c
  * Author: AWTK Develop Team
  * Brief:  view_model_dummy
@@ -50,14 +50,12 @@ static ret_t view_model_dummy_get_prop(object_t* obj, const char* name, value_t*
 }
 
 static bool_t view_model_dummy_can_exec(object_t* obj, const char* name, const char* args) {
-  view_model_dummy_t* dummy = VIEW_MODEL_DUMMY(obj);
   return_value_if_fail(obj != NULL && name != NULL, FALSE);
 
   return TRUE;
 }
 
 static ret_t view_model_dummy_exec(object_t* obj, const char* name, const char* args) {
-  view_model_dummy_t* dummy = VIEW_MODEL_DUMMY(obj);
   return_value_if_fail(obj != NULL && name != NULL, RET_BAD_PARAMS);
 
   return RET_OK;
