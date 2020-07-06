@@ -24,7 +24,7 @@
 #include "temperature_timer.h"
 #include "temperature_view_model.h"
 
-ret_t application_init() {
+ret_t application_init(void) {
   view_model_factory_register("temperature", temperature_view_model_timer_create);
 
   return navigator_to("temperature10");

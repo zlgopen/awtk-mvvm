@@ -63,7 +63,7 @@ static ret_t mvvm_app_deinit(void) {
 
 #define GLOBAL_EXIT() mvvm_app_deinit()
 
-extern ret_t application_init();
+extern ret_t application_init(void);
 
 ret_t application_exit() {
   log_debug("application_exit\n");

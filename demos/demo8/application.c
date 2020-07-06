@@ -23,7 +23,7 @@
 #include "mvvm/mvvm.h"
 #include "shape_view_model.h"
 
-ret_t application_init() {
+ret_t application_init(void) {
   view_model_factory_register("shape", shape_view_model_create);
 
   return navigator_to("shape");

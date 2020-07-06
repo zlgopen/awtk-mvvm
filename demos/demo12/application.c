@@ -25,7 +25,7 @@
 #include "home_view_model.h"
 #include "room_settings_view_model.h"
 
-ret_t application_init() {
+ret_t application_init(void) {
   view_model_factory_register("home", home_view_model_create);
   view_model_factory_register("room_settings", room_settings_view_model_create);
 

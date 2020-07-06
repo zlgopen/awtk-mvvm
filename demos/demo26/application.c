@@ -22,6 +22,7 @@
 #include "awtk.h"
 #include "mvvm/mvvm.h"
 #include "conf_io/app_conf.h"
+#include "conf_io/app_conf_init_json.h"
 
 static ret_t on_app_conf_events(void* ctx, event_t* e) {
   if (e->type == EVT_PROP_CHANGED) {
@@ -42,7 +43,7 @@ static ret_t on_app_conf_saved(void* ctx, event_t* e) {
   return RET_OK;
 }
 
-ret_t application_init() {
+ret_t application_init(void) {
   app_conf_init_json("demo21");
 
   emitter_on(EMITTER(app_conf_get_instance()), EVT_PROP_CHANGED, on_app_conf_events, NULL);

@@ -21,8 +21,9 @@
 
 #include "awtk.h"
 #include "mvvm/mvvm.h"
+#include "conf_io/app_conf_init_json.h"
 
-ret_t application_init() {
+ret_t application_init(void) {
   app_conf_init_json("demo22");
 
   return navigator_to("app_conf_sub_vm");

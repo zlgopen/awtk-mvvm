@@ -25,7 +25,7 @@
 
 extern ret_t register_custom_handlers(void);
 
-ret_t application_init() {
+ret_t application_init(void) {
   register_custom_handlers();
   view_model_factory_register("custom_handlers", custom_handlers_view_model_create);
 

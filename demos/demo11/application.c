@@ -24,7 +24,7 @@
 #include "humidity_view_model.h"
 #include "temperature_view_model.h"
 
-ret_t application_init() {
+ret_t application_init(void) {
   view_model_factory_register("temperature", temperature_view_model_create);
   view_model_factory_register("humidity", humidity_view_model_create);
 
