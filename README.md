@@ -78,6 +78,7 @@ sys.path.insert(0, '../awtk-linux-fb/')
 * [高级用法](docs/14.advance_usages.md)
 * [针对系统配置的 MVVM（无需编写代码）](docs/15.app_conf.md)
 * [禁用 javascript](docs/how_to_disable_js.md)
+* [MVVM 在 stm32 上的移植](https://github.com/zlgopen/awtk-stm32h743iitx-mvvm/blob/master/docs/stm32h743iitx_port.md)
 
 ## 五、示例
 
