@@ -114,5 +114,6 @@ sys.path.insert(0, '../awtk-linux-fb/')
 | demo25   | (no)     | 系统设置增删改查（无需编写代码）      |
 | demo26   | (no)     | 让配置生效                          |
 | demo27   | (no)     | 组合 view model                     |
+| demo28   | (no)     | 表达式综合应用                     |
 
 完整示例及模板项目：[awtk-mvvm-c-hello](https://github.com/zlgopen/awtk-mvvm-c-hello)
