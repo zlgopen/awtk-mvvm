@@ -120,3 +120,8 @@
 <language name="en_US">Dec</language>
 <language name="zh_CN">十二月</language>
 </string>
+
+<string name="current temperature %f">
+<language name="en_US">Current Temperature: %lf</language>
+<language name="zh_CN">当前温度：%lf</language>
+</string>

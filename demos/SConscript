@@ -31,6 +31,7 @@ env.Program(os.path.join(BIN_DIR, 'demo24'), Glob('demo24/*.c') + ["assets.c"])
 env.Program(os.path.join(BIN_DIR, 'demo25'), Glob('demo25/*.c') + ["assets.c"])
 env.Program(os.path.join(BIN_DIR, 'demo26'), Glob('demo26/*.c') + ["assets.c"])
 env.Program(os.path.join(BIN_DIR, 'demo27'), Glob('demo27/*.c') + ["assets.c"])
+env.Program(os.path.join(BIN_DIR, 'demo28'), Glob('demo28/*.c') + ["assets.c"])
 
 if 'WITH_JS' in os.environ:
   env.Program(os.path.join(BIN_DIR, 'jsdemo1'), Glob('jsdemo1/*.c') + ["assets.c"])

@@ -22,6 +22,7 @@
 #include "tkc/str.h"
 #include "tkc/utils.h"
 #include "tkc/expr_eval.h"
+#include "base/locale_info.h"
 #include "mvvm/base/utils.h"
 #include "mvvm/base/view_model.h"
 
@@ -204,8 +205,24 @@ ret_t view_model_exec(view_model_t* view_model, const char* name, const char* ar
   return ret;
 }
 
+static EvalResult func_tr(const ExprValue* input, void* user_data, ExprValue* output) {
+  if (input->type == EXPR_VALUE_TYPE_STRING) {
+    const char* str = input->v.str.str;
+    str = locale_info_tr(locale_info(), str);
+    expr_value_set_string(output, str, strlen(str));
+    return EVAL_RESULT_OK;
+  } else {
+    expr_value_set_string(output, "", 0);
+    return EVAL_RESULT_BAD_PARAMS;
+  }
+}
+
 static EvalFunc vm_get_func(const char* name, void* user_data) {
   const EvalHooks* hooks = eval_default_hooks();
+
+  if(tk_str_eq(name, "tr")) {
+    return func_tr;
+  }
 
   return hooks->get_func(name, user_data);
 }

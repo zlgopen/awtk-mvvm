@@ -38,6 +38,7 @@
 #include "default/inc/ui/kb_float.data"
 #include "default/inc/ui/js_temperature6.data"
 #include "default/inc/ui/js_com_settings.data"
+#include "default/inc/ui/temperature28.data"
 #include "default/inc/ui/temperature4.data"
 #include "default/inc/ui/network_edit.data"
 #include "default/inc/ui/app_conf_sub_vm.data"
@@ -428,6 +429,7 @@ ret_t assets_init_default(void) {
   assets_manager_add(am, ui_kb_float);
   assets_manager_add(am, ui_js_temperature6);
   assets_manager_add(am, ui_js_com_settings);
+  assets_manager_add(am, ui_temperature28);
   assets_manager_add(am, ui_temperature4);
   assets_manager_add(am, ui_network_edit);
   assets_manager_add(am, ui_app_conf_sub_vm);
