@@ -108,7 +108,7 @@ binding_rule_t* binding_rule_parse(const char* name, const char* value, bool_t i
     return NULL;
   }
 
-  k = tokenizer_next_until(&t, ",}");
+  k = tokenizer_next_expr_until(&t, ",}");
   if (k != NULL) {
     ENSURE(object_set_prop_str(OBJECT(rule), k, NULL) == RET_OK);
     while (tokenizer_has_more(&t)) {

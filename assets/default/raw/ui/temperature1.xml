@@ -1,4 +1,7 @@
 <window v-model="temperature">
+  <label x="center" y="middle:-120" w="50%" h="40" v-data:text='{fformat("%2.2f C", $value)}'/>
+  <label x="center" y="middle:-80" w="50%" h="40" v-data:text='{iformat("temperature %d", $value)+"C"}'/>
+  <label x="center" y="middle:-40" w="50%" h="40" v-data:text='{string($value)+" C"}'/>
   <label x="center" y="middle" w="50%" h="40" v-data:text="{value}"/>
   <slider x="center" y="middle:40" w="80%" h="20" v-data:value="{value}"/>
 </window>
