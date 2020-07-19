@@ -22,6 +22,9 @@
 #include "awtk.h"
 #include "mvvm/mvvm.h"
 #include "conf_io/app_conf.h"
+BEGIN_C_DECLS
+#include "../res/assets.inc"
+END_C_DECLS
 
 static ret_t on_key_down(void* ctx, event_t* e) {
   key_event_t* evt = (key_event_t*)e;

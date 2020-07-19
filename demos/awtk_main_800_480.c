@@ -22,6 +22,9 @@
 #include "awtk.h"
 #include "mvvm/mvvm.h"
 #include "conf_io/app_conf.h"
+BEGIN_C_DECLS
+#include "../res/assets.inc"
+END_C_DECLS
 
 #define GLOBAL_INIT() mvvm_init()
 #define GLOBAL_EXIT() mvvm_deinit()
