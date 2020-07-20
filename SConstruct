@@ -2,12 +2,16 @@ import os
 import sys
 import platform
 
-#for pc
-sys.path.insert(0, '../awtk/')
+def getAwtkRoot():
+  #for pc
+  awtk_root = '../awtk'
+  #for linux-fb
+  #awtk_root = '../awtk-linux-fb'
+  return os.path.abspath(awtk_root)
 
-#for linux-fb
-#sys.path.insert(0, '../awtk-linux-fb/')
 
+AWTK_ROOT = getAwtkRoot()
+sys.path.insert(0, AWTK_ROOT)
 import awtk_config as awtk
 
 APP_ROOT    = os.path.normpath(os.getcwd())

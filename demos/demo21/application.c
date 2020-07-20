@@ -26,7 +26,7 @@
 ret_t application_init(void) {
   app_conf_init_json("demo21");
 
-  return navigator_to("app_conf");
+  return navigator_to("demo");
 }
 
 #include "../awtk_main.c"
