@@ -88,8 +88,8 @@ view_model_t* home_view_model_create_with(home_t* ahome) {
 
   home_view_model->ahome = ahome;
 
-  emitter_on(EMITTER(ahome), EVT_PROPS_CHANGED, (event_func_t)emitter_dispatch, vm);
-  emitter_on(EMITTER(ahome), EVT_ITEMS_CHANGED, (event_func_t)emitter_dispatch, vm);
+  emitter_on(EMITTER(ahome), EVT_PROPS_CHANGED, (event_func_t)emitter_forward, vm);
+  emitter_on(EMITTER(ahome), EVT_ITEMS_CHANGED, (event_func_t)emitter_forward, vm);
 
   return vm;
 }
