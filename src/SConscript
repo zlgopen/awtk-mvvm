@@ -13,5 +13,10 @@ if 'WITH_JS' in os.environ:
   sources += Glob('mvvm/jerryscript/*.c') 
 
 env=DefaultEnvironment().Clone()
-env.Library(os.path.join(LIB_DIR, 'mvvm'), sources)
+
+if 'WITH_AWTK_SO' in os.environ:
+  print("with awtk so");
+  env.SharedLibrary(os.path.join(BIN_DIR, 'mvvm'), sources)
+else:
+  env.Library(os.path.join(LIB_DIR, 'mvvm'), sources)
 

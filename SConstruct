@@ -56,8 +56,8 @@ TK_3RD_DIRS = [
   os.path.join(TK_JS_3RD_ROOT, 'nativefiledialog/nativefiledialog/src/include'),
 ]
 
-APP_LIBPATH = [APP_LIB_DIR]
-APP_LIBS = ['mvvm','streams']
+APP_LIBS = ['streams']
+APP_LIBPATH = [APP_LIB_DIR, APP_BIN_DIR]
 APP_CPPPATH = TK_3RD_DIRS + [APP_SRC, APP_ROOT]
 APP_CFLAGS = '-DRES_ROOT=\"\\\"'+RES_ROOT+'\\\"\" '
 
@@ -71,6 +71,14 @@ else:
   SConscripts = ['src/SConscript', 'demos/SConscript']
 
 APP_CCFLAGS = APP_CFLAGS
+if awtk.isBuildShared():
+  AWTK_LIBS = awtk.SHARED_LIBS
+  awtk.copySharedLib(AWTK_ROOT, APP_BIN_DIR, 'awtk');
+
+  if awtk.OS_NAME == 'Linux':
+    APP_LINKFLAGS += ' -Wl,-rpath=' + APP_BIN_DIR + ' '
+else:
+  AWTK_LIBS = awtk.STATIC_LIBS
 
 if hasattr(awtk, 'CC'):
   DefaultEnvironment(
@@ -82,7 +90,7 @@ if hasattr(awtk, 'CC'):
     
     CPPPATH   = APP_CPPPATH + awtk.CPPPATH,
     LINKFLAGS = awtk.LINKFLAGS,
-    LIBS      = APP_LIBS + awtk.LIBS,
+    LIBS      = APP_LIBS + AWTK_LIBS,
     LIBPATH   = APP_LIBPATH + awtk.LIBPATH,
     CFLAGS    = APP_CFLAGS + awtk.CFLAGS, 
     CCFLAGS   = APP_CCFLAGS + awtk.CCFLAGS, 
@@ -92,7 +100,7 @@ else:
   DefaultEnvironment(
     CPPPATH   = APP_CPPPATH + awtk.CPPPATH,
     LINKFLAGS = awtk.LINKFLAGS,
-    LIBS      = APP_LIBS + awtk.LIBS,
+    LIBS      = APP_LIBS + AWTK_LIBS,
     LIBPATH   = APP_LIBPATH + awtk.LIBPATH,
     CFLAGS    = APP_CFLAGS + awtk.CFLAGS, 
     CCFLAGS   = APP_CCFLAGS + awtk.CCFLAGS, 
