@@ -17,7 +17,7 @@ import awtk_config as awtk
 APP_ROOT    = os.path.normpath(os.getcwd())
 APP_SRC     = os.path.join(APP_ROOT, 'src')
 APP_BIN_DIR = os.path.join(APP_ROOT, 'bin')
-APP_LIB_DIR = os.path.join(APP_ROOT, 'bin')
+APP_LIB_DIR = os.path.join(APP_ROOT, 'lib')
 RES_ROOT    = awtk.TK_DEMO_ROOT.replace("\\", "\\\\")
 TK_JS_ROOT  = os.path.normpath(os.getcwd())
 TK_JS_3RD_ROOT = os.path.join(TK_JS_ROOT, '3rd')
@@ -56,8 +56,8 @@ TK_3RD_DIRS = [
   os.path.join(TK_JS_3RD_ROOT, 'nativefiledialog/nativefiledialog/src/include'),
 ]
 
-APP_LIBPATH = [APP_LIB_DIR]
 APP_LIBS = ['streams']
+APP_LIBPATH = [APP_LIB_DIR, APP_BIN_DIR]
 APP_CPPPATH = TK_3RD_DIRS + [APP_SRC, APP_ROOT]
 APP_CFLAGS = '-DRES_ROOT=\"\\\"'+RES_ROOT+'\\\"\" '
 
