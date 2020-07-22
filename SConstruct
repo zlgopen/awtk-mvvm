@@ -70,6 +70,7 @@ if 'WITH_JS' in os.environ:
 else:
   SConscripts = ['src/SConscript', 'demos/SConscript']
 
+APP_LINKFLAGS = ''
 APP_CCFLAGS = APP_CFLAGS
 if awtk.isBuildShared():
   AWTK_LIBS = awtk.SHARED_LIBS
