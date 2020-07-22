@@ -61,7 +61,7 @@ APP_LIBPATH = [APP_LIB_DIR, APP_BIN_DIR]
 APP_CPPPATH = TK_3RD_DIRS + [APP_SRC, APP_ROOT]
 APP_CFLAGS = '-DRES_ROOT=\"\\\"'+RES_ROOT+'\\\"\" '
 
-os.environ['WITH_JS'] = 'true'
+#os.environ['WITH_JS'] = 'true'
 
 if 'WITH_JS' in os.environ:
   APP_LIBS += ['jerryscript']
@@ -90,7 +90,7 @@ if hasattr(awtk, 'CC'):
     STRIP=awtk.STRIP,
     
     CPPPATH   = APP_CPPPATH + awtk.CPPPATH,
-    LINKFLAGS = awtk.LINKFLAGS,
+    LINKFLAGS = awtk.LINKFLAGS + APP_LINKFLAGS,
     LIBS      = APP_LIBS + AWTK_LIBS,
     LIBPATH   = APP_LIBPATH + awtk.LIBPATH,
     CFLAGS    = APP_CFLAGS + awtk.CFLAGS, 
@@ -100,7 +100,7 @@ if hasattr(awtk, 'CC'):
 else:
   DefaultEnvironment(
     CPPPATH   = APP_CPPPATH + awtk.CPPPATH,
-    LINKFLAGS = awtk.LINKFLAGS,
+    LINKFLAGS = awtk.LINKFLAGS + APP_LINKFLAGS,
     LIBS      = APP_LIBS + AWTK_LIBS,
     LIBPATH   = APP_LIBPATH + awtk.LIBPATH,
     CFLAGS    = APP_CFLAGS + awtk.CFLAGS, 
