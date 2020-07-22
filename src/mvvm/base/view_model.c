@@ -186,7 +186,7 @@ ret_t view_model_exec(view_model_t* view_model, const char* name, const char* ar
   ret_t ret = RET_OK;
   return_value_if_fail(view_model != NULL && name != NULL, RET_BAD_PARAMS);
 
-  if (object_is_collection(OBJECT(view_model))) {
+  if (object_is_collection(OBJECT(view_model)) && args == NULL) {
     char cursor[TK_NUM_MAX_LEN + 1];
     int32_t index = object_get_prop_int(OBJECT(view_model), VIEW_MODEL_PROP_CURSOR, 0);
 

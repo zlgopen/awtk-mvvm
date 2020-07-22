@@ -170,13 +170,12 @@ static ret_t view_model_array_object_wrapper_exec(object_t* obj, const char* nam
 
   if (tk_str_eq(name, OBJECT_CMD_CLEAR) || tk_str_eq(name, OBJECT_CMD_ADD)) {
     args = object_wrapper->prop_prefix;
-  } else {
+  } else if (args == NULL || tk_str_eq(VIEW_MODEL_PROP_SELECTED_INDEX, args)) {
     if (object_wrapper->prop_prefix != NULL) {
       tk_snprintf(path, MAX_PATH, "%s.[%u]", object_wrapper->prop_prefix, vm_array->selected_index);
     } else {
       tk_snprintf(path, MAX_PATH, "[%u]", vm_array->selected_index);
     }
-
     args = path;
   }
 

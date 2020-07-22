@@ -525,7 +525,10 @@ static ret_t binding_context_on_rebind(void* c, event_t* e) {
   }
 
   ctx->request_rebind++;
-  ctx->update_view_idle_id = 0;
+  if (ctx->update_view_idle_id != TK_INVALID_ID) {
+    idle_remove(ctx->update_view_idle_id);
+    ctx->update_view_idle_id = TK_INVALID_ID;
+  }
 
   return RET_OK;
 }
