@@ -61,7 +61,7 @@ APP_LIBPATH = [APP_LIB_DIR, APP_BIN_DIR]
 APP_CPPPATH = TK_3RD_DIRS + [APP_SRC, APP_ROOT]
 APP_CFLAGS = '-DRES_ROOT=\"\\\"'+RES_ROOT+'\\\"\" '
 
-#os.environ['WITH_JS'] = 'true'
+os.environ['WITH_JS'] = 'true'
 
 if 'WITH_JS' in os.environ:
   APP_LIBS += ['jerryscript']

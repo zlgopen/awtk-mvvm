@@ -643,7 +643,7 @@ static ret_t widget_visit_command_binding(void* ctx, const void* rule) {
   return RET_OK;
 }
 
-static ret_t binding_context_awtk_update_widget(binding_context_t* ctx, widget_t* widget) {
+static ret_t binding_context_awtk_update_widget(binding_context_t* ctx, void* widget) {
   darray_foreach(&(ctx->data_bindings), widget_visit_data_binding_update_to_view, widget);
   darray_foreach(&(ctx->command_bindings), widget_visit_command_binding, widget);
 
@@ -830,13 +830,16 @@ ret_t binding_context_bind_for_window(widget_t* widget, navigator_request_t* req
 }
 
 static ret_t window_dump(widget_t* win) {
-  if (widget_get_prop_bool(win, "debug", FALSE)) {
+  value_t v;
+
+  if (widget_get_prop(win, "debug", &v) && value_bool(&v)) {
     str_t str;
     str_init(&str, 100000);
     widget_to_xml(win, &str);
     log_debug("%s\n", str.str);
     str_reset(&str);
   }
+
   return RET_OK;
 }
 

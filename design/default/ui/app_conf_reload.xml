@@ -68,7 +68,9 @@
 	</pages>
   </row>
 
-  <button text="Save" floating="true" self_layout="default(x=20, y=b:80, w=80, h=30)" v-on:click="{save}"/>
-  <button text="Reload" floating="true" self_layout="default(x=c, y=b:80, w=80, h=30)" v-on:click="{reload}"/>
-  <button text="Close" floating="true" self_layout="default(x=r:20, y=b:80, w=80, h=30)" v-on:click="{nothing, QuitApp=true}"/>
+  <row x="10" y="b:10" w="-20" h="40" children_layout="default(r=1,c=3,s=5,m=5)">
+    <button name="save" text="Save" v-on:click="{save}"/>
+    <button name="reload" text="Reload" v-on:click="{reload}"/>
+    <button name="quit" text="Quit" v-on:click="{nothing, CloseWindow=True, QuitApp=true}"/>
+  </row>
 </window>
