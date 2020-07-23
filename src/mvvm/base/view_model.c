@@ -220,7 +220,7 @@ static EvalResult func_tr(const ExprValue* input, void* user_data, ExprValue* ou
 static EvalFunc vm_get_func(const char* name, void* user_data) {
   const EvalHooks* hooks = eval_default_hooks();
 
-  if(tk_str_eq(name, "tr")) {
+  if (tk_str_eq(name, "tr")) {
     return func_tr;
   }
 

@@ -47,16 +47,16 @@ static ret_t mvvm_app_init(void) {
   mvvm_init();
 #ifdef WITH_JERRYSCRIPT
   mvvm_jerryscript_init();
-#endif/*WITH_JERRYSCRIPT*/
+#endif /*WITH_JERRYSCRIPT*/
   install_quit_shortcut();
-  
+
   return RET_OK;
 }
 
 static ret_t mvvm_app_deinit(void) {
 #ifdef WITH_JERRYSCRIPT
   mvvm_jerryscript_deinit();
-#endif/*WITH_JERRYSCRIPT*/
+#endif /*WITH_JERRYSCRIPT*/
   mvvm_deinit();
 
   return RET_OK;

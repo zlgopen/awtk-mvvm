@@ -24,7 +24,6 @@
 #include "mvvm/base/view_model_factory.h"
 #include "mvvm/base/view_model_object_wrapper.h"
 
-
 static view_model_t* app_conf_create_view_model(navigator_request_t* req) {
   object_t* obj = app_conf_get_instance();
   return_value_if_fail(obj != NULL, NULL);

@@ -135,3 +135,18 @@ bool_t binding_context_can_exec(binding_context_t* ctx, const char* cmd, const c
 
   return FALSE;
 }
+
+ret_t binding_context_bind(binding_context_t* ctx, void* widget) {
+  return_value_if_fail(ctx != NULL && ctx->vt != NULL && ctx->vt->bind != NULL,
+                       RET_BAD_PARAMS);
+
+  return ctx->vt->bind(ctx, widget);
+}
+
+ret_t binding_context_update_widget(binding_context_t* ctx, void* widget) {
+  return_value_if_fail(ctx != NULL && ctx->vt != NULL && ctx->vt->update_widget != NULL,
+                       RET_BAD_PARAMS);
+
+  return ctx->vt->update_widget(ctx, widget);
+}
+

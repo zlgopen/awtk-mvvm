@@ -33,7 +33,7 @@ typedef struct _model_compositor_t view_model_compositor_t;
 /**
  * @class view_model_compositor_t
  * @parent view_model_t
- * 
+ *
  * 将多个view model组合起来，当一个view model使用。
  *
  */

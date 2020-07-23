@@ -21,9 +21,11 @@
 #include "awtk.h"
 #include "mvvm/mvvm.h"
 #include "mvvm/base/mvvm_base.h"
+#include "mvvm/base/custom_binder.h"
 
 ret_t mvvm_init(void) {
   mvvm_base_init();
+  custom_binder_init();
 
   return_value_if_fail(mvvm_awtk_init() == RET_OK, RET_FAIL);
 
@@ -33,6 +35,7 @@ ret_t mvvm_init(void) {
 ret_t mvvm_deinit(void) {
   mvvm_awtk_deinit();
   mvvm_base_deinit();
+  custom_binder_deinit();
 
   log_debug("mvvm_deinit\n");
 

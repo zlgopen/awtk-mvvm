@@ -37,6 +37,7 @@
 #include "mvvm/base/view_model_factory.h"
 #include "mvvm/base/binding_context.h"
 #include "mvvm/base/command_binding.h"
+#include "mvvm/base/custom_binder.h"
 #include "mvvm/base/binding_rule_parser.h"
 #include "mvvm/awtk/binding_context_awtk.h"
 
@@ -365,12 +366,17 @@ static view_model_t* binding_context_awtk_create_view_model(widget_t* widget,
 
 static ret_t binding_context_awtk_bind_widget(binding_context_t* ctx, widget_t* widget) {
   view_model_t* view_model = NULL;
+  const char* type = widget_get_type(widget);
   const char* vmodel = widget_get_prop_vmodel(widget);
 
   if (vmodel != NULL && ctx->widget != widget) {
     return binding_context_bind_for_widget(widget, ctx, ctx->navigator_request);
   } else {
     view_model = ctx->view_model;
+  }
+
+  if (custom_binder_exist(type)) {
+    return custom_binder_bind(type, widget, ctx);
   }
 
   if (view_model != NULL) {
@@ -476,6 +482,7 @@ static ret_t on_reset_emitter(void* ctx, const void* data) {
 }
 
 static ret_t binding_context_awtk_bind_widget_array(binding_context_t* ctx, widget_t* widget) {
+  const char* type = widget_get_type(widget);
   view_model_t* view_model = ctx->view_model;
 
   ctx->request_rebind = 0;
@@ -484,6 +491,10 @@ static ret_t binding_context_awtk_bind_widget_array(binding_context_t* ctx, widg
   if (widget->custom_props != NULL) {
     ctx->current_widget = widget;
     object_foreach_prop(widget->custom_props, visit_bind_one_prop, ctx);
+  }
+
+  if (custom_binder_exist(type)) {
+    return custom_binder_bind(type, widget, ctx);
   }
 
   if (widget_is_for_items(widget)) {
@@ -533,7 +544,7 @@ static ret_t binding_context_on_rebind(void* c, event_t* e) {
   return RET_OK;
 }
 
-static ret_t binding_context_awtk_bind(binding_context_t* ctx, void* widget) {
+static ret_t binding_context_awtk_do_bind(binding_context_t* ctx, void* widget) {
   ret_t ret = RET_OK;
 
   if (object_is_collection(OBJECT(ctx->view_model))) {
@@ -551,6 +562,10 @@ static ret_t binding_context_awtk_bind(binding_context_t* ctx, void* widget) {
   ctx->bound = TRUE;
 
   return RET_OK;
+}
+
+static ret_t binding_context_awtk_bind(binding_context_t* ctx, void* widget) {
+  return binding_context_awtk_do_bind(ctx, WIDGET(widget));
 }
 
 static ret_t widget_set_prop_if_diff(widget_t* widget, const char* name, const value_t* v) {
@@ -606,9 +621,38 @@ static ret_t visit_command_binding(void* ctx, const void* data) {
   return RET_OK;
 }
 
+static ret_t widget_visit_data_binding_update_to_view(void* ctx, const void* rule) {
+  widget_t* widget = WIDGET(ctx);
+  widget_t* iter = WIDGET(BINDING_RULE(rule)->widget);
+
+  if (widget_is_parent_of(widget, iter)) {
+    visit_data_binding_update_to_view(NULL, rule);
+  }
+
+  return RET_OK;
+}
+
+static ret_t widget_visit_command_binding(void* ctx, const void* rule) {
+  widget_t* widget = WIDGET(ctx);
+  widget_t* iter = WIDGET(BINDING_RULE(rule)->widget);
+
+  if (widget_is_parent_of(widget, iter)) {
+    visit_command_binding(NULL, rule);
+  }
+
+  return RET_OK;
+}
+
+static ret_t binding_context_awtk_update_widget(binding_context_t* ctx, widget_t* widget) {
+  darray_foreach(&(ctx->data_bindings), widget_visit_data_binding_update_to_view, widget);
+  darray_foreach(&(ctx->command_bindings), widget_visit_command_binding, widget);
+
+  return RET_OK;
+}
+
 static ret_t binding_context_awtk_update_to_view_sync(binding_context_t* ctx) {
-  darray_foreach(&(ctx->data_bindings), visit_data_binding_update_to_view, ctx);
-  darray_foreach(&(ctx->command_bindings), visit_command_binding, ctx);
+  darray_foreach(&(ctx->data_bindings), visit_data_binding_update_to_view, NULL);
+  darray_foreach(&(ctx->command_bindings), visit_command_binding, NULL);
   widget_invalidate_force(WIDGET(ctx->widget), NULL);
 
   return RET_OK;
@@ -709,6 +753,8 @@ static const binding_context_vtable_t s_binding_context_vtable = {
     .update_to_view = binding_context_awtk_update_to_view,
     .update_to_model = binding_context_awtk_update_to_model,
     .exec = binding_context_awtk_exec,
+    .bind = binding_context_awtk_bind,
+    .update_widget = binding_context_awtk_update_widget,
     .can_exec = binding_context_awtk_can_exec,
     .destroy = binding_context_awtk_destroy};
 
@@ -769,7 +815,7 @@ static ret_t binding_context_bind_for_widget(widget_t* widget, binding_context_t
   ctx = binding_context_awtk_create(widget, parent_ctx, req);
   return_value_if_fail(ctx != NULL, RET_BAD_PARAMS);
 
-  goto_error_if_fail(binding_context_awtk_bind(ctx, widget) == RET_OK);
+  goto_error_if_fail(binding_context_awtk_do_bind(ctx, widget) == RET_OK);
   widget_on(widget, EVT_DESTROY, binding_context_on_widget_destroy, ctx);
 
   return RET_OK;

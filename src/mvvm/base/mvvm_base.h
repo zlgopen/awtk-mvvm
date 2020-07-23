@@ -37,6 +37,7 @@
 #include "mvvm/base/view_model_factory.h"
 #include "mvvm/base/value_validator_delegate.h"
 #include "mvvm/base/value_converter_delegate.h"
+#include "mvvm/base/custom_binder.h"
 #include "mvvm/base/view_model_app_conf.h"
 #include "mvvm/base/view_model_object_wrapper.h"
 #include "mvvm/base/view_model_array_object_wrapper.h"
