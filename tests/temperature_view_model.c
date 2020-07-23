@@ -57,7 +57,6 @@ static const object_vtable_t s_temperature_view_model_vtable = {"temperature_vie
                                                                 temperature_view_model_can_exec,
                                                                 temperature_view_model_exec};
 
-
 view_model_t* temperature_view_model_create(navigator_request_t* req) {
   object_t* obj = object_create(&s_temperature_view_model_vtable);
   view_model_t* vm = view_model_init(VIEW_MODEL(obj));

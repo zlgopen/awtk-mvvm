@@ -45,18 +45,17 @@ static ret_t humidity_view_model_on_destroy(object_t* obj) {
 }
 
 static const object_vtable_t s_humidity_view_model_vtable = {"humidity_view_model_t",
-                                                                "humidity_view_model_t",
-                                                                sizeof(humidity_view_model_t),
-                                                                FALSE,
-                                                                humidity_view_model_on_destroy,
-                                                                NULL,
-                                                                humidity_view_model_get_prop,
-                                                                humidity_view_model_set_prop,
-                                                                NULL,
-                                                                NULL,
-                                                                humidity_view_model_can_exec,
-                                                                humidity_view_model_exec};
-
+                                                             "humidity_view_model_t",
+                                                             sizeof(humidity_view_model_t),
+                                                             FALSE,
+                                                             humidity_view_model_on_destroy,
+                                                             NULL,
+                                                             humidity_view_model_get_prop,
+                                                             humidity_view_model_set_prop,
+                                                             NULL,
+                                                             NULL,
+                                                             humidity_view_model_can_exec,
+                                                             humidity_view_model_exec};
 
 view_model_t* humidity_view_model_create(navigator_request_t* req) {
   object_t* obj = object_create(&s_humidity_view_model_vtable);

@@ -28,7 +28,6 @@ typedef struct _humidity_view_model_t {
  */
 view_model_t* humidity_view_model_create(navigator_request_t* req);
 
-
 END_C_DECLS
 
 #endif /*TK_HUMIDITY_VIEW_MODEL_H*/

@@ -28,7 +28,6 @@ typedef struct _temperature_view_model_t {
  */
 view_model_t* temperature_view_model_create(navigator_request_t* req);
 
-
 END_C_DECLS
 
 #endif /*TK_TEMPERATURE_VIEW_MODEL_H*/
