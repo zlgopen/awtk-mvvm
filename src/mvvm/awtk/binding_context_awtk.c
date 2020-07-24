@@ -832,7 +832,8 @@ ret_t binding_context_bind_for_window(widget_t* widget, navigator_request_t* req
 static ret_t window_dump(widget_t* win) {
   value_t v;
 
-  if (widget_get_prop(win, "debug", &v) && value_bool(&v)) {
+  value_set_bool(&v, FALSE);
+  if (widget_get_prop(win, "debug", &v) == RET_OK && value_bool(&v)) {
     str_t str;
     str_init(&str, 100000);
     widget_to_xml(win, &str);
