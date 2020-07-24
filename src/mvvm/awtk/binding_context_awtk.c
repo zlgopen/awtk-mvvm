@@ -550,9 +550,11 @@ static ret_t binding_context_awtk_do_bind(binding_context_t* ctx, void* widget) 
   if (object_is_collection(OBJECT(ctx->view_model))) {
     ret = binding_context_awtk_bind_widget_array(ctx, WIDGET(widget));
 
-    emitter_on(EMITTER(ctx->view_model), EVT_PROP_CHANGED, on_view_model_prop_change, ctx);
-    emitter_on(EMITTER(ctx->view_model), EVT_PROPS_CHANGED, on_view_model_prop_change, ctx);
-    emitter_on(EMITTER(ctx->view_model), EVT_ITEMS_CHANGED, binding_context_on_rebind, ctx);
+    if(!emitter_exist(EMITTER(ctx->view_model), EVT_PROP_CHANGED, on_view_model_prop_change, ctx)) {
+      emitter_on(EMITTER(ctx->view_model), EVT_PROP_CHANGED, on_view_model_prop_change, ctx);
+      emitter_on(EMITTER(ctx->view_model), EVT_PROPS_CHANGED, on_view_model_prop_change, ctx);
+      emitter_on(EMITTER(ctx->view_model), EVT_ITEMS_CHANGED, binding_context_on_rebind, ctx);
+    }
   } else {
     ret = binding_context_awtk_bind_widget(ctx, WIDGET(widget));
   }
