@@ -61,8 +61,8 @@ ret_t custom_binder_register(const char* type, custom_bind_t bind) {
 
 ret_t custom_binder_bind(const char* type, void* widget, binding_context_t* ctx) {
   custom_bind_t bind = NULL;
-  return_value_if_fail(s_custom_binder != NULL && type != NULL, NULL);
-  return_value_if_fail(ctx != NULL && widget != NULL, NULL);
+  return_value_if_fail(s_custom_binder != NULL && type != NULL, RET_BAD_PARAMS);
+  return_value_if_fail(ctx != NULL && widget != NULL, RET_BAD_PARAMS);
   bind = (custom_bind_t)object_get_prop_pointer(s_custom_binder->binders, type);
   if (bind != NULL) {
     return bind(widget, ctx);
