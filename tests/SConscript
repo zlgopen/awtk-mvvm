@@ -22,12 +22,12 @@ INCLUDE_PATH = [TK_ROOT,
   os.path.join(GTEST_ROOT, 'make')] 
 
 env['CPPPATH'] = env['CPPPATH'] + INCLUDE_PATH
-env['LIBS'] = ['mvvm'] + env['LIBS']
+LIBS=['mvvm']+env['LIBS']
 
 SOURCES = [
  os.path.join(GTEST_ROOT, 'src/gtest-all.cc'),
 ] + Glob('*.cc') + Glob('*.c')
 
-env.Program(os.path.join(BIN_DIR, 'runTest'), SOURCES);
+env.Program(os.path.join(BIN_DIR, 'runTest'), SOURCES, LIBS=LIBS);
 
 

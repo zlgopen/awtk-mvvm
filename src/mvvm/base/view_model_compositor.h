@@ -55,7 +55,7 @@ struct _model_compositor_t {
 view_model_t* view_model_compositor_create(navigator_request_t* req);
 
 /**
- * @method view_model_compositor_create
+ * @method view_model_compositor_add
  * 像compositor对象中增加一个view model对象。
  *
  * @param {view_model_t*} view_model compositor对象。

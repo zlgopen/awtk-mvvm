@@ -40,6 +40,7 @@ ret_t mvvm_jerryscript_init(void);
 /**
  * @method jerryscript_run
  * 执行js代码。
+ * @export none
  * @param {const char*} name 文件名。
  * @param {const char*} code 代码。
  * @param {uint32_t} code_size 代码长度。
@@ -50,6 +51,7 @@ ret_t jerryscript_run(const char* name, const char* code, uint32_t code_size);
 
 /**
  * @method jerryscript_eval
+ * @export none
  * 执行js代码，并返回jerry对象。
  * @param {const char*} name 文件名。
  * @param {const char*} code 代码。

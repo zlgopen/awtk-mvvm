@@ -1,5 +1,115 @@
 [
   {
+    "type": "class",
+    "methods": [
+      {
+        "params": [],
+        "annotation": {},
+        "desc": "初始化自定义绑定器。",
+        "name": "custom_binder_init",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "const char*",
+            "name": "type",
+            "desc": "控件的类型。"
+          }
+        ],
+        "annotation": {},
+        "desc": "检查自定义绑定器是否存在。",
+        "name": "custom_binder_exist",
+        "return": {
+          "type": "bool_t",
+          "desc": "返回TRUE表示存在，否则表示不存在。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "const char*",
+            "name": "type",
+            "desc": "控件的类型。"
+          },
+          {
+            "type": "custom_bind_t",
+            "name": "bind",
+            "desc": "创建函数。"
+          }
+        ],
+        "annotation": {},
+        "desc": "注册模型的自定义绑定器。",
+        "name": "custom_binder_register",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "const char*",
+            "name": "type",
+            "desc": "控件的类型。"
+          }
+        ],
+        "annotation": {},
+        "desc": "注销自定义绑定器。",
+        "name": "custom_binder_unregister",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "const char*",
+            "name": "type",
+            "desc": "模型的类型。"
+          },
+          {
+            "type": "void*",
+            "name": "widget",
+            "desc": "控件。"
+          },
+          {
+            "type": "binding_context_t*",
+            "name": "ctx",
+            "desc": "ctx对象。"
+          }
+        ],
+        "annotation": {},
+        "desc": "自定义绑定。",
+        "name": "custom_binder_bind",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [],
+        "annotation": {},
+        "desc": "~初始化自定义绑定器。",
+        "name": "custom_binder_deinit",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      }
+    ],
+    "events": [],
+    "properties": [],
+    "header": "base/custom_binder.h",
+    "desc": "自定义绑定器。",
+    "name": "custom_binder_t",
+    "level": 1
+  },
+  {
     "type": "enum",
     "desc": "更新模型的时机。",
     "consts": [
@@ -178,6 +288,48 @@
         },
         "desc": "清除绑定规则(用于重新绑定)。",
         "name": "binding_context_clear_bindings",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "binding_context_t*",
+            "name": "ctx",
+            "desc": "binding_context对象。"
+          },
+          {
+            "type": "void*",
+            "name": "widget",
+            "desc": "控件对象。"
+          }
+        ],
+        "annotation": {},
+        "desc": "绑定指定控件。\n> 目前主要用于特殊控件(如table view)实现自定义绑定。",
+        "name": "binding_context_bind",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "binding_context_t*",
+            "name": "ctx",
+            "desc": "binding_context对象。"
+          },
+          {
+            "type": "void*",
+            "name": "widget",
+            "desc": "控件对象。"
+          }
+        ],
+        "annotation": {},
+        "desc": "针对指定控件的update to view。\n\n> 目前主要用于特殊控件(如table view)实现自定义绑定。",
+        "name": "binding_context_update_widget",
         "return": {
           "type": "ret_t",
           "desc": "返回RET_OK表示成功，否则表示失败。"
@@ -741,7 +893,7 @@
         ],
         "annotation": {},
         "desc": "处理打开窗口的请求。",
-        "name": "navigator_create",
+        "name": "navigator_handle_request",
         "return": {
           "type": "ret_t",
           "desc": "返回RET_OK表示成功，否则表示失败。"
@@ -1232,23 +1384,45 @@
   },
   {
     "type": "class",
-    "methods": [
+    "methods": [],
+    "events": [],
+    "properties": [
       {
-        "params": [],
-        "annotation": {},
-        "desc": "创建temperature_sensor对象。",
-        "name": "temperature_sensor_random_create",
-        "return": {
-          "type": "object_t*",
-          "desc": "返回object对象。"
+        "name": "widget",
+        "desc": "绑定的控件。",
+        "type": "void*",
+        "annotation": {
+          "readable": true
+        }
+      },
+      {
+        "name": "binding_context",
+        "desc": "绑定的上下文。",
+        "type": "binding_context_t*",
+        "annotation": {
+          "readable": true
+        }
+      },
+      {
+        "name": "view_model",
+        "desc": "绑定的ViewModel。",
+        "type": "view_model_t*",
+        "annotation": {
+          "readable": true
+        }
+      },
+      {
+        "name": "cursor;",
+        "desc": "对于数组的ViewModel，保存cursor。",
+        "type": "uint32_t",
+        "annotation": {
+          "readable": true
         }
       }
     ],
-    "events": [],
-    "properties": [],
-    "header": "hardware/temperature_sensor_random.h",
-    "desc": "模拟的温度传感器，随机生成0-100之间的温度。",
-    "name": "temperature_sensor_random_t",
+    "header": "base/binding_rule.h",
+    "desc": "绑定规则基类。",
+    "name": "binding_rule_t",
     "parent": "object_t",
     "level": 2
   },
@@ -1462,45 +1636,23 @@
   },
   {
     "type": "class",
-    "methods": [],
-    "events": [],
-    "properties": [
+    "methods": [
       {
-        "name": "widget",
-        "desc": "绑定的控件。",
-        "type": "void*",
-        "annotation": {
-          "readable": true
-        }
-      },
-      {
-        "name": "binding_context",
-        "desc": "绑定的上下文。",
-        "type": "binding_context_t*",
-        "annotation": {
-          "readable": true
-        }
-      },
-      {
-        "name": "view_model",
-        "desc": "绑定的ViewModel。",
-        "type": "view_model_t*",
-        "annotation": {
-          "readable": true
-        }
-      },
-      {
-        "name": "cursor;",
-        "desc": "对于数组的ViewModel，保存cursor。",
-        "type": "uint32_t",
-        "annotation": {
-          "readable": true
+        "params": [],
+        "annotation": {},
+        "desc": "创建temperature_sensor对象。",
+        "name": "temperature_sensor_random_create",
+        "return": {
+          "type": "object_t*",
+          "desc": "返回object对象。"
         }
       }
     ],
-    "header": "base/binding_rule.h",
-    "desc": "绑定规则基类。",
-    "name": "binding_rule_t",
+    "events": [],
+    "properties": [],
+    "header": "hardware/temperature_sensor_random.h",
+    "desc": "模拟的温度传感器，随机生成0-100之间的温度。",
+    "name": "temperature_sensor_random_t",
     "parent": "object_t",
     "level": 2
   },
@@ -1978,135 +2130,22 @@
     "type": "class",
     "methods": [
       {
-        "params": [
-          {
-            "type": "view_model_t*",
-            "name": "view_model",
-            "desc": "view_model对象。"
-          }
-        ],
+        "params": [],
         "annotation": {},
-        "desc": "初始化。",
-        "name": "view_model_array_init",
+        "desc": "创建navigator_handler对象(主要给脚本和DLL使用)。",
+        "name": "navigator_handler_awtk_create",
         "return": {
-          "type": "view_model_t*",
-          "desc": "返回view_model对象。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "view_model_t*",
-            "name": "view_model",
-            "desc": "view_model对象。"
-          }
-        ],
-        "annotation": {},
-        "desc": "~初始化。",
-        "name": "view_model_array_deinit",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "view_model_t*",
-            "name": "view_model",
-            "desc": "view_model对象。"
-          }
-        ],
-        "annotation": {},
-        "desc": "增加cursor的值。",
-        "name": "view_model_array_inc_cursor",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "view_model_t*",
-            "name": "view_model",
-            "desc": "view_model对象。"
-          },
-          {
-            "type": "uint32_t",
-            "name": "cursor",
-            "desc": "的值。"
-          }
-        ],
-        "annotation": {},
-        "desc": "设置cursor的值。",
-        "name": "view_model_array_set_cursor",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "view_model_t*",
-            "name": "view_model",
-            "desc": "view_model对象。"
-          },
-          {
-            "type": "uint32_t",
-            "name": "index",
-            "desc": "选定项的序数。"
-          }
-        ],
-        "annotation": {},
-        "desc": "选中指定项。",
-        "name": "view_model_array_set_selected_index",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "view_model_t*",
-            "name": "view_model",
-            "desc": "view_model对象。"
-          }
-        ],
-        "annotation": {},
-        "desc": "触发items改变事件。",
-        "name": "view_model_array_notify_items_changed",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
+          "type": "navigator_handler_t*",
+          "desc": "返回navigator_handler对象。"
         }
       }
     ],
     "events": [],
-    "properties": [
-      {
-        "name": "cursor",
-        "desc": "当前可以访问的submodel。",
-        "type": "uint32_t",
-        "annotation": {
-          "readable": true
-        }
-      },
-      {
-        "name": "selected_index",
-        "desc": "当前选择的项。",
-        "type": "uint32_t",
-        "annotation": {
-          "readable": true
-        }
-      }
-    ],
-    "header": "base/view_model_array.h",
-    "desc": "array view_model",
-    "name": "view_model_array_t",
-    "parent": "view_model_t",
+    "properties": [],
+    "header": "awtk/navigator_handler_awtk.h",
+    "desc": "基于AWTK实现的导航处理器，负责打开指定的窗口。",
+    "name": "navigator_handler_awtk_t",
+    "parent": "navigator_handler_t",
     "level": 3
   },
   {
@@ -2135,112 +2174,6 @@
     "desc": "dummy view_model",
     "name": "view_model_dummy_t",
     "parent": "view_model_t",
-    "level": 3
-  },
-  {
-    "type": "class",
-    "methods": [
-      {
-        "params": [],
-        "annotation": {},
-        "desc": "创建navigator_handler对象(主要给脚本和DLL使用)。",
-        "name": "navigator_handler_awtk_create",
-        "return": {
-          "type": "navigator_handler_t*",
-          "desc": "返回navigator_handler对象。"
-        }
-      }
-    ],
-    "events": [],
-    "properties": [],
-    "header": "awtk/navigator_handler_awtk.h",
-    "desc": "基于AWTK实现的导航处理器，负责打开指定的窗口。",
-    "name": "navigator_handler_awtk_t",
-    "parent": "navigator_handler_t",
-    "level": 3
-  },
-  {
-    "type": "class",
-    "methods": [
-      {
-        "params": [
-          {
-            "type": "object_t*",
-            "name": "obj",
-            "desc": "待包装的对象。"
-          }
-        ],
-        "annotation": {},
-        "desc": "创建view_model对象。",
-        "name": "view_model_object_wrapper_create",
-        "return": {
-          "type": "view_model_t*",
-          "desc": "返回view_model对象。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "object_t*",
-            "name": "obj",
-            "desc": "待包装的对象。"
-          },
-          {
-            "type": "const char*",
-            "name": "prop_prefix",
-            "desc": "属性路径的前缀(可以为NULL)。"
-          }
-        ],
-        "annotation": {},
-        "desc": "创建view_model对象。",
-        "name": "view_model_object_wrapper_create_ex",
-        "return": {
-          "type": "view_model_t*",
-          "desc": "返回view_model对象。"
-        }
-      }
-    ],
-    "events": [],
-    "properties": [],
-    "header": "base/view_model_object_wrapper.h",
-    "desc": "把object包装成view model。",
-    "name": "view_model_object_wrapper_t",
-    "parent": "view_model_t",
-    "level": 3
-  },
-  {
-    "type": "class",
-    "methods": [
-      {
-        "params": [
-          {
-            "type": "value_is_valid_t",
-            "name": "is_valid",
-            "desc": "有效性检查函数。"
-          },
-          {
-            "type": "value_fix_t",
-            "name": "value_fix_t",
-            "desc": "修正函数。"
-          }
-        ],
-        "annotation": {
-          "constructor": true
-        },
-        "desc": "创建value_validator对象。",
-        "name": "value_validator_delegate_create",
-        "return": {
-          "type": "value_validator_t*",
-          "desc": "返回value_validator对象。"
-        }
-      }
-    ],
-    "events": [],
-    "properties": [],
-    "header": "base/value_validator_delegate.h",
-    "desc": "把有效性检查函数包装成value_validator_t接口。",
-    "name": "value_validator_delegate_t",
-    "parent": "value_validator_t",
     "level": 3
   },
   {
@@ -2362,6 +2295,138 @@
     "desc": "命令绑定规则。",
     "name": "command_binding_t",
     "parent": "binding_rule_t",
+    "level": 3
+  },
+  {
+    "type": "class",
+    "methods": [
+      {
+        "params": [
+          {
+            "type": "object_t*",
+            "name": "obj",
+            "desc": "待包装的对象。"
+          }
+        ],
+        "annotation": {},
+        "desc": "创建view_model对象。",
+        "name": "view_model_object_wrapper_create",
+        "return": {
+          "type": "view_model_t*",
+          "desc": "返回view_model对象。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "object_t*",
+            "name": "obj",
+            "desc": "待包装的对象。"
+          },
+          {
+            "type": "const char*",
+            "name": "prop_prefix",
+            "desc": "属性路径的前缀(可以为NULL)。"
+          }
+        ],
+        "annotation": {},
+        "desc": "创建view_model对象。",
+        "name": "view_model_object_wrapper_create_ex",
+        "return": {
+          "type": "view_model_t*",
+          "desc": "返回view_model对象。"
+        }
+      }
+    ],
+    "events": [],
+    "properties": [],
+    "header": "base/view_model_object_wrapper.h",
+    "desc": "把object包装成view model。",
+    "name": "view_model_object_wrapper_t",
+    "parent": "view_model_t",
+    "level": 3
+  },
+  {
+    "type": "class",
+    "methods": [
+      {
+        "params": [
+          {
+            "type": "value_is_valid_t",
+            "name": "is_valid",
+            "desc": "有效性检查函数。"
+          },
+          {
+            "type": "value_fix_t",
+            "name": "value_fix_t",
+            "desc": "修正函数。"
+          }
+        ],
+        "annotation": {
+          "constructor": true
+        },
+        "desc": "创建value_validator对象。",
+        "name": "value_validator_delegate_create",
+        "return": {
+          "type": "value_validator_t*",
+          "desc": "返回value_validator对象。"
+        }
+      }
+    ],
+    "events": [],
+    "properties": [],
+    "header": "base/value_validator_delegate.h",
+    "desc": "把有效性检查函数包装成value_validator_t接口。",
+    "name": "value_validator_delegate_t",
+    "parent": "value_validator_t",
+    "level": 3
+  },
+  {
+    "type": "class",
+    "methods": [
+      {
+        "params": [
+          {
+            "type": "jerry_value_t*",
+            "name": "jsobj",
+            "desc": "js对象。"
+          }
+        ],
+        "annotation": {},
+        "desc": "将jsobj包装成view_model。",
+        "name": "view_model_normal_jerryscript_create",
+        "return": {
+          "type": "view_model_t*",
+          "desc": "返回view_model对象。"
+        }
+      },
+      {
+        "params": [],
+        "annotation": {},
+        "desc": "初始化MVVM。",
+        "name": "mvvm_init",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [],
+        "annotation": {},
+        "desc": "~初始化MVVM。",
+        "name": "mvvm_deinit",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      }
+    ],
+    "events": [],
+    "properties": [],
+    "header": "jerryscript/view_model_normal_jerryscript.h",
+    "desc": "wrap jerryscript code to a view_model",
+    "name": "view_model_normal_jerryscript_t",
+    "parent": "view_model_t",
     "level": 3
   },
   {
@@ -2508,57 +2573,33 @@
       {
         "params": [
           {
-            "type": "jerry_value_t*",
-            "name": "jsobj",
-            "desc": "js对象。"
+            "type": "value_convert_t",
+            "name": "to_model",
+            "desc": "到模型的转换函数。"
+          },
+          {
+            "type": "value_convert_t",
+            "name": "to_view",
+            "desc": "到视图的转换函数。"
           }
         ],
-        "annotation": {},
-        "desc": "将jsobj包装成view_model。",
-        "name": "view_model_array_jerryscript_create",
+        "annotation": {
+          "constructor": true
+        },
+        "desc": "",
+        "name": "value_converter_delegate_create",
         "return": {
-          "type": "view_model_t*",
-          "desc": "返回view_model对象。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "const char*",
-            "name": "name",
-            "desc": "名称(通常是文件名)。"
-          },
-          {
-            "type": "const char*",
-            "name": "code",
-            "desc": "代码字符字符串(UTF8)。"
-          },
-          {
-            "type": "uint32_t",
-            "name": "code_size",
-            "desc": "代码的长度。"
-          },
-          {
-            "type": "navigator_request_t*",
-            "name": "req",
-            "desc": "请求的参数(可选)。"
-          }
-        ],
-        "annotation": {},
-        "desc": "通过一段JS代码创建一个view_model对象。",
-        "name": "view_model_jerryscript_create",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
+          "type": "value_converter_t*",
+          "desc": "返回value_converter对象。"
         }
       }
     ],
     "events": [],
     "properties": [],
-    "header": "jerryscript/view_model_array_jerryscript.h",
-    "desc": "wrap jerryscript code to a view_model",
-    "name": "view_model_array_jerryscript_t",
-    "parent": "view_model_t",
+    "header": "base/value_converter_delegate.h",
+    "desc": "把两个转换函数包装成value_converter_t接口。",
+    "name": "value_converter_delegate_t",
+    "parent": "value_converter_t",
     "level": 3
   },
   {
@@ -2615,33 +2656,133 @@
       {
         "params": [
           {
-            "type": "value_convert_t",
-            "name": "to_model",
-            "desc": "到模型的转换函数。"
-          },
-          {
-            "type": "value_convert_t",
-            "name": "to_view",
-            "desc": "到视图的转换函数。"
+            "type": "view_model_t*",
+            "name": "view_model",
+            "desc": "view_model对象。"
           }
         ],
-        "annotation": {
-          "constructor": true
-        },
-        "desc": "",
-        "name": "value_converter_delegate_create",
+        "annotation": {},
+        "desc": "初始化。",
+        "name": "view_model_array_init",
         "return": {
-          "type": "value_converter_t*",
-          "desc": "返回value_converter对象。"
+          "type": "view_model_t*",
+          "desc": "返回view_model对象。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "view_model_t*",
+            "name": "view_model",
+            "desc": "view_model对象。"
+          }
+        ],
+        "annotation": {},
+        "desc": "~初始化。",
+        "name": "view_model_array_deinit",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "view_model_t*",
+            "name": "view_model",
+            "desc": "view_model对象。"
+          }
+        ],
+        "annotation": {},
+        "desc": "增加cursor的值。",
+        "name": "view_model_array_inc_cursor",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "view_model_t*",
+            "name": "view_model",
+            "desc": "view_model对象。"
+          },
+          {
+            "type": "uint32_t",
+            "name": "cursor",
+            "desc": "的值。"
+          }
+        ],
+        "annotation": {},
+        "desc": "设置cursor的值。",
+        "name": "view_model_array_set_cursor",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "view_model_t*",
+            "name": "view_model",
+            "desc": "view_model对象。"
+          },
+          {
+            "type": "uint32_t",
+            "name": "index",
+            "desc": "选定项的序数。"
+          }
+        ],
+        "annotation": {},
+        "desc": "选中指定项。",
+        "name": "view_model_array_set_selected_index",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "view_model_t*",
+            "name": "view_model",
+            "desc": "view_model对象。"
+          }
+        ],
+        "annotation": {},
+        "desc": "触发items改变事件。",
+        "name": "view_model_array_notify_items_changed",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
         }
       }
     ],
     "events": [],
-    "properties": [],
-    "header": "base/value_converter_delegate.h",
-    "desc": "把两个转换函数包装成value_converter_t接口。",
-    "name": "value_converter_delegate_t",
-    "parent": "value_converter_t",
+    "properties": [
+      {
+        "name": "cursor",
+        "desc": "当前可以访问的submodel。",
+        "type": "uint32_t",
+        "annotation": {
+          "readable": true
+        }
+      },
+      {
+        "name": "selected_index",
+        "desc": "当前选择的项。",
+        "type": "uint32_t",
+        "annotation": {
+          "readable": true
+        }
+      }
+    ],
+    "header": "base/view_model_array.h",
+    "desc": "array view_model",
+    "name": "view_model_array_t",
+    "parent": "view_model_t",
     "level": 3
   },
   {
@@ -2678,7 +2819,7 @@
         ],
         "annotation": {},
         "desc": "像compositor对象中增加一个view model对象。",
-        "name": "view_model_compositor_create",
+        "name": "view_model_compositor_add",
         "return": {
           "type": "ret_t",
           "desc": "返回RET_OK表示成功，否则表示失败。"
@@ -2747,6 +2888,7 @@
         "annotation": {},
         "desc": "执行js代码。",
         "name": "jerryscript_run",
+        "export": "none",
         "return": {
           "type": "ret_t",
           "desc": "返回RET_OK表示成功，否则表示失败。"
@@ -2773,6 +2915,7 @@
         "annotation": {},
         "desc": "执行js代码，并返回jerry对象。",
         "name": "jerryscript_eval",
+        "export": "none",
         "return": {
           "type": "jerry_value_t",
           "desc": "返回jerry_value对象。"
@@ -2892,27 +3035,38 @@
         ],
         "annotation": {},
         "desc": "将jsobj包装成view_model。",
-        "name": "view_model_normal_jerryscript_create",
+        "name": "view_model_array_jerryscript_create",
         "return": {
           "type": "view_model_t*",
           "desc": "返回view_model对象。"
         }
       },
       {
-        "params": [],
+        "params": [
+          {
+            "type": "const char*",
+            "name": "name",
+            "desc": "名称(通常是文件名)。"
+          },
+          {
+            "type": "const char*",
+            "name": "code",
+            "desc": "代码字符字符串(UTF8)。"
+          },
+          {
+            "type": "uint32_t",
+            "name": "code_size",
+            "desc": "代码的长度。"
+          },
+          {
+            "type": "navigator_request_t*",
+            "name": "req",
+            "desc": "请求的参数(可选)。"
+          }
+        ],
         "annotation": {},
-        "desc": "初始化MVVM。",
-        "name": "mvvm_init",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
-        }
-      },
-      {
-        "params": [],
-        "annotation": {},
-        "desc": "~初始化MVVM。",
-        "name": "mvvm_deinit",
+        "desc": "通过一段JS代码创建一个view_model对象。",
+        "name": "view_model_jerryscript_create",
         "return": {
           "type": "ret_t",
           "desc": "返回RET_OK表示成功，否则表示失败。"
@@ -2921,9 +3075,9 @@
     ],
     "events": [],
     "properties": [],
-    "header": "jerryscript/view_model_normal_jerryscript.h",
+    "header": "jerryscript/view_model_array_jerryscript.h",
     "desc": "wrap jerryscript code to a view_model",
-    "name": "view_model_normal_jerryscript_t",
+    "name": "view_model_array_jerryscript_t",
     "parent": "view_model_t",
     "level": 3
   },

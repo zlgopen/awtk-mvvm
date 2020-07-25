@@ -26,6 +26,7 @@ os.environ['APP_SRC'] = APP_SRC;
 os.environ['APP_ROOT'] = APP_ROOT;
 os.environ['BIN_DIR'] = APP_BIN_DIR;
 os.environ['LIB_DIR'] = APP_LIB_DIR;
+os.environ['BUILD_SHARED'] = str(awtk.isBuildShared())
 
 TK_3RD_DIRS = [
   os.path.join(TK_JS_3RD_ROOT, 'jerryscript/jerryscript/jerry-ext/include'),

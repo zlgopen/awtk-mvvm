@@ -78,7 +78,7 @@ navigator_t* navigator(void);
 ret_t navigator_set(navigator_t* nav);
 
 /**
- * @method navigator_create
+ * @method navigator_handle_request
  * 处理打开窗口的请求。
  *
  * @param {navigator_t*} nav navigator对象。
