@@ -28,6 +28,13 @@
 BEGIN_C_DECLS
 
 /**
+ * @class binding_context_awtk_t
+ * @parent binding_context_t
+ *
+ * binding_context_awtk
+ */
+ 
+/**
  * @method binding_context_awtk_create
  * 创建binding_context对象。
  *
