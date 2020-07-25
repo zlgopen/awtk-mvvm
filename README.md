@@ -82,6 +82,8 @@ sys.path.insert(0, '../awtk-linux-fb/')
 
 ## 五、示例
 
+* 基本示例
+
 |  C DEMO  | JS DEMO  | 说明 |
 | -------- | -------  | ---------------------------------    |
 | demo1    | jsdemo1  | 数据绑定基本用法                     |
@@ -116,4 +118,6 @@ sys.path.insert(0, '../awtk-linux-fb/')
 | demo27   | (no)     | 组合 view model                     |
 | demo28   | (no)     | 表达式综合应用                     |
 
-完整示例及模板项目：[awtk-mvvm-c-hello](https://github.com/zlgopen/awtk-mvvm-c-hello)
+* [完整示例及模板项目](https://github.com/zlgopen/awtk-mvvm-c-hello)
+
+* [awtk-mvvm-c-examples](https://github.com/zlgopen/awtk-mvvm-c-examples) 
