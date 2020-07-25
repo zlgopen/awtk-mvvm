@@ -35,19 +35,29 @@
 #include "mvvm/cpp/value_converter.hpp"
 #include "mvvm/cpp/value_validator.hpp"
 
+#ifdef WIN32
+#ifdef MVVM_DLL_EXPORT
+#define MVVM_API __declspec(dllexport)
+#else
+#define MVVM_API __declspec(dllimport)
+#endif
+#else
+#define MVVM_API 
+#endif
+
 namespace vm {
 
 /*将C++的ViewModel适配成C的ViewModel*/
-view_model_t* To(ViewModel* cpp);
+ MVVM_API view_model_t* To(ViewModel* cpp);
 
 /*将C++的ViewModelArray适配成C的ViewModel*/
-view_model_t* To(ViewModelArray* cpp);
+ MVVM_API view_model_t* To(ViewModelArray* cpp);
 
 /*将C++的ValueConverter适配成C的ValueConverter*/
-value_converter_t* To(ValueConverter* cpp);
+ MVVM_API value_converter_t* To(ValueConverter* cpp);
 
 /*将C++的ValueValidator适配成C的ValueValidator*/
-value_validator_t* To(ValueValidator* cpp);
+ MVVM_API value_validator_t* To(ValueValidator* cpp);
 
 } /*namespae vm*/
 

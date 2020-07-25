@@ -23,7 +23,7 @@
 #include "tkc/utils.h"
 #include "mvvm/base/utils.h"
 
-const char* destruct_array_prop_name(const char* name, uint32_t* index) {
+const char* tk_destruct_array_prop_name(const char* name, uint32_t* index) {
   const char* prop = NULL;
   return_value_if_fail(name != NULL, NULL);
 

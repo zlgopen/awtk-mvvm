@@ -54,7 +54,7 @@ static ret_t view_model_array_jerryscript_set_prop(object_t* obj, const char* na
     return RET_OK;
   }
 
-  name = destruct_array_prop_name(name, &index);
+  name = tk_destruct_array_prop_name(name, &index);
   return_value_if_fail(name != NULL, RET_BAD_PARAMS);
   return_value_if_fail(index < jerry_get_array_length(view_modeljs->jsobj), RET_BAD_PARAMS);
 
@@ -82,7 +82,7 @@ static ret_t view_model_array_jerryscript_get_prop(object_t* obj, const char* na
     return RET_OK;
   }
 
-  name = destruct_array_prop_name(name, &index);
+  name = tk_destruct_array_prop_name(name, &index);
   return_value_if_fail(name != NULL, RET_BAD_PARAMS);
   return_value_if_fail(index < jerry_get_array_length(view_modeljs->jsobj), RET_BAD_PARAMS);
 

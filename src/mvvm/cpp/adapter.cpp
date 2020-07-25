@@ -314,7 +314,7 @@ static ret_t view_model_array_adapter_set_prop(object_t* obj, const char* name, 
     return RET_OK;
   }
 
-  name = destruct_array_prop_name(name, &index);
+  name = tk_destruct_array_prop_name(name, &index);
   return_value_if_fail(name != NULL, RET_BAD_PARAMS);
 
   return adapter->cpp->SetProp(index, name, v);
@@ -333,7 +333,7 @@ static ret_t view_model_array_adapter_get_prop(object_t* obj, const char* name, 
     return RET_OK;
   }
 
-  name = destruct_array_prop_name(name, &index);
+  name = tk_destruct_array_prop_name(name, &index);
   return_value_if_fail(name != NULL, RET_BAD_PARAMS);
 
   return adapter->cpp->GetProp(index, name, v);

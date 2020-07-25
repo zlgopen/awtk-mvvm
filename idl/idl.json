@@ -161,6 +161,32 @@
     "level": 1
   },
   {
+    "params": [
+      {
+        "type": "const char*",
+        "name": "name",
+        "desc": "属性名。"
+      },
+      {
+        "type": "uint32_t*",
+        "name": "index",
+        "desc": "返回索引。"
+      }
+    ],
+    "annotation": {
+      "global": true
+    },
+    "desc": "从完整属性名中取出属性名和索引。",
+    "name": "tk_destruct_array_prop_name",
+    "return": {
+      "type": "const char*",
+      "desc": "返回属性名。"
+    },
+    "type": "method",
+    "header": "base/utils.h",
+    "level": 1
+  },
+  {
     "type": "class",
     "methods": [
       {
@@ -352,6 +378,12 @@
           "type": "ret_t",
           "desc": "返回RET_OK表示成功，否则表示失败。"
         }
+      },
+      {
+        "params": [],
+        "annotation": {},
+        "desc": "annotation [\"global\"]\nexport for test only",
+        "name": "binding_rule_parse"
       }
     ],
     "events": [],
@@ -593,6 +625,111 @@
     "type": "class",
     "methods": [
       {
+        "params": [],
+        "annotation": {},
+        "desc": "初始化。",
+        "name": "device_factory_init",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "const char*",
+            "name": "type",
+            "desc": "类型。"
+          }
+        ],
+        "annotation": {},
+        "desc": "检查是否存在。",
+        "name": "device_factory_has",
+        "return": {
+          "type": "bool_t",
+          "desc": "返回TRUE表示存在，否则表示FALSE表示不存在。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "const char*",
+            "name": "type",
+            "desc": "类型。"
+          }
+        ],
+        "annotation": {},
+        "desc": "注销。",
+        "name": "device_factory_unregister",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "const char*",
+            "name": "type",
+            "desc": "类型。"
+          },
+          {
+            "type": "const char*",
+            "name": "args",
+            "desc": "参数。"
+          }
+        ],
+        "annotation": {},
+        "desc": "创建设备。",
+        "name": "device_factory_create_device",
+        "return": {
+          "type": "object_t",
+          "desc": "返回object对象。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "const char*",
+            "name": "type",
+            "desc": "类型。"
+          },
+          {
+            "type": "device_object_create_t",
+            "name": "create",
+            "desc": "创建回调函数指针。"
+          }
+        ],
+        "annotation": {},
+        "desc": "注册。",
+        "name": "device_factory_register",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [],
+        "annotation": {},
+        "desc": "~初始化。",
+        "name": "device_factory_deinit",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      }
+    ],
+    "events": [],
+    "properties": [],
+    "header": "hardware/device_factory.h",
+    "desc": "设备工厂。",
+    "name": "device_factory_t",
+    "level": 1
+  },
+  {
+    "type": "class",
+    "methods": [
+      {
         "params": [
           {
             "type": "value_validator_t*",
@@ -754,6 +891,847 @@
   },
   {
     "type": "class",
+    "methods": [],
+    "events": [],
+    "properties": [
+      {
+        "name": "widget",
+        "desc": "绑定的控件。",
+        "type": "void*",
+        "annotation": {
+          "readable": true
+        }
+      },
+      {
+        "name": "binding_context",
+        "desc": "绑定的上下文。",
+        "type": "binding_context_t*",
+        "annotation": {
+          "readable": true
+        }
+      },
+      {
+        "name": "view_model",
+        "desc": "绑定的ViewModel。",
+        "type": "view_model_t*",
+        "annotation": {
+          "readable": true
+        }
+      },
+      {
+        "name": "cursor;",
+        "desc": "对于数组的ViewModel，保存cursor。",
+        "type": "uint32_t",
+        "annotation": {
+          "readable": true
+        }
+      }
+    ],
+    "header": "base/binding_rule.h",
+    "desc": "绑定规则基类。",
+    "name": "binding_rule_t",
+    "parent": "object_t",
+    "level": 2
+  },
+  {
+    "type": "class",
+    "methods": [
+      {
+        "params": [
+          {
+            "type": "value_converter_t*",
+            "name": "converter",
+            "desc": "converter对象。"
+          },
+          {
+            "type": "value_t*",
+            "name": "from",
+            "desc": "源value。"
+          },
+          {
+            "type": "value_t*",
+            "name": "to",
+            "desc": "转换结果。"
+          }
+        ],
+        "annotation": {},
+        "desc": "将value转换成适合model存储的格式。",
+        "name": "value_converter_to_model",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "value_converter_t*",
+            "name": "converter",
+            "desc": "converter对象。"
+          },
+          {
+            "type": "value_t*",
+            "name": "from",
+            "desc": "源value。"
+          },
+          {
+            "type": "value_t*",
+            "name": "to",
+            "desc": "转换结果。"
+          }
+        ],
+        "annotation": {},
+        "desc": "将value转换成适合view显示的格式。",
+        "name": "value_converter_to_view",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "const char*",
+            "name": "name",
+            "desc": "名称。"
+          }
+        ],
+        "annotation": {
+          "static": true
+        },
+        "desc": "创建指定名称的值转换器。",
+        "name": "value_converter_create",
+        "return": {
+          "type": "value_converter_t*",
+          "desc": "返回value_converter对象。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "const char*",
+            "name": "name",
+            "desc": "名称。"
+          },
+          {
+            "type": "tk_create_t",
+            "name": "create",
+            "desc": "创建函数。"
+          }
+        ],
+        "annotation": {
+          "static": true
+        },
+        "desc": "注册值转换器的创建函数。",
+        "name": "value_converter_register",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "value_converter_create_t",
+            "name": "create",
+            "desc": "创建函数。"
+          }
+        ],
+        "annotation": {
+          "static": true
+        },
+        "desc": "注册值转换器的通用创建函数(主要给脚本语言使用)。",
+        "name": "value_converter_register_generic",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [],
+        "annotation": {
+          "static": true
+        },
+        "desc": "初始化值转换器的全局对象。",
+        "name": "value_converter_init",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [],
+        "annotation": {
+          "static": true
+        },
+        "desc": "释放值转换器的全局对象。",
+        "name": "value_converter_deinit",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      }
+    ],
+    "events": [],
+    "properties": [],
+    "header": "base/value_converter.h",
+    "desc": "值转换器。\n\n如果数据在View上显示的格式和在Model中保存的格式不一样，value_converter负责在两者之间转换。",
+    "name": "value_converter_t",
+    "parent": "object_t",
+    "level": 2
+  },
+  {
+    "type": "class",
+    "methods": [
+      {
+        "params": [],
+        "annotation": {},
+        "desc": "创建temperature_sensor对象。",
+        "name": "temperature_sensor_random_create",
+        "return": {
+          "type": "object_t*",
+          "desc": "返回object对象。"
+        }
+      }
+    ],
+    "events": [],
+    "properties": [],
+    "header": "hardware/temperature_sensor_random.h",
+    "desc": "模拟的温度传感器，随机生成0-100之间的温度。",
+    "name": "temperature_sensor_random_t",
+    "parent": "object_t",
+    "level": 2
+  },
+  {
+    "type": "class",
+    "methods": [
+      {
+        "params": [
+          {
+            "type": "navigator_request_t*",
+            "name": "req",
+            "desc": "请求参数。"
+          }
+        ],
+        "annotation": {},
+        "desc": "创建array模型对象。",
+        "name": "view_model_array_dummy_create",
+        "return": {
+          "type": "view_model_t*",
+          "desc": "返回view_model对象。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "view_model_t*",
+            "name": "view_model",
+            "desc": "view_model对象。"
+          }
+        ],
+        "annotation": {},
+        "desc": "清除全部submodel。",
+        "name": "view_model_array_dummy_clear",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "view_model_t*",
+            "name": "view_model",
+            "desc": "view_model对象。"
+          },
+          {
+            "type": "view_model_t*",
+            "name": "submodel",
+            "desc": "submodel对象。"
+          }
+        ],
+        "annotation": {},
+        "desc": "增加submodel。\n\n> 增加submodel的引用计数，并保存submodel的引用。",
+        "name": "view_model_array_dummy_add",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "view_model_t*",
+            "name": "view_model",
+            "desc": "view_model对象。"
+          },
+          {
+            "type": "uint32_t",
+            "name": "index",
+            "desc": "submodel的索引。"
+          }
+        ],
+        "annotation": {},
+        "desc": "删除指定的submodel。",
+        "name": "view_model_array_dummy_remove",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "view_model_t*",
+            "name": "view_model",
+            "desc": "view_model对象。"
+          },
+          {
+            "type": "uint32_t",
+            "name": "index",
+            "desc": "submodel的索引。"
+          }
+        ],
+        "annotation": {},
+        "desc": "获取指定的submodel。",
+        "name": "view_model_array_dummy_get",
+        "return": {
+          "type": "view_model_t",
+          "desc": "返回指定的submodel。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "view_model_t*",
+            "name": "view_model",
+            "desc": "view_model对象。"
+          }
+        ],
+        "annotation": {},
+        "desc": "获取submodel的个数。",
+        "name": "view_model_array_dummy_size",
+        "return": {
+          "type": "int32_t",
+          "desc": "返回submodel的个数。"
+        }
+      }
+    ],
+    "events": [],
+    "properties": [],
+    "header": "base/view_model_array_dummy.h",
+    "desc": "array view_model",
+    "name": "view_model_array_dummy_t",
+    "parent": "view_model_array_dummy_t",
+    "level": 2
+  },
+  {
+    "type": "class",
+    "methods": [
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "parent",
+            "desc": "父控件"
+          },
+          {
+            "type": "xy_t",
+            "name": "x",
+            "desc": "x坐标"
+          },
+          {
+            "type": "xy_t",
+            "name": "y",
+            "desc": "y坐标"
+          },
+          {
+            "type": "wh_t",
+            "name": "w",
+            "desc": "宽度"
+          },
+          {
+            "type": "wh_t",
+            "name": "h",
+            "desc": "高度"
+          },
+          {
+            "type": "const char*",
+            "name": "type",
+            "desc": "设备类型。"
+          },
+          {
+            "type": "const char*",
+            "name": "args",
+            "desc": "创建参数。"
+          }
+        ],
+        "annotation": {
+          "constructor": true,
+          "scriptable": true
+        },
+        "desc": "创建widget_hardware对象",
+        "name": "widget_hardware_create",
+        "return": {
+          "type": "widget_t*",
+          "desc": "对象。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "widget_hardware对象。"
+          }
+        ],
+        "annotation": {
+          "cast": true,
+          "scriptable": true
+        },
+        "desc": "转换为widget_hardware对象(供脚本语言使用)。",
+        "name": "widget_hardware_cast",
+        "return": {
+          "type": "widget_t*",
+          "desc": "widget_hardware对象。"
+        }
+      }
+    ],
+    "events": [],
+    "properties": [],
+    "header": "awtk/widget_hardware.h",
+    "desc": "wrap hardware device to a widget",
+    "name": "widget_hardware_t",
+    "parent": "widget_t",
+    "annotation": {
+      "scriptable": true,
+      "design": true,
+      "widget": true
+    },
+    "level": 2
+  },
+  {
+    "type": "class",
+    "methods": [
+      {
+        "params": [
+          {
+            "type": "const char*",
+            "name": "target",
+            "desc": "目标窗口的名称。"
+          },
+          {
+            "type": "navigator_handler_on_request_t",
+            "name": "on_request",
+            "desc": "用于非模态窗口返回结果的回调函数。"
+          }
+        ],
+        "annotation": {
+          "constructor": true
+        },
+        "desc": "创建handler对象。",
+        "name": "navigator_handler_create",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回handler对象。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "navigator_handler_t*",
+            "name": "handler",
+            "desc": "handler对象。"
+          },
+          {
+            "type": "navigator_request_t*",
+            "name": "req",
+            "desc": "处理请求。"
+          }
+        ],
+        "annotation": {},
+        "desc": "调用本函数处理请求。",
+        "name": "navigator_handler_on_request",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      }
+    ],
+    "events": [],
+    "properties": [],
+    "header": "base/navigator_handler.h",
+    "desc": "处理导航请求。",
+    "name": "navigator_handler_t",
+    "parent": "object_t",
+    "level": 2
+  },
+  {
+    "type": "class",
+    "methods": [
+      {
+        "params": [
+          {
+            "type": "view_model_t*",
+            "name": "view_model",
+            "desc": "view_model对象。"
+          }
+        ],
+        "annotation": {},
+        "desc": "初始化。",
+        "name": "view_model_init",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回view_model对象。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "view_model_t*",
+            "name": "view_model",
+            "desc": "view_model对象。"
+          }
+        ],
+        "annotation": {},
+        "desc": "~初始化。",
+        "name": "view_model_deinit",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "view_model_t*",
+            "name": "view_model",
+            "desc": "view_model对象。"
+          },
+          {
+            "type": "navigator_request_t*",
+            "name": "req",
+            "desc": "request对象。"
+          }
+        ],
+        "annotation": {},
+        "desc": "打开视图即将加载模型时通知view_model。",
+        "name": "view_model_on_will_mount",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "view_model_t*",
+            "name": "view_model",
+            "desc": "view_model对象。"
+          }
+        ],
+        "annotation": {},
+        "desc": "视图与模型绑定完成后通知模型。",
+        "name": "view_model_on_mount",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "view_model_t*",
+            "name": "view_model",
+            "desc": "view_model对象。"
+          }
+        ],
+        "annotation": {},
+        "desc": "视图即将关闭时通知模型。",
+        "name": "view_model_on_will_unmount",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "view_model_t*",
+            "name": "view_model",
+            "desc": "view_model对象。"
+          }
+        ],
+        "annotation": {},
+        "desc": "视图销毁时通知模型。",
+        "name": "view_model_on_unmount",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "view_model_t*",
+            "name": "view_model",
+            "desc": "view_model对象。"
+          },
+          {
+            "type": "const char*",
+            "name": "expr",
+            "desc": "表达式。"
+          }
+        ],
+        "annotation": {},
+        "desc": "对表达式预处理。",
+        "name": "view_model_preprocess_expr",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回处理后的表达式。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "view_model_t*",
+            "name": "view_model",
+            "desc": "view_model对象。"
+          },
+          {
+            "type": "const char*",
+            "name": "prop",
+            "desc": "表达式。"
+          }
+        ],
+        "annotation": {},
+        "desc": "对属性进行预处理。",
+        "name": "view_model_preprocess_prop",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回处理后的表达式。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "view_model_t*",
+            "name": "view_model",
+            "desc": "view_model对象。"
+          },
+          {
+            "type": "const char*",
+            "name": "name",
+            "desc": "属性名称。"
+          }
+        ],
+        "annotation": {},
+        "desc": "检查指定的属性是否存在。",
+        "name": "view_model_has_prop",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "view_model_t*",
+            "name": "view_model",
+            "desc": "view_model对象。"
+          },
+          {
+            "type": "const char*",
+            "name": "expr",
+            "desc": "表达式。"
+          },
+          {
+            "type": "value_t*",
+            "name": "value",
+            "desc": "计算结果。"
+          }
+        ],
+        "annotation": {},
+        "desc": "计算表达式的值。",
+        "name": "view_model_eval",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "view_model_t*",
+            "name": "view_model",
+            "desc": "view_model对象。"
+          },
+          {
+            "type": "const char*",
+            "name": "name",
+            "desc": "属性名。"
+          },
+          {
+            "type": "value_t*",
+            "name": "value",
+            "desc": "属性值。"
+          }
+        ],
+        "annotation": {},
+        "desc": "获取指定属性的值。",
+        "name": "view_model_get_prop",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "view_model_t*",
+            "name": "view_model",
+            "desc": "view_model对象。"
+          },
+          {
+            "type": "const char*",
+            "name": "name",
+            "desc": "属性名。"
+          },
+          {
+            "type": "value_t*",
+            "name": "value",
+            "desc": "属性值。"
+          }
+        ],
+        "annotation": {},
+        "desc": "设置指定属性的值。",
+        "name": "view_model_set_prop",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "view_model_t*",
+            "name": "view_model",
+            "desc": "view_model对象。"
+          },
+          {
+            "type": "const char*",
+            "name": "name",
+            "desc": "命令名。"
+          },
+          {
+            "type": "const char*",
+            "name": "args",
+            "desc": "命令的参数。"
+          }
+        ],
+        "annotation": {},
+        "desc": "检查指定的命令是否可以执行。",
+        "name": "view_model_can_exec",
+        "return": {
+          "type": "bool_t",
+          "desc": "返回TRUE表示可以执行，否则表示不可以执行。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "view_model_t*",
+            "name": "view_model",
+            "desc": "view_model对象。"
+          },
+          {
+            "type": "const char*",
+            "name": "name",
+            "desc": "命令名。"
+          },
+          {
+            "type": "const char*",
+            "name": "args",
+            "desc": "命令的参数。"
+          }
+        ],
+        "annotation": {},
+        "desc": "执行指定的命令。",
+        "name": "view_model_exec",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "view_model_t*",
+            "name": "view_model",
+            "desc": "view_model对象。"
+          }
+        ],
+        "annotation": {},
+        "desc": "触发props改变事件。",
+        "name": "view_model_notify_props_changed",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "view_model_t*",
+            "name": "view_model",
+            "desc": "view_model对象。"
+          },
+          {
+            "type": "const char*",
+            "name": "name",
+            "desc": "名称。"
+          }
+        ],
+        "annotation": {},
+        "desc": "创建子ViewModel。",
+        "name": "view_model_create_sub_view_model",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "view_model_t*",
+            "name": "view_model",
+            "desc": "view_model对象。"
+          },
+          {
+            "type": "const char*",
+            "name": "name",
+            "desc": "名称。"
+          }
+        ],
+        "annotation": {},
+        "desc": "创建子ViewModelArray。",
+        "name": "view_model_create_sub_view_model_array",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      }
+    ],
+    "events": [],
+    "properties": [],
+    "header": "base/view_model.h",
+    "desc": "视图模型的基类。",
+    "name": "view_model_t",
+    "parent": "object_t",
+    "level": 2
+  },
+  {
+    "type": "class",
     "methods": [
       {
         "params": [
@@ -832,6 +1810,45 @@
     "header": "base/navigator_request.h",
     "desc": "导航请求，请求打开指定的窗口。\n\n如果需要传递参数给要打开的窗口或需要返回结果给调用者时，才需要本类，否则指定窗口的名字就行了。",
     "name": "navigator_request_t",
+    "parent": "object_t",
+    "level": 2
+  },
+  {
+    "type": "class",
+    "methods": [],
+    "events": [],
+    "properties": [
+      {
+        "name": "req",
+        "desc": "请求对象。",
+        "type": "navigator_request_t*"
+      }
+    ],
+    "header": "base/view_model.h",
+    "desc": "打开视图即将加载模型时通知view_model时的数据结构。",
+    "name": "view_model_will_mount_event_t",
+    "parent": "event_t",
+    "level": 2
+  },
+  {
+    "type": "class",
+    "methods": [
+      {
+        "params": [],
+        "annotation": {},
+        "desc": "创建buzzer对象。",
+        "name": "buzzer_log_create",
+        "return": {
+          "type": "object_t*",
+          "desc": "返回object对象。"
+        }
+      }
+    ],
+    "events": [],
+    "properties": [],
+    "header": "hardware/buzzer_log.h",
+    "desc": "",
+    "name": "buzzer_log_t",
     "parent": "object_t",
     "level": 2
   },
@@ -1225,6 +2242,32 @@
           "type": "ret_t",
           "desc": "返回RET_OK表示成功，否则表示失败。"
         }
+      },
+      {
+        "params": [
+          {
+            "type": "str_t*",
+            "name": "str",
+            "desc": "str对象。"
+          },
+          {
+            "type": "const char*",
+            "name": "",
+            "desc": "。"
+          },
+          {
+            "type": "uint32_t",
+            "name": "max",
+            "desc": "最大长度。"
+          }
+        ],
+        "annotation": {},
+        "desc": "生产一个随机字符串。",
+        "name": "str_random",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
       }
     ],
     "events": [],
@@ -1232,886 +2275,6 @@
     "header": "base/navigator.h",
     "desc": "导航器。负责打开指定的窗口。",
     "name": "navigator_t",
-    "parent": "object_t",
-    "level": 2
-  },
-  {
-    "type": "class",
-    "methods": [
-      {
-        "params": [
-          {
-            "type": "value_converter_t*",
-            "name": "converter",
-            "desc": "converter对象。"
-          },
-          {
-            "type": "value_t*",
-            "name": "from",
-            "desc": "源value。"
-          },
-          {
-            "type": "value_t*",
-            "name": "to",
-            "desc": "转换结果。"
-          }
-        ],
-        "annotation": {},
-        "desc": "将value转换成适合model存储的格式。",
-        "name": "value_converter_to_model",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "value_converter_t*",
-            "name": "converter",
-            "desc": "converter对象。"
-          },
-          {
-            "type": "value_t*",
-            "name": "from",
-            "desc": "源value。"
-          },
-          {
-            "type": "value_t*",
-            "name": "to",
-            "desc": "转换结果。"
-          }
-        ],
-        "annotation": {},
-        "desc": "将value转换成适合view显示的格式。",
-        "name": "value_converter_to_view",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "const char*",
-            "name": "name",
-            "desc": "名称。"
-          }
-        ],
-        "annotation": {
-          "static": true
-        },
-        "desc": "创建指定名称的值转换器。",
-        "name": "value_converter_create",
-        "return": {
-          "type": "value_converter_t*",
-          "desc": "返回value_converter对象。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "const char*",
-            "name": "name",
-            "desc": "名称。"
-          },
-          {
-            "type": "tk_create_t",
-            "name": "create",
-            "desc": "创建函数。"
-          }
-        ],
-        "annotation": {
-          "static": true
-        },
-        "desc": "注册值转换器的创建函数。",
-        "name": "value_converter_register",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "value_converter_create_t",
-            "name": "create",
-            "desc": "创建函数。"
-          }
-        ],
-        "annotation": {
-          "static": true
-        },
-        "desc": "注册值转换器的通用创建函数(主要给脚本语言使用)。",
-        "name": "value_converter_register_generic",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
-        }
-      },
-      {
-        "params": [],
-        "annotation": {
-          "static": true
-        },
-        "desc": "初始化值转换器的全局对象。",
-        "name": "value_converter_init",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
-        }
-      },
-      {
-        "params": [],
-        "annotation": {
-          "static": true
-        },
-        "desc": "释放值转换器的全局对象。",
-        "name": "value_converter_deinit",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
-        }
-      }
-    ],
-    "events": [],
-    "properties": [],
-    "header": "base/value_converter.h",
-    "desc": "值转换器。\n\n如果数据在View上显示的格式和在Model中保存的格式不一样，value_converter负责在两者之间转换。",
-    "name": "value_converter_t",
-    "parent": "object_t",
-    "level": 2
-  },
-  {
-    "type": "class",
-    "methods": [],
-    "events": [],
-    "properties": [
-      {
-        "name": "widget",
-        "desc": "绑定的控件。",
-        "type": "void*",
-        "annotation": {
-          "readable": true
-        }
-      },
-      {
-        "name": "binding_context",
-        "desc": "绑定的上下文。",
-        "type": "binding_context_t*",
-        "annotation": {
-          "readable": true
-        }
-      },
-      {
-        "name": "view_model",
-        "desc": "绑定的ViewModel。",
-        "type": "view_model_t*",
-        "annotation": {
-          "readable": true
-        }
-      },
-      {
-        "name": "cursor;",
-        "desc": "对于数组的ViewModel，保存cursor。",
-        "type": "uint32_t",
-        "annotation": {
-          "readable": true
-        }
-      }
-    ],
-    "header": "base/binding_rule.h",
-    "desc": "绑定规则基类。",
-    "name": "binding_rule_t",
-    "parent": "object_t",
-    "level": 2
-  },
-  {
-    "type": "class",
-    "methods": [
-      {
-        "params": [
-          {
-            "type": "navigator_request_t*",
-            "name": "req",
-            "desc": "请求参数。"
-          }
-        ],
-        "annotation": {},
-        "desc": "创建array模型对象。",
-        "name": "view_model_array_dummy_create",
-        "return": {
-          "type": "view_model_t*",
-          "desc": "返回view_model对象。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "view_model_t*",
-            "name": "view_model",
-            "desc": "view_model对象。"
-          }
-        ],
-        "annotation": {},
-        "desc": "清除全部submodel。",
-        "name": "view_model_array_dummy_clear",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "view_model_t*",
-            "name": "view_model",
-            "desc": "view_model对象。"
-          },
-          {
-            "type": "view_model_t*",
-            "name": "submodel",
-            "desc": "submodel对象。"
-          }
-        ],
-        "annotation": {},
-        "desc": "增加submodel。\n\n> 增加submodel的引用计数，并保存submodel的引用。",
-        "name": "view_model_array_dummy_add",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "view_model_t*",
-            "name": "view_model",
-            "desc": "view_model对象。"
-          },
-          {
-            "type": "uint32_t",
-            "name": "index",
-            "desc": "submodel的索引。"
-          }
-        ],
-        "annotation": {},
-        "desc": "删除指定的submodel。",
-        "name": "view_model_array_dummy_remove",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "view_model_t*",
-            "name": "view_model",
-            "desc": "view_model对象。"
-          },
-          {
-            "type": "uint32_t",
-            "name": "index",
-            "desc": "submodel的索引。"
-          }
-        ],
-        "annotation": {},
-        "desc": "获取指定的submodel。",
-        "name": "view_model_array_dummy_get",
-        "return": {
-          "type": "view_model_t",
-          "desc": "返回指定的submodel。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "view_model_t*",
-            "name": "view_model",
-            "desc": "view_model对象。"
-          }
-        ],
-        "annotation": {},
-        "desc": "获取submodel的个数。",
-        "name": "view_model_array_dummy_size",
-        "return": {
-          "type": "int32_t",
-          "desc": "返回submodel的个数。"
-        }
-      }
-    ],
-    "events": [],
-    "properties": [],
-    "header": "base/view_model_array_dummy.h",
-    "desc": "array view_model",
-    "name": "view_model_array_dummy_t",
-    "parent": "view_model_array_dummy_t",
-    "level": 2
-  },
-  {
-    "type": "class",
-    "methods": [
-      {
-        "params": [
-          {
-            "type": "widget_t*",
-            "name": "parent",
-            "desc": "父控件"
-          },
-          {
-            "type": "xy_t",
-            "name": "x",
-            "desc": "x坐标"
-          },
-          {
-            "type": "xy_t",
-            "name": "y",
-            "desc": "y坐标"
-          },
-          {
-            "type": "wh_t",
-            "name": "w",
-            "desc": "宽度"
-          },
-          {
-            "type": "wh_t",
-            "name": "h",
-            "desc": "高度"
-          },
-          {
-            "type": "const char*",
-            "name": "type",
-            "desc": "设备类型。"
-          },
-          {
-            "type": "const char*",
-            "name": "args",
-            "desc": "创建参数。"
-          }
-        ],
-        "annotation": {
-          "constructor": true,
-          "scriptable": true
-        },
-        "desc": "创建widget_hardware对象",
-        "name": "widget_hardware_create",
-        "return": {
-          "type": "widget_t*",
-          "desc": "对象。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "widget_t*",
-            "name": "widget",
-            "desc": "widget_hardware对象。"
-          }
-        ],
-        "annotation": {
-          "cast": true,
-          "scriptable": true
-        },
-        "desc": "转换为widget_hardware对象(供脚本语言使用)。",
-        "name": "widget_hardware_cast",
-        "return": {
-          "type": "widget_t*",
-          "desc": "widget_hardware对象。"
-        }
-      }
-    ],
-    "events": [],
-    "properties": [],
-    "header": "awtk/widget_hardware.h",
-    "desc": "wrap hardware device to a widget",
-    "name": "widget_hardware_t",
-    "parent": "widget_t",
-    "annotation": {
-      "scriptable": true,
-      "design": true,
-      "widget": true
-    },
-    "level": 2
-  },
-  {
-    "type": "class",
-    "methods": [
-      {
-        "params": [],
-        "annotation": {},
-        "desc": "创建temperature_sensor对象。",
-        "name": "temperature_sensor_random_create",
-        "return": {
-          "type": "object_t*",
-          "desc": "返回object对象。"
-        }
-      }
-    ],
-    "events": [],
-    "properties": [],
-    "header": "hardware/temperature_sensor_random.h",
-    "desc": "模拟的温度传感器，随机生成0-100之间的温度。",
-    "name": "temperature_sensor_random_t",
-    "parent": "object_t",
-    "level": 2
-  },
-  {
-    "type": "class",
-    "methods": [
-      {
-        "params": [
-          {
-            "type": "view_model_t*",
-            "name": "view_model",
-            "desc": "view_model对象。"
-          }
-        ],
-        "annotation": {},
-        "desc": "初始化。",
-        "name": "view_model_init",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回view_model对象。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "view_model_t*",
-            "name": "view_model",
-            "desc": "view_model对象。"
-          }
-        ],
-        "annotation": {},
-        "desc": "~初始化。",
-        "name": "view_model_deinit",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "view_model_t*",
-            "name": "view_model",
-            "desc": "view_model对象。"
-          },
-          {
-            "type": "navigator_request_t*",
-            "name": "req",
-            "desc": "request对象。"
-          }
-        ],
-        "annotation": {},
-        "desc": "打开视图即将加载模型时通知view_model。",
-        "name": "view_model_on_will_mount",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "view_model_t*",
-            "name": "view_model",
-            "desc": "view_model对象。"
-          }
-        ],
-        "annotation": {},
-        "desc": "视图与模型绑定完成后通知模型。",
-        "name": "view_model_on_mount",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "view_model_t*",
-            "name": "view_model",
-            "desc": "view_model对象。"
-          }
-        ],
-        "annotation": {},
-        "desc": "视图即将关闭时通知模型。",
-        "name": "view_model_on_will_unmount",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "view_model_t*",
-            "name": "view_model",
-            "desc": "view_model对象。"
-          }
-        ],
-        "annotation": {},
-        "desc": "视图销毁时通知模型。",
-        "name": "view_model_on_unmount",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "view_model_t*",
-            "name": "view_model",
-            "desc": "view_model对象。"
-          },
-          {
-            "type": "const char*",
-            "name": "expr",
-            "desc": "表达式。"
-          }
-        ],
-        "annotation": {},
-        "desc": "对表达式预处理。",
-        "name": "view_model_preprocess_expr",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回处理后的表达式。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "view_model_t*",
-            "name": "view_model",
-            "desc": "view_model对象。"
-          },
-          {
-            "type": "const char*",
-            "name": "prop",
-            "desc": "表达式。"
-          }
-        ],
-        "annotation": {},
-        "desc": "对属性进行预处理。",
-        "name": "view_model_preprocess_prop",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回处理后的表达式。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "view_model_t*",
-            "name": "view_model",
-            "desc": "view_model对象。"
-          },
-          {
-            "type": "const char*",
-            "name": "name",
-            "desc": "属性名称。"
-          }
-        ],
-        "annotation": {},
-        "desc": "检查指定的属性是否存在。",
-        "name": "view_model_has_prop",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "view_model_t*",
-            "name": "view_model",
-            "desc": "view_model对象。"
-          },
-          {
-            "type": "const char*",
-            "name": "expr",
-            "desc": "表达式。"
-          },
-          {
-            "type": "value_t*",
-            "name": "value",
-            "desc": "计算结果。"
-          }
-        ],
-        "annotation": {},
-        "desc": "计算表达式的值。",
-        "name": "view_model_eval",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "view_model_t*",
-            "name": "view_model",
-            "desc": "view_model对象。"
-          },
-          {
-            "type": "const char*",
-            "name": "name",
-            "desc": "属性名。"
-          },
-          {
-            "type": "value_t*",
-            "name": "value",
-            "desc": "属性值。"
-          }
-        ],
-        "annotation": {},
-        "desc": "获取指定属性的值。",
-        "name": "view_model_get_prop",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "view_model_t*",
-            "name": "view_model",
-            "desc": "view_model对象。"
-          },
-          {
-            "type": "const char*",
-            "name": "name",
-            "desc": "属性名。"
-          },
-          {
-            "type": "value_t*",
-            "name": "value",
-            "desc": "属性值。"
-          }
-        ],
-        "annotation": {},
-        "desc": "设置指定属性的值。",
-        "name": "view_model_set_prop",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "view_model_t*",
-            "name": "view_model",
-            "desc": "view_model对象。"
-          },
-          {
-            "type": "const char*",
-            "name": "name",
-            "desc": "命令名。"
-          },
-          {
-            "type": "const char*",
-            "name": "args",
-            "desc": "命令的参数。"
-          }
-        ],
-        "annotation": {},
-        "desc": "检查指定的命令是否可以执行。",
-        "name": "view_model_can_exec",
-        "return": {
-          "type": "bool_t",
-          "desc": "返回TRUE表示可以执行，否则表示不可以执行。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "view_model_t*",
-            "name": "view_model",
-            "desc": "view_model对象。"
-          },
-          {
-            "type": "const char*",
-            "name": "name",
-            "desc": "命令名。"
-          },
-          {
-            "type": "const char*",
-            "name": "args",
-            "desc": "命令的参数。"
-          }
-        ],
-        "annotation": {},
-        "desc": "执行指定的命令。",
-        "name": "view_model_exec",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "view_model_t*",
-            "name": "view_model",
-            "desc": "view_model对象。"
-          }
-        ],
-        "annotation": {},
-        "desc": "触发props改变事件。",
-        "name": "view_model_notify_props_changed",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "view_model_t*",
-            "name": "view_model",
-            "desc": "view_model对象。"
-          },
-          {
-            "type": "const char*",
-            "name": "name",
-            "desc": "名称。"
-          }
-        ],
-        "annotation": {},
-        "desc": "创建子ViewModel。",
-        "name": "view_model_create_sub_view_model",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "view_model_t*",
-            "name": "view_model",
-            "desc": "view_model对象。"
-          },
-          {
-            "type": "const char*",
-            "name": "name",
-            "desc": "名称。"
-          }
-        ],
-        "annotation": {},
-        "desc": "创建子ViewModelArray。",
-        "name": "view_model_create_sub_view_model_array",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
-        }
-      }
-    ],
-    "events": [],
-    "properties": [],
-    "header": "base/view_model.h",
-    "desc": "视图模型的基类。",
-    "name": "view_model_t",
-    "parent": "object_t",
-    "level": 2
-  },
-  {
-    "type": "class",
-    "methods": [
-      {
-        "params": [
-          {
-            "type": "const char*",
-            "name": "target",
-            "desc": "目标窗口的名称。"
-          },
-          {
-            "type": "navigator_handler_on_request_t",
-            "name": "on_request",
-            "desc": "用于非模态窗口返回结果的回调函数。"
-          }
-        ],
-        "annotation": {
-          "constructor": true
-        },
-        "desc": "创建handler对象。",
-        "name": "navigator_handler_create",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回handler对象。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "navigator_handler_t*",
-            "name": "handler",
-            "desc": "handler对象。"
-          },
-          {
-            "type": "navigator_request_t*",
-            "name": "req",
-            "desc": "处理请求。"
-          }
-        ],
-        "annotation": {},
-        "desc": "调用本函数处理请求。",
-        "name": "navigator_handler_on_request",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
-        }
-      }
-    ],
-    "events": [],
-    "properties": [],
-    "header": "base/navigator_handler.h",
-    "desc": "处理导航请求。",
-    "name": "navigator_handler_t",
-    "parent": "object_t",
-    "level": 2
-  },
-  {
-    "type": "class",
-    "methods": [],
-    "events": [],
-    "properties": [
-      {
-        "name": "req",
-        "desc": "请求对象。",
-        "type": "navigator_request_t*"
-      }
-    ],
-    "header": "base/view_model.h",
-    "desc": "打开视图即将加载模型时通知view_model时的数据结构。",
-    "name": "view_model_will_mount_event_t",
-    "parent": "event_t",
-    "level": 2
-  },
-  {
-    "type": "class",
-    "methods": [
-      {
-        "params": [],
-        "annotation": {},
-        "desc": "创建buzzer对象。",
-        "name": "buzzer_log_create",
-        "return": {
-          "type": "object_t*",
-          "desc": "返回object对象。"
-        }
-      }
-    ],
-    "events": [],
-    "properties": [],
-    "header": "hardware/buzzer_log.h",
-    "desc": "",
-    "name": "buzzer_log_t",
     "parent": "object_t",
     "level": 2
   },
@@ -2154,70 +2317,34 @@
       {
         "params": [
           {
-            "type": "navigator_request_t*",
-            "name": "req",
-            "desc": "请求参数。"
+            "type": "jerry_value_t*",
+            "name": "jsobj",
+            "desc": "js对象。"
           }
         ],
         "annotation": {},
-        "desc": "创建dummy模型对象。\n\n对于一些简单的窗口，只需要简单的导航(打开或关闭窗口)，可以不用实现自己的模型，而使用dummy模型。",
-        "name": "view_model_dummy_create",
+        "desc": "将jsobj包装成view_model。",
+        "name": "view_model_normal_jerryscript_create",
         "return": {
           "type": "view_model_t*",
           "desc": "返回view_model对象。"
         }
-      }
-    ],
-    "events": [],
-    "properties": [],
-    "header": "base/view_model_dummy.h",
-    "desc": "dummy view_model",
-    "name": "view_model_dummy_t",
-    "parent": "view_model_t",
-    "level": 3
-  },
-  {
-    "type": "class",
-    "methods": [
+      },
       {
         "params": [],
-        "annotation": {
-          "constructor": true
-        },
-        "desc": "创建数据绑定对象。",
-        "name": "command_binding_create",
+        "annotation": {},
+        "desc": "初始化MVVM。",
+        "name": "mvvm_init",
         "return": {
-          "type": "binding_rule_t*",
-          "desc": "返回数据绑定对象。"
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
         }
       },
       {
-        "params": [
-          {
-            "type": "command_binding_t*",
-            "name": "rule",
-            "desc": "绑定规则对象。"
-          }
-        ],
+        "params": [],
         "annotation": {},
-        "desc": "检查当前的命令是否可以执行。",
-        "name": "command_binding_can_exec",
-        "return": {
-          "type": "bool_t",
-          "desc": "返回TRUE表示可以执行，否则表示不可以执行。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "command_binding_t*",
-            "name": "rule",
-            "desc": "绑定规则对象。"
-          }
-        ],
-        "annotation": {},
-        "desc": "执行当前的命令。",
-        "name": "command_binding_exec",
+        "desc": "~初始化MVVM。",
+        "name": "mvvm_deinit",
         "return": {
           "type": "ret_t",
           "desc": "返回RET_OK表示成功，否则表示失败。"
@@ -2225,76 +2352,11 @@
       }
     ],
     "events": [],
-    "properties": [
-      {
-        "name": "close_window",
-        "desc": "执行命令之后，是否关闭当前窗口。",
-        "type": "bool_t",
-        "annotation": {
-          "readable": true
-        }
-      },
-      {
-        "name": "quit_app",
-        "desc": "执行命令之后，是否推出应用程序。",
-        "type": "bool_t",
-        "annotation": {
-          "readable": true
-        }
-      },
-      {
-        "name": "update_model",
-        "desc": "执行命令之前，是否更新数据到模型。",
-        "type": "bool_t",
-        "annotation": {
-          "readable": true
-        }
-      },
-      {
-        "name": "command",
-        "desc": "命令名称。",
-        "type": "char*",
-        "annotation": {
-          "readable": true
-        }
-      },
-      {
-        "name": "args",
-        "desc": "命令参数。",
-        "type": "char*",
-        "annotation": {
-          "readable": true
-        }
-      },
-      {
-        "name": "event",
-        "desc": "事件名称。",
-        "type": "char*",
-        "annotation": {
-          "readable": true
-        }
-      },
-      {
-        "name": "key_filter",
-        "desc": "按键过滤(主要用于按键事件，相当于快捷键)。",
-        "type": "char*",
-        "annotation": {
-          "readable": true
-        }
-      },
-      {
-        "name": "auto_disable",
-        "desc": "是否根据can_exec自动禁用控件(缺省为TRUE)。",
-        "type": "bool_t",
-        "annotation": {
-          "readable": true
-        }
-      }
-    ],
-    "header": "base/command_binding.h",
-    "desc": "命令绑定规则。",
-    "name": "command_binding_t",
-    "parent": "binding_rule_t",
+    "properties": [],
+    "header": "jerryscript/view_model_normal_jerryscript.h",
+    "desc": "wrap jerryscript code to a view_model",
+    "name": "view_model_normal_jerryscript_t",
+    "parent": "view_model_t",
     "level": 3
   },
   {
@@ -2379,54 +2441,6 @@
     "desc": "把有效性检查函数包装成value_validator_t接口。",
     "name": "value_validator_delegate_t",
     "parent": "value_validator_t",
-    "level": 3
-  },
-  {
-    "type": "class",
-    "methods": [
-      {
-        "params": [
-          {
-            "type": "jerry_value_t*",
-            "name": "jsobj",
-            "desc": "js对象。"
-          }
-        ],
-        "annotation": {},
-        "desc": "将jsobj包装成view_model。",
-        "name": "view_model_normal_jerryscript_create",
-        "return": {
-          "type": "view_model_t*",
-          "desc": "返回view_model对象。"
-        }
-      },
-      {
-        "params": [],
-        "annotation": {},
-        "desc": "初始化MVVM。",
-        "name": "mvvm_init",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
-        }
-      },
-      {
-        "params": [],
-        "annotation": {},
-        "desc": "~初始化MVVM。",
-        "name": "mvvm_deinit",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
-        }
-      }
-    ],
-    "events": [],
-    "properties": [],
-    "header": "jerryscript/view_model_normal_jerryscript.h",
-    "desc": "wrap jerryscript code to a view_model",
-    "name": "view_model_normal_jerryscript_t",
-    "parent": "view_model_t",
     "level": 3
   },
   {
@@ -2565,6 +2579,127 @@
     "annotation": {
       "scriptable": true
     },
+    "level": 3
+  },
+  {
+    "type": "class",
+    "methods": [
+      {
+        "params": [],
+        "annotation": {
+          "constructor": true
+        },
+        "desc": "创建数据绑定对象。",
+        "name": "command_binding_create",
+        "return": {
+          "type": "binding_rule_t*",
+          "desc": "返回数据绑定对象。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "command_binding_t*",
+            "name": "rule",
+            "desc": "绑定规则对象。"
+          }
+        ],
+        "annotation": {},
+        "desc": "检查当前的命令是否可以执行。",
+        "name": "command_binding_can_exec",
+        "return": {
+          "type": "bool_t",
+          "desc": "返回TRUE表示可以执行，否则表示不可以执行。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "command_binding_t*",
+            "name": "rule",
+            "desc": "绑定规则对象。"
+          }
+        ],
+        "annotation": {},
+        "desc": "执行当前的命令。",
+        "name": "command_binding_exec",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      }
+    ],
+    "events": [],
+    "properties": [
+      {
+        "name": "close_window",
+        "desc": "执行命令之后，是否关闭当前窗口。",
+        "type": "bool_t",
+        "annotation": {
+          "readable": true
+        }
+      },
+      {
+        "name": "quit_app",
+        "desc": "执行命令之后，是否推出应用程序。",
+        "type": "bool_t",
+        "annotation": {
+          "readable": true
+        }
+      },
+      {
+        "name": "update_model",
+        "desc": "执行命令之前，是否更新数据到模型。",
+        "type": "bool_t",
+        "annotation": {
+          "readable": true
+        }
+      },
+      {
+        "name": "command",
+        "desc": "命令名称。",
+        "type": "char*",
+        "annotation": {
+          "readable": true
+        }
+      },
+      {
+        "name": "args",
+        "desc": "命令参数。",
+        "type": "char*",
+        "annotation": {
+          "readable": true
+        }
+      },
+      {
+        "name": "event",
+        "desc": "事件名称。",
+        "type": "char*",
+        "annotation": {
+          "readable": true
+        }
+      },
+      {
+        "name": "key_filter",
+        "desc": "按键过滤(主要用于按键事件，相当于快捷键)。",
+        "type": "char*",
+        "annotation": {
+          "readable": true
+        }
+      },
+      {
+        "name": "auto_disable",
+        "desc": "是否根据can_exec自动禁用控件(缺省为TRUE)。",
+        "type": "bool_t",
+        "annotation": {
+          "readable": true
+        }
+      }
+    ],
+    "header": "base/command_binding.h",
+    "desc": "命令绑定规则。",
+    "name": "command_binding_t",
+    "parent": "binding_rule_t",
     "level": 3
   },
   {
@@ -2758,6 +2893,110 @@
           "type": "ret_t",
           "desc": "返回RET_OK表示成功，否则表示失败。"
         }
+      },
+      {
+        "params": [
+          {
+            "type": "view_model_t*",
+            "name": "view_model",
+            "desc": "view_model对象。"
+          },
+          {
+            "type": "const char*",
+            "name": "name",
+            "desc": "属性名。"
+          },
+          {
+            "type": "const value_t*",
+            "name": "v",
+            "desc": "属性值。"
+          }
+        ],
+        "annotation": {},
+        "desc": "set prop的默认实现。",
+        "name": "view_model_array_default_set_prop",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "view_model_t*",
+            "name": "view_model",
+            "desc": "view_model对象。"
+          },
+          {
+            "type": "const char*",
+            "name": "name",
+            "desc": "属性名。"
+          },
+          {
+            "type": "value_t*",
+            "name": "v",
+            "desc": "属性值。"
+          }
+        ],
+        "annotation": {},
+        "desc": "get prop的默认实现。",
+        "name": "view_model_array_default_get_prop",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "view_model_t*",
+            "name": "view_model",
+            "desc": "view_model对象。"
+          },
+          {
+            "type": "const char*",
+            "name": "name",
+            "desc": "命令名。"
+          },
+          {
+            "type": "const char*",
+            "name": "args",
+            "desc": "命令参数。"
+          }
+        ],
+        "annotation": {},
+        "desc": "exec的默认实现。",
+        "name": "view_model_array_default_exec",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "view_model_t*",
+            "name": "view_model",
+            "desc": "view_model对象。"
+          },
+          {
+            "type": "const char*",
+            "name": "name",
+            "desc": "命令名。"
+          },
+          {
+            "type": "const char*",
+            "name": "args",
+            "desc": "命令参数。"
+          }
+        ],
+        "annotation": {},
+        "desc": "can exec的默认实现。",
+        "name": "view_model_array_default_can_exec",
+        "return": {
+          "type": "bool_t",
+          "desc": "返回TRUE表示可以执行，否则表示不能执行。"
+        }
       }
     ],
     "events": [],
@@ -2838,6 +3077,34 @@
     "type": "class",
     "methods": [
       {
+        "params": [
+          {
+            "type": "navigator_request_t*",
+            "name": "req",
+            "desc": "请求参数。"
+          }
+        ],
+        "annotation": {},
+        "desc": "创建dummy模型对象。\n\n对于一些简单的窗口，只需要简单的导航(打开或关闭窗口)，可以不用实现自己的模型，而使用dummy模型。",
+        "name": "view_model_dummy_create",
+        "return": {
+          "type": "view_model_t*",
+          "desc": "返回view_model对象。"
+        }
+      }
+    ],
+    "events": [],
+    "properties": [],
+    "header": "base/view_model_dummy.h",
+    "desc": "dummy view_model",
+    "name": "view_model_dummy_t",
+    "parent": "view_model_t",
+    "level": 3
+  },
+  {
+    "type": "class",
+    "methods": [
+      {
         "params": [],
         "annotation": {},
         "desc": "初始化jerryscript awtk related stuff。",
@@ -2856,6 +3123,48 @@
           "type": "ret_t",
           "desc": "返回RET_OK表示成功，否则表示失败。"
         }
+      },
+      {
+        "params": [],
+        "annotation": {},
+        "desc": "annotation [\"global\"]\nexport for test only",
+        "name": "jerry_value_from_navigator_request"
+      },
+      {
+        "params": [],
+        "annotation": {},
+        "desc": "annotation [\"global\"]\nexport for test only",
+        "name": "jerry_value_to_navigator_request"
+      },
+      {
+        "params": [],
+        "annotation": {},
+        "desc": "annotation [\"global\"]\nexport for test only",
+        "name": "jerry_value_to_value"
+      },
+      {
+        "params": [],
+        "annotation": {},
+        "desc": "annotation [\"global\"]\nexport for test only",
+        "name": "jerry_value_from_value"
+      },
+      {
+        "params": [],
+        "annotation": {},
+        "desc": "annotation [\"global\"]\nexport for test only",
+        "name": "jerry_value_to_pointer"
+      },
+      {
+        "params": [],
+        "annotation": {},
+        "desc": "annotation [\"global\"]\nexport for test only",
+        "name": "jerry_value_from_pointer"
+      },
+      {
+        "params": [],
+        "annotation": {},
+        "desc": "annotation [\"global\"]\nexport for test only",
+        "name": "jerry_value_check"
       },
       {
         "params": [],

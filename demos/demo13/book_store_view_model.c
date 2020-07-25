@@ -30,7 +30,7 @@ static ret_t book_store_view_model_set_prop(object_t* obj, const char* name, con
     return RET_OK;
   }
 
-  name = destruct_array_prop_name(name, &index);
+  name = tk_destruct_array_prop_name(name, &index);
   view_model = book_store_view_model_attach(obj, index);
 
   return view_model_set_prop(view_model, name, v);
@@ -50,7 +50,7 @@ static ret_t book_store_view_model_get_prop(object_t* obj, const char* name, val
     return RET_OK;
   }
 
-  name = destruct_array_prop_name(name, &index);
+  name = tk_destruct_array_prop_name(name, &index);
   view_model = book_store_view_model_attach(obj, index);
 
   return view_model_get_prop(view_model, name, v);

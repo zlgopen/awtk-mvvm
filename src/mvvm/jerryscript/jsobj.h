@@ -50,13 +50,52 @@ ret_t jsobj_exec(jerry_value_t obj, const char* name, const char* args);
 ret_t jsobj_exec_ex(jerry_value_t obj, const char* name, jerry_value_t args);
 bool_t jsobj_can_exec(jerry_value_t obj, const char* name, const char* args);
 
+/**
+ * @method jerry_value_from_navigator_request
+ * annotation ["global"]
+ * export for test only
+ */
 jerry_value_t jerry_value_from_navigator_request(navigator_request_t* req);
+
+/**
+ * @method jerry_value_to_navigator_request
+ * annotation ["global"]
+ * export for test only
+ */
 navigator_request_t* jerry_value_to_navigator_request(jerry_value_t value);
 
+/**
+ * @method jerry_value_to_value
+ * annotation ["global"]
+ * export for test only
+ */
 ret_t jerry_value_to_value(jerry_value_t value, value_t* v, str_t* temp);
+
+/**
+ * @method jerry_value_from_value
+ * annotation ["global"]
+ * export for test only
+ */
 jerry_value_t jerry_value_from_value(const value_t* v, str_t* temp);
+
+/**
+ * @method jerry_value_to_pointer
+ * annotation ["global"]
+ * export for test only
+ */
 void* jerry_value_to_pointer(jerry_value_t value);
+
+/**
+ * @method jerry_value_from_pointer
+ * annotation ["global"]
+ * export for test only
+ */
 jerry_value_t jerry_value_from_pointer(void* ptr);
+/**
+ * @method jerry_value_check
+ * annotation ["global"]
+ * export for test only
+ */
 ret_t jerry_value_check(jerry_value_t value);
 
 bool_t jsvalue_converter_exist(const char* name);
