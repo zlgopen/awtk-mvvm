@@ -49,7 +49,7 @@ static ret_t view_model_array_dummy_set_prop(object_t* obj, const char* name, co
     return RET_OK;
   }
 
-  name = destruct_array_prop_name(name, &index);
+  name = tk_destruct_array_prop_name(name, &index);
   return_value_if_fail(name != NULL, RET_BAD_PARAMS);
   return_value_if_fail(index < dummy->array.size, RET_BAD_PARAMS);
   submodel = VIEW_MODEL(dummy->array.elms[index]);
@@ -73,7 +73,7 @@ static ret_t view_model_array_dummy_get_prop(object_t* obj, const char* name, va
     return RET_OK;
   }
 
-  name = destruct_array_prop_name(name, &index);
+  name = tk_destruct_array_prop_name(name, &index);
   return_value_if_fail(name != NULL, RET_BAD_PARAMS);
   return_value_if_fail(index < dummy->array.size, RET_BAD_PARAMS);
   submodel = VIEW_MODEL(dummy->array.elms[index]);

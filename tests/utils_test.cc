@@ -4,9 +4,9 @@
 TEST(Utils, basic) {
   uint32_t index = 0;
 
-  ASSERT_STREQ(destruct_array_prop_name("[123].name", &index), "name");
+  ASSERT_STREQ(tk_destruct_array_prop_name("[123].name", &index), "name");
   ASSERT_EQ(index, 123);
 
-  ASSERT_STREQ(destruct_array_prop_name("[0].a", &index), "a");
+  ASSERT_STREQ(tk_destruct_array_prop_name("[0].a", &index), "a");
   ASSERT_EQ(index, 0);
 }

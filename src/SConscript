@@ -19,12 +19,14 @@ env=DefaultEnvironment().Clone()
 EXPORT_DEF=''
 if OS_NAME == 'Windows':
   EXPORT_DEF = ' /DEF:"src/mvvm.def" '
-
+	
 print('EXPORT_DEF='+EXPORT_DEF)
 
 if 'BUILD_SHARED' in os.environ and os.environ['BUILD_SHARED'] == 'True':
   LINKFLAGS=env['LINKFLAGS'] + EXPORT_DEF
-  env.SharedLibrary(os.path.join(BIN_DIR, 'mvvm'), sources, LINKFLAGS=LINKFLAGS)
+  CFLAGS=env['CFLAGS'] + ' -DMVVM_DLL_EXPORT ' 
+  CCFLAGS=env['CCFLAGS'] + ' -DMVVM_DLL_EXPORT ' 
+  env.SharedLibrary(os.path.join(BIN_DIR, 'mvvm'), sources, LINKFLAGS=LINKFLAGS, CFLAGS=CFLAGS, CCFLAGS=CCFLAGS)
 else:
   env.Library(os.path.join(LIB_DIR, 'mvvm'), sources)
 

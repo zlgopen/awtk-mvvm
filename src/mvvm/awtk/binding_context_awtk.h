@@ -28,6 +28,13 @@
 BEGIN_C_DECLS
 
 /**
+ * @class binding_context_awtk_t
+ * @parent binding_context_t
+ *
+ * binding_context_awtk
+ */
+ 
+/**
  * @method binding_context_awtk_create
  * 创建binding_context对象。
  *
@@ -41,6 +48,12 @@ binding_context_t* binding_context_awtk_create(widget_t* widget, binding_context
                                                navigator_request_t* req);
 
 /*public for test*/
+
+/**
+ * @method binding_context_bind_for_window
+ * annotation ["global"]
+ * export for test only
+ */
 ret_t binding_context_bind_for_window(widget_t* widget, navigator_request_t* req);
 
 END_C_DECLS

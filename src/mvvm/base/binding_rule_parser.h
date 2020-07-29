@@ -27,6 +27,11 @@
 
 BEGIN_C_DECLS
 
+/**
+ * @method binding_rule_parse
+ * annotation ["global"]
+ * export for test only
+ */
 binding_rule_t* binding_rule_parse(const char* name, const char* value, bool_t inputable);
 
 END_C_DECLS

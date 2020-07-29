@@ -122,10 +122,53 @@ ret_t view_model_array_set_selected_index(view_model_t* view_model, uint32_t ind
 ret_t view_model_array_notify_items_changed(view_model_t* view_model);
 
 /*for subclass*/
+/**
+ * @method view_model_array_default_set_prop 
+ * set prop的默认实现。
+ *
+ * @param {view_model_t*} view_model view_model对象。
+ * @param {const char*} name 属性名。
+ * @param {const value_t*} v 属性值。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
 ret_t view_model_array_default_set_prop(view_model_t* view_model, const char* name,
                                         const value_t* value);
+
+/**
+ * @method view_model_array_default_get_prop 
+ * get prop的默认实现。
+ *
+ * @param {view_model_t*} view_model view_model对象。
+ * @param {const char*} name 属性名。
+ * @param {value_t*} v 属性值。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
 ret_t view_model_array_default_get_prop(view_model_t* view_model, const char* name, value_t* value);
+
+/**
+ * @method view_model_array_default_exec 
+ * exec的默认实现。
+ *
+ * @param {view_model_t*} view_model view_model对象。
+ * @param {const char*} name 命令名。
+ * @param {const char*} args 命令参数。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
 ret_t view_model_array_default_exec(view_model_t* view_model, const char* name, const char* args);
+
+/**
+ * @method view_model_array_default_can_exec 
+ * can exec的默认实现。
+ *
+ * @param {view_model_t*} view_model view_model对象。
+ * @param {const char*} name 命令名。
+ * @param {const char*} args 命令参数。
+ *
+ * @return {bool_t} 返回TRUE表示可以执行，否则表示不能执行。
+ */
 bool_t view_model_array_default_can_exec(view_model_t* view_model, const char* name,
                                          const char* args);
 
