@@ -10,7 +10,7 @@ class Helper:
         self.DEPENDS_LIBS = DEPENDS_LIBS
         return self;
     
-    def set_app_libs(self, APP_LIBS):
+    def set_libs(self, APP_LIBS):
         self.APP_LIBS = APP_LIBS 
         return self;
 
