@@ -34,7 +34,7 @@ TK_3RD_DIRS = [
 
 os.environ['WITH_JS'] = 'true'
 
-APP_CFLAGS = ''
+APP_CFLAGS = '-DMVVM_DLL_EXPORT '
 APP_LIBS = ['streams', 'mvvm']
 if 'WITH_JS' in os.environ:
   APP_LIBS += ['jerryscript']
