@@ -8,6 +8,7 @@
 *.idb
 *.obj
 *.exe
+*.pyc
 .sconsign.dblite
 lua/demo1
 lua/lftk_run
