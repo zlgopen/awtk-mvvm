@@ -18,6 +18,14 @@ class Helper:
         self.DEF_FILE = DEF_FILE;
         return self;
     
+    def set_ccflags(self, APP_CCFLAGS):
+        self.APP_CCFLAGS = APP_CCFLAGS;
+        return self;
+    
+    def set_cxxflags(self, APP_CXXFLAGS):
+        self.APP_CXXFLAGS = APP_CXXFLAGS;
+        return self;
+    
     def add_deps(self, DEPENDS_LIBS):
         self.DEPENDS_LIBS += DEPENDS_LIBS
         return self;
@@ -32,6 +40,10 @@ class Helper:
     
     def add_ccflags(self, APP_CCFLAGS):
         self.APP_CCFLAGS += APP_CCFLAGS;
+        return self;
+    
+    def add_cxxflags(self, APP_CXXFLAGS):
+        self.APP_CXXFLAGS += APP_CXXFLAGS;
         return self;
     
     def add_linkflags(self, APP_LINKFLAGS):
@@ -224,6 +236,7 @@ class Helper:
         self.APP_CPPPATH = APP_CPPPATH
         self.APP_LINKFLAGS = APP_LINKFLAGS
         self.GEN_IDL_DEF = GEN_IDL_DEF
+        self.APP_CXXFLAGS = self.APP_CCFLAGS
 
     def prepare(self):
         if self.GEN_IDL_DEF:
@@ -255,6 +268,7 @@ class Helper:
         CCFLAGS = self.APP_CCFLAGS + self.AWTK_CCFLAGS
         TARGET_ARCH = awtk.TARGET_ARCH
         APP_TOOLS = self.APP_TOOLS
+        CXXFLAGS = self.APP_CXXFLAGS
 
         for iter in self.DEPENDS_LIBS:
             if 'shared_libs' in iter:
@@ -279,6 +293,7 @@ class Helper:
                 LIBS=LIBS,
                 LIBPATH=LIBPATH,
                 CCFLAGS=CCFLAGS,
+                CXXFLAGS = CXXFLAGS,
                 TARGET_ARCH=awtk.TARGET_ARCH,
                 OS_SUBSYSTEM_CONSOLE=awtk.OS_SUBSYSTEM_CONSOLE,
                 OS_SUBSYSTEM_WINDOWS=awtk.OS_SUBSYSTEM_WINDOWS)
@@ -290,6 +305,7 @@ class Helper:
                 LIBS=LIBS,
                 LIBPATH=LIBPATH,
                 CCFLAGS=CCFLAGS,
+                CXXFLAGS = CXXFLAGS,
                 TARGET_ARCH=awtk.TARGET_ARCH,
                 OS_SUBSYSTEM_CONSOLE=awtk.OS_SUBSYSTEM_CONSOLE,
                 OS_SUBSYSTEM_WINDOWS=awtk.OS_SUBSYSTEM_WINDOWS)
