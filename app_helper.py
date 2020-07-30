@@ -59,7 +59,8 @@ class Helper:
         self.APP_ROOT = APP_ROOT
         self.BUILD_SHARED = True
         self.ARGUMENTS = ARGUMENTS
-        self.AWTK_ROOT = self.getAwtkRoot()
+        self.LINUX_FB = ARGUMENTS.get('LINUX_FB', '') != '';
+        self.AWTK_ROOT = self.getAwtkRoot();
         self.APP_BIN_DIR = os.path.join(APP_ROOT, 'bin')
         self.APP_LIB_DIR = os.path.join(APP_ROOT, 'lib')
         self.APP_SRC = os.path.join(APP_ROOT, 'src')
@@ -78,6 +79,7 @@ class Helper:
         
         self.parseArgs(awtk, ARGUMENTS)
 
+        print("AWTK_ROOT:" + self.AWTK_ROOT)
         print(ARGUMENTS)
 
     def saveUsesSdkInfo(self):
@@ -249,9 +251,13 @@ class Helper:
 
 
     def getAwtkRoot(self):
-        awtk_root = '../awtk'
+        awtk = 'awtk'
+        if self.LINUX_FB:
+            awtk='awtk-linux-fb'
+        
+        awtk_root = '../' + awtk
         if not os.path.exists(awtk_root):
-            dirnames = ['../awtk', '../../awtk', '../../../awtk']
+            dirnames = ['../'+awtk, '../../'+awtk, '../../../'+awtk]
             for dirname in dirnames:
                 if os.path.exists(dirname):
                     awtk_root = dirname
