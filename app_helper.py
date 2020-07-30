@@ -116,7 +116,7 @@ class Helper:
                 f.write(content)
 
     def isBuildShared(self):
-        return 'WITH_AWTK_SO' in os.environ and os.environ['WITH_AWTK_SO'] == 'true' and self.BUILD_SHARED == 'true'
+        return 'WITH_AWTK_SO' in os.environ and os.environ['WITH_AWTK_SO'] == 'true' and self.BUILD_SHARED 
 
     def copyAwtkSharedLib(self):
         self.awtk.copySharedLib(self.AWTK_ROOT, self.APP_BIN_DIR, 'awtk')
