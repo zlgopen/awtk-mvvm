@@ -550,7 +550,8 @@ static ret_t binding_context_awtk_do_bind(binding_context_t* ctx, void* widget) 
   if (object_is_collection(OBJECT(ctx->view_model))) {
     ret = binding_context_awtk_bind_widget_array(ctx, WIDGET(widget));
 
-    if(!emitter_exist(EMITTER(ctx->view_model), EVT_PROP_CHANGED, on_view_model_prop_change, ctx)) {
+    if (!emitter_exist(EMITTER(ctx->view_model), EVT_PROP_CHANGED, on_view_model_prop_change,
+                       ctx)) {
       emitter_on(EMITTER(ctx->view_model), EVT_PROP_CHANGED, on_view_model_prop_change, ctx);
       emitter_on(EMITTER(ctx->view_model), EVT_PROPS_CHANGED, on_view_model_prop_change, ctx);
       emitter_on(EMITTER(ctx->view_model), EVT_ITEMS_CHANGED, binding_context_on_rebind, ctx);
@@ -572,6 +573,19 @@ static ret_t binding_context_awtk_bind(binding_context_t* ctx, void* widget) {
 
 static ret_t widget_set_prop_if_diff(widget_t* widget, const char* name, const value_t* v) {
   value_t old;
+
+  if (widget->vt->inputable) {
+    if (tk_str_eq(name, WIDGET_PROP_TEXT) || tk_str_eq(name, WIDGET_PROP_VALUE)) {
+      value_t inputing;
+
+      if (widget_get_prop(widget, WIDGET_PROP_INPUTING, &inputing) == RET_OK) {
+        if (value_bool(&inputing)) {
+          log_debug("%s is inputing, skip.\n", widget_get_type(widget));
+          return RET_OK;
+        }
+      }
+    }
+  }
 
   value_set_int(&old, 0);
   if (widget_get_prop(widget, name, &old) == RET_OK) {
