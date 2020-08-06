@@ -207,26 +207,25 @@ ret_t binding_context_update_to_model(binding_context_t* ctx);
  */
 ret_t binding_context_clear_bindings(binding_context_t* ctx);
 
-
 /**
  * @method binding_context_bind
  * 绑定指定控件。
  * > 目前主要用于特殊控件(如table view)实现自定义绑定。
- * 
+ *
  * @param {binding_context_t*} ctx binding_context对象。
  * @param {void*} widget 控件对象。
- * 
+ *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
 ret_t binding_context_bind(binding_context_t* ctx, void* widget);
 
 /**
  * @method binding_context_update_widget
- * 
+ *
  *  针对指定控件的update to view。
- * 
+ *
  * > 目前主要用于特殊控件(如table view)实现自定义绑定。
- * 
+ *
  * @param {binding_context_t*} ctx binding_context对象。
  * @param {void*} widget 控件对象。
  *

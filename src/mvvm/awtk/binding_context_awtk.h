@@ -33,7 +33,7 @@ BEGIN_C_DECLS
  *
  * binding_context_awtk
  */
- 
+
 /**
  * @method binding_context_awtk_create
  * 创建binding_context对象。

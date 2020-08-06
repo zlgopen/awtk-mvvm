@@ -24,6 +24,7 @@
 #include "tkc/utils.h"
 #include "tkc/int_str.h"
 #include "tkc/darray.h"
+#include "tkc/tokenizer.h"
 #include "awtk_global.h"
 #include "base/idle.h"
 #include "base/enums.h"
@@ -40,6 +41,7 @@
 #include "mvvm/base/custom_binder.h"
 #include "mvvm/base/binding_rule_parser.h"
 #include "mvvm/awtk/binding_context_awtk.h"
+#include "mvvm/base/view_model_compositor.h"
 
 #define STR_SUB_VIEW_MODEL "sub_view_model:"
 #define STR_SUB_VIEW_MODEL_ARRAY "sub_view_model_array:"
@@ -310,44 +312,79 @@ static ret_t on_view_model_prop_change(void* ctx, event_t* e) {
   return RET_OK;
 }
 
+static view_model_t* binding_context_awtk_create_view_model_one(view_model_t* parent,
+                                                                const char* vmodel,
+                                                                navigator_request_t* req) {
+  view_model_t* view_model = NULL;
+
+  if (tk_str_start_with(vmodel, STR_SUB_VIEW_MODEL)) {
+    const char* name = strchr(vmodel, ':');
+    return_value_if_fail(name != NULL, NULL);
+    view_model = view_model_create_sub_view_model(parent, name + 1);
+  } else if (tk_str_start_with(vmodel, STR_SUB_VIEW_MODEL_ARRAY)) {
+    const char* name = strchr(vmodel, ':');
+    return_value_if_fail(name != NULL, NULL);
+    view_model = view_model_create_sub_view_model_array(parent, name + 1);
+  } else {
+    char* name = tk_strdup(vmodel);
+    char* ext_name = strrchr(name, '.');
+    if (ext_name != NULL) {
+      *ext_name = '\0';
+      view_model = view_model_factory_create_model(name, req);
+      if (view_model == NULL) {
+        *ext_name = '.';
+        view_model = view_model_factory_create_model(ext_name, req);
+      }
+      TKMEM_FREE(name);
+      return_value_if_fail(view_model != NULL, NULL);
+    } else {
+      view_model = view_model_factory_create_model(name, req);
+      TKMEM_FREE(name);
+      return_value_if_fail(view_model != NULL, NULL);
+    }
+  }
+
+  return view_model;
+}
+
+#define IS_COMPOSITOR_VIEW_MODEL(type) strchr(type, '+') != NULL
+
 static view_model_t* binding_context_awtk_create_view_model(widget_t* widget,
                                                             binding_context_t* parent_ctx,
                                                             navigator_request_t* req) {
   view_model_t* view_model = NULL;
   widget_t* win = widget_get_window(widget);
   const char* vmodel = widget_get_prop_vmodel(widget);
+  view_model_t* parent_view_model = parent_ctx != NULL ? parent_ctx->view_model : NULL;
 
   if (vmodel != NULL) {
-    if (tk_str_start_with(vmodel, STR_SUB_VIEW_MODEL)) {
-      const char* name = strchr(vmodel, ':');
-      return_value_if_fail(name != NULL, NULL);
-      view_model = view_model_create_sub_view_model(parent_ctx->view_model, name + 1);
-    } else if (tk_str_start_with(vmodel, STR_SUB_VIEW_MODEL_ARRAY)) {
-      const char* name = strchr(vmodel, ':');
-      return_value_if_fail(name != NULL, NULL);
-      view_model = view_model_create_sub_view_model_array(parent_ctx->view_model, name + 1);
-    } else {
-      char name[TK_NAME_LEN + 1];
-      char* ext_name = NULL;
-      tk_strncpy(name, vmodel, TK_NAME_LEN);
+    if (req != NULL) {
+      object_set_prop_pointer(OBJECT(req), NAVIGATOR_ARG_VIEW, widget);
+    }
 
-      if (req != NULL) {
-        object_set_prop_pointer(OBJECT(req), NAVIGATOR_ARG_VIEW, widget);
-      }
+    if (IS_COMPOSITOR_VIEW_MODEL(vmodel)) {
+      tokenizer_t t;
+      view_model_t* compositor = view_model_compositor_create(req);
+      return_value_if_fail(compositor != NULL, NULL);
 
-      ext_name = strrchr(name, '.');
-      if (ext_name != NULL) {
-        *ext_name = '\0';
-        view_model = view_model_factory_create_model(name, req);
-        if (view_model == NULL) {
-          *ext_name = '.';
-          view_model = view_model_factory_create_model(ext_name, req);
+      tokenizer_init(&t, vmodel, strlen(vmodel), "+");
+      while (tokenizer_has_more(&t)) {
+        const char* type1 = tokenizer_next(&t);
+        view_model_t* vm =
+            binding_context_awtk_create_view_model_one(parent_view_model, type1, req);
+        if (vm != NULL) {
+          if (view_model_compositor_add(compositor, vm) != RET_OK) {
+            log_warn("view_model_compositor_add failed\n");
+            OBJECT_UNREF(vm);
+          }
+        } else {
+          log_warn("create %s view_model failed\n", type1);
         }
-        return_value_if_fail(view_model != NULL, NULL);
-      } else {
-        view_model = view_model_factory_create_model(name, req);
-        return_value_if_fail(view_model != NULL, NULL);
       }
+      tokenizer_deinit(&t);
+      view_model = compositor;
+    } else {
+      view_model = binding_context_awtk_create_view_model_one(parent_view_model, vmodel, req);
     }
   }
 

@@ -1,11 +1,14 @@
 # 最新动态
 
+* 2020/08/06
+  * 完善 view model 创建，复合 view model 支持 sub view model。
+
 * 2020/07/24
-  * 支持table view实现自定义的绑定。
+  * 支持 table view 实现自定义的绑定。
 
 * 2020/07/22
   * 完善 view model array，命令支持自定义命令参数，如果没有指定参数，以当前的 cursor 为参数。
-  * 完善 binding\_context\_on\_rebind，在 rebind 时不再需要update view。
+  * 完善 binding\_context\_on\_rebind，在 rebind 时不再需要 update view。
 
 * 2020/06/30
   * 增加 view_model_compositor

@@ -72,35 +72,9 @@ view_model_t* view_model_factory_create_model_one(const char* type, navigator_re
   }
 }
 
-#define IS_COMPOSITOR_VIEW_MODEL(type) strchr(type, '+') != NULL
-
 view_model_t* view_model_factory_create_model(const char* type, navigator_request_t* req) {
   return_value_if_fail(s_model_factory != NULL && type != NULL && req != NULL, NULL);
-
-  if (IS_COMPOSITOR_VIEW_MODEL(type)) {
-    tokenizer_t t;
-    view_model_t* compositor = view_model_compositor_create(req);
-    return_value_if_fail(compositor != NULL, NULL);
-
-    tokenizer_init(&t, type, strlen(type), "+");
-    while (tokenizer_has_more(&t)) {
-      const char* type1 = tokenizer_next(&t);
-      view_model_t* vm = view_model_factory_create_model_one(type1, req);
-      if (vm != NULL) {
-        if (view_model_compositor_add(compositor, vm) != RET_OK) {
-          log_warn("view_model_compositor_add failed\n");
-          OBJECT_UNREF(vm);
-        }
-      } else {
-        log_warn("create %s view_model failed\n", type1);
-      }
-    }
-    tokenizer_deinit(&t);
-
-    return compositor;
-  } else {
-    return view_model_factory_create_model_one(type, req);
-  }
+  return view_model_factory_create_model_one(type, req);
 }
 
 ret_t view_model_factory_deinit(void) {

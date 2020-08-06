@@ -123,7 +123,7 @@ ret_t view_model_array_notify_items_changed(view_model_t* view_model);
 
 /*for subclass*/
 /**
- * @method view_model_array_default_set_prop 
+ * @method view_model_array_default_set_prop
  * set prop的默认实现。
  *
  * @param {view_model_t*} view_model view_model对象。
@@ -136,7 +136,7 @@ ret_t view_model_array_default_set_prop(view_model_t* view_model, const char* na
                                         const value_t* value);
 
 /**
- * @method view_model_array_default_get_prop 
+ * @method view_model_array_default_get_prop
  * get prop的默认实现。
  *
  * @param {view_model_t*} view_model view_model对象。
@@ -148,7 +148,7 @@ ret_t view_model_array_default_set_prop(view_model_t* view_model, const char* na
 ret_t view_model_array_default_get_prop(view_model_t* view_model, const char* name, value_t* value);
 
 /**
- * @method view_model_array_default_exec 
+ * @method view_model_array_default_exec
  * exec的默认实现。
  *
  * @param {view_model_t*} view_model view_model对象。
@@ -160,7 +160,7 @@ ret_t view_model_array_default_get_prop(view_model_t* view_model, const char* na
 ret_t view_model_array_default_exec(view_model_t* view_model, const char* name, const char* args);
 
 /**
- * @method view_model_array_default_can_exec 
+ * @method view_model_array_default_can_exec
  * can exec的默认实现。
  *
  * @param {view_model_t*} view_model view_model对象。

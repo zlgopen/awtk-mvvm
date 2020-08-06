@@ -1,17 +1,19 @@
-<window v-model="temperature+humidity+app_conf" children_layout="default(h=30,c=1,m=5,s=5)">
-  <label v-data:text="{temp}"/>
-  <slider v-data:value="{temp, Trigger=Changing}"/>
-  
-  <label v-data:text="{humi}"/>
-  <slider v-data:value="{humi, Trigger=Changing}"/>
+<window v-model="app_conf" >
+  <view w="100%" h="100%" v-model="temperature+humidity+sub_view_model_array:led" children_layout="default(h=30,c=1,m=5,s=5)">
+    <label v-data:text="{temp}"/>
+    <slider v-data:value="{temp, Trigger=Changing}"/>
+    
+    <label v-data:text="{humi}"/>
+    <slider v-data:value="{humi, Trigger=Changing}"/>
 
-  <label v-data:text="{led.lightness}"/>
-  <slider v-data:value="{led.lightness, Trigger=Changing}"/>
+    <label v-data:text="{lightness}"/>
+    <slider v-data:value="{lightness, Trigger=Changing}"/>
 
-  <button text="Save" floating="true" self_layout="default(x=20, y=b:10, w=80, h=30)" 
-    v-on:click="{save}"/>
-  <button text="Reload" floating="true" self_layout="default(x=c, y=b:10, w=80, h=30)" 
-    v-on:click="{reload}"/>
-  <button text="Close" floating="true" self_layout="default(x=r:20, y=b:10, w=80, h=30)" 
-        v-on:click="{nothing, QuitApp=true}"/>
+    <button text="Save" floating="true" self_layout="default(x=20, y=b:10, w=80, h=30)" 
+      v-on:click="{save}"/>
+    <button text="Reload" floating="true" self_layout="default(x=c, y=b:10, w=80, h=30)" 
+      v-on:click="{reload}"/>
+    <button text="Close" floating="true" self_layout="default(x=r:20, y=b:10, w=80, h=30)" 
+          v-on:click="{nothing, QuitApp=true}"/>
+   </view>
 </window>

@@ -32,7 +32,7 @@ BEGIN_C_DECLS
  * 设备工厂。
  *
  */
- 
+
 typedef object_t* (*device_object_create_t)(const char* args);
 
 /**
