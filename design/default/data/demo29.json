@@ -1,0 +1,16 @@
+{
+    "leds" : [
+        {
+            "name" : "led1",
+            "lightness" : 32 
+        },
+        {
+            "name" : "led2",
+            "lightness" : 64
+        },
+        {
+            "name" : "led3",
+            "lightness" : 84
+        }
+    ]
+}

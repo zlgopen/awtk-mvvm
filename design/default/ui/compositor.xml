@@ -1,5 +1,5 @@
 <window v-model="app_conf" >
-  <view w="100%" h="100%" v-model="temperature+humidity+sub_view_model_array:led" children_layout="default(h=30,c=1,m=5,s=5)">
+  <view w="100%" h="100%" v-model="temperature+humidity+sub_view_model:led" children_layout="default(h=30,c=1,m=5,s=5)">
     <label v-data:text="{temp}"/>
     <slider v-data:value="{temp, Trigger=Changing}"/>
     

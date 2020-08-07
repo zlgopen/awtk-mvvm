@@ -78,5 +78,4 @@ ret_t application_exit() {
   return RET_OK;
 }
 
-#define APP_DEFAULT_FONT "default_full"
 #include "awtk_main.inc"

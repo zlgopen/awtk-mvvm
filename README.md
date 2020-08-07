@@ -117,6 +117,7 @@ sys.path.insert(0, '../awtk-linux-fb/')
 | demo26   | (no)     | 让配置生效                          |
 | demo27   | (no)     | 组合 view model                     |
 | demo28   | (no)     | 表达式综合应用                     |
+| demo29   | (no)     | 扩展app_conf的命令                              |
 
 * [完整示例及模板项目](https://github.com/zlgopen/awtk-mvvm-c-hello)
 

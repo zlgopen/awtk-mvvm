@@ -59,6 +59,7 @@
 #include "assets/default/inc/ui/room_settings.data"
 #include "assets/default/inc/ui/js_books.data"
 #include "assets/default/inc/ui/js_demo9_main.data"
+#include "assets/default/inc/ui/app_conf_extend_cmds.data"
 #include "assets/default/inc/ui/js_temperature3.data"
 #include "assets/default/inc/ui/temperature17.data"
 #include "assets/default/inc/ui/temperature2.data"
@@ -81,6 +82,7 @@
 #include "assets/default/inc/data/gpinyin_dat.data"
 #include "assets/default/inc/data/demo23_json.data"
 #include "assets/default/inc/data/test_dat.data"
+#include "assets/default/inc/data/demo29_json.data"
 #include "assets/default/inc/data/suggest_words_zh_cn_dat.data"
 #include "assets/default/inc/data/test_json.data"
 #include "assets/default/inc/data/a_b_c_any.data"
@@ -315,6 +317,7 @@ ret_t assets_init(void) {
   assets_manager_add(am, ui_room_settings);
   assets_manager_add(am, ui_js_books);
   assets_manager_add(am, ui_js_demo9_main);
+  assets_manager_add(am, ui_app_conf_extend_cmds);
   assets_manager_add(am, ui_js_temperature3);
   assets_manager_add(am, ui_temperature17);
   assets_manager_add(am, ui_temperature2);
@@ -337,6 +340,7 @@ ret_t assets_init(void) {
   assets_manager_add(am, data_gpinyin_dat);
   assets_manager_add(am, data_demo23_json);
   assets_manager_add(am, data_test_dat);
+  assets_manager_add(am, data_demo29_json);
   assets_manager_add(am, data_suggest_words_zh_cn_dat);
   assets_manager_add(am, data_test_json);
   assets_manager_add(am, data_a_b_c_any);
