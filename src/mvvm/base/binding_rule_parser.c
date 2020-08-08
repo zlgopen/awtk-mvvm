@@ -34,7 +34,7 @@
 
 static ret_t data_binding_init(data_binding_t* rule, tokenizer_t* t) {
   if (tokenizer_has_more(t)) {
-    const char* prop = tokenizer_next(t);
+    const char* prop = t->str + t->cursor;
 
     return object_set_prop_str(OBJECT(rule), DATA_BINDING_PROP, prop);
   }

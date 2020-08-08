@@ -1,5 +1,8 @@
 # 最新动态
 
+* 2020/08/08
+  * 修改绑定 style 的问题。
+
 * 2020/08/06
   * 完善 view model 创建，复合 view model 支持 sub view model。
 

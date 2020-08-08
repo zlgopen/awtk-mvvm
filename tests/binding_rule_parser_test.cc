@@ -231,3 +231,12 @@ TEST(DataBindingParser, expr) {
 
   object_unref(OBJECT(rule));
 }
+
+TEST(DataBindingParser, style) {
+  binding_rule_t* rule = binding_rule_parse("v-data:style:normal:text_color", "{$type==1}", TRUE);
+  data_binding_t* data = (data_binding_t*)rule;
+
+  ASSERT_STREQ((data->prop), ("style:normal:text_color"));
+
+  object_unref(OBJECT(rule));
+}
