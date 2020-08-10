@@ -608,7 +608,8 @@ static ret_t binding_context_awtk_bind(binding_context_t* ctx, void* widget) {
   return binding_context_awtk_do_bind(ctx, WIDGET(widget));
 }
 
-static ret_t widget_set_prop_if_diff(widget_t* widget, const char* name, const value_t* v, bool_t set_force) {
+static ret_t widget_set_prop_if_diff(widget_t* widget, const char* name, const value_t* v,
+                                     bool_t set_force) {
   value_t old;
 
   if (!set_force) {

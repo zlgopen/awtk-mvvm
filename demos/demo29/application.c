@@ -26,13 +26,13 @@
 static ret_t on_app_conf_events(void* ctx, event_t* e) {
   if (e->type == EVT_CMD_CAN_EXEC) {
     cmd_exec_event_t* evt = cmd_exec_event_cast(e);
-    if(tk_str_eq(evt->name, "return")) {
+    if (tk_str_eq(evt->name, "return")) {
       evt->can_exec = TRUE;
       return RET_STOP;
     }
   } else if (e->type == EVT_CMD_EXECED) {
     cmd_exec_event_t* evt = cmd_exec_event_cast(e);
-    if(tk_str_eq(evt->name, "return")) {
+    if (tk_str_eq(evt->name, "return")) {
       log_debug("%s:%s\n", evt->name, evt->args);
       return RET_STOP;
     }
@@ -43,7 +43,7 @@ static ret_t on_app_conf_events(void* ctx, event_t* e) {
 
 ret_t application_init() {
   app_conf_init_json("demo29");
-  
+
   emitter_on(EMITTER(app_conf_get_instance()), EVT_CMD_CAN_EXEC, on_app_conf_events, NULL);
   emitter_on(EMITTER(app_conf_get_instance()), EVT_CMD_EXECED, on_app_conf_events, NULL);
 
