@@ -36,6 +36,7 @@ shape_t* shape_create(void) {
   shape->text_align = 1;
   str_init(&(shape->name), 10);
   str_init(&(shape->overview), 10);
+  str_set(&(shape->name), "中文");
 
   return shape;
 }
