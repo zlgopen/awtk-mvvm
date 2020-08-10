@@ -608,26 +608,28 @@ static ret_t binding_context_awtk_bind(binding_context_t* ctx, void* widget) {
   return binding_context_awtk_do_bind(ctx, WIDGET(widget));
 }
 
-static ret_t widget_set_prop_if_diff(widget_t* widget, const char* name, const value_t* v) {
+static ret_t widget_set_prop_if_diff(widget_t* widget, const char* name, const value_t* v, bool_t set_force) {
   value_t old;
 
-  if (widget->vt->inputable) {
-    if (tk_str_eq(name, WIDGET_PROP_TEXT) || tk_str_eq(name, WIDGET_PROP_VALUE)) {
-      value_t inputing;
+  if (!set_force) {
+    if (widget->vt->inputable) {
+      if (tk_str_eq(name, WIDGET_PROP_TEXT) || tk_str_eq(name, WIDGET_PROP_VALUE)) {
+        value_t inputing;
 
-      if (widget_get_prop(widget, WIDGET_PROP_INPUTING, &inputing) == RET_OK) {
-        if (value_bool(&inputing)) {
-          log_debug("%s is inputing, skip.\n", widget_get_type(widget));
-          return RET_OK;
+        if (widget_get_prop(widget, WIDGET_PROP_INPUTING, &inputing) == RET_OK) {
+          if (value_bool(&inputing)) {
+            log_debug("%s is inputing, skip.\n", widget_get_type(widget));
+            return RET_OK;
+          }
         }
       }
     }
-  }
 
-  value_set_int(&old, 0);
-  if (widget_get_prop(widget, name, &old) == RET_OK) {
-    if (value_equal(&old, v)) {
-      return RET_OK;
+    value_set_int(&old, 0);
+    if (widget_get_prop(widget, name, &old) == RET_OK) {
+      if (value_equal(&old, v)) {
+        return RET_OK;
+      }
     }
   }
 
@@ -648,7 +650,7 @@ static ret_t visit_data_binding_update_to_view(void* ctx, const void* data) {
   if ((rule->mode == BINDING_ONCE && !(bctx->bound)) || rule->mode == BINDING_ONE_WAY ||
       rule->mode == BINDING_TWO_WAY) {
     if (data_binding_get_prop(rule, &v) == RET_OK) {
-      ENSURE(widget_set_prop_if_diff(widget, rule->prop, &v) != RET_FAIL);
+      ENSURE(widget_set_prop_if_diff(widget, rule->prop, &v, !bctx->bound) != RET_FAIL);
       value_reset(&v);
     } else {
       /*如果Model中对应的属性不存在，用widget中属性的值去初始化Model中的属性*/
