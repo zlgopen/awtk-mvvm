@@ -250,7 +250,7 @@ class Helper:
         self.APP_CXXFLAGS = self.APP_CCFLAGS
 
     def prepare(self):
-        if self.GEN_IDL_DEF:
+        if self.GEN_IDL_DEF and not self.LINUX_FB:
             self.genIdlAndDef()
 
         if self.isBuildShared():
