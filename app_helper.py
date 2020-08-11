@@ -4,6 +4,11 @@ import json
 import shutil
 import platform
 
+def mkdir_if_not_exist(fullpath):
+    if os.path.exists(fullpath):
+        print(fullpath+' exist.')
+    else:
+        os.makedirs(fullpath)
 
 class Helper:
     def set_deps(self, DEPENDS_LIBS):
@@ -64,6 +69,9 @@ class Helper:
         self.APP_BIN_DIR = os.path.join(APP_ROOT, 'bin')
         self.APP_LIB_DIR = os.path.join(APP_ROOT, 'lib')
         self.APP_SRC = os.path.join(APP_ROOT, 'src')
+        
+        mkdir_if_not_exist(self.APP_BIN_DIR);
+        mkdir_if_not_exist(self.APP_LIB_DIR);
 
         sys.path.insert(0, self.AWTK_ROOT)
         import awtk_config as awtk
