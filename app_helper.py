@@ -225,7 +225,7 @@ class Helper:
         APP_CCFLAGS = APP_CCFLAGS + ' -DAPP_DEFAULT_COUNTRY=\\\"' + \
             APP_DEFAULT_COUNTRY + '\\\" '
         APP_CCFLAGS = APP_CCFLAGS + ' -DAPP_ROOT=\"\\\"' + \
-            self.APP_ROOT + '\"\\\" '
+            self.APP_ROOT + '\\\"\" '
         os.environ['BUILD_SHARED'] = str(self.isBuildShared())
 
         APP_LINKFLAGS = ''
