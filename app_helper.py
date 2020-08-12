@@ -67,6 +67,7 @@ class Helper:
         self.DEF_FILE_PROCESSOR = None
         self.DEPENDS_LIBS = []
         self.APP_ROOT = APP_ROOT
+        self.GEN_IDL_DEF = True
         self.BUILD_SHARED = True
         self.ARGUMENTS = ARGUMENTS
         self.LINUX_FB = ARGUMENTS.get('LINUX_FB', '') != ''
@@ -223,8 +224,8 @@ class Helper:
             APP_DEFAULT_LANGUAGE + '\\\" '
         APP_CCFLAGS = APP_CCFLAGS + ' -DAPP_DEFAULT_COUNTRY=\\\"' + \
             APP_DEFAULT_COUNTRY + '\\\" '
-        APP_CCFLAGS = APP_CCFLAGS + ' -DAPP_ROOT=\\\"' + \
-            self.APP_ROOT + '\\\" '
+        APP_CCFLAGS = APP_CCFLAGS + ' -DAPP_ROOT=\"\\\"' + \
+            self.APP_ROOT + '\"\\\" '
         os.environ['BUILD_SHARED'] = str(self.isBuildShared())
 
         APP_LINKFLAGS = ''
