@@ -23,6 +23,10 @@ class Helper:
         self.DEF_FILE = DEF_FILE
         return self
 
+    def set_dll_def_processor(self, processor):
+        self.DEF_FILE_PROCESSOR = processor
+        return self
+
     def set_ccflags(self, APP_CCFLAGS):
         self.APP_CCFLAGS = APP_CCFLAGS
         return self
@@ -60,6 +64,7 @@ class Helper:
 
         self.APP_LIBS = []
         self.DEF_FILE = None
+        self.DEF_FILE_PROCESSOR = None
         self.DEPENDS_LIBS = []
         self.APP_ROOT = APP_ROOT
         self.BUILD_SHARED = True
@@ -150,6 +155,9 @@ class Helper:
             ' idl/idl.json ' + self.DEF_FILE
         if os.system(cmd) != 0:
             print('exe cmd: ' + cmd + ' failed.')
+        else:
+            if self.DEF_FILE_PROCESSOR != None:
+                self.DEF_FILE_PROCESSOR()
 
     def showHelp(self):
         print('Options default values:')
