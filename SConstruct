@@ -1,5 +1,5 @@
 ﻿import os
-import app_helper as app
+import scripts.app_helper as app
 
 APP_3RD_ROOT = os.path.normpath(os.path.join(os.getcwd(), '3rd'))
 
