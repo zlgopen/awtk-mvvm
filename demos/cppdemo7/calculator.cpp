@@ -39,8 +39,7 @@ ret_t Calculator::AddChar(char c) {
 }
 
 ret_t Calculator::RemoveChar() {
-  this->expr.pop_back();
-
+  this->expr.erase(this->expr.size()-1);
   return RET_OBJECT_CHANGED;
 }
 
