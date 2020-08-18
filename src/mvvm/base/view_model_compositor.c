@@ -34,6 +34,7 @@ static ret_t view_model_compositor_on_destroy(object_t* obj) {
     emitter_off_by_ctx(EMITTER(iter), compositor);
     OBJECT_UNREF(iter);
   }
+  darray_deinit(&(compositor->view_models));
 
   return RET_OK;
 }
