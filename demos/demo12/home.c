@@ -56,7 +56,6 @@ static ret_t home_on_room_result(navigator_request_t* req, const value_t* result
   if (tk_str_eq(room_name, h->bed_room->name)) {
     h->bed_room->temp = temp;
     h->bed_room->humidity = humidity;
-    ;
   } else {
     h->living_room->temp = temp;
     h->living_room->humidity = humidity;

@@ -21,6 +21,8 @@
 
 #include "tkc/mem.h"
 #include "tkc/utils.h"
+#include "tkc/object_default.h"
+
 #include "room_settings.h"
 
 room_settings_t* room_settings_create(navigator_request_t* req) {
@@ -37,13 +39,19 @@ room_settings_t* room_settings_create(navigator_request_t* req) {
 
 ret_t room_settings_return(room_settings_t* room_settings) {
   value_t v;
+  ret_t ret = RET_OK;
+  object_t* result = object_default_create();
   return_value_if_fail(room_settings != NULL, RET_BAD_PARAMS);
 
-  value_set_object(&v, OBJECT(room_settings->req));
-  object_set_prop_int(OBJECT(room_settings->req), "temp", room_settings->temp);
-  object_set_prop_int(OBJECT(room_settings->req), "humidity", room_settings->humidity);
+  object_set_prop_int(result, "temp", room_settings->temp);
+  object_set_prop_int(result, "humidity", room_settings->humidity);
 
-  return navigator_request_on_result(room_settings->req, &v);
+  value_set_object(&v, result);
+  ret = navigator_request_on_result(room_settings->req, &v);
+  value_reset(&v);
+  OBJECT_UNREF(result);
+
+  return ret;
 }
 
 ret_t room_settings_destroy(room_settings_t* room_settings) {
