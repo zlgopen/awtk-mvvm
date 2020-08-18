@@ -50,15 +50,18 @@ git clone https://github.com/jerryscript-project/jerryscript.git 3rd/jerryscript
 scons
 ```
 
-> 编译 linux-fb 版本，请修改 SConstruct
+> 如果不需要 jerryscript，请修改 SConstruct，注释掉下面这行代码，然后重新编译：
 
 ```
-#for pc
-#sys.path.insert(0, '../awtk/')
-
-#for linux-fb
-sys.path.insert(0, '../awtk-linux-fb/')
+os.environ['WITH_JS'] = 'true'
 ```
+
+> 编译 linux-fb 版本（请先编译 awtk-linux-fb）
+
+```
+scons LINUX_FB=true
+```
+
 
 * 运行 demos
 
@@ -117,7 +120,7 @@ sys.path.insert(0, '../awtk-linux-fb/')
 | demo26   | (no)     | 让配置生效                          |
 | demo27   | (no)     | 组合 view model                     |
 | demo28   | (no)     | 表达式综合应用                     |
-| demo29   | (no)     | 扩展app_conf的命令                              |
+| demo29   | (no)     | 扩展 app_conf 的命令                              |
 
 * [完整示例及模板项目](https://github.com/zlgopen/awtk-mvvm-c-hello)
 
