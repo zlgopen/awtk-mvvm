@@ -50,8 +50,15 @@ static ret_t event_source_serial_on_data(event_source_t* source) {
   return RET_OK;
 }
 
+static ret_t on_source_destroy(void* ctx, event_t* e) {
+  /*unref iostream*/
+  OBJECT_UNREF(ctx);
+  return RET_REMOVE;
+}
+
 static ret_t main_loop_add_stream_source(tk_iostream_t* iostream, void* ctx) {
   int fd = 0;
+  ret_t ret = RET_OK;
   event_source_t* source = NULL;
   return_value_if_fail(iostream != NULL, RET_BAD_PARAMS);
 
@@ -59,8 +66,12 @@ static ret_t main_loop_add_stream_source(tk_iostream_t* iostream, void* ctx) {
   source = event_source_fd_create(fd, event_source_serial_on_data, ctx);
   return_value_if_fail(source != NULL, RET_OOM);
   EVENT_SOURCE_FD(source)->ctx2 = iostream;
+  emitter_on(EMITTER(source), EVT_DESTROY, on_source_destroy, iostream);
 
-  return main_loop_add_event_source(main_loop(), source);
+  ret = main_loop_add_event_source(main_loop(), source);
+  OBJECT_UNREF(source);
+
+  return ret;
 }
 
 view_model_t* temperature_view_model_timer_create(navigator_request_t* req) {
