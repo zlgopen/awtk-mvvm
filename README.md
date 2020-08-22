@@ -47,8 +47,26 @@ scons
 git clone https://github.com/zlgopen/awtk-mvvm.git
 cd awtk-mvvm
 git clone https://github.com/jerryscript-project/jerryscript.git 3rd/jerryscript/jerryscript
+```
+
+* 生成资源
+
+```
+python ./scripts/update_res.py all
+```
+
+* 编译PC版本
+
+```
 scons
 ```
+
+* 编译LINUX FB版本
+
+```
+scons LINUX_FB=true
+```
+
 
 > 如果不需要 jerryscript，请修改 SConstruct，注释掉下面这行代码，然后重新编译：
 
