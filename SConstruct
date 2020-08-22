@@ -44,6 +44,6 @@ else:
   SConscripts = ['src/SConscript', 'demos/SConscript']
 
 helper = app.Helper(ARGUMENTS);
-helper.add_cpppath(TK_3RD_DIRS).add_ccflags(APP_CFLAGS).add_libs(APP_LIBS).call(DefaultEnvironment)
+helper.set_dll_def('src/mvvm.def').add_cpppath(TK_3RD_DIRS).add_ccflags(APP_CFLAGS).add_libs(APP_LIBS).call(DefaultEnvironment)
 
 SConscript(SConscripts)
