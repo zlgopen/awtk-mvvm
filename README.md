@@ -80,6 +80,7 @@ os.environ['WITH_JS'] = 'true'
 scons LINUX_FB=true
 ```
 
+> 完整编译选项请参考[编译选项](https://github.com/zlgopen/awtk-widget-generator/blob/master/docs/build_options.md)
 
 * 运行 demos
 
