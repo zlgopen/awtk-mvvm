@@ -46,7 +46,7 @@ scons
 ```
 git clone https://github.com/zlgopen/awtk-mvvm.git
 cd awtk-mvvm
-git clone https://github.com/jerryscript-project/jerryscript.git 3rd/jerryscript/jerryscript
+git clone https://hub.fastgit.org/jerryscript-project/jerryscript.git 3rd/jerryscript/jerryscript
 ```
 
 * 生成资源
