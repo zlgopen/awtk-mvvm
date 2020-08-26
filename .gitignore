@@ -21,3 +21,4 @@ bin/js*
 3rd/jerryscript/jerryscript
 lib
 bin
+res
