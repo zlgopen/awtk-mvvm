@@ -140,6 +140,7 @@ scons LINUX_FB=true
 | demo27   | (no)     | 组合 view model                     |
 | demo28   | (no)     | 表达式综合应用                     |
 | demo29   | (no)     | 扩展 app_conf 的命令                              |
+| demo30   | (no)     | 发送按键事件和设置属性                  |
 
 * [完整示例及模板项目](https://github.com/zlgopen/awtk-mvvm-c-hello)
 

@@ -768,22 +768,77 @@ static ret_t binding_context_awtk_destroy(binding_context_t* ctx) {
   return RET_OK;
 }
 
-static ret_t binding_context_awtk_send_key(widget_t* win, const char* key) {
+static ret_t binding_context_awtk_send_key(widget_t* win, const char* args) {
+  int size = 0;
   key_event_t e;
+  const char* key = NULL;
+  char target_name[64];
+  widget_t* target = NULL;
   widget_t* wm = win->parent;
+  return_value_if_fail(args != NULL, RET_BAD_PARAMS);
 
-  if (key && *key) {
+  key = strchr(args, ':');
+  if (key != NULL) {
+    size = key - args;
+    return_value_if_fail(size < sizeof(target_name), RET_BAD_PARAMS);
+
+    tk_strncpy(target_name, args, size);
+    target = widget_lookup(win, target_name, TRUE);
+    key++;
+  } else {
+    key = args;
+  }
+
+  if (*key) {
     const key_type_value_t* kt = keys_type_find(key);
     int32_t code = kt != NULL ? kt->value : *key;
 
     key_event_init(&e, EVT_KEY_DOWN, wm, code);
-    window_manager_dispatch_input_event(wm, (event_t*)&e);
+    if (target == NULL) {
+      window_manager_dispatch_input_event(wm, (event_t*)&e);
+    } else {
+      widget_dispatch(target, (event_t*)&e);
+    }
 
     key_event_init(&e, EVT_KEY_UP, wm, code);
-    window_manager_dispatch_input_event(wm, (event_t*)&e);
+    if (target == NULL) {
+      window_manager_dispatch_input_event(wm, (event_t*)&e);
+    } else {
+      widget_dispatch(target, (event_t*)&e);
+    }
   }
 
   return RET_OK;
+}
+
+static ret_t binding_context_awtk_set_widget_prop(widget_t* win, const char* args) {
+  int ret = 0;
+  int size = 0;
+  char name[64];
+  char key[64];
+  const char* p = NULL;
+  const char* value = NULL;
+  widget_t* target = NULL;
+  return_value_if_fail(args != NULL, RET_BAD_PARAMS);
+
+  p = strchr(args, '.');
+  return_value_if_fail(p != NULL, RET_BAD_PARAMS);
+  size = p - args;
+  return_value_if_fail(size < sizeof(name), RET_BAD_PARAMS);
+  tk_strncpy(name, args, size);
+
+  args = p + 1;
+  p = strchr(args, ':');
+  return_value_if_fail(p != NULL, RET_BAD_PARAMS);
+  size = p - args;
+  return_value_if_fail(size < sizeof(key), RET_BAD_PARAMS);
+  tk_strncpy(key, args, size);
+
+  value = p + 1;
+  target = widget_lookup(win, name, TRUE);
+  return_value_if_fail(target != NULL, RET_BAD_PARAMS);
+
+  return widget_set_prop_str(target, key, value);
 }
 
 static ret_t binding_context_awtk_exec(binding_context_t* ctx, const char* cmd, const char* args) {
@@ -791,6 +846,10 @@ static ret_t binding_context_awtk_exec(binding_context_t* ctx, const char* cmd, 
     widget_t* win = widget_get_window(WIDGET(ctx->widget));
 
     return binding_context_awtk_send_key(win, args);
+  } else if (tk_str_ieq(COMMAND_BINDING_CMD_SET_WIDGET_PROP, cmd)) {
+    widget_t* win = widget_get_window(WIDGET(ctx->widget));
+
+    return binding_context_awtk_set_widget_prop(win, args);
   }
 
   return RET_NOT_IMPL;
@@ -799,6 +858,8 @@ static ret_t binding_context_awtk_exec(binding_context_t* ctx, const char* cmd, 
 static bool_t binding_context_awtk_can_exec(binding_context_t* ctx, const char* cmd,
                                             const char* args) {
   if (tk_str_ieq(COMMAND_BINDING_CMD_SEND_KEY, cmd)) {
+    return TRUE;
+  } else if (tk_str_ieq(COMMAND_BINDING_CMD_SET_WIDGET_PROP, cmd)) {
     return TRUE;
   }
 
