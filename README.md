@@ -146,5 +146,5 @@ scons LINUX_FB=true
 
 * [awtk-mvvm-c-examples](https://github.com/zlgopen/awtk-mvvm-c-examples) 
 
-* [无需代码对sqlite3进行增删改查](https://github.com/zlgopen/awtk-database-repositor://github.com/zlgopen/awtk-database-repository)
+* [无需代码对sqlite3进行增删改查](https://github.com/zlgopen/awtk-database-repository)
 
