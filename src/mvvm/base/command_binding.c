@@ -153,11 +153,11 @@ bool_t command_binding_can_exec(command_binding_t* rule) {
 
 ret_t command_binding_exec(command_binding_t* rule) {
   view_model_t* view_model = NULL;
-  return_value_if_fail(rule != NULL, FALSE);
+  binding_context_t* context = NULL;
+  return_value_if_fail(rule != NULL, RET_BAD_PARAMS);
   view_model = BINDING_RULE_VIEW_MODEL(rule);
-  binding_context_t* context = BINDING_RULE_CONTEXT(rule);
-
-  return_value_if_fail(view_model != NULL, FALSE);
+  context = BINDING_RULE_CONTEXT(rule);
+  return_value_if_fail(view_model != NULL && context != NULL, RET_BAD_PARAMS);
 
   if (binding_context_exec(context, rule->command, rule->args) == RET_OK) {
     return RET_OK;

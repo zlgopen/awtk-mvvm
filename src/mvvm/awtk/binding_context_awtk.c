@@ -230,12 +230,13 @@ static bool_t command_binding_filter(command_binding_t* rule, event_t* e) {
 }
 
 static ret_t command_binding_exec_command(command_binding_t* rule) {
+  ret_t ret = RET_OK;
   if (command_binding_can_exec(rule)) {
     if (rule->update_model) {
       binding_context_update_to_model(BINDING_RULE(rule)->binding_context);
     }
 
-    command_binding_exec(rule);
+    ret = command_binding_exec(rule);
 
     if (rule->close_window) {
       widget_t* win = widget_get_window(BINDING_RULE(rule)->widget);
@@ -245,8 +246,13 @@ static ret_t command_binding_exec_command(command_binding_t* rule) {
     if (rule->quit_app) {
       tk_quit();
     }
+    log_debug("%s return %d\n", rule->command, ret);
   } else {
     log_debug("%s cannot exec\n", rule->command);
+  }
+
+  if (ret == RET_OK || ret == RET_ITEMS_CHANGED || ret == RET_OBJECT_CHANGED) {
+    return RET_STOP;
   }
 
   return RET_OK;
@@ -259,9 +265,7 @@ static ret_t on_widget_event(void* ctx, event_t* e) {
     return RET_OK;
   }
 
-  command_binding_exec_command(rule);
-
-  return RET_OK;
+  return command_binding_exec_command(rule);
 }
 
 static ret_t binding_context_bind_command(binding_context_t* ctx, const char* name,
