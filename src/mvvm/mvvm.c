@@ -27,6 +27,7 @@ ret_t mvvm_init(void) {
   mvvm_base_init();
   custom_binder_init();
 
+  log_debug("mvvm_init\n");
   return_value_if_fail(mvvm_awtk_init() == RET_OK, RET_FAIL);
 
   return RET_OK;

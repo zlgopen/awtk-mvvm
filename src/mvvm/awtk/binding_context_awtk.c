@@ -188,6 +188,7 @@ static int_str_t s_event_map[] = {{EVT_CLICK, "click"},
                                   {EVT_POINTER_DOWN, "pointer_down"},
                                   {EVT_POINTER_UP, "pointer_up"},
                                   {EVT_KEY_DOWN, "key_down"},
+                                  {EVT_KEY_LONG_PRESS, "key_long_press"},
                                   {EVT_KEY_UP, "key_up"},
                                   {EVT_VALUE_CHANGED, "value_changed"},
                                   {EVT_NONE, NULL}};
@@ -198,9 +199,13 @@ static bool_t command_binding_filter(command_binding_t* rule, event_t* e) {
     return FALSE;
   }
 
-  if (e->type == EVT_KEY_DOWN || e->type == EVT_KEY_UP) {
+  if (e->type == EVT_KEY_DOWN || e->type == EVT_KEY_UP || e->type == EVT_KEY_LONG_PRESS) {
     shortcut_t shortcut;
     key_event_t* evt = (key_event_t*)e;
+
+    if (e->type == EVT_KEY_LONG_PRESS) {
+      log_debug("mvvm long press:%d\n", evt->key);
+    }
 
     if (evt->key == TK_KEY_LCTRL || evt->key == TK_KEY_RCTRL) {
       return TRUE;
@@ -816,7 +821,6 @@ static ret_t binding_context_awtk_send_key(widget_t* win, const char* args) {
 }
 
 static ret_t binding_context_awtk_set_widget_prop(widget_t* win, const char* args) {
-  int ret = 0;
   int size = 0;
   char name[64];
   char key[64];

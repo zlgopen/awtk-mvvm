@@ -1,7 +1,8 @@
 <window v-model="temperature" 
  v-on:key_down:ctrl+s="{apply}" 
+ v-on:key_long_press:f3="{apply}" 
  v-on:key_down:escape="{nothing, QuitApp=true}">
-  <label  x="center" y="middle:-80" w="80%" h="40" text="ctrl+s to apply, escape to quit"/>
+  <label  x="center" y="middle:-80" w="80%" h="40" text="ctrl+s/long press F3 to apply\nescape to quit"/>
   <label  x="center" y="middle:-40" w="80%" h="40" v-data:text="{value}"/>
   <slider x="center" y="middle" w="90%" h="20" v-data:value="{value}"/>
   <button text="Apply" x="center" y="middle:40" w="40%" h="40" v-on:click="{apply}"/>
