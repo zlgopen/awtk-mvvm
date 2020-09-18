@@ -49,11 +49,9 @@ ret_t binding_context_update_to_view(binding_context_t* ctx) {
   return_value_if_fail(ctx != NULL && ctx->vt != NULL && ctx->vt->update_to_view != NULL,
                        RET_BAD_PARAMS);
 
-  if (ctx->updating_view) {
-    return RET_BUSY;
+  if (!ctx->updating_view) {
+    ret = ctx->vt->update_to_view(ctx);
   }
-
-  ret = ctx->vt->update_to_view(ctx);
 
   return ret;
 }

@@ -788,6 +788,7 @@ static ret_t binding_context_awtk_update_to_model(binding_context_t* ctx) {
 
 static ret_t binding_context_awtk_destroy(binding_context_t* ctx) {
   darray_deinit(&(ctx->cache_widgets));
+  memset(ctx, 0x00, sizeof(*ctx));
   TKMEM_FREE(ctx);
 
   return RET_OK;
