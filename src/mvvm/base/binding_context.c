@@ -53,9 +53,7 @@ ret_t binding_context_update_to_view(binding_context_t* ctx) {
     return RET_BUSY;
   }
 
-  ctx->updating_view = TRUE;
   ret = ctx->vt->update_to_view(ctx);
-  ctx->updating_view = FALSE;
 
   return ret;
 }

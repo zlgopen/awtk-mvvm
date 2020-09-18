@@ -183,6 +183,7 @@ error:
   return RET_FAIL;
 }
 
+#define STR_VALUE_CHANGED_BY_UI "value_changed_by_ui"
 /*TODO: add more event*/
 static int_str_t s_event_map[] = {{EVT_CLICK, "click"},
                                   {EVT_POINTER_DOWN, "pointer_down"},
@@ -191,6 +192,7 @@ static int_str_t s_event_map[] = {{EVT_CLICK, "click"},
                                   {EVT_KEY_LONG_PRESS, "key_long_press"},
                                   {EVT_KEY_UP, "key_up"},
                                   {EVT_VALUE_CHANGED, "value_changed"},
+                                  {EVT_VALUE_CHANGED, STR_VALUE_CHANGED_BY_UI},
                                   {EVT_NONE, NULL}};
 
 static bool_t command_binding_filter(command_binding_t* rule, event_t* e) {
@@ -263,8 +265,17 @@ static ret_t command_binding_exec_command(command_binding_t* rule) {
   return RET_OK;
 }
 
-static ret_t on_widget_event(void* ctx, event_t* e) {
-  command_binding_t* rule = COMMAND_BINDING(ctx);
+static ret_t on_widget_event(void* c, event_t* e) {
+  command_binding_t* rule = COMMAND_BINDING(c);
+  binding_context_t* ctx = BINDING_RULE(rule)->binding_context;
+
+  if (ctx->updating_view) {
+    if (e->type == EVT_VALUE_CHANGED) {
+      if(tk_str_ieq(rule->event, STR_VALUE_CHANGED_BY_UI)) {
+        return RET_OK;
+      }
+    }
+  }
 
   if (command_binding_filter(rule, e)) {
     return RET_OK;
@@ -719,6 +730,7 @@ static ret_t binding_context_awtk_update_to_view_sync(binding_context_t* ctx) {
   darray_foreach(&(ctx->data_bindings), visit_data_binding_update_to_view, NULL);
   darray_foreach(&(ctx->command_bindings), visit_command_binding, NULL);
   widget_invalidate_force(WIDGET(ctx->widget), NULL);
+  ctx->updating_view = FALSE;
 
   return RET_OK;
 }
@@ -735,6 +747,8 @@ static ret_t idle_update_to_view(const idle_info_t* info) {
 
 static ret_t binding_context_awtk_update_to_view(binding_context_t* ctx) {
   return_value_if_fail(ctx != NULL, RET_BAD_PARAMS);
+
+  ctx->updating_view = TRUE;
 
   if (ctx->bound) {
     if (ctx->update_view_idle_id == TK_INVALID_ID) {
