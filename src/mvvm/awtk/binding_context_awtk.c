@@ -304,6 +304,8 @@ static ret_t binding_context_bind_command(binding_context_t* ctx, const char* na
   event = int_str_name(s_event_map, rule->event, EVT_NONE);
   if (event != EVT_NONE) {
     widget_on_with_tag(widget, event, on_widget_event, rule, EVENT_TAG);
+  } else {
+    log_debug("not found event %s\n", rule->event);
   }
 
   return RET_OK;

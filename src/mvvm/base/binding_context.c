@@ -109,6 +109,9 @@ ret_t binding_context_exec(binding_context_t* ctx, const char* cmd, const char* 
 
   if (tk_str_ieq(cmd, COMMAND_BINDING_CMD_NOTHING)) {
     return RET_OK;
+  } else if (tk_str_ieq(cmd, COMMAND_BINDING_CMD_DEBUG)) {
+    log_debug("debug:%s\n", args);
+    return RET_OK;
   } else if (tk_str_ieq(cmd, COMMAND_BINDING_CMD_NAVIGATE)) {
     return navigator_to(args);
   }
@@ -124,7 +127,8 @@ bool_t binding_context_can_exec(binding_context_t* ctx, const char* cmd, const c
   return_value_if_fail(ctx != NULL && ctx->vt != NULL && cmd != NULL, RET_BAD_PARAMS);
 
   if (tk_str_ieq(cmd, COMMAND_BINDING_CMD_NOTHING) ||
-      tk_str_ieq(cmd, COMMAND_BINDING_CMD_NAVIGATE)) {
+      tk_str_ieq(cmd, COMMAND_BINDING_CMD_NAVIGATE) ||
+      tk_str_ieq(cmd, COMMAND_BINDING_CMD_DEBUG)) {
     return TRUE;
   }
 

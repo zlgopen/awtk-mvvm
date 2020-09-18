@@ -32,7 +32,7 @@ static ret_t on_timer(const timer_info_t* info) {
   int32_t temp = object_get_prop_int(view_model, PROP_TEMP, 0) + 1;
   object_set_prop_int(view_model, PROP_TEMP, temp);
 
-  return temp < 10 ? RET_REPEAT : RET_REMOVE;
+  return temp < 100 ? RET_REPEAT : RET_REMOVE;
 }
 
 view_model_t* temperature_view_model_timer_create(navigator_request_t* req) {

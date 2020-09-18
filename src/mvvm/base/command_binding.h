@@ -128,6 +128,7 @@ ret_t command_binding_exec(command_binding_t* rule);
 
 #define COMMAND_BINDING(rule) ((command_binding_t*)rule);
 
+#define COMMAND_BINDING_CMD_DEBUG "debug"
 #define COMMAND_BINDING_CMD_NOTHING "nothing"
 #define COMMAND_BINDING_CMD_NAVIGATE "navigate"
 #define COMMAND_BINDING_CMD_SEND_KEY "SendKey"
