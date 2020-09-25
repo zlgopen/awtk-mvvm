@@ -93,7 +93,7 @@ ret_t binding_context_set_parent(binding_context_t* ctx, binding_context_t* pare
 
     view_model->parent = parent->view_model;
     if(view_model->parent != NULL) {
-      object_ref(view_model->parent);
+      object_ref(OBJECT(view_model->parent));
       emitter_on(EMITTER(view_model->parent), EVT_PROP_CHANGED, emitter_forward, view_model);
       emitter_on(EMITTER(view_model->parent), EVT_PROPS_CHANGED, emitter_forward, view_model);
     }

@@ -24,7 +24,6 @@
 #include "buzzer_log.h"
 
 static ret_t buzzer_log_set_prop(object_t* obj, const char* name, const value_t* v) {
-  buzzer_log_t* buzzer = BUZZER_LOG(obj);
   return_value_if_fail(obj != NULL && name != NULL && v != NULL, RET_BAD_PARAMS);
 
   if (v->type == VALUE_TYPE_STRING) {
