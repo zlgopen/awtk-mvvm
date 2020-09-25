@@ -926,6 +926,7 @@ binding_context_t* binding_context_awtk_create(widget_t* widget, binding_context
 
   if (ctx != NULL) {
     darray_init(&(ctx->cache_widgets), 10, (tk_destroy_t)widget_unref, NULL);
+    binding_context_set_parent(ctx, parent_ctx);
   }
 
   return ctx;

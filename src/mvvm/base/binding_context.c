@@ -72,11 +72,42 @@ ret_t binding_context_update_to_model(binding_context_t* ctx) {
   return ret;
 }
 
+ret_t binding_context_set_parent(binding_context_t* ctx, binding_context_t* parent) {
+  return_value_if_fail(ctx != NULL, RET_BAD_PARAMS);
+  
+  if(ctx->parent != NULL) {
+    view_model_t* view_model = ctx->view_model;
+    view_model_t* parent_view_model = ctx->parent->view_model;
+
+    if(parent_view_model != NULL) {
+      emitter_off_by_ctx(EMITTER(parent_view_model), view_model);
+      OBJECT_UNREF(parent_view_model);
+    }
+    ctx->parent = NULL;
+    view_model->parent = NULL;
+  }
+
+  ctx->parent = parent;
+  if(parent != NULL) {
+    view_model_t* view_model = ctx->view_model;
+
+    view_model->parent = parent->view_model;
+    if(view_model->parent != NULL) {
+      object_ref(view_model->parent);
+      emitter_on(EMITTER(view_model->parent), EVT_PROP_CHANGED, emitter_forward, view_model);
+      emitter_on(EMITTER(view_model->parent), EVT_PROPS_CHANGED, emitter_forward, view_model);
+    }
+  }
+
+  return RET_OK;
+}
+
 ret_t binding_context_destroy(binding_context_t* ctx) {
   return_value_if_fail(ctx != NULL && ctx->vt != NULL, RET_BAD_PARAMS);
 
   darray_deinit(&(ctx->data_bindings));
   darray_deinit(&(ctx->command_bindings));
+  binding_context_set_parent(ctx, NULL);
 
   if (ctx->navigator_request != NULL) {
     OBJECT_UNREF(ctx->navigator_request);

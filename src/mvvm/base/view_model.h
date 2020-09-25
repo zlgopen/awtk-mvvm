@@ -68,6 +68,8 @@ struct _view_model_t {
   str_t last_error;
   const view_model_vtable_t* vt;
 
+  view_model_t* parent;
+
   view_model_preprocess_expr_t preprocess_expr;
   view_model_preprocess_prop_t preprocess_prop;
 };

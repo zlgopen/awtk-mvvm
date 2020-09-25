@@ -133,7 +133,7 @@ struct _binding_context_t {
   /*private*/
   /*列表绑定的模板*/
   darray_t cache_widgets;
-
+  binding_context_t* parent; 
   const binding_context_vtable_t* vt;
 };
 
@@ -150,6 +150,17 @@ struct _binding_context_t {
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
 ret_t binding_context_init(binding_context_t* ctx, navigator_request_t* req, view_model_t* vm);
+
+/**
+ * @method binding_context_set_parent
+ * 设置父context。
+ *
+ * @param {binding_context_t*} ctx binding_context对象。
+ * @param {binding_context_t*} parent parent binding_context对象。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t binding_context_set_parent(binding_context_t* ctx, binding_context_t* parent);
 
 /**
  * @method binding_context_update_to_view

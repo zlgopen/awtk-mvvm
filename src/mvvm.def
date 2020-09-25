@@ -1,149 +1,150 @@
 LIBRARY   mvvm
 EXPORTS
-    binding_context_init @1
-    binding_context_update_to_view @2
-    binding_context_exec @3
-    binding_context_can_exec @4
-    binding_context_update_to_model @5
-    binding_context_clear_bindings @6
-    binding_context_bind @7
-    binding_context_update_widget @8
-    binding_context_destroy @9
-    binding_rule_parse @10
-    custom_binder_init @11
-    custom_binder_exist @12
-    custom_binder_register @13
-    custom_binder_unregister @14
-    custom_binder_bind @15
-    custom_binder_deinit @16
-    tk_destruct_array_prop_name @17
-    view_model_factory_init @18
-    view_model_factory_exist @19
-    view_model_factory_register @20
-    view_model_factory_unregister @21
-    view_model_factory_create_model @22
-    view_model_factory_deinit @23
-    device_factory_init @24
-    device_factory_has @25
-    device_factory_unregister @26
-    device_factory_create_device @27
-    device_factory_register @28
-    device_factory_deinit @29
-    value_converter_to_model @30
-    value_converter_to_view @31
-    value_converter_create @32
-    value_converter_register @33
-    value_converter_register_generic @34
-    value_converter_init @35
-    value_converter_deinit @36
-    navigator_create @37
-    navigator @38
-    navigator_set @39
-    navigator_handle_request @40
-    navigator_register_handler @41
-    navigator_has_handler @42
-    navigator_unregister_handler @43
-    navigator_to @44
-    navigator_to_with_key_value @45
-    navigator_to_ex @46
-    navigator_toast @47
-    navigator_back_to_home @48
-    navigator_back @49
-    navigator_info @50
-    navigator_warn @51
-    navigator_confirm @52
-    navigator_pick_dir @53
-    navigator_pick_file @54
-    navigator_pick_color @55
-    str_random @56
-    widget_hardware_create @57
-    widget_hardware_cast @58
-    value_validator_is_valid @59
-    value_validator_fix @60
-    value_validator_set_context @61
-    value_validator_create @62
-    value_validator_register @63
-    value_validator_register_generic @64
-    value_validator_init @65
-    value_validator_deinit @66
-    view_model_array_dummy_create @67
-    view_model_array_dummy_clear @68
-    view_model_array_dummy_add @69
-    view_model_array_dummy_remove @70
-    view_model_array_dummy_get @71
-    view_model_array_dummy_size @72
-    binding_context_awtk_create @73
-    binding_context_bind_for_window @74
-    mvvm_awtk_init @75
-    mvvm_awtk_deinit @76
-    view_model_init @77
-    view_model_deinit @78
-    view_model_on_will_mount @79
-    view_model_on_mount @80
-    view_model_on_will_unmount @81
-    view_model_on_unmount @82
-    view_model_preprocess_expr @83
-    view_model_preprocess_prop @84
-    view_model_has_prop @85
-    view_model_eval @86
-    view_model_get_prop @87
-    view_model_set_prop @88
-    view_model_can_exec @89
-    view_model_exec @90
-    view_model_notify_props_changed @91
-    view_model_create_sub_view_model @92
-    view_model_create_sub_view_model_array @93
-    navigator_handler_create @94
-    navigator_handler_on_request @95
-    buzzer_log_create @96
-    navigator_request_create @97
-    navigator_request_on_result @98
-    temperature_sensor_random_create @99
-    view_model_dummy_create @100
-    value_converter_delegate_create @101
-    view_model_object_wrapper_create @102
-    view_model_object_wrapper_create_ex @103
-    view_model_normal_jerryscript_create @104
-    mvvm_init @105
-    mvvm_deinit @106
-    value_validator_delegate_create @107
-    data_binding_create @108
-    data_binding_get_prop @109
-    data_binding_set_prop @110
-    mvvm_base_init @111
-    mvvm_base_deinit @112
-    command_binding_create @113
-    command_binding_can_exec @114
-    command_binding_exec @115
-    navigator_handler_awtk_create @116
-    view_model_array_init @117
-    view_model_array_deinit @118
-    view_model_array_inc_cursor @119
-    view_model_array_set_cursor @120
-    view_model_array_set_selected_index @121
-    view_model_array_notify_items_changed @122
-    view_model_array_default_set_prop @123
-    view_model_array_default_get_prop @124
-    view_model_array_default_exec @125
-    view_model_array_default_can_exec @126
-    view_model_compositor_create @127
-    view_model_compositor_add @128
-    jerryscript_awtk_init @129
-    jerryscript_awtk_deinit @130
-    jerry_value_from_navigator_request @131
-    jerry_value_to_navigator_request @132
-    jerry_value_to_value @133
-    jerry_value_from_value @134
-    jerry_value_to_pointer @135
-    jerry_value_from_pointer @136
-    jerry_value_check @137
-    mvvm_jerryscript_init @138
-    mvvm_jerryscript_deinit @139
-    value_converter_jerryscript_init @140
-    value_converter_jerryscript_deinit @141
-    value_validator_jerryscript_init @142
-    value_validator_jerryscript_deinit @143
-    view_model_array_jerryscript_create @144
-    view_model_jerryscript_create @145
-    view_model_array_object_wrapper_create @146
-    view_model_array_object_wrapper_create_ex @147
+    binding_context_init
+    binding_context_set_parent
+    binding_context_update_to_view
+    binding_context_exec
+    binding_context_can_exec
+    binding_context_update_to_model
+    binding_context_clear_bindings
+    binding_context_bind
+    binding_context_update_widget
+    binding_context_destroy
+    binding_rule_parse
+    custom_binder_init
+    custom_binder_exist
+    custom_binder_register
+    custom_binder_unregister
+    custom_binder_bind
+    custom_binder_deinit
+    tk_destruct_array_prop_name
+    view_model_factory_init
+    view_model_factory_exist
+    view_model_factory_register
+    view_model_factory_unregister
+    view_model_factory_create_model
+    view_model_factory_deinit
+    device_factory_init
+    device_factory_has
+    device_factory_unregister
+    device_factory_create_device
+    device_factory_register
+    device_factory_deinit
+    value_converter_to_model
+    value_converter_to_view
+    value_converter_create
+    value_converter_register
+    value_converter_register_generic
+    value_converter_init
+    value_converter_deinit
+    navigator_create
+    navigator
+    navigator_set
+    navigator_handle_request
+    navigator_register_handler
+    navigator_has_handler
+    navigator_unregister_handler
+    navigator_to
+    navigator_to_with_key_value
+    navigator_to_ex
+    navigator_toast
+    navigator_back_to_home
+    navigator_back
+    navigator_info
+    navigator_warn
+    navigator_confirm
+    navigator_pick_dir
+    navigator_pick_file
+    navigator_pick_color
+    str_random
+    widget_hardware_create
+    widget_hardware_cast
+    value_validator_is_valid
+    value_validator_fix
+    value_validator_set_context
+    value_validator_create
+    value_validator_register
+    value_validator_register_generic
+    value_validator_init
+    value_validator_deinit
+    view_model_array_dummy_create
+    view_model_array_dummy_clear
+    view_model_array_dummy_add
+    view_model_array_dummy_remove
+    view_model_array_dummy_get
+    view_model_array_dummy_size
+    binding_context_awtk_create
+    binding_context_bind_for_window
+    mvvm_awtk_init
+    mvvm_awtk_deinit
+    view_model_init
+    view_model_deinit
+    view_model_on_will_mount
+    view_model_on_mount
+    view_model_on_will_unmount
+    view_model_on_unmount
+    view_model_preprocess_expr
+    view_model_preprocess_prop
+    view_model_has_prop
+    view_model_eval
+    view_model_get_prop
+    view_model_set_prop
+    view_model_can_exec
+    view_model_exec
+    view_model_notify_props_changed
+    view_model_create_sub_view_model
+    view_model_create_sub_view_model_array
+    navigator_handler_create
+    navigator_handler_on_request
+    buzzer_log_create
+    navigator_request_create
+    navigator_request_on_result
+    temperature_sensor_random_create
+    view_model_dummy_create
+    value_converter_delegate_create
+    view_model_object_wrapper_create
+    view_model_object_wrapper_create_ex
+    view_model_normal_jerryscript_create
+    mvvm_init
+    mvvm_deinit
+    value_validator_delegate_create
+    data_binding_create
+    data_binding_get_prop
+    data_binding_set_prop
+    mvvm_base_init
+    mvvm_base_deinit
+    command_binding_create
+    command_binding_can_exec
+    command_binding_exec
+    navigator_handler_awtk_create
+    view_model_array_init
+    view_model_array_deinit
+    view_model_array_inc_cursor
+    view_model_array_set_cursor
+    view_model_array_set_selected_index
+    view_model_array_notify_items_changed
+    view_model_array_default_set_prop
+    view_model_array_default_get_prop
+    view_model_array_default_exec
+    view_model_array_default_can_exec
+    view_model_compositor_create
+    view_model_compositor_add
+    jerryscript_awtk_init
+    jerryscript_awtk_deinit
+    jerry_value_from_navigator_request
+    jerry_value_to_navigator_request
+    jerry_value_to_value
+    jerry_value_from_value
+    jerry_value_to_pointer
+    jerry_value_from_pointer
+    jerry_value_check
+    mvvm_jerryscript_init
+    mvvm_jerryscript_deinit
+    value_converter_jerryscript_init
+    value_converter_jerryscript_deinit
+    value_validator_jerryscript_init
+    value_validator_jerryscript_deinit
+    view_model_array_jerryscript_create
+    view_model_jerryscript_create
+    view_model_array_object_wrapper_create
+    view_model_array_object_wrapper_create_ex

@@ -128,10 +128,18 @@ bool_t view_model_has_prop(view_model_t* view_model, const char* name) {
 }
 
 ret_t view_model_get_prop(view_model_t* view_model, const char* name, value_t* value) {
+  ret_t ret = RET_OK;
   return_value_if_fail(view_model != NULL && name != NULL && value != NULL, RET_BAD_PARAMS);
   name = view_model_preprocess_prop(view_model, name);
 
-  return object_get_prop(OBJECT(view_model), name, value);
+  ret = object_get_prop(OBJECT(view_model), name, value);
+  if(ret == RET_NOT_FOUND) {
+    if(view_model->parent != NULL) {
+      ret = view_model_get_prop(view_model->parent, name, value);
+    }
+  }
+
+  return ret;
 }
 
 static ret_t object_set_prop_if_diff(object_t* object, const char* name, const value_t* v) {
@@ -158,6 +166,7 @@ static ret_t object_set_prop_if_diff(object_t* object, const char* name, const v
 }
 
 ret_t view_model_set_prop(view_model_t* view_model, const char* name, const value_t* value) {
+  ret_t ret = RET_OK;
   return_value_if_fail(view_model != NULL && name != NULL && value != NULL, RET_BAD_PARAMS);
 
   if (!tk_is_valid_prop_name(name)) {
@@ -165,21 +174,37 @@ ret_t view_model_set_prop(view_model_t* view_model, const char* name, const valu
   }
 
   name = view_model_preprocess_prop(view_model, name);
+  ret = object_set_prop_if_diff(OBJECT(view_model), name, value);
+  if(ret == RET_NOT_FOUND) {
+    if(view_model->parent != NULL) {
+      ret = view_model_set_prop(view_model->parent, name, value); 
+    }
+  }
 
-  return object_set_prop_if_diff(OBJECT(view_model), name, value);
+  return ret;
 }
 
 bool_t view_model_can_exec(view_model_t* view_model, const char* name, const char* args) {
+  bool_t ret = TRUE;
   return_value_if_fail(view_model != NULL && name != NULL, FALSE);
+
   if (object_is_collection(OBJECT(view_model))) {
     char cursor[TK_NUM_MAX_LEN + 1];
     int32_t index = object_get_prop_int(OBJECT(view_model), VIEW_MODEL_PROP_CURSOR, 0);
 
     tk_itoa(cursor, TK_NUM_MAX_LEN, index);
-    return object_can_exec(OBJECT(view_model), name, cursor);
+    ret = object_can_exec(OBJECT(view_model), name, cursor);
   } else {
-    return object_can_exec(OBJECT(view_model), name, args);
+    ret = object_can_exec(OBJECT(view_model), name, args);
   }
+  
+  if(!ret) {
+    if(view_model->parent != NULL) {
+      ret = object_can_exec(OBJECT(view_model->parent), name, args);
+    }
+  }
+
+  return ret;
 }
 
 ret_t view_model_exec(view_model_t* view_model, const char* name, const char* args) {
@@ -194,6 +219,13 @@ ret_t view_model_exec(view_model_t* view_model, const char* name, const char* ar
     ret = object_exec(OBJECT(view_model), name, cursor);
   } else {
     ret = object_exec(OBJECT(view_model), name, args);
+  }
+  
+  if(ret == RET_NOT_FOUND || ret == RET_NOT_IMPL) {
+    if(view_model->parent != NULL) {
+      ret = object_exec(OBJECT(view_model->parent), name, args);
+      log_debug("exec cmd in view_model->parent:%d\n", ret);
+    }
   }
 
   if (ret == RET_OBJECT_CHANGED) {

@@ -34,6 +34,27 @@
             "type": "binding_context_t*",
             "name": "ctx",
             "desc": "binding_context对象。"
+          },
+          {
+            "type": "binding_context_t*",
+            "name": "parent",
+            "desc": "parent binding_context对象。"
+          }
+        ],
+        "annotation": {},
+        "desc": "设置父context。",
+        "name": "binding_context_set_parent",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "binding_context_t*",
+            "name": "ctx",
+            "desc": "binding_context对象。"
           }
         ],
         "annotation": {},
