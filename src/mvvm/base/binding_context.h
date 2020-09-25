@@ -133,7 +133,7 @@ struct _binding_context_t {
   /*private*/
   /*列表绑定的模板*/
   darray_t cache_widgets;
-  binding_context_t* parent; 
+  binding_context_t* parent;
   const binding_context_vtable_t* vt;
 };
 

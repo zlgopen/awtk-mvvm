@@ -133,8 +133,8 @@ ret_t view_model_get_prop(view_model_t* view_model, const char* name, value_t* v
   name = view_model_preprocess_prop(view_model, name);
 
   ret = object_get_prop(OBJECT(view_model), name, value);
-  if(ret == RET_NOT_FOUND) {
-    if(view_model->parent != NULL) {
+  if (ret == RET_NOT_FOUND) {
+    if (view_model->parent != NULL) {
       ret = view_model_get_prop(view_model->parent, name, value);
     }
   }
@@ -175,9 +175,9 @@ ret_t view_model_set_prop(view_model_t* view_model, const char* name, const valu
 
   name = view_model_preprocess_prop(view_model, name);
   ret = object_set_prop_if_diff(OBJECT(view_model), name, value);
-  if(ret == RET_NOT_FOUND) {
-    if(view_model->parent != NULL) {
-      ret = view_model_set_prop(view_model->parent, name, value); 
+  if (ret == RET_NOT_FOUND) {
+    if (view_model->parent != NULL) {
+      ret = view_model_set_prop(view_model->parent, name, value);
     }
   }
 
@@ -197,9 +197,9 @@ bool_t view_model_can_exec(view_model_t* view_model, const char* name, const cha
   } else {
     ret = object_can_exec(OBJECT(view_model), name, args);
   }
-  
-  if(!ret) {
-    if(view_model->parent != NULL) {
+
+  if (!ret) {
+    if (view_model->parent != NULL) {
       ret = object_can_exec(OBJECT(view_model->parent), name, args);
     }
   }
@@ -220,9 +220,9 @@ ret_t view_model_exec(view_model_t* view_model, const char* name, const char* ar
   } else {
     ret = object_exec(OBJECT(view_model), name, args);
   }
-  
-  if(ret == RET_NOT_FOUND || ret == RET_NOT_IMPL) {
-    if(view_model->parent != NULL) {
+
+  if (ret == RET_NOT_FOUND || ret == RET_NOT_IMPL) {
+    if (view_model->parent != NULL) {
       ret = object_exec(OBJECT(view_model->parent), name, args);
       log_debug("exec cmd in view_model->parent:%d\n", ret);
     }

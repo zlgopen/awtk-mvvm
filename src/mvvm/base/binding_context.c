@@ -74,12 +74,12 @@ ret_t binding_context_update_to_model(binding_context_t* ctx) {
 
 ret_t binding_context_set_parent(binding_context_t* ctx, binding_context_t* parent) {
   return_value_if_fail(ctx != NULL, RET_BAD_PARAMS);
-  
-  if(ctx->parent != NULL) {
+
+  if (ctx->parent != NULL) {
     view_model_t* view_model = ctx->view_model;
     view_model_t* parent_view_model = ctx->parent->view_model;
 
-    if(parent_view_model != NULL) {
+    if (parent_view_model != NULL) {
       emitter_off_by_ctx(EMITTER(parent_view_model), view_model);
       OBJECT_UNREF(parent_view_model);
     }
@@ -88,11 +88,11 @@ ret_t binding_context_set_parent(binding_context_t* ctx, binding_context_t* pare
   }
 
   ctx->parent = parent;
-  if(parent != NULL) {
+  if (parent != NULL) {
     view_model_t* view_model = ctx->view_model;
 
     view_model->parent = parent->view_model;
-    if(view_model->parent != NULL) {
+    if (view_model->parent != NULL) {
       object_ref(OBJECT(view_model->parent));
       emitter_on(EMITTER(view_model->parent), EVT_PROP_CHANGED, emitter_forward, view_model);
       emitter_on(EMITTER(view_model->parent), EVT_PROPS_CHANGED, emitter_forward, view_model);
@@ -156,8 +156,7 @@ bool_t binding_context_can_exec(binding_context_t* ctx, const char* cmd, const c
   return_value_if_fail(ctx != NULL && ctx->vt != NULL && cmd != NULL, RET_BAD_PARAMS);
 
   if (tk_str_ieq(cmd, COMMAND_BINDING_CMD_NOTHING) ||
-      tk_str_ieq(cmd, COMMAND_BINDING_CMD_NAVIGATE) ||
-      tk_str_ieq(cmd, COMMAND_BINDING_CMD_DEBUG)) {
+      tk_str_ieq(cmd, COMMAND_BINDING_CMD_NAVIGATE) || tk_str_ieq(cmd, COMMAND_BINDING_CMD_DEBUG)) {
     return TRUE;
   }
 

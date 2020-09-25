@@ -271,7 +271,7 @@ static ret_t on_widget_event(void* c, event_t* e) {
 
   if (ctx->updating_view) {
     if (e->type == EVT_VALUE_CHANGED) {
-      if(tk_str_ieq(rule->event, STR_VALUE_CHANGED_BY_UI)) {
+      if (tk_str_ieq(rule->event, STR_VALUE_CHANGED_BY_UI)) {
         return RET_OK;
       }
     }
