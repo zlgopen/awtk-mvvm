@@ -1,5 +1,8 @@
 # 最新动态
 
+* 2020/09/26
+  * 在binding\_context\_awtk\_destroy中，断开与view model的连接，避免view model被重用时，事件继续分发到被销毁的context上。
+
 * 2020/09/25
   * 支持嵌套view model。
   * 增加demo31。

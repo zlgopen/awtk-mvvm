@@ -114,6 +114,7 @@ ret_t binding_context_destroy(binding_context_t* ctx) {
   }
 
   if (ctx->view_model != NULL) {
+    emitter_off_by_ctx(EMITTER(ctx->view_model), ctx);
     OBJECT_UNREF(ctx->view_model);
   }
 
