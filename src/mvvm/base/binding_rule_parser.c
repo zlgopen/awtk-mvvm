@@ -62,7 +62,8 @@ static ret_t command_binding_init(command_binding_t* rule, tokenizer_t* t) {
 static binding_rule_t* binding_rule_create(const char* name, bool_t inputable) {
   tokenizer_t t;
   binding_rule_t* rule = NULL;
-  return_value_if_fail(tokenizer_init(&t, name, -1, ":") != NULL, NULL);
+  return_value_if_fail(name != NULL, NULL);
+  return_value_if_fail(tokenizer_init(&t, name, strlen(name), ":") != NULL, NULL);
 
   if (tokenizer_has_more(&t)) {
     const char* type = tokenizer_next(&t);
@@ -103,7 +104,7 @@ binding_rule_t* binding_rule_parse(const char* name, const char* value, bool_t i
   rule = binding_rule_create(name, inputable);
   return_value_if_fail(rule != NULL, NULL);
 
-  if (tokenizer_init_ex(&t, value, -1, " {}", "=,") == NULL) {
+  if (tokenizer_init_ex(&t, value, strlen(value), " {}", "=,") == NULL) {
     object_unref(OBJECT(rule));
     return NULL;
   }
