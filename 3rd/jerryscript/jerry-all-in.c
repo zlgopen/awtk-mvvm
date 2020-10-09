@@ -166,7 +166,7 @@
 #include "./jerryscript/jerry-core/ecma/operations/ecma-number-object.c"
 #include "./jerryscript/jerry-core/ecma/operations/ecma-exceptions.c"
 #include "./jerryscript/jerry-core/ecma/operations/ecma-reference.c"
-#include "./jerryscript/jerry-core/ecma/operations/ecma-objects-arguments.c"
+#include "./jerryscript/jerry-core/ecma/operations/ecma-arguments-object.c"
 #include "./jerryscript/jerry-core/ecma/base/ecma-helpers-number.c"
 #include "./jerryscript/jerry-core/ecma/base/ecma-property-hashmap.c"
 #include "./jerryscript/jerry-core/ecma/base/ecma-helpers-string.c"
