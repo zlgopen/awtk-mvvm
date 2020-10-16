@@ -1,9 +1,12 @@
 <window v-model="temperature">
-  <label x="center" y="30" w="90%" h="40" text="temperature"/>
-  <label x="center" y="middle" w="50%" h="40" v-data:text="{value}"/>
+  <label x="center" y="10" w="90%" h="30" text="temperature"/>
+  <image_animation image="ani"  x="center" y="40" w="100" h="100" start_index="1" end_index="12" auto_play="true" interval="50" >
+    <property name="v-data:exec"><![CDATA[ {($value < 3 || $value > 6) ? "start_animator" : "pause_animator"} ]]></property>
+  </image_animation>
   <image draw_type="icon" image="earth"  x="center" y="bottom:40" w="40%" h="40"
     animation="rotation(from=0, to=6.28, repeat_times=3, duration=2000, easing=linear)">
     <property name="v-data:exec"><![CDATA[ {($value < 3 || $value > 6) ? "start_animator:rotation" : "pause_animator:rotation"} ]]></property>
   </image>
+  <label x="center" y="middle" w="50%" h="40" v-data:text="{value}"/>
   <button text="Quit" x="center" y="middle:40" w="40%" h="40" v-on:click="{nothing, QuitApp=true}"/>
 </window>
