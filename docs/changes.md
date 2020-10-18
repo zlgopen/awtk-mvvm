@@ -1,17 +1,17 @@
 # 最新动态
 * 2020/10/18
-  * 支持全局按键事件，用于实现全局的快捷键。请参考design/default/ui/demo9_main.xml
+  * 支持全局按键事件，用于实现全局的快捷键。请参考 design/default/ui/demo9_main.xml
 
 * 2020/09/26
-  * 在binding\_context\_awtk\_destroy中，断开与view model的连接，避免view model被重用时，事件继续分发到被销毁的context上。
+  * 在 binding\_context\_awtk\_destroy 中，断开与 view model 的连接，避免 view model 被重用时，事件继续分发到被销毁的 context 上。
 
 * 2020/09/25
-  * 支持嵌套view model。
-  * 增加demo31。
+  * 支持嵌套 view model。
+  * 增加 demo31。
 
 * 2020/09/18
-  * 增加value\_changed\_by\_ui事件（感谢朝泽提供补丁）。
-  * 增加debug命令。
+  * 增加 value\_changed\_by\_ui 事件（感谢朝泽提供补丁）。
+  * 增加 debug 命令。
 
 * 2020/09/15
   * 支持长按键事件。
