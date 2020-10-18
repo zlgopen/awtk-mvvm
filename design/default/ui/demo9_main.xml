@@ -1,4 +1,6 @@
-<window>
+<window
+ v-on:global_key_down:f1="{debug}" 
+ v-on:global_key_long_press:f2="{debug}" >
   <button text="Temperature" x="center" y="middle:-40" w="40%" h="40" 
     v-on:click="{navigate, args=temperature9}"/>
   <button text="Humidity" x="center" y="middle:40" w="40%" h="40" 

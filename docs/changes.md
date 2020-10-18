@@ -1,4 +1,6 @@
 # 最新动态
+* 2020/10/18
+  * 支持全局按键事件，用于实现全局的快捷键。请参考design/default/ui/demo9_main.xml
 
 * 2020/09/26
   * 在binding\_context\_awtk\_destroy中，断开与view model的连接，避免view model被重用时，事件继续分发到被销毁的context上。

@@ -183,6 +183,12 @@ error:
   return RET_FAIL;
 }
 
+#define STR_GLOBAL "global"
+#define STR_GLOBAL_KEY_UP "global_key_up"
+#define STR_GLOBAL_KEY_DOWN "global_key_down"
+#define STR_VALUE_CHANGED_BY_UI "value_changed_by_ui"
+#define STR_GLOBAL_KEY_LONG_PRESS "global_key_long_press"
+
 #define STR_VALUE_CHANGED_BY_UI "value_changed_by_ui"
 /*TODO: add more event*/
 static int_str_t s_event_map[] = {{EVT_CLICK, "click"},
@@ -193,6 +199,10 @@ static int_str_t s_event_map[] = {{EVT_CLICK, "click"},
                                   {EVT_KEY_UP, "key_up"},
                                   {EVT_VALUE_CHANGED, "value_changed"},
                                   {EVT_VALUE_CHANGED, STR_VALUE_CHANGED_BY_UI},
+                                  {EVT_KEY_DOWN, STR_GLOBAL_KEY_DOWN},
+                                  {EVT_KEY_LONG_PRESS, STR_GLOBAL_KEY_LONG_PRESS},
+                                  {EVT_KEY_UP, STR_GLOBAL_KEY_UP},
+
                                   {EVT_NONE, NULL}};
 
 static bool_t command_binding_filter(command_binding_t* rule, event_t* e) {
@@ -284,6 +294,17 @@ static ret_t on_widget_event(void* c, event_t* e) {
   return command_binding_exec_command(rule);
 }
 
+static ret_t binding_context_off_global_when_widget_destroy(void* ctx, event_t* e) {
+  window_manager_t* wm = WINDOW_MANAGER(window_manager());
+  uint32_t id = (uint32_t)tk_pointer_to_int(ctx);
+
+  if (wm != NULL && wm->global_emitter != NULL) {
+    emitter_off(wm->global_emitter, id);
+  }
+
+  return RET_REMOVE;
+}
+
 static ret_t binding_context_bind_command(binding_context_t* ctx, const char* name,
                                           const char* value) {
   int32_t event = 0;
@@ -303,7 +324,16 @@ static ret_t binding_context_bind_command(binding_context_t* ctx, const char* na
 
   event = int_str_name(s_event_map, rule->event, EVT_NONE);
   if (event != EVT_NONE) {
-    widget_on_with_tag(widget, event, on_widget_event, rule, EVENT_TAG);
+    if (strstr(rule->event, STR_GLOBAL) != NULL) {
+      window_manager_t* wm = WINDOW_MANAGER(widget_get_window_manager(widget));
+      uint32_t id = emitter_on(wm->global_emitter, event, on_widget_event, rule);
+      if (id != TK_INVALID_ID) {
+        widget_on(widget, EVT_DESTROY, binding_context_off_global_when_widget_destroy,
+                  tk_pointer_from_int(id));
+      }
+    } else {
+      widget_on_with_tag(widget, event, on_widget_event, rule, EVENT_TAG);
+    }
   } else {
     log_debug("not found event %s\n", rule->event);
   }
