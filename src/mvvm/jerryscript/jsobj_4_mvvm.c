@@ -34,14 +34,6 @@ jerry_value_t jsobj_get_model(const char* name) {
   return view_model;
 }
 
-ret_t jsobj_exec(jerry_value_t obj, const char* name, const char* args) {
-  jerry_value_t jsargs = jerry_create_str(args);
-  ret_t ret = jsobj_exec_ex(obj, name, jsargs);
-  jerry_release_value(jsargs);
-
-  return ret;
-}
-
 ret_t jsobj_exec_ex(jerry_value_t obj, const char* name, jerry_value_t jsargs) {
   ret_t ret = RET_FAIL;
 
@@ -62,6 +54,15 @@ ret_t jsobj_exec_ex(jerry_value_t obj, const char* name, jerry_value_t jsargs) {
 
   return ret;
 }
+
+ret_t jsobj_exec(jerry_value_t obj, const char* name, const char* args) {
+  jerry_value_t jsargs = jerry_create_str(args);
+  ret_t ret = jsobj_exec_ex(obj, name, jsargs);
+  jerry_release_value(jsargs);
+
+  return ret;
+}
+
 
 bool_t jsobj_can_exec(jerry_value_t obj, const char* name, const char* args) {
   bool_t ret = FALSE;

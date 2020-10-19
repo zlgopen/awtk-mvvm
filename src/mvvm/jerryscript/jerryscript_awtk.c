@@ -22,6 +22,7 @@
 #include "jerryscript.h"
 #include "jerryscript-port.h"
 #include "jerryscript-ext/handler.h"
+#include "jsobj_4_mvvm.h"
 
 #include "tkc/utils.h"
 #include "base/idle.h"

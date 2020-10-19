@@ -22,7 +22,7 @@
 #include "tkc/mem.h"
 #include "tkc/utils.h"
 #include "mvvm/base/utils.h"
-#include "mvvm/jerryscript/jsobj.h"
+#include "mvvm/jerryscript/jsobj_4_mvvm.h"
 #include "mvvm/jerryscript/view_model_array_jerryscript.h"
 
 static ret_t view_model_array_jerryscript_on_destroy(object_t* obj) {

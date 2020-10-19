@@ -21,7 +21,7 @@
 
 #include "tkc/mem.h"
 #include "tkc/utils.h"
-#include "mvvm/jerryscript/jsobj.h"
+#include "mvvm/jerryscript/jsobj_4_mvvm.h"
 #include "mvvm/jerryscript/view_model_normal_jerryscript.h"
 
 static ret_t view_model_normal_jerryscript_on_destroy(object_t* obj) {

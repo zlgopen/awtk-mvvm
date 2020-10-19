@@ -23,7 +23,7 @@
 #include "tkc/utils.h"
 #include "jerryscript-port.h"
 #include "jerryscript-ext/handler.h"
-#include "mvvm/jerryscript/jsobj.h"
+#include "mvvm/jerryscript/jsobj_4_mvvm.h"
 #include "mvvm/jerryscript/value_validator_jerryscript.h"
 
 static const object_vtable_t s_value_validator_jerryscript_vtable = {

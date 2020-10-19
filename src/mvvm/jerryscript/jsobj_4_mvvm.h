@@ -43,6 +43,10 @@ jerry_value_t jerry_value_from_navigator_request(navigator_request_t* req);
  */
 navigator_request_t* jerry_value_to_navigator_request(jerry_value_t value);
 
+ret_t jsobj_exec(jerry_value_t obj, const char* name, const char* args);
+ret_t jsobj_exec_ex(jerry_value_t obj, const char* name, jerry_value_t jsargs);
+bool_t jsobj_can_exec(jerry_value_t obj, const char* name, const char* args);
+
 bool_t jsvalue_converter_exist(const char* name);
 ret_t jsvalue_converter_to_view(const char* name, const value_t* from, value_t* to, str_t* temp);
 ret_t jsvalue_converter_to_model(const char* name, const value_t* from, value_t* to, str_t* temp);

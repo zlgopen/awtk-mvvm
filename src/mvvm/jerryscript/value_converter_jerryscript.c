@@ -23,7 +23,7 @@
 #include "tkc/utils.h"
 #include "jerryscript-port.h"
 #include "jerryscript-ext/handler.h"
-#include "mvvm/jerryscript/jsobj.h"
+#include "mvvm/jerryscript/jsobj_4_mvvm.h"
 #include "mvvm/jerryscript/value_converter_jerryscript.h"
 
 static ret_t value_converter_jerryscript_on_destroy(object_t* obj) {

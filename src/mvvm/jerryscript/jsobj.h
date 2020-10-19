@@ -27,6 +27,7 @@
 
 BEGIN_C_DECLS
 
+jerry_value_t jsobj_get_global(const char* name);
 bool_t jsobj_has_prop(jerry_value_t obj, const char* name);
 bool_t jsobj_has_prop_func(jerry_value_t obj, const char* name);
 

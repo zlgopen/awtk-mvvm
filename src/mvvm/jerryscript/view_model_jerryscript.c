@@ -21,7 +21,7 @@
 
 #include "tkc/mem.h"
 #include "tkc/utils.h"
-#include "mvvm/jerryscript/jsobj.h"
+#include "mvvm/jerryscript/jsobj_4_mvvm.h"
 #include "mvvm/jerryscript/jerry_script_helper.h"
 #include "mvvm/jerryscript/view_model_jerryscript.h"
 #include "mvvm/jerryscript/view_model_array_jerryscript.h"
