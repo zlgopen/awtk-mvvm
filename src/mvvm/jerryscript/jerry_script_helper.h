@@ -28,7 +28,10 @@
 
 BEGIN_C_DECLS
 
+ret_t jerry_script_init(void);
+
 ret_t jerry_script_register_builtins(void);
+
 void jerry_script_print_error(jerry_value_t error_value);
 
 ret_t jerry_value_check(jerry_value_t value);

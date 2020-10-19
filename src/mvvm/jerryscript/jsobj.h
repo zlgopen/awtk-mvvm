@@ -24,15 +24,13 @@
 
 #include "tkc/str.h"
 #include "jerryscript.h"
-#include "mvvm/base/navigator_request.h"
 
 BEGIN_C_DECLS
-
-jerry_value_t jsobj_get_model(const char* name);
 
 bool_t jsobj_has_prop(jerry_value_t obj, const char* name);
 bool_t jsobj_has_prop_func(jerry_value_t obj, const char* name);
 
+jerry_value_t jerry_create_str(const char* str);
 ret_t jsobj_get_prop(jerry_value_t obj, const char* name, value_t* v, str_t* temp);
 jerry_value_t jsobj_get_prop_value(jerry_value_t obj, const char* name);
 object_t* jsobj_get_prop_object(jerry_value_t obj, const char* name);
@@ -45,24 +43,6 @@ ret_t jsobj_set_prop_value(jerry_value_t obj, const char* name, jerry_value_t pr
 ret_t jsobj_set_prop(jerry_value_t obj, const char* name, const value_t* v, str_t* temp);
 ret_t jsobj_set_prop_func(jerry_value_t obj, const char* name, jerry_external_handler_t handler_p);
 ret_t jsobj_set_prop_int(jerry_value_t obj, const char* name, int32_t value);
-
-ret_t jsobj_exec(jerry_value_t obj, const char* name, const char* args);
-ret_t jsobj_exec_ex(jerry_value_t obj, const char* name, jerry_value_t args);
-bool_t jsobj_can_exec(jerry_value_t obj, const char* name, const char* args);
-
-/**
- * @method jerry_value_from_navigator_request
- * annotation ["global"]
- * export for test only
- */
-jerry_value_t jerry_value_from_navigator_request(navigator_request_t* req);
-
-/**
- * @method jerry_value_to_navigator_request
- * annotation ["global"]
- * export for test only
- */
-navigator_request_t* jerry_value_to_navigator_request(jerry_value_t value);
 
 /**
  * @method jerry_value_to_value
@@ -98,22 +78,20 @@ jerry_value_t jerry_value_from_pointer(void* ptr);
  */
 ret_t jerry_value_check(jerry_value_t value);
 
-bool_t jsvalue_converter_exist(const char* name);
-ret_t jsvalue_converter_to_view(const char* name, const value_t* from, value_t* to, str_t* temp);
-ret_t jsvalue_converter_to_model(const char* name, const value_t* from, value_t* to, str_t* temp);
+/**
+ * @method jerry_value_to_value
+ * annotation ["global"]
+ * export for test only
+ */
+ret_t jerry_value_to_obj(jerry_value_t value, object_t* obj);
 
-bool_t jsvalue_validator_exist(const char* name);
-ret_t jsvalue_validator_is_valid(const char* name, const value_t* v, str_t* msg);
-ret_t jsvalue_validator_fix(const char* name, value_t* v);
+/**
+ * @method jerry_value_to_value
+ * annotation ["global"]
+ * export for test only
+ */
+ret_t jerry_value_from_obj(jerry_value_t value, object_t* obj);
 
-#define JSOBJ_VALUE_CONVERTERS "ValueConverters"
-#define JSOBJ_VALUE_CONVERTER_TO_VIEW "toView"
-#define JSOBJ_VALUE_CONVERTER_TO_VIEW_MODEL "toModel"
-#define JSOBJ_VALUE_VALIDATORS "ValueValidators"
-#define JSOBJ_VALUE_VALIDATOR_FIX "fix"
-#define JSOBJ_VALUE_VALIDATOR_IS_VALID "isValid"
-#define JSOBJ_VALUE_VALIDATOR_RESULT "result"
-#define JSOBJ_VALUE_VALIDATOR_MESSAGE "message"
 #define JSOBJ_ON_RESULT "onResult"
 
 END_C_DECLS

@@ -1,4 +1,4 @@
-﻿#include "mvvm/jerryscript/jsobj.h"
+﻿#include "mvvm/jerryscript/jsobj_4_mvvm.h"
 #include "gtest/gtest.h"
 
 #include <string>

@@ -314,3 +314,16 @@ ret_t jerry_script_register_builtins(void) {
 
   return RET_OK;
 }
+
+ret_t jerry_script_init(void) {
+  static bool_t s_jerryscript_inited = FALSE;
+
+  if (!s_jerryscript_inited) {
+    jerry_init(JERRY_INIT_EMPTY);
+    jerry_script_register_builtins();
+
+    s_jerryscript_inited = TRUE;
+  }
+
+  return RET_OK;
+}
