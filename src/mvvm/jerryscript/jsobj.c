@@ -153,6 +153,30 @@ ret_t jerry_value_to_value(jerry_value_t value, value_t* v, str_t* temp) {
       if (jerry_get_object_native_pointer(value, &p, NULL)) {
         value_set_pointer(v, p);
         ret = RET_OK;
+      } else if (jerry_value_is_typedarray(value)) {
+        jerry_length_t byte_offset = 0;
+        jerry_length_t byte_length = 0;
+
+        jerry_typedarray_type_t type = jerry_get_typedarray_type(value);
+        jerry_length_t length = jerry_get_typedarray_length(value);
+        jerry_value_t jbuffer = jerry_get_typedarray_buffer(value, &byte_offset, &byte_length);
+
+        uint8_t* buff = jerry_get_arraybuffer_pointer(jbuffer);
+        uint32_t size = jerry_get_arraybuffer_byte_length(jbuffer);
+        jerry_value_t jdetachable = jerry_is_arraybuffer_detachable(jbuffer);
+        if (jerry_value_to_boolean(jdetachable)) {
+          jerry_value_t jdetach = jerry_detach_arraybuffer(jbuffer);
+          if (jerry_value_is_null(jdetach)) {
+            value_set_binary_data(v, buff, size);
+          } else {
+            value_dup_binary_data(v, buff, size);
+          }
+          jerry_release_value(jdetach);
+        } else {
+          value_dup_binary_data(v, buff, size);
+        }
+        jerry_release_value(jdetachable);
+        jerry_release_value(jbuffer);
       } else {
         object_t* obj = object_default_create();
         jerry_value_to_obj(value, obj);
@@ -183,6 +207,15 @@ jerry_value_t jerry_value_from_value(const value_t* v, str_t* temp) {
   } else if (v->type == VALUE_TYPE_POINTER) {
     value = jerry_create_object();
     jerry_set_object_native_pointer(value, (void*)value_pointer(v), NULL);
+  } else if (v->type == VALUE_TYPE_BINARY) {
+    binary_data_t* bin = value_binary_data(v);
+    uint8_t* buffer = (uint8_t*)bin->data;
+    uint32_t size = bin->size;
+
+    jerry_value_t jbuffer = jerry_create_arraybuffer_external(size, buffer, NULL);
+    value = jerry_create_typedarray_for_arraybuffer(JERRY_TYPEDARRAY_UINT8, jbuffer);
+    jerry_release_value(jbuffer);
+
   } else if (v->type == VALUE_TYPE_OBJECT) {
     object_t* obj = OBJECT(value_object(v));
     value = jerry_create_object();

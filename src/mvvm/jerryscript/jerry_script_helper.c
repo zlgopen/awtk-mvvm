@@ -28,7 +28,12 @@
 #include "tkc/fs.h"
 #include "tkc/str.h"
 #include "tkc/mem.h"
+#include "tkc/path.h"
+#include "tkc/utils.h"
+
+#ifndef SCRIPTS_ROOT_DIR
 #include "base/assets_manager.h"
+#endif/*SCRIPTS_ROOT_DIR*/
 
 #define STR_MODULES "modules"
 #ifndef NDEBUG
@@ -264,12 +269,26 @@ ret_t jerry_script_eval_buff(const char* script, uint32_t size, const char* file
 
 ret_t jerry_script_eval_file(const char* filename, bool_t global) {
   ret_t ret = RET_FAIL;
+#ifdef SCRIPTS_ROOT_DIR
+  char* data = NULL;
+  uint32_t size = 0;
+  char path[MAX_PATH+1];
+  if(!file_exist(filename)) {
+    tk_snprintf(path, MAX_PATH, "%s/%s.js", SCRIPTS_ROOT_DIR, filename);
+    filename = path;
+  }
+  return_value_if_fail(file_exist(filename), RET_BAD_PARAMS);
+    
+  data = (char*)file_read(filename, &size);
+  return_value_if_fail(data != NULL, RET_BAD_PARAMS);
+  ret = jerry_script_eval_buff(data, size, filename, global);
+  TKMEM_FREE(data);
+#else
   const asset_info_t* info = assets_manager_ref(assets_manager(), ASSET_TYPE_SCRIPT, filename);
-
   return_value_if_fail(info != NULL, RET_BAD_PARAMS);
   ret = jerry_script_eval_buff((const char*)info->data, info->size, filename, global);
   assets_manager_unref(assets_manager(), info);
-
+#endif
   log_debug("jerry_script_eval_file: %s ret=%d\n", filename, ret);
 
   return ret;

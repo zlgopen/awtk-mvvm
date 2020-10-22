@@ -23,7 +23,7 @@
 #define TK_JSOBJ_H
 
 #include "tkc/str.h"
-#include "jerryscript.h"
+#include "jerry_script_helper.h"
 
 BEGIN_C_DECLS
 
