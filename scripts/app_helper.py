@@ -1,7 +1,7 @@
 import awtk_locator as locator
-from app_helper_base import AppHelperBase
 
+def Helper(ARGUMENTS):
+    locator.init(ARGUMENTS)
 
-class Helper(AppHelperBase):
-    def getAwtkRoot(self):
-        return locator.getAwtkOrAwtkLinuxFbRoot(self.LINUX_FB)
+    from app_helper_base import AppHelperBase
+    return AppHelperBase(ARGUMENTS)
