@@ -975,6 +975,7 @@ static ret_t binding_context_destroy_async(const idle_info_t* info) {
 static ret_t binding_context_on_widget_destroy(void* ctx, event_t* e) {
   binding_context_t* bctx = BINDING_CONTEXT(ctx);
 
+  binding_context_set_parent(ctx, NULL);
   idle_add(binding_context_destroy_async, ctx);
   if (bctx->update_view_idle_id != TK_INVALID_ID) {
     idle_remove(bctx->update_view_idle_id);
