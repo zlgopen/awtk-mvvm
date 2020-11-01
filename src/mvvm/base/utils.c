@@ -48,6 +48,8 @@ ret_t str_random(str_t* str, const char* format, uint32_t max) {
   return str_set(str, buff);
 }
 
+#define STR_INVALID_PROP_CHARS "<>+-*/=()$!|&"
+
 bool_t tk_is_valid_prop_name(const char* name) {
   const char* p = name;
   return_value_if_fail(name != NULL, FALSE);
@@ -57,11 +59,10 @@ bool_t tk_is_valid_prop_name(const char* name) {
   }
 
   while (*p) {
-    if ((*p >= 'a' && *p <= 'z') || (*p >= 'A' && *p <= 'Z') || (*p >= '0' && *p <= '9') ||
-        *p == '_' || *p == '.' || *p == '[' || *p == ']') {
-      p++;
-    } else {
+    if(strchr(STR_INVALID_PROP_CHARS, *p) != NULL) {
       return FALSE;
+    } else {
+      p++;
     }
   }
 
