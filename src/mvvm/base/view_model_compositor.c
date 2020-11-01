@@ -228,7 +228,7 @@ view_model_t* view_model_compositor_create(navigator_request_t* req) {
   return_value_if_fail(compositor != NULL, NULL);
 
   view_model->vt = &s_view_model_vtable_compositor;
-  darray_init(&(compositor->view_models), 4, (tk_destroy_t)object_unref, NULL);
+  darray_init(&(compositor->view_models), 4, NULL, NULL);
 
   return view_model;
 }

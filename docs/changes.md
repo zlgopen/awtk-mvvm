@@ -1,4 +1,9 @@
 # 最新动态
+* 2020/10/27
+  * 更新编译脚本
+  * 修正view_model_compositor销毁时重复unref内部的view model的问题
+  * 修正由于父binding_context先销毁导致子binding_context重置parent时异常的问题
+
 * 2020/10/18
   * 支持全局按键事件，用于实现全局的快捷键。请参考 design/default/ui/demo9_main.xml
 

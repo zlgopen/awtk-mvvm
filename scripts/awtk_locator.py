@@ -1,50 +1,56 @@
 import os
 import sys
 
+AWTK_ROOT = ''
 
-def getAwtkConfig(LINUX_FB):
-    AWTK_ROOT = getAwtkOrAwtkLinuxFbRoot(LINUX_FB)
-    sys.path.insert(0, AWTK_ROOT)
-    import awtk_config as awtk
+def getAwtkRoot():
+    return AWTK_ROOT
 
-    return awtk
-
+def getAwtkDesignerPath():
+    env = os.environ
+    if 'AWTK_DESIGNER_PATH' in env:
+        return env['AWTK_DESIGNER_PATH']
+    else:
+        return ''
 
 def getAwtkOrAwtkLinuxFbRoot(LINUX_FB):
     if LINUX_FB:
-        AWTK_ROOT = getAwtkLinuxFbRoot()
+        return locateAWTK('awtk-linux-fb')
     else:
-        AWTK_ROOT = getAwtkRoot()
-
-    return AWTK_ROOT
-
-
-def getAwtkScriptsRoot():
-    return os.path.join(locateAWTK('awtk'), 'scripts')
-
-
-def getAwtkRoot():
-    return locateAWTK('awtk')
-
-
-def getAwtkLinuxFbRoot():
-    return locateAWTK('awtk-linux-fb')
-
+        return locateAWTK('awtk')
 
 def locateAWTK(awtk):
-    awtk_root = '../' + awtk
+    awtk_root = ''
+
+    designer_path = getAwtkDesignerPath();
+    if os.path.exists(designer_path):
+        awtk_root = designer_path + '/SDK/' + awtk
+
     if not os.path.exists(awtk_root):
         dirnames = ['../'+awtk, '../../'+awtk, '../../../'+awtk]
         for dirname in dirnames:
             if os.path.exists(dirname):
                 awtk_root = dirname
                 break
+
     return os.path.abspath(awtk_root)
 
+def init(ARGUMENTS = None):
+    global AWTK_ROOT
+    LINUX_FB = ''
 
-AWTK_ROOT = getAwtkRoot()
-AWTK_SCRIPTS_ROOT = getAwtkScriptsRoot()
-sys.path.insert(0, AWTK_SCRIPTS_ROOT)
+    if ARGUMENTS:
+        AWTK_ROOT = ARGUMENTS.get('AWTK_ROOT', '')
+        LINUX_FB = ARGUMENTS.get('LINUX_FB', '') != ''
 
-print('AWTK_ROOT:' + AWTK_ROOT)
-print('AWTK_SCRIPTS_ROOT:' + AWTK_SCRIPTS_ROOT)
+    if not os.path.exists(AWTK_ROOT):
+        AWTK_ROOT = getAwtkOrAwtkLinuxFbRoot(LINUX_FB)
+
+    if LINUX_FB:
+        AWTK_SCRIPTS_ROOT = os.path.join(AWTK_ROOT, '../awtk/scripts')
+    else:
+        AWTK_SCRIPTS_ROOT = os.path.join(AWTK_ROOT, 'scripts')
+    sys.path.insert(0, AWTK_SCRIPTS_ROOT)
+
+    print('AWTK_ROOT: ' + AWTK_ROOT)
+    print('AWTK_SCRIPTS_ROOT: ' + AWTK_SCRIPTS_ROOT)
