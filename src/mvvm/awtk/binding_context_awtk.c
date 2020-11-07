@@ -628,6 +628,7 @@ static ret_t binding_context_on_rebind(void* c, event_t* e) {
   if (ctx->update_view_idle_id != TK_INVALID_ID) {
     idle_remove(ctx->update_view_idle_id);
     ctx->update_view_idle_id = TK_INVALID_ID;
+    ctx->updating_view = FALSE;
   }
 
   return RET_OK;

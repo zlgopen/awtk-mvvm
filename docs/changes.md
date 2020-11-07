@@ -1,4 +1,7 @@
 # 最新动态
+* 2020/11/7
+  * 修改binding\_context\_on\_rebind没有清除updating\_view标志的问题。
+
 * 2020/10/27
   * 更新编译脚本
   * 修正view_model_compositor销毁时重复unref内部的view model的问题
