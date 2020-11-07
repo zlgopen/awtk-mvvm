@@ -52,7 +52,7 @@ static ret_t view_model_dummy_get_prop(object_t* obj, const char* name, value_t*
 static bool_t view_model_dummy_can_exec(object_t* obj, const char* name, const char* args) {
   return_value_if_fail(obj != NULL && name != NULL, FALSE);
 
-  return TRUE;
+  return FALSE;
 }
 
 static ret_t view_model_dummy_exec(object_t* obj, const char* name, const char* args) {
