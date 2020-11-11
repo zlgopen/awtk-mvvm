@@ -199,6 +199,8 @@ static int_str_t s_event_map[] = {{EVT_CLICK, "click"},
                                   {EVT_KEY_UP, "key_up"},
                                   {EVT_VALUE_CHANGED, "value_changed"},
                                   {EVT_VALUE_CHANGED, STR_VALUE_CHANGED_BY_UI},
+                                  {EVT_KEY_DOWN_BEFORE_CHILDREN, "key_down_before_children"},
+                                  {EVT_KEY_UP_BEFORE_CHILDREN, "key_up_before_children"},
                                   {EVT_KEY_DOWN, STR_GLOBAL_KEY_DOWN},
                                   {EVT_KEY_LONG_PRESS, STR_GLOBAL_KEY_LONG_PRESS},
                                   {EVT_KEY_UP, STR_GLOBAL_KEY_UP},
@@ -211,7 +213,8 @@ static bool_t command_binding_filter(command_binding_t* rule, event_t* e) {
     return FALSE;
   }
 
-  if (e->type == EVT_KEY_DOWN || e->type == EVT_KEY_UP || e->type == EVT_KEY_LONG_PRESS) {
+  if (e->type == EVT_KEY_DOWN || e->type == EVT_KEY_UP || e->type == EVT_KEY_LONG_PRESS || 
+      e->type == EVT_KEY_DOWN_BEFORE_CHILDREN|| e->type == EVT_KEY_UP_BEFORE_CHILDREN) {
     shortcut_t shortcut;
     key_event_t* evt = (key_event_t*)e;
 
