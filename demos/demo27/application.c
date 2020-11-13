@@ -21,6 +21,7 @@
 
 #include "awtk.h"
 #include "mvvm/mvvm.h"
+#include "conf_io/app_conf_init_json.h"
 #include "humidity_view_model.h"
 #include "temperature_view_model.h"
 

@@ -21,6 +21,7 @@
 
 #include "awtk.h"
 #include "mvvm/mvvm.h"
+#include "conf_io/app_conf_init_json.h"
 #include "conf_io/app_conf.h"
 
 static ret_t on_app_conf_events(void* ctx, event_t* e) {

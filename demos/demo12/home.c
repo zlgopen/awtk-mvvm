@@ -21,7 +21,7 @@
 
 #include "home.h"
 #include "tkc/mem.h"
-#include "mvvm/base/navigator_request.h"
+#include "mvvm/mvvm.h"
 #include "../common/room_settings_defines.h"
 
 home_t* home_create(void) {
