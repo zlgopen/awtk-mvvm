@@ -142,6 +142,7 @@ scons LINUX_FB=true
 | demo29   | (no)     | 扩展 app_conf 的命令                  |
 | demo30   | (no)     | 发送按键事件和设置属性                |
 | demo31   | (no)     | 嵌套 view model                       |
+| demo32   | (no)     | 一个 view model 多个 model的用法      |
 
 * [完整示例及模板项目](https://github.com/zlgopen/awtk-mvvm-c-hello)
 
