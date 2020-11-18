@@ -41,8 +41,19 @@ ret_t application_exit() {
   return RET_OK;
 }
 
+#ifdef LCD_WIDTH
+#undef LCD_WIDTH
+#endif
 #define LCD_WIDTH 800
+
+#ifdef LCD_HEIGHT
+#undef LCD_HEIGHT
+#endif
 #define LCD_HEIGHT 480
 
+#ifdef APP_DEFAULT_FONT
+#undef APP_DEFAULT_FONT
+#endif
 #define APP_DEFAULT_FONT "default_full"
+
 #include "awtk_main.inc"
