@@ -37,6 +37,12 @@
   </style>
 </popup>
 
+<view>
+  <style name="border" border_color="#c2c2c2">
+    <normal />
+  </style>
+</view>
+
 <button>
   <style name="default" border_color="#a0a0a0"  text_color="black">
     <normal     bg_color="#f0f0f0" />
@@ -196,6 +202,13 @@
     <normal text_color="green" font_size="24" text_align_h="center" border_color="#a0a0a0"/>
   </style>
 
+  <style name="title_n">
+    <normal text_color="black" bg_color="#bebebe" text_align_v="middle" text_align_h="left" margin="4"/>
+  </style>
+
+  <style name="title_a">
+    <normal text_color="black" bg_color="red" text_align_v="middle" text_align_h="left" margin="4"/>
+  </style>
 </label>
 
 <progress_bar>

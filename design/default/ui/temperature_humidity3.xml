@@ -1,0 +1,47 @@
+<window anim_hint="htranslate" v-model="temperature_humidity">
+	<view w="100%" h="100%" children_layout="default(r=3, c=2, m=10, s=10)">
+		<view style="border">
+			<label text="Outside Temperature" x="c" y="0" w="100%" h="25%" v-data:style="{$outside_temperature.temp > 50 ? &quot;title_a&quot; : &quot;title_n&quot;}"/>
+			<label text="1" x="c" y="25%" w="100%" h="25%" v-data:text="{outside_temp}" />
+			<slider value="1" x="c" y="50%" w="100%" h="25%" v-data:value="{outside_temperature.temp, Trigger=Changing}" />
+			<button text="Apply" x="0" y="75%" w="50%" h="25%" v-on:click="{outside_temperature.apply}" />
+			<button text="Reset" x="50%" y="75%" w="50%" h="25%" v-on:click="{outside_temp_reset}" />
+		</view>
+		<view style="border">
+			<label text="Outside Humidity" x="c" y="0" w="100%" h="25%" v-data:style="{$outside_humi > 50 ? &quot;title_a&quot; : &quot;title_n&quot;}"/>
+			<label text="1" x="c" y="25%" w="100%" h="25%" v-data:text="{outside_humidity.humi}" />
+			<slider value="1" x="c" y="50%" w="100%" h="25%" v-data:value="{outside_humi, Trigger=Changing}" />
+			<button text="Apply" x="0" y="75%" w="50%" h="25%" v-on:click="{outside_humi_apply}" />
+			<button text="Reset" x="50%" y="75%" w="50%" h="25%" v-on:click="{outside_humidity.reset}" />
+		</view>
+		<view style="border">
+			<label text="Inside Temperature 1" x="c" y="0" w="100%" h="25%" v-data:style="{$inside_temperatures.[0].temp > 50 ? &quot;title_a&quot; : &quot;title_n&quot;}"/>
+			<label text="1" x="c" y="25%" w="100%" h="25%" v-data:text="{inside_temperatures.[0].temp}" />
+			<slider value="1" x="c" y="50%" w="100%" h="25%" v-data:value="{inside_temperatures.[0].temp, Trigger=Changing}" />
+			<button text="Apply" x="0" y="75%" w="50%" h="25%" v-on:click="{inside_temperatures.[0].apply}" />
+			<button text="Reset" x="50%" y="75%" w="50%" h="25%" v-on:click="{inside_temperatures.[0].reset}" />
+		</view>
+		<view style="border">
+			<label text="Inside Humidity 1" x="c" y="0" w="100%" h="25%" v-data:style="{$inside_humidities.[0].humi > 50 ? &quot;title_a&quot; : &quot;title_n&quot;}"/>
+			<label text="1" x="c" y="25%" w="100%" h="25%" v-data:text="{inside_humidities.[0].humi}" />
+			<slider value="1" x="c" y="50%" w="100%" h="25%" v-data:value="{inside_humidities.[0].humi, Trigger=Changing}" />
+			<button text="Apply" x="0" y="75%" w="50%" h="25%" v-on:click="{inside_humidities.[0].apply}" />
+			<button text="Reset" x="50%" y="75%" w="50%" h="25%" v-on:click="{inside_humidities.[0].reset}" />
+		</view>
+		<view style="border">
+			<label text="Inside Temperature 2" x="c" y="0" w="100%" h="25%" v-data:style="{$inside_temperatures.[1].temp > 50 ? &quot;title_a&quot; : &quot;title_n&quot;}"/>
+			<label text="1" x="c" y="25%" w="100%" h="25%" v-data:text="{inside_temperatures.[1].temp}" />
+			<slider value="1" x="c" y="50%" w="100%" h="25%" v-data:value="{inside_temperatures.[1].temp, Trigger=Changing}" />
+			<button text="Apply" x="0" y="75%" w="50%" h="25%" v-on:click="{inside_temperatures.[1].apply}" />
+			<button text="Reset" x="50%" y="75%" w="50%" h="25%" v-on:click="{inside_temperatures.[1].reset}" />
+		</view>
+		<view style="border">
+			<label text="Inside Humidity 2" x="c" y="0" w="100%" h="25%" v-data:style="{$inside_humidities.[1].humi > 50 ? &quot;title_a&quot; : &quot;title_n&quot;}"/>
+			<label text="1" x="c" y="25%" w="100%" h="25%" v-data:text="{inside_humidities.[1].humi}" />
+			<slider value="1" x="c" y="50%" w="100%" h="25%" v-data:value="{inside_humidities.[1].humi, Trigger=Changing}" />
+			<button text="Apply" x="0" y="75%" w="50%" h="25%" v-on:click="{inside_humidities.[1].apply}" />
+			<button text="Reset" x="50%" y="75%" w="50%" h="25%" v-on:click="{inside_humidities.[1].reset}" />
+		</view>
+	</view>
+	<button text="Close" floating="true" x="right:10" y="bottom:4" w="60" h="30" v-on:click="{nothing, CloseWindow=True, QuitApp=true}" />
+</window>
