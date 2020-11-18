@@ -59,7 +59,7 @@ bool_t tk_is_valid_prop_name(const char* name) {
   }
 
   while (*p) {
-    if(strchr(STR_INVALID_PROP_CHARS, *p) != NULL) {
+    if (strchr(STR_INVALID_PROP_CHARS, *p) != NULL) {
       return FALSE;
     } else {
       p++;

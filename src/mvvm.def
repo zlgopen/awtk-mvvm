@@ -137,6 +137,7 @@ EXPORTS
     jerry_value_check
     jerry_value_to_value
     jerry_value_to_value
+    jerry_release_value
     mvvm_jerryscript_init
     mvvm_jerryscript_deinit
     value_converter_jerryscript_init

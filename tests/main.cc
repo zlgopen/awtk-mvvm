@@ -45,9 +45,16 @@ GTEST_API_ int main(int argc, char** argv) {
   system_info_init(APP_SIMULATOR, NULL, "./");
   tk_init_internal();
   mvvm_init();
+#ifdef WITH_JERRYSCRIPT
+  mvvm_jerryscript_init();
+#endif /*WITH_JERRYSCRIPT*/
   tk_init_assets();
+
   RUN_ALL_TESTS();
 
+#ifdef WITH_JERRYSCRIPT
+  mvvm_jerryscript_deinit();
+#endif /*WITH_JERRYSCRIPT*/
   mvvm_deinit();
   tk_deinit_internal();
 

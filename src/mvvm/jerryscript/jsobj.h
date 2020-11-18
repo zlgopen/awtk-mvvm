@@ -93,6 +93,12 @@ ret_t jerry_value_to_obj(jerry_value_t value, object_t* obj);
  */
 ret_t jerry_value_from_obj(jerry_value_t value, object_t* obj);
 
+/**
+ * @method jerry_release_value
+ * annotation ["global"]
+ * export for test only
+ */
+
 #define JSOBJ_ON_RESULT "onResult"
 
 END_C_DECLS

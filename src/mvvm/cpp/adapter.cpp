@@ -305,6 +305,7 @@ ret_t view_model_array_adapter_clear(view_model_t* view_model) {
 
 static ret_t view_model_array_adapter_set_prop(object_t* obj, const char* name, const value_t* v) {
   uint32_t index = 0;
+  const char* subname = NULL;
   view_model_t* view_model = VIEW_MODEL(obj);
   view_model_array_adapter_t* adapter = (view_model_array_adapter_t*)(view_model);
 
@@ -314,14 +315,15 @@ static ret_t view_model_array_adapter_set_prop(object_t* obj, const char* name, 
     return RET_OK;
   }
 
-  name = tk_destruct_array_prop_name(name, &index);
-  return_value_if_fail(name != NULL, RET_BAD_PARAMS);
+  subname = tk_destruct_array_prop_name(name, &index);
+  return_value_if_fail(subname != NULL && subname != name, RET_BAD_PARAMS);
 
-  return adapter->cpp->SetProp(index, name, v);
+  return adapter->cpp->SetProp(index, subname, v);
 }
 
 static ret_t view_model_array_adapter_get_prop(object_t* obj, const char* name, value_t* v) {
   uint32_t index = 0;
+  const char* subname = NULL;
   view_model_t* view_model = VIEW_MODEL(obj);
   view_model_array_adapter_t* adapter = (view_model_array_adapter_t*)(view_model);
 
@@ -333,10 +335,10 @@ static ret_t view_model_array_adapter_get_prop(object_t* obj, const char* name, 
     return RET_OK;
   }
 
-  name = tk_destruct_array_prop_name(name, &index);
-  return_value_if_fail(name != NULL, RET_BAD_PARAMS);
+  subname = tk_destruct_array_prop_name(name, &index);
+  return_value_if_fail(subname != NULL && subname != name, RET_BAD_PARAMS);
 
-  return adapter->cpp->GetProp(index, name, v);
+  return adapter->cpp->GetProp(index, subname, v);
 }
 
 static bool_t view_model_array_adapter_can_exec(object_t* obj, const char* name, const char* args) {

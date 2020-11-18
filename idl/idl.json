@@ -3218,6 +3218,12 @@
       {
         "params": [],
         "annotation": {},
+        "desc": "annotation [\"global\"]\nexport for test only",
+        "name": "jerry_release_value"
+      },
+      {
+        "params": [],
+        "annotation": {},
         "desc": "初始化MVVM jerryscript。",
         "name": "mvvm_jerryscript_init",
         "return": {

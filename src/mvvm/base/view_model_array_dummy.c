@@ -39,6 +39,7 @@ static int32_t view_model_array_dummy_compare(object_t* obj, object_t* other) {
 
 static ret_t view_model_array_dummy_set_prop(object_t* obj, const char* name, const value_t* v) {
   uint32_t index = 0;
+  const char* subname = NULL;
   view_model_t* submodel = NULL;
   view_model_array_dummy_t* dummy = VIEW_MODEL_ARRAY_DUMMY(obj);
   return_value_if_fail(obj != NULL && name != NULL && v != NULL, RET_BAD_PARAMS);
@@ -49,16 +50,17 @@ static ret_t view_model_array_dummy_set_prop(object_t* obj, const char* name, co
     return RET_OK;
   }
 
-  name = tk_destruct_array_prop_name(name, &index);
-  return_value_if_fail(name != NULL, RET_BAD_PARAMS);
+  subname = tk_destruct_array_prop_name(name, &index);
+  return_value_if_fail(subname != NULL && subname != name, RET_BAD_PARAMS);
   return_value_if_fail(index < dummy->array.size, RET_BAD_PARAMS);
   submodel = VIEW_MODEL(dummy->array.elms[index]);
 
-  return object_set_prop(OBJECT(submodel), name, v);
+  return object_set_prop(OBJECT(submodel), subname, v);
 }
 
 static ret_t view_model_array_dummy_get_prop(object_t* obj, const char* name, value_t* v) {
   uint32_t index = 0;
+  const char* subname = NULL;
   view_model_t* submodel = NULL;
   view_model_array_dummy_t* dummy = VIEW_MODEL_ARRAY_DUMMY(obj);
   return_value_if_fail(obj != NULL && name != NULL && v != NULL, RET_BAD_PARAMS);
@@ -73,12 +75,12 @@ static ret_t view_model_array_dummy_get_prop(object_t* obj, const char* name, va
     return RET_OK;
   }
 
-  name = tk_destruct_array_prop_name(name, &index);
-  return_value_if_fail(name != NULL, RET_BAD_PARAMS);
+  subname = tk_destruct_array_prop_name(name, &index);
+  return_value_if_fail(subname != NULL && subname != name, RET_BAD_PARAMS);
   return_value_if_fail(index < dummy->array.size, RET_BAD_PARAMS);
   submodel = VIEW_MODEL(dummy->array.elms[index]);
 
-  return object_get_prop(OBJECT(submodel), name, v);
+  return object_get_prop(OBJECT(submodel), subname, v);
 }
 
 static bool_t view_model_array_dummy_can_exec(object_t* obj, const char* name, const char* args) {

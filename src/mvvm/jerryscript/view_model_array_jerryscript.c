@@ -43,6 +43,7 @@ static int32_t view_model_array_jerryscript_compare(object_t* obj, object_t* oth
 static ret_t view_model_array_jerryscript_set_prop(object_t* obj, const char* name,
                                                    const value_t* v) {
   uint32_t index = 0;
+  const char* subname = NULL;
   jerry_value_t jsprop = 0;
   ret_t ret = RET_NOT_FOUND;
   view_model_array_jerryscript_t* view_modeljs = VIEW_MODEL_ARRAY_JERRYSCRIPT(obj);
@@ -54,12 +55,12 @@ static ret_t view_model_array_jerryscript_set_prop(object_t* obj, const char* na
     return RET_OK;
   }
 
-  name = tk_destruct_array_prop_name(name, &index);
-  return_value_if_fail(name != NULL, RET_BAD_PARAMS);
+  subname = tk_destruct_array_prop_name(name, &index);
+  return_value_if_fail(subname != NULL && subname != name, RET_BAD_PARAMS);
   return_value_if_fail(index < jerry_get_array_length(view_modeljs->jsobj), RET_BAD_PARAMS);
 
   jsprop = jerry_get_property_by_index(view_modeljs->jsobj, index);
-  ret = jsobj_set_prop(jsprop, name, v, &(view_modeljs->temp));
+  ret = jsobj_set_prop(jsprop, subname, v, &(view_modeljs->temp));
   jerry_release_value(jsprop);
 
   return ret;
@@ -67,6 +68,7 @@ static ret_t view_model_array_jerryscript_set_prop(object_t* obj, const char* na
 
 static ret_t view_model_array_jerryscript_get_prop(object_t* obj, const char* name, value_t* v) {
   uint32_t index = 0;
+  const char* subname = NULL;
   jerry_value_t jsprop = 0;
   ret_t ret = RET_NOT_FOUND;
   view_model_array_jerryscript_t* view_modeljs = VIEW_MODEL_ARRAY_JERRYSCRIPT(obj);
@@ -82,14 +84,14 @@ static ret_t view_model_array_jerryscript_get_prop(object_t* obj, const char* na
     return RET_OK;
   }
 
-  name = tk_destruct_array_prop_name(name, &index);
-  return_value_if_fail(name != NULL, RET_BAD_PARAMS);
+  subname = tk_destruct_array_prop_name(name, &index);
+  return_value_if_fail(subname != NULL && subname != name, RET_BAD_PARAMS);
   return_value_if_fail(index < jerry_get_array_length(view_modeljs->jsobj), RET_BAD_PARAMS);
 
   value_set_int(v, 0);
   jsprop = jerry_get_property_by_index(view_modeljs->jsobj, index);
-  if (jsobj_has_prop(jsprop, name)) {
-    ret = jsobj_get_prop(jsprop, name, v, &(view_modeljs->temp));
+  if (jsobj_has_prop(jsprop, subname)) {
+    ret = jsobj_get_prop(jsprop, subname, v, &(view_modeljs->temp));
   }
   jerry_release_value(jsprop);
 
