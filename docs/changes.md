@@ -1,10 +1,14 @@
 # 最新动态
+* 2020/11/26
+  * 修正view_model_app_conf无法访问诸如“temp.[0].value”等属性的问题。
+  * 完善demo32
+
 * 2020/11/18
- * 普通view model支持path形式访问属性及命令（感谢朝泽提供补丁）。
- * 修改view\_model\_array访问如"[0]"或"[0"的属性时返回RET\_BAD\_PARAMS（感谢朝泽提供补丁）。
- * 单元测试崩溃的问题：没有初始化jerryscript和导出jerry\_release\_value()，以及view\_model\_compositor\_create没有正确创建的原因（感谢朝泽提供补丁）。
- * 修正Windows下由于include的搜索顺序导致include非期望的文件从而引起编译失败的问题
- * 添加展示一个 view model 多个 model 的用法的demo
+  * 普通view model支持path形式访问属性及命令（感谢朝泽提供补丁）。
+  * 修改view\_model\_array访问如"[0]"或"[0"的属性时返回RET\_BAD\_PARAMS（感谢朝泽提供补丁）。
+  * 单元测试崩溃的问题：没有初始化jerryscript和导出jerry\_release\_value()，以及view\_model\_compositor\_create没有正确创建的原因（感谢朝泽提供补丁）。
+  * 修正Windows下由于include的搜索顺序导致include非期望的文件从而引起编译失败的问题
+  * 添加展示一个 view model 多个 model 的用法的demo
 
 * 2020/11/7
   * 修改binding\_context\_on\_rebind没有清除updating\_view标志的问题。
