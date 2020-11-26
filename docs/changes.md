@@ -1,7 +1,8 @@
 # 最新动态
 * 2020/11/26
-  * 修正view_model_app_conf无法访问诸如“temp.[0].value”等属性的问题。
   * 完善demo32
+  * 增加window\_close/window\_open事件。
+  * 修正view\_model\_app\_conf无法访问诸如“temp.[0].value”等属性的问题。
 
 * 2020/11/18
   * 普通view model支持path形式访问属性及命令（感谢朝泽提供补丁）。

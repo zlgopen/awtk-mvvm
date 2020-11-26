@@ -192,6 +192,8 @@ error:
 #define STR_VALUE_CHANGED_BY_UI "value_changed_by_ui"
 /*TODO: add more event*/
 static int_str_t s_event_map[] = {{EVT_CLICK, "click"},
+                                  {EVT_WINDOW_CLOSE, "window_close"},
+                                  {EVT_WINDOW_OPEN, "window_open"},
                                   {EVT_POINTER_DOWN, "pointer_down"},
                                   {EVT_POINTER_UP, "pointer_up"},
                                   {EVT_KEY_DOWN, "key_down"},
