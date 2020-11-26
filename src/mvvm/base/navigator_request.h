@@ -64,6 +64,13 @@ struct _navigator_request_t {
    */
   navigator_request_on_result_t on_result;
 
+  /**
+   * @property {bool_t} close_current
+   * @annotation ["readable"]
+   * 是否关闭当前窗口。
+   */
+   bool_t close_current;
+
   void* user_data;
   /*private*/
   object_t* args;
@@ -82,6 +89,19 @@ struct _navigator_request_t {
  */
 navigator_request_t* navigator_request_create(const char* target,
                                               navigator_request_on_result_t on_result);
+
+/**
+ * @method navigator_request_set_close_current
+ * 设置是否关闭当前窗口。
+ *
+ * @annotation ["scriptable"]
+ *
+ * @param {navigator_request_t*} req request对象。
+ * @param {bool_t} close_current 关闭当前窗口。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t navigator_request_set_close_current(navigator_request_t* req, bool_t close_current);
 
 /**
  * @method navigator_request_on_result

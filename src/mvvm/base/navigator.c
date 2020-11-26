@@ -136,6 +136,21 @@ ret_t navigator_to(const char* target) {
   return ret;
 }
 
+ret_t navigator_replace(const char* target) {
+  ret_t ret = RET_OK;
+  navigator_request_t* req = NULL;
+  return_value_if_fail(target != NULL && navigator() != NULL, RET_BAD_PARAMS);
+
+  req = navigator_request_create(target, NULL);
+  return_value_if_fail(req != NULL, RET_OOM);
+
+  navigator_request_set_close_current(req, TRUE);
+  ret = navigator_handle_request(navigator(), req);
+  object_unref(OBJECT(req));
+
+  return ret;
+}
+
 ret_t navigator_to_with_key_value(const char* target, const char* key, const char* value) {
   ret_t ret = RET_OK;
   navigator_request_t* req = NULL;

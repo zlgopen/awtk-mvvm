@@ -101,3 +101,11 @@ ret_t navigator_request_on_result(navigator_request_t* req, const value_t* resul
 
   return RET_OK;
 }
+
+ret_t navigator_request_set_close_current(navigator_request_t* req, bool_t close_current) {
+  return_value_if_fail(req != NULL, RET_BAD_PARAMS);
+
+  req->close_current = close_current;
+
+  return RET_OK;
+}

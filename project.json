@@ -33,7 +33,7 @@
         },
         "lcd": {
           "width": "480",
-          "height": "320",
+          "height": "640",
           "colorDepth": "16bit",
           "colorFormat": "BGR(A)"
         }

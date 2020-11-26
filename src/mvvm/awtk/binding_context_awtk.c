@@ -1032,7 +1032,13 @@ ret_t awtk_open_window(navigator_request_t* req) {
   widget_t* win = NULL;
   return_value_if_fail(req != NULL && req->target != NULL, RET_BAD_PARAMS);
 
-  win = window_open(req->target);
+  if (req->close_current) {
+    widget_t* current = window_manager_get_top_main_window(window_manager());
+    log_debug("close current window: %s\n", current->name);
+    win = window_open_and_close(req->target, current);
+  } else {
+    win = window_open(req->target);
+  }
   return_value_if_fail(win != NULL, RET_NOT_FOUND);
 
   binding_context_bind_for_window(win, req);

@@ -1030,6 +1030,29 @@
             "desc": "request对象。"
           },
           {
+            "type": "bool_t",
+            "name": "close_current",
+            "desc": "关闭当前窗口。"
+          }
+        ],
+        "annotation": {
+          "scriptable": true
+        },
+        "desc": "设置是否关闭当前窗口。",
+        "name": "navigator_request_set_close_current",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "navigator_request_t*",
+            "name": "req",
+            "desc": "request对象。"
+          },
+          {
             "type": "const value_t*",
             "name": "result",
             "desc": "结果。"
@@ -1068,6 +1091,14 @@
         "name": "on_result",
         "desc": "用于非模态窗口返回结果。",
         "type": "navigator_request_on_result_t",
+        "annotation": {
+          "readable": true
+        }
+      },
+      {
+        "name": "close_current",
+        "desc": "是否关闭当前窗口。",
+        "type": "bool_t",
         "annotation": {
           "readable": true
         }
@@ -1224,6 +1255,24 @@
         },
         "desc": "请求打开指定的窗口。",
         "name": "navigator_to",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "const char*",
+            "name": "target",
+            "desc": "目标窗口的名称。"
+          }
+        ],
+        "annotation": {
+          "static": true
+        },
+        "desc": "请求打开指定的窗口，并关闭当前窗口。",
+        "name": "navigator_replace",
         "return": {
           "type": "ret_t",
           "desc": "返回RET_OK表示成功，否则表示失败。"

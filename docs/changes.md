@@ -2,6 +2,7 @@
 * 2020/11/26
   * 完善demo32
   * 增加window\_close/window\_open事件。
+  * 增加navigator\_replace打开新窗口并关闭当前窗口。
   * 修正view\_model\_app\_conf无法访问诸如“temp.[0].value”等属性的问题。
 
 * 2020/11/18

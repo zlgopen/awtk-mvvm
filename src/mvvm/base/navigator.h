@@ -136,6 +136,18 @@ ret_t navigator_unregister_handler(navigator_t* nav, const char* target);
 ret_t navigator_to(const char* target);
 
 /**
+ * @method navigator_replace
+ * 请求打开指定的窗口，并关闭当前窗口。
+ *
+ * @annotation ["static"]
+ *
+ * @param {const char*} target 目标窗口的名称。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t navigator_replace(const char* target);
+
+/**
  * @method navigator_to_with_key_value
  * 请求打开指定的窗口。
  *
