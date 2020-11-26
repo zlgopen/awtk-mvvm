@@ -117,8 +117,8 @@ static ret_t temperature_humidity_view_model_exec(object_t* obj, const char* nam
   temperature_humidity_view_model_t* vm = (temperature_humidity_view_model_t*)(obj);
   return_value_if_fail(vm != NULL, RET_BAD_PARAMS);
 
-  if (tk_str_ieq("outside_temp_apply", name)) {
-    return object_exec(vm->outside_temperature, "apply", args);
+  if (tk_str_ieq("outside_temp_reset", name)) {
+    return object_exec(vm->outside_temperature, "reset", args);
   } else if (tk_str_ieq("outside_humi_apply", name)) {
     return object_exec(vm->outside_humidity, "apply", args);
   }
