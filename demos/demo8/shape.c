@@ -66,7 +66,7 @@ const char* shape_get_overview(shape_t* shape) {
 ret_t shape_change_type(shape_t* shape, int32_t type) {
   shape->type = type;
 
-  return RET_OK;
+  return RET_OBJECT_CHANGED;
 }
 
 bool_t shape_can_save(shape_t* shape) {
