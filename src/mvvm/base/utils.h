@@ -50,6 +50,17 @@ const char* tk_destruct_array_prop_name(const char* name, uint32_t* index);
  */
 ret_t str_random(str_t* str, const char* format, uint32_t max);
 
+
+/**
+ * @method tk_expr_eval
+ * expr eval
+ *
+ * @param {const char*} str 表达式。
+ *
+ * @return {double} 返回表达式的值。
+ */
+double tk_expr_eval(const char* str);
+
 bool_t tk_is_valid_prop_name(const char* name);
 
 #define destruct_array_prop_name tk_destruct_array_prop_name

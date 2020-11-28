@@ -20,9 +20,9 @@
  *
  */
 
-#include "tkc/expr_eval.h"
 #include "tkc/utils.h"
 #include "calculator.h"
+#include "mvvm/base/utils.h"
 
 Calculator::Calculator() {
 }

@@ -1,4 +1,7 @@
 # 最新动态
+* 2020/11/27
+  * 使用fscript代替第三方expr eval函数。
+
 * 2020/11/26
   * 完善demo32
   * 增加window\_close/window\_open事件。

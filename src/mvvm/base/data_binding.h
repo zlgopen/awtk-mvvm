@@ -23,6 +23,7 @@
 #define TK_DATA_BINDING_H
 
 #include "tkc/str.h"
+#include "tkc/fscript.h"
 #include "tkc/object_default.h"
 #include "mvvm/base/binding_rule.h"
 
@@ -138,6 +139,8 @@ typedef struct _data_binding_t {
    * 触发更新模型的时机。
    */
   update_model_trigger_t trigger;
+  /*private*/
+  fscript_t* expr;
 } data_binding_t;
 
 /**

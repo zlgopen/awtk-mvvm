@@ -169,18 +169,6 @@ const char* view_model_preprocess_prop(view_model_t* view_model, const char* pro
 bool_t view_model_has_prop(view_model_t* view_model, const char* name);
 
 /**
- * @method view_model_eval
- * 计算表达式的值。
- *
- * @param {view_model_t*} view_model view_model对象。
- * @param {const char*} expr 表达式。
- * @param {value_t*} value 计算结果。
- *
- * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
- */
-ret_t view_model_eval(view_model_t* view_model, const char* expr, value_t* value);
-
-/**
  * @method view_model_get_prop
  * 获取指定属性的值。
  *

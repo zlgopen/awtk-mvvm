@@ -74,6 +74,8 @@ static ret_t command_binding_set_prop(object_t* obj, const char* name, const val
     rule->quit_app = value != NULL ? tk_atob(value) : TRUE;
   } else if (equal(COMMAND_BINDING_UPDATE_VIEW_MODEL, name)) {
     rule->update_model = value != NULL ? tk_atob(value) : TRUE;
+  } else if (equal(BINDING_RULE_PROP_INITED, name)) {
+    BINDING_RULE(rule)->inited = TRUE;
   } else {
     if (rule->props == NULL) {
       rule->props = object_default_create();

@@ -22,7 +22,6 @@
 #include "tkc/mem.h"
 #include "tkc/utils.h"
 #include "mvvm/base/utils.h"
-#include "tkc/expr_eval.h"
 #include "calculator.h"
 
 calculator_t* calculator_create(void) {

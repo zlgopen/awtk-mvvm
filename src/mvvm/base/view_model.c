@@ -21,7 +21,6 @@
 
 #include "tkc/str.h"
 #include "tkc/utils.h"
-#include "tkc/expr_eval.h"
 #include "base/locale_info.h"
 #include "mvvm/base/utils.h"
 #include "mvvm/base/view_model.h"
@@ -279,90 +278,6 @@ ret_t view_model_exec(view_model_t* view_model, const char* name, const char* ar
   }
 
   return ret;
-}
-
-static EvalResult func_tr(const ExprValue* input, void* user_data, ExprValue* output) {
-  if (input->type == EXPR_VALUE_TYPE_STRING) {
-    const char* str = input->v.str.str;
-    str = locale_info_tr(locale_info(), str);
-    expr_value_set_string(output, str, strlen(str));
-    return EVAL_RESULT_OK;
-  } else {
-    expr_value_set_string(output, "", 0);
-    return EVAL_RESULT_BAD_PARAMS;
-  }
-}
-
-static EvalFunc vm_get_func(const char* name, void* user_data) {
-  const EvalHooks* hooks = eval_default_hooks();
-
-  if (tk_str_eq(name, "tr")) {
-    return func_tr;
-  }
-
-  return hooks->get_func(name, user_data);
-}
-
-static EvalResult vm_get_variable(const char* name, void* user_data, ExprValue* output) {
-  value_t value;
-  view_model_t* view_model = (view_model_t*)user_data;
-  const EvalHooks* hooks = eval_default_hooks();
-
-  if (view_model_get_prop(view_model, name, &value) == RET_OK) {
-    if (value.type == VALUE_TYPE_STRING) {
-      const char* str = value_str(&value);
-      if (str != NULL) {
-        expr_value_set_string(output, str, strlen(str));
-      } else {
-        expr_value_set_string(output, "", 0);
-      }
-    } else {
-      expr_value_set_number(output, value_double(&value));
-    }
-
-    return EVAL_RESULT_OK;
-  }
-
-  return hooks->get_variable(name, user_data, output);
-}
-
-ret_t view_model_eval(view_model_t* view_model, const char* expr, value_t* v) {
-  object_t* obj = OBJECT(view_model);
-  return_value_if_fail(expr != NULL && v != NULL, RET_BAD_PARAMS);
-  return_value_if_fail(obj != NULL && obj->vt != NULL && obj->ref_count >= 0, RET_BAD_PARAMS);
-
-  expr = view_model_preprocess_expr(view_model, expr);
-  if (tk_is_valid_prop_name(expr)) {
-    return view_model_get_prop(view_model, expr, v);
-  } else {
-    EvalHooks hooks;
-    ExprValue result;
-    EvalResult ret;
-
-    hooks.get_func = vm_get_func;
-    hooks.get_variable = vm_get_variable;
-
-    ret = eval_execute(expr, &hooks, (void*)view_model, &result);
-    if (ret == EVAL_RESULT_OK) {
-      if (result.type == EXPR_VALUE_TYPE_STRING) {
-        value_dup_str(v, result.v.str.str);
-      } else {
-        double res = result.v.val;
-        if (res > (int64_t)res) {
-          value_set_double(v, res);
-        } else {
-          value_set_int64(v, (int64_t)res);
-        }
-      }
-      expr_value_clear(&result);
-
-      return RET_OK;
-    } else {
-      log_warn("expr error: %s\n", eval_result_to_string(ret));
-      value_set_int(v, 0);
-      return RET_FAIL;
-    }
-  }
 }
 
 ret_t view_model_notify_props_changed(view_model_t* view_model) {

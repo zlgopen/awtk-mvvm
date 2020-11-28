@@ -21,6 +21,7 @@
 
 #include "tkc/mem.h"
 #include "tkc/utils.h"
+#include "base/locale_info.h"
 #include "mvvm/base/utils.h"
 #include "mvvm/base/binding_context.h"
 #include "mvvm/base/data_binding.h"
@@ -36,6 +37,19 @@
 
 static data_binding_t* data_binding_cast(void* rule);
 
+static ret_t func_tr(fscript_t* fscript, fscript_args_t* args, value_t* v) {
+  value_t* input = args->args;
+  if (input->type == VALUE_TYPE_STRING) {
+    const char* str = value_str(input);
+    str = locale_info_tr(locale_info(), str);
+    value_dup_str(v, str);
+    return RET_OK;
+  } else {
+    value_set_str(v, NULL);
+    return RET_OK;
+  }
+}
+
 static ret_t data_binding_on_destroy(object_t* obj) {
   data_binding_t* rule = data_binding_cast(obj);
   return_value_if_fail(rule != NULL, RET_BAD_PARAMS);
@@ -44,6 +58,7 @@ static ret_t data_binding_on_destroy(object_t* obj) {
   TKMEM_FREE(rule->prop);
   TKMEM_FREE(rule->validator);
   TKMEM_FREE(rule->converter);
+  fscript_destroy(rule->expr);
   if (rule->props != NULL) {
     object_unref(rule->props);
   }
@@ -56,6 +71,12 @@ static ret_t data_binding_object_set_prop(object_t* obj, const char* name, const
   const char* value = value_str(v);
   data_binding_t* rule = data_binding_cast(obj);
   return_value_if_fail(rule != NULL, RET_BAD_PARAMS);
+
+  if (BINDING_RULE(rule)->inited) {
+    view_model_t* view_model = BINDING_RULE_VIEW_MODEL(rule);
+    return view_model_set_prop(view_model, name, v);
+  }
+
   if (rule->path == NULL && value == NULL) {
     value = name;
     rule->path = tk_str_copy(rule->path, value);
@@ -99,6 +120,9 @@ static ret_t data_binding_object_set_prop(object_t* obj, const char* name, const
     rule->converter = tk_str_copy(rule->converter, value);
   } else if (equal(DATA_BINDING_VALIDATOR, name)) {
     rule->validator = tk_str_copy(rule->validator, value);
+  } else if (equal(BINDING_RULE_PROP_INITED, name)) {
+    BINDING_RULE(rule)->inited = TRUE;
+    rule->expr = fscript_create(obj, rule->path);
   } else {
     if (rule->props == NULL) {
       rule->props = object_default_create();
@@ -113,6 +137,21 @@ static ret_t data_binding_object_get_prop(object_t* obj, const char* name, value
   ret_t ret = RET_OK;
   data_binding_t* rule = data_binding_cast(obj);
   return_value_if_fail(rule != NULL, RET_BAD_PARAMS);
+
+  if (tk_str_start_with(name, STR_FSCRIPT_FUNCTION_PREFIX)) {
+    name += strlen(STR_FSCRIPT_FUNCTION_PREFIX);
+    if(tk_str_eq(name, "tr")) {
+      value_set_pointer(v, func_tr);
+      return RET_OK;
+    }
+    
+    return RET_NOT_FOUND;
+  }
+
+  if (BINDING_RULE(rule)->inited) {
+    view_model_t* view_model = BINDING_RULE_VIEW_MODEL(rule);
+    return view_model_get_prop(view_model, name, v);
+  }
 
   if (equal(DATA_BINDING_MODE, name)) {
     value_set_int(v, rule->mode);
@@ -271,7 +310,7 @@ ret_t data_binding_get_prop(data_binding_t* rule, value_t* v) {
     }
   }
 
-  if (view_model_eval(view_model, rule->path, &raw) != RET_OK) {
+  if (fscript_exec(rule->expr, &raw) != RET_OK) {
     log_debug("view_model_eval fail: %s\n", rule->path);
     return RET_FAIL;
   }

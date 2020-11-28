@@ -60,6 +60,9 @@ typedef struct _binding_rule_t {
    * 对于数组的ViewModel，保存cursor。
    */
   uint32_t cursor;
+
+  /*private*/
+  bool_t inited;
 } binding_rule_t;
 
 #define BINDING_RULE(rule) ((binding_rule_t*)(rule))
@@ -68,6 +71,7 @@ typedef struct _binding_rule_t {
 
 #define BINDING_RULE_DATA_PREFIX "v-data"
 #define BINDING_RULE_COMMAND_PREFIX "v-on"
+#define BINDING_RULE_PROP_INITED "inited"
 
 END_C_DECLS
 
