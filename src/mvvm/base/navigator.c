@@ -1,4 +1,4 @@
-﻿/**
+/**
  * File:   navigator.c
  * Author: AWTK Develop Team
  * Brief:  navigator navigator
@@ -245,7 +245,7 @@ ret_t navigator_confirm(const char* title, const char* content) {
 
   ret = navigator_handle_request(navigator(), req);
   if (ret == RET_OK) {
-    ret = value_int(&(req->result));
+    ret = (ret_t)value_int(&(req->result));
   }
 
   object_unref(OBJECT(req));
