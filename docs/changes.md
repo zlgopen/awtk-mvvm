@@ -1,28 +1,33 @@
 # 最新动态
+
+* 2020/11/28
+  * 更新关于表达式的文档。
+  * 测试各个 demos, 修复 view\_model\_array\_object\_wrapper.c 和 view\_model\_object\S_wrapper.c 中的问题。
+  
 * 2020/11/27
-  * 使用fscript代替第三方expr eval函数。
+  * 表达式引擎升级为 fscript，请参考 [fscript 脚本引擎](https://github.com/zlgopen/awtk/blob/master/docs/fscript.md) 获取更多信息。
 
 * 2020/11/26
-  * 完善demo32
-  * 增加window\_close/window\_open事件。
-  * 增加navigator\_replace打开新窗口并关闭当前窗口。
-  * 修正view\_model\_app\_conf无法访问诸如“temp.[0].value”等属性的问题。
+  * 完善 demo32
+  * 增加 window\_close/window\_open 事件。
+  * 增加 navigator\_replace 打开新窗口并关闭当前窗口。
+  * 修正 view\_model\_app\_conf 无法访问诸如“temp.[0].value”等属性的问题。
 
 * 2020/11/18
-  * 普通view model支持path形式访问属性及命令（感谢朝泽提供补丁）。
-  * 修改view\_model\_array访问如"[0]"或"[0"的属性时返回RET\_BAD\_PARAMS（感谢朝泽提供补丁）。
-  * 单元测试崩溃的问题：没有初始化jerryscript和导出jerry\_release\_value()，以及view\_model\_compositor\_create没有正确创建的原因（感谢朝泽提供补丁）。
-  * 修正Windows下由于include的搜索顺序导致include非期望的文件从而引起编译失败的问题
-  * 添加展示一个 view model 多个 model 的用法的demo
+  * 普通 view model 支持 path 形式访问属性及命令（感谢朝泽提供补丁）。
+  * 修改 view\_model\_array 访问如"[0]"或"[0"的属性时返回 RET\_BAD\_PARAMS（感谢朝泽提供补丁）。
+  * 单元测试崩溃的问题：没有初始化 jerryscript 和导出 jerry\_release\_value()，以及 view\_model\_compositor\_create 没有正确创建的原因（感谢朝泽提供补丁）。
+  * 修正 Windows 下由于 include 的搜索顺序导致 include 非期望的文件从而引起编译失败的问题
+  * 添加展示一个 view model 多个 model 的用法的 demo
 
 * 2020/11/7
-  * 修改binding\_context\_on\_rebind没有清除updating\_view标志的问题。
-  * view\_model\_dummy\_can\_exec 返回FALSE。
+  * 修改 binding\_context\_on\_rebind 没有清除 updating\_view 标志的问题。
+  * view\_model\_dummy\_can\_exec 返回 FALSE。
 
 * 2020/10/27
   * 更新编译脚本
-  * 修正view_model_compositor销毁时重复unref内部的view model的问题
-  * 修正由于父binding_context先销毁导致子binding_context重置parent时异常的问题
+  * 修正 view_model_compositor 销毁时重复 unref 内部的 view model 的问题
+  * 修正由于父 binding_context 先销毁导致子 binding_context 重置 parent 时异常的问题
 
 * 2020/10/18
   * 支持全局按键事件，用于实现全局的快捷键。请参考 design/default/ui/demo9_main.xml

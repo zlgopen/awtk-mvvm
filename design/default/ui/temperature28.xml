@@ -1,14 +1,14 @@
 <window v-model="temperature" children_layout="default(h=30,c=1,m=3)">
   <label v-data:text='{string(number("123") + number("456"))}'/>
-  <label v-data:text='{fformat("%2.2lf", $value)}'/>
-  <label v-data:text='{fformat("%2.2lf ℃", $value)'/>
-  <label v-data:text='{iformat("%d ℃", $value)'/>
-  <label v-data:text='{fformat("%2.2lf F", $value * 1.8 + 32)}'/>
-  <label v-data:text='{fformat("%2.2lf F", round($value * 1.8 + 32))}'/>
-  <label v-data:text='{fformat(tr("current temperature %f"), $value)+"℃"}'/>
-  <label v-data:text='{string($value)+" ℃"}'/>
-  <label v-data:text='{if($value > 60, "too height", if($value < 20, "too low", "normal"))}'
-    v-data:style='{if($value >= 20 && $value <= 60, "green", "red")}'
+  <label v-data:text='{fformat("%2.2lf", value)}'/>
+  <label v-data:text='{fformat("%2.2lf ℃", value)'/>
+  <label v-data:text='{iformat("%d ℃", value)'/>
+  <label v-data:text='{fformat("%2.2lf F", value * 1.8 + 32)}'/>
+  <label v-data:text='{fformat("%2.2lf F", round(value * 1.8 + 32))}'/>
+  <label v-data:text='{fformat(tr("current temperature %f"), value)+"℃"}'/>
+  <label v-data:text='{string(value)+" ℃"}'/>
+  <label v-data:text='{if(value > 60, "too height", if(value < 20, "too low", "normal"))}'
+    v-data:style='{if(value >= 20 && value <= 60, "green", "red")}'
     />
   <label v-data:text="{value}"/>
   <slider v-data:value="{value}"/>
