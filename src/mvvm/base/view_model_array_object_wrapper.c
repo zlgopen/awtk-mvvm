@@ -304,7 +304,7 @@ static const object_vtable_t s_object_vtable = {
 
 view_model_t* view_model_array_object_wrapper_create_ex(object_t* obj, const char* prop_prefix) {
   object_t* model = object_create(&s_object_vtable);
-  view_model_t* view_model = VIEW_MODEL(model);
+  view_model_t* view_model = view_model_array_init(VIEW_MODEL(model));
   view_model_array_object_wrapper_t* object_wrapper = VIEW_MODEL_ARRAY_OBJECT_WRAPPPER(model);
   return_value_if_fail(object_wrapper != NULL && obj != NULL, NULL);
 
