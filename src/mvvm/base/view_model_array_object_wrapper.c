@@ -155,6 +155,19 @@ static ret_t view_model_array_object_wrapper_cmd_edit(const char* prefix, const 
   return navigator_to_with_key_value(target, STR_PATH_PREFIX, path);
 }
 
+static const char* view_model_array_object_wrapper_gen_path(object_t* obj, char* path,
+                                                            uint32_t index) {
+  view_model_array_t* vm_array = VIEW_MODEL_ARRAY(obj);
+  view_model_array_object_wrapper_t* object_wrapper = VIEW_MODEL_ARRAY_OBJECT_WRAPPPER(obj);
+  if (object_wrapper->prop_prefix != NULL) {
+    tk_snprintf(path, MAX_PATH, "%s.[%u]", object_wrapper->prop_prefix, index);
+  } else {
+    tk_snprintf(path, MAX_PATH, "[%u]", index);
+  }
+
+  return path;
+}
+
 static ret_t view_model_array_object_wrapper_exec(object_t* obj, const char* name,
                                                   const char* args) {
   ret_t ret = RET_OK;
@@ -170,13 +183,9 @@ static ret_t view_model_array_object_wrapper_exec(object_t* obj, const char* nam
 
   if (tk_str_eq(name, OBJECT_CMD_CLEAR) || tk_str_eq(name, OBJECT_CMD_ADD)) {
     args = object_wrapper->prop_prefix;
-  } else if (args == NULL || tk_str_eq(VIEW_MODEL_PROP_SELECTED_INDEX, args)) {
-    if (object_wrapper->prop_prefix != NULL) {
-      tk_snprintf(path, MAX_PATH, "%s.[%u]", object_wrapper->prop_prefix, vm_array->selected_index);
-    } else {
-      tk_snprintf(path, MAX_PATH, "[%u]", vm_array->selected_index);
-    }
-    args = path;
+  } else if (args == NULL || tk_str_eq(VIEW_MODEL_PROP_SELECTED_INDEX, args) ||
+             tk_str_eq(name, OBJECT_CMD_EDIT)) {
+    args = view_model_array_object_wrapper_gen_path(obj, path, vm_array->selected_index);
   }
 
   if (tk_str_eq(name, OBJECT_CMD_ADD) || tk_str_eq(name, OBJECT_CMD_EDIT)) {
@@ -189,19 +198,13 @@ static ret_t view_model_array_object_wrapper_exec(object_t* obj, const char* nam
     int32_t last_index = nr - 1;
     return_value_if_fail(ret == RET_OK, RET_FAIL);
     return_value_if_fail(last_index >= 0, RET_FAIL);
-
-    if (object_wrapper->prop_prefix != NULL) {
-      tk_snprintf(path, MAX_PATH, "%s.[%d]", object_wrapper->prop_prefix, last_index);
-    } else {
-      tk_snprintf(path, MAX_PATH, "[%d]", last_index);
-    }
-
-    return view_model_array_object_wrapper_cmd_add(object_wrapper->prop_prefix, path);
+    args = view_model_array_object_wrapper_gen_path(obj, path, last_index);
+    return view_model_array_object_wrapper_cmd_add(object_wrapper->prop_prefix, args);
   }
 
   if (ret == RET_NOT_FOUND || ret == RET_NOT_IMPL) {
     if (tk_str_eq(name, OBJECT_CMD_EDIT)) {
-      return view_model_array_object_wrapper_cmd_edit(object_wrapper->prop_prefix, path);
+      return view_model_array_object_wrapper_cmd_edit(object_wrapper->prop_prefix, args);
     }
   }
 

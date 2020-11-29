@@ -40,7 +40,7 @@ static ret_t view_model_object_wrapper_on_destroy(object_t* obj) {
   TKMEM_FREE(object_wrapper->prop_prefix);
   OBJECT_UNREF(object_wrapper->obj);
 
-  return RET_OK;
+  return view_model_deinit(VIEW_MODEL(obj));
 }
 
 static int32_t view_model_object_wrapper_compare(object_t* obj, object_t* other) {
@@ -155,7 +155,7 @@ static const object_vtable_t s_object_vtable = {.type = "view_model_object_wrapp
 view_model_t* view_model_object_wrapper_create_ex(object_t* obj, const char* prop_prefix) {
   object_t* model = object_create(&s_object_vtable);
   view_model_object_wrapper_t* object_wrapper = VIEW_MODEL_OBJECT_WRAPPPER(model);
-  view_model_t* view_model = VIEW_MODEL(model);
+  view_model_t* view_model = view_model_init(VIEW_MODEL(model));
   return_value_if_fail(object_wrapper != NULL && obj != NULL, NULL);
 
   view_model->vt = &s_view_model_vtable;
