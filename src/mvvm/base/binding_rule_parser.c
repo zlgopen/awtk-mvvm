@@ -130,7 +130,7 @@ binding_rule_t* binding_rule_parse(const char* name, const char* value, bool_t i
   }
 
   tokenizer_deinit(&t);
-  object_set_prop_bool(OBJECT(rule), BINDING_RULE_PROP_INITED, TRUE); 
+  object_set_prop_str(OBJECT(rule), BINDING_RULE_PROP_INITED, "TRUE"); 
   
   return rule;
 }
