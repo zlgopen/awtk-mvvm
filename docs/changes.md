@@ -1,9 +1,11 @@
 # 最新动态
 
 * 2020/12/04
-  * 数据绑定支持 ToModel 和 ToView 两个参数，用 fscript 实现数据格式双向转换的功能。
-  * 增加 fscript 命令，用来执行一段 fscript 脚本。请参考 [高级用法](14.advance_usages.md)
+  * 数据绑定支持 ToModel 和 ToView 两个参数，用 fscript 实现数据格式双向转换的功能。请参考 [数据格式转换](10.data_binding.md)
+  * 增加 fscript 命令，用来执行一段 fscript 脚本，并增加了一些函数。请参考 [高级用法](14.advance_usages.md)
   
+> 请参考相应文档和 demo28。
+
 * 2020/11/28
   * 更新关于表达式的文档。
   * 测试各个 demos, 修复 view\_model\_array\_object\_wrapper.c 和 view\_model\_object\S_wrapper.c 中的问题。
