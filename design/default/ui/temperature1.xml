@@ -1,5 +1,6 @@
 <window v-model="temperature" v-on:window_open="{debug,args=window_open}" 
   v-on:window_close="{debug,args=window_close}">
   <label x="center" y="middle" w="50%" h="40" v-data:text="{value, ToView=value*10}"/>
-  <slider x="center" y="middle:40" w="80%" h="20" v-data:value="{value}"/>
+  <slider x="center" y="middle:40" w="80%" h="20" v-data:value="{value, ToModel=value+10, ToView=value-10}"/>
+  <button text="Apply" x="center" y="middle:80" w="40%" h="40" v-on:click="{fscript, args=exec(test,123)}"/>
 </window>

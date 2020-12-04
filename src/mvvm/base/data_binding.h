@@ -157,7 +157,7 @@ typedef struct _data_binding_t {
   fscript_t* expr;
   fscript_t* to_model_expr;
   fscript_t* to_view_expr;
-  value_t* value;
+  const value_t* value;
 } data_binding_t;
 
 /**

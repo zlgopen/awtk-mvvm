@@ -174,10 +174,30 @@ static ret_t data_binding_object_get_prop(object_t* obj, const char* name, value
   return ret;
 }
 
+
+static ret_t data_binding_object_exec(object_t* obj, const char* name, const char* args) {
+  data_binding_t* rule = (data_binding_t*)(obj);
+  binding_context_t* context = BINDING_RULE_CONTEXT(rule);
+  view_model_t* view_model = BINDING_RULE_VIEW_MODEL(rule);
+
+  return_value_if_fail(obj != NULL && name != NULL, RET_BAD_PARAMS);
+  if (binding_context_exec(context, name, args) == RET_OK) {
+    return RET_OK;
+  }
+
+  if (object_is_collection(OBJECT(view_model))) {
+    uint32_t cursor = BINDING_RULE(rule)->cursor;
+    view_model_array_set_cursor(view_model, cursor);
+  }
+
+  return view_model_exec(view_model, name, args);
+}
+
 static const object_vtable_t s_data_binding_vtable = {.type = "data_binding",
                                                       .desc = "data_binding",
                                                       .size = sizeof(data_binding_t),
                                                       .is_collection = FALSE,
+                                                      .exec = data_binding_object_exec,
                                                       .on_destroy = data_binding_on_destroy,
                                                       .get_prop = data_binding_object_get_prop,
                                                       .set_prop = data_binding_object_set_prop};
@@ -342,6 +362,7 @@ static ret_t vm_set_prop(view_model_t* vm, const char* converter, const char* pa
   }
 }
 
+
 ret_t data_binding_set_prop(data_binding_t* rule, const value_t* raw) {
   view_model_t* view_model = NULL;
   return_value_if_fail(rule != NULL && raw != NULL, RET_BAD_PARAMS);
@@ -356,10 +377,11 @@ ret_t data_binding_set_prop(data_binding_t* rule, const value_t* raw) {
   }
 
   if (rule->to_model_expr != NULL) {
+    value_t v;
     rule->value = raw;
-    fscript_exec(rule->to_model_expr, &raw);
+    fscript_exec(rule->to_model_expr, &v);
     rule->value = NULL;
-    return view_model_set_prop(view_model, rule->path, raw);
+    return view_model_set_prop(view_model, rule->path, &v);
   }
 
   if (!value_is_valid(view_model, rule->validator, raw, &(view_model->last_error))) {

@@ -110,13 +110,33 @@ static ret_t command_binding_get_prop(object_t* obj, const char* name, value_t* 
   return ret;
 }
 
-static const object_vtable_t s_command_binding_vtable = {.type = "command_binding",
-                                                         .desc = "command_binding",
-                                                         .size = sizeof(command_binding_t),
-                                                         .is_collection = FALSE,
-                                                         .on_destroy = command_binding_on_destroy,
-                                                         .get_prop = command_binding_get_prop,
-                                                         .set_prop = command_binding_set_prop};
+static ret_t command_binding_object_exec(object_t* obj, const char* name, const char* args) {
+  command_binding_t* rule = (command_binding_t*)(obj);
+  binding_context_t* context = BINDING_RULE_CONTEXT(rule);
+  view_model_t* view_model = BINDING_RULE_VIEW_MODEL(rule);
+
+  return_value_if_fail(obj != NULL && name != NULL, RET_BAD_PARAMS);
+  if (binding_context_exec(context, name, args) == RET_OK) {
+    return RET_OK;
+  }
+
+  if (object_is_collection(OBJECT(view_model))) {
+    uint32_t cursor = BINDING_RULE(rule)->cursor;
+    view_model_array_set_cursor(view_model, cursor);
+  }
+
+  return view_model_exec(view_model, name, args);
+}
+
+static const object_vtable_t s_command_binding_vtable = {
+    .type = "command_binding",
+    .desc = "command_binding",
+    .size = sizeof(command_binding_t),
+    .is_collection = FALSE,
+    .on_destroy = command_binding_on_destroy,
+    .exec = command_binding_object_exec,
+    .get_prop = command_binding_get_prop,
+    .set_prop = command_binding_set_prop};
 
 static command_binding_t* command_binding_cast(void* rule) {
   object_t* obj = OBJECT(rule);
@@ -160,6 +180,7 @@ ret_t command_binding_exec(command_binding_t* rule) {
   view_model = BINDING_RULE_VIEW_MODEL(rule);
   context = BINDING_RULE_CONTEXT(rule);
   return_value_if_fail(view_model != NULL && context != NULL, RET_BAD_PARAMS);
+
 
   if (tk_str_eq(rule->command, COMMAND_BINDING_CMD_FSCRIPT)) {
     value_t v;
