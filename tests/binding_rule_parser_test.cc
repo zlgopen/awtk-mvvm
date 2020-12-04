@@ -39,6 +39,16 @@ TEST(CommandBindingParser, args) {
   object_unref(OBJECT(rule));
 }
 
+TEST(CommandBindingParser, args_expr) {
+  binding_rule_t* rule = binding_rule_parse("v-on:click", "{fscript, args=set(a, 123);set(b, \"abc\");set(c, a+b)}", TRUE);
+  command_binding_t* cmd = (command_binding_t*)rule;
+
+  ASSERT_EQ(string(cmd->command), string("fscript"));
+  ASSERT_EQ(string(cmd->args), string("set(a, 123);set(b, \"abc\");set(c, a+b)"));
+
+  object_unref(OBJECT(rule));
+}
+
 TEST(CommandBindingParser, args1) {
   binding_rule_t* rule = binding_rule_parse("v-on:click", "{add_char, args==}", TRUE);
   command_binding_t* cmd = (command_binding_t*)rule;

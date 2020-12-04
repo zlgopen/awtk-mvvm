@@ -37,19 +37,6 @@
 
 static data_binding_t* data_binding_cast(void* rule);
 
-static ret_t func_tr(fscript_t* fscript, fscript_args_t* args, value_t* v) {
-  value_t* input = args->args;
-  if (input->type == VALUE_TYPE_STRING) {
-    const char* str = value_str(input);
-    str = locale_info_tr(locale_info(), str);
-    value_dup_str(v, str);
-    return RET_OK;
-  } else {
-    value_set_str(v, NULL);
-    return RET_OK;
-  }
-}
-
 static ret_t data_binding_on_destroy(object_t* obj) {
   data_binding_t* rule = data_binding_cast(obj);
   return_value_if_fail(rule != NULL, RET_BAD_PARAMS);
@@ -153,16 +140,6 @@ static ret_t data_binding_object_get_prop(object_t* obj, const char* name, value
   ret_t ret = RET_OK;
   data_binding_t* rule = data_binding_cast(obj);
   return_value_if_fail(rule != NULL, RET_BAD_PARAMS);
-
-  if (tk_str_start_with(name, STR_FSCRIPT_FUNCTION_PREFIX)) {
-    name += strlen(STR_FSCRIPT_FUNCTION_PREFIX);
-    if (tk_str_eq(name, "tr")) {
-      value_set_pointer(v, func_tr);
-      return RET_OK;
-    }
-
-    return RET_NOT_FOUND;
-  }
 
   if (BINDING_RULE(rule)->inited) {
     view_model_t* view_model = BINDING_RULE_VIEW_MODEL(rule);

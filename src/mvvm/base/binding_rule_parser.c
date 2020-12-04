@@ -120,9 +120,9 @@ binding_rule_t* binding_rule_parse(const char* name, const char* value, bool_t i
       tk_strncpy(key, k, TK_NAME_LEN);
       key[TK_NAME_LEN] = '\0';
 
-      v = tokenizer_next(&t);
+      v = tokenizer_next_expr_until(&t, ",}");
       if (v != NULL && *v == '=') {
-        v = tokenizer_next_until(&t, ",}");
+        v += 1;
       }
 
       ENSURE(object_set_prop_str(OBJECT(rule), key, v) == RET_OK);

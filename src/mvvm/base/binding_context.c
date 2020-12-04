@@ -156,8 +156,8 @@ ret_t binding_context_exec(binding_context_t* ctx, const char* cmd, const char* 
 bool_t binding_context_can_exec(binding_context_t* ctx, const char* cmd, const char* args) {
   return_value_if_fail(ctx != NULL && ctx->vt != NULL && cmd != NULL, RET_BAD_PARAMS);
 
-  if (tk_str_ieq(cmd, COMMAND_BINDING_CMD_NOTHING) ||
-      tk_str_ieq(cmd, COMMAND_BINDING_CMD_NAVIGATE) || tk_str_ieq(cmd, COMMAND_BINDING_CMD_DEBUG)) {
+  if (tk_str_ieq(cmd, COMMAND_BINDING_CMD_NOTHING) || tk_str_ieq(cmd, COMMAND_BINDING_CMD_FSCRIPT)
+      || tk_str_ieq(cmd, COMMAND_BINDING_CMD_NAVIGATE) || tk_str_ieq(cmd, COMMAND_BINDING_CMD_DEBUG)) {
     return TRUE;
   }
 

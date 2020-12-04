@@ -161,6 +161,14 @@ ret_t command_binding_exec(command_binding_t* rule) {
   context = BINDING_RULE_CONTEXT(rule);
   return_value_if_fail(view_model != NULL && context != NULL, RET_BAD_PARAMS);
 
+  if (tk_str_eq(rule->command, COMMAND_BINDING_CMD_FSCRIPT)) {
+    value_t v;
+    fscript_eval(OBJECT(rule), rule->args, &v);
+    value_reset(&v);
+
+    return RET_OK;
+  }
+
   if (binding_context_exec(context, rule->command, rule->args) == RET_OK) {
     return RET_OK;
   }

@@ -19,9 +19,29 @@
  *
  */
 
+#include "tkc/fscript.h"
 #include "mvvm/awtk/mvvm_awtk.h"
 
+static ret_t func_tr(fscript_t* fscript, fscript_args_t* args, value_t* v) {
+  value_t* input = args->args;
+  if (input->type == VALUE_TYPE_STRING) {
+    const char* str = value_str(input);
+    str = locale_info_tr(locale_info(), str);
+    value_dup_str(v, str);
+    return RET_OK;
+  } else {
+    value_set_str(v, NULL);
+    return RET_OK;
+  }
+}
+
+static ret_t mvvm_funcs_init(void) {
+  fscript_register_func("tr", func_tr);
+  return RET_OK;
+}
+
 ret_t mvvm_awtk_init(void) {
+  mvvm_funcs_init();
   navigator_register_handler(navigator(), NAVIGATOR_DEFAULT_HANDLER,
                              navigator_handler_awtk_create());
 
