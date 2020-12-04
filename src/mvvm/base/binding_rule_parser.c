@@ -104,7 +104,7 @@ binding_rule_t* binding_rule_parse(const char* name, const char* value, bool_t i
   rule = binding_rule_create(name, inputable);
   return_value_if_fail(rule != NULL, NULL);
 
-  if (tokenizer_init_ex(&t, value, strlen(value), " {}", "=,") == NULL) {
+  if (tokenizer_init_ex(&t, value, strlen(value), " \r\n{}", "=,") == NULL) {
     object_unref(OBJECT(rule));
     return NULL;
   }
@@ -130,7 +130,7 @@ binding_rule_t* binding_rule_parse(const char* name, const char* value, bool_t i
   }
 
   tokenizer_deinit(&t);
-  object_set_prop_str(OBJECT(rule), BINDING_RULE_PROP_INITED, "TRUE"); 
-  
+  object_set_prop_str(OBJECT(rule), BINDING_RULE_PROP_INITED, "TRUE");
+
   return rule;
 }

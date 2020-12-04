@@ -1,4 +1,4 @@
-<window v-model="temperature" children_layout="default(h=30,c=1,m=3)">
+<window v-model="temperature" children_layout="default(h=30,c=1,m=3,s=2)">
   <label v-data:text='{string(number("123") + number("456"))}'/>
   <label v-data:text='{fformat("%2.2lf", value)}'/>
   <label v-data:text='{fformat("%2.2lf ℃", value)'/>
@@ -12,4 +12,6 @@
     />
   <label v-data:text="{value}"/>
   <slider v-data:value="{value}"/>
+	<button text="Back" v-on:click="{fscript, args=back()}" />
+	<button text="Home" v-on:click="{fscript, args=back_to_home()}" />
 </window>

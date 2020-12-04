@@ -409,4 +409,94 @@ TEST(BindingContextAwtk, array) {
 
   idle_dispatch();
 }
+
+static ret_t widget_dispatch_pointer_down(widget_t* widget, int x, int y) {
+  pointer_event_t e;
+  e.e = event_init(EVT_POINTER_DOWN, widget);
+  e.x = x;
+  e.y = y;
+  return widget_dispatch(widget, &(e.e));
+}
+
+TEST(BindingContextAwtk, fscript1) {
+  widget_t* win = window_create(NULL, 0, 0, 400, 300);
+  window_manager_open_window(window_manager(), win);
+
+  widget_t* button = button_create(win, 0, 0, 128, 30);
+  test_view_model_init();
+
+  idle_dispatch();
+  widget_set_prop_str(win, WIDGET_PROP_V_MODEL, STR_V_MODEL_TEMP);
+  widget_set_prop_str(button, "v-on:pointer_down",
+                      "{fscript, Args=widget_set(x, widget_get(x)+10)}");
+  bind_for_window(win);
+  widget_dispatch_pointer_down(button, 30, 30);
+
+  ASSERT_EQ(button->x, 10);
+
+  idle_dispatch();
+  test_view_model_deinit();
+}
+
+TEST(BindingContextAwtk, fscript2) {
+  widget_t* win = window_create(NULL, 0, 0, 400, 300);
+  window_manager_open_window(window_manager(), win);
+
+  widget_t* button = button_create(win, 0, 0, 128, 30);
+  test_view_model_init();
+
+  idle_dispatch();
+  widget_set_prop_str(win, WIDGET_PROP_V_MODEL, STR_V_MODEL_TEMP);
+  widget_set_prop_str(button, "v-on:pointer_down",
+                      "{fscript, Args=widget_set(parent.x, widget_get(parent.x)+10)}");
+  bind_for_window(win);
+  widget_dispatch_pointer_down(button, 30, 30);
+
+  ASSERT_EQ(win->x, 10);
+
+  idle_dispatch();
+  test_view_model_deinit();
+}
+
+TEST(BindingContextAwtk, fscript3) {
+  widget_t* win = window_create(NULL, 0, 0, 400, 300);
+  window_manager_open_window(window_manager(), win);
+
+  widget_t* button = button_create(win, 0, 0, 128, 30);
+  test_view_model_init();
+
+  idle_dispatch();
+  widget_set_prop_str(win, WIDGET_PROP_V_MODEL, STR_V_MODEL_TEMP);
+  widget_set_prop_str(button, "v-on:pointer_down",
+                      "{fscript, Args=widget_set(window.x, widget_get(window.x)+10)}");
+  bind_for_window(win);
+  widget_dispatch_pointer_down(button, 30, 30);
+
+  ASSERT_EQ(win->x, 10);
+
+  idle_dispatch();
+  test_view_model_deinit();
+}
+
+TEST(BindingContextAwtk, fscript4) {
+  widget_t* win = window_create(NULL, 0, 0, 400, 300);
+  window_manager_open_window(window_manager(), win);
+
+  widget_t* button = button_create(win, 0, 0, 128, 30);
+  test_view_model_init();
+
+  idle_dispatch();
+  widget_set_prop_str(win, WIDGET_PROP_V_MODEL, STR_V_MODEL_TEMP);
+  widget_set_name(button, "button");
+  widget_set_prop_str(button, "v-on:pointer_down",
+                      "{fscript, Args=widget_set(window.button.x, widget_get(window.button.x)+10)}");
+  bind_for_window(win);
+  widget_dispatch_pointer_down(button, 30, 30);
+
+  ASSERT_EQ(button->x, 10);
+
+  idle_dispatch();
+  test_view_model_deinit();
+}
+
 #endif /*AWTK_NOGUI*/

@@ -26,7 +26,7 @@
 ret_t application_init(void) {
   view_model_factory_register("temperature", temperature_view_model_create);
 
-  return navigator_to("temperature28");
+  return navigator_to("temperature28_home");
 }
 
 #include "../awtk_main.c"
