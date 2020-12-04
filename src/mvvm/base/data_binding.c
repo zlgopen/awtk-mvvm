@@ -59,6 +59,12 @@ static ret_t data_binding_on_destroy(object_t* obj) {
   TKMEM_FREE(rule->validator);
   TKMEM_FREE(rule->converter);
   fscript_destroy(rule->expr);
+  if (rule->to_view_expr != NULL) {
+    fscript_destroy(rule->to_view_expr);
+  }
+  if (rule->to_model_expr != NULL) {
+    fscript_destroy(rule->to_model_expr);
+  }
   if (rule->props != NULL) {
     object_unref(rule->props);
   }
@@ -83,6 +89,10 @@ static ret_t data_binding_object_set_prop(object_t* obj, const char* name, const
     if (tk_str_start_with(value, DATA_BINDING_ERROR_OF) || !tk_is_valid_prop_name(value)) {
       rule->mode = BINDING_ONE_WAY;
     }
+  } else if (equal(DATA_BINDING_TO_VIEW, name)) {
+    rule->to_view = tk_str_copy(rule->to_view, value);
+  } else if (equal(DATA_BINDING_TO_MODEL, name)) {
+    rule->to_model = tk_str_copy(rule->to_model, value);
   } else if (equal(DATA_BINDING_MODE, name)) {
     binding_mode_t mode = BINDING_TWO_WAY;
 
@@ -123,6 +133,12 @@ static ret_t data_binding_object_set_prop(object_t* obj, const char* name, const
   } else if (equal(BINDING_RULE_PROP_INITED, name)) {
     BINDING_RULE(rule)->inited = TRUE;
     rule->expr = fscript_create(obj, rule->path);
+    if (rule->to_view != NULL) {
+      rule->to_view_expr = fscript_create(obj, rule->to_view);
+    }
+    if (rule->to_model != NULL) {
+      rule->to_model_expr = fscript_create(obj, rule->to_model);
+    }
   } else {
     if (rule->props == NULL) {
       rule->props = object_default_create();
@@ -140,16 +156,21 @@ static ret_t data_binding_object_get_prop(object_t* obj, const char* name, value
 
   if (tk_str_start_with(name, STR_FSCRIPT_FUNCTION_PREFIX)) {
     name += strlen(STR_FSCRIPT_FUNCTION_PREFIX);
-    if(tk_str_eq(name, "tr")) {
+    if (tk_str_eq(name, "tr")) {
       value_set_pointer(v, func_tr);
       return RET_OK;
     }
-    
+
     return RET_NOT_FOUND;
   }
 
   if (BINDING_RULE(rule)->inited) {
     view_model_t* view_model = BINDING_RULE_VIEW_MODEL(rule);
+    if (tk_str_eq(name, rule->prop) && rule->value != NULL) {
+      value_copy(v, rule->value);
+      return RET_OK;
+    }
+
     return view_model_get_prop(view_model, name, v);
   }
 
@@ -161,6 +182,10 @@ static ret_t data_binding_object_get_prop(object_t* obj, const char* name, value
     value_set_str(v, rule->path);
   } else if (equal(DATA_BINDING_PROP, name)) {
     value_set_str(v, rule->prop);
+  } else if (equal(DATA_BINDING_TO_VIEW, name)) {
+    value_set_str(v, rule->to_view);
+  } else if (equal(DATA_BINDING_TO_MODEL, name)) {
+    value_set_str(v, rule->to_model);
   } else if (equal(DATA_BINDING_CONVERTER, name)) {
     value_set_str(v, rule->converter);
   } else if (equal(DATA_BINDING_VALIDATOR, name)) {
@@ -310,6 +335,14 @@ ret_t data_binding_get_prop(data_binding_t* rule, value_t* v) {
     }
   }
 
+  if (rule->to_view_expr != NULL) {
+    if (fscript_exec(rule->to_view_expr, &raw) == RET_OK) {
+      *v = raw;
+      return RET_OK;
+    }
+    return RET_FAIL;
+  }
+
   if (fscript_exec(rule->expr, &raw) != RET_OK) {
     log_debug("view_model_eval fail: %s\n", rule->path);
     return RET_FAIL;
@@ -343,6 +376,13 @@ ret_t data_binding_set_prop(data_binding_t* rule, const value_t* raw) {
   if (object_is_collection(OBJECT(view_model))) {
     uint32_t cursor = BINDING_RULE(rule)->cursor;
     view_model_array_set_cursor(view_model, cursor);
+  }
+
+  if (rule->to_model_expr != NULL) {
+    rule->value = raw;
+    fscript_exec(rule->to_model_expr, &raw);
+    rule->value = NULL;
+    return view_model_set_prop(view_model, rule->path, raw);
   }
 
   if (!value_is_valid(view_model, rule->validator, raw, &(view_model->last_error))) {

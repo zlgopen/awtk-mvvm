@@ -2661,6 +2661,22 @@
         }
       },
       {
+        "name": "to_view",
+        "desc": "转换成视图需要的格式。",
+        "type": "char*",
+        "annotation": {
+          "readable": true
+        }
+      },
+      {
+        "name": "to_model",
+        "desc": "转换成模型需要的格式。",
+        "type": "char*",
+        "annotation": {
+          "readable": true
+        }
+      },
+      {
         "name": "validator",
         "desc": "数据校验器的名称。",
         "type": "char*",

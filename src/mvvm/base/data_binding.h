@@ -120,6 +120,20 @@ typedef struct _data_binding_t {
   char* converter;
 
   /**
+   * @property {char*} to_view
+   * @annotation ["readable"]
+   * 转换成视图需要的格式。
+   */
+  char* to_view;
+
+  /**
+   * @property {char*} to_model
+   * @annotation ["readable"]
+   * 转换成模型需要的格式。
+   */
+  char* to_model;
+
+  /**
    * @property {char*} validator
    * @annotation ["readable"]
    * 数据校验器的名称。
@@ -141,6 +155,9 @@ typedef struct _data_binding_t {
   update_model_trigger_t trigger;
   /*private*/
   fscript_t* expr;
+  fscript_t* to_model_expr;
+  fscript_t* to_view_expr;
+  value_t* value;
 } data_binding_t;
 
 /**
@@ -183,6 +200,8 @@ ret_t data_binding_set_prop(data_binding_t* rule, const value_t* v);
 #define DATA_BINDING_CONVERTER "Converter"
 #define DATA_BINDING_VALIDATOR "Validator"
 #define DATA_BINDING_ERROR_OF "error.of."
+#define DATA_BINDING_TO_VIEW "ToView"
+#define DATA_BINDING_TO_MODEL "ToModel"
 
 #define BINDING_STR_ONCE "Once"
 #define BINDING_STR_TWO_WAY "TwoWay"
