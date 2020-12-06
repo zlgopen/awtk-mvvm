@@ -144,6 +144,7 @@ ret_t navigator_request_on_result(navigator_request_t* req, const value_t* resul
 #define NAVIGATOR_REQ_BACK "_back_"
 #define NAVIGATOR_REQ_INFO "_info_"
 #define NAVIGATOR_REQ_WARN "_warn_"
+#define NAVIGATOR_REQ_CLOSE "_close_"
 #define NAVIGATOR_REQ_CONFIRM "_confirm_"
 #define NAVIGATOR_REQ_INPUT_TEXT "_input_text_"
 #define NAVIGATOR_REQ_INPUT_FLOAT "_input_float_"
@@ -156,6 +157,7 @@ ret_t navigator_request_on_result(navigator_request_t* req, const value_t* resul
 #define NAVIGATOR_ARG_OPEN_NEW "open_new"
 #define NAVIGATOR_ARG_CLOSE_CURRENT "close_current"
 
+#define NAVIGATOR_ARG_NAME "name"
 #define NAVIGATOR_ARG_MIN "min"
 #define NAVIGATOR_ARG_MAX "max"
 #define NAVIGATOR_ARG_TITLE "title"

@@ -334,3 +334,13 @@ ret_t navigator_pick_file(const char* title, const char* filter, bool_t for_save
 
   return ret;
 }
+
+ret_t navigator_close(const char* name) {
+  char target[MAX_PATH + 1];
+  return_value_if_fail(name != NULL, RET_BAD_PARAMS);
+
+  tk_snprintf(target, sizeof(target) - 1, "%s?%s=%s", NAVIGATOR_REQ_CLOSE, NAVIGATOR_ARG_NAME,
+              name);
+
+  return navigator_to(target);
+}

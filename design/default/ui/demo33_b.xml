@@ -12,4 +12,7 @@
 
   <button text="Home" x="center" y="middle:80" w="80%" h="30" 
     v-on:click="{navigate, args=demo33?close_current=true&open_new=false}"/>
+  
+  <button text="Close Temperature" x="center" y="middle:120" w="80%" h="30" 
+    v-on:click="{navigate, args=_close_?name=demo33_a}"/>
 </window>

@@ -2,6 +2,7 @@
 
 * 2020/12/05
   * navigate 的 target 支持参数，具体请[窗口导航](12.navigate.md )文档。
+  * 增加navigate_close函数，用于关闭指定窗口。
   * 增加 demo33，演示 navigate 参数。
 
 * 2020/12/04

@@ -57,6 +57,7 @@ EXPORTS
     navigator_toast
     navigator_back_to_home
     navigator_back
+    navigator_close
     navigator_info
     navigator_warn
     navigator_confirm

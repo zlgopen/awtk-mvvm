@@ -1278,7 +1278,7 @@
           {
             "type": "const char*",
             "name": "target",
-            "desc": "目标窗口的名称。"
+            "desc": "目标窗口的名称及参数(请参考窗口导航文档)。"
           }
         ],
         "annotation": {
@@ -1296,7 +1296,7 @@
           {
             "type": "const char*",
             "name": "target",
-            "desc": "目标窗口的名称。"
+            "desc": "目标窗口的名称及参数(请参考窗口导航文档)。"
           }
         ],
         "annotation": {
@@ -1314,7 +1314,7 @@
           {
             "type": "const char*",
             "name": "target",
-            "desc": "目标窗口的名称。"
+            "desc": "目标窗口的名称及参数(请参考窗口导航文档)。"
           },
           {
             "type": "bool_t",
@@ -1420,6 +1420,24 @@
         },
         "desc": "关闭当前窗口，回到前一窗口。",
         "name": "navigator_back",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "const char*",
+            "name": "name",
+            "desc": "目标窗口的名称。"
+          }
+        ],
+        "annotation": {
+          "static": true
+        },
+        "desc": "关闭指定窗口。",
+        "name": "navigator_close",
         "return": {
           "type": "ret_t",
           "desc": "返回RET_OK表示成功，否则表示失败。"
