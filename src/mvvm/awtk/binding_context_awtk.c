@@ -215,8 +215,8 @@ static bool_t command_binding_filter(command_binding_t* rule, event_t* e) {
     return FALSE;
   }
 
-  if (e->type == EVT_KEY_DOWN || e->type == EVT_KEY_UP || e->type == EVT_KEY_LONG_PRESS || 
-      e->type == EVT_KEY_DOWN_BEFORE_CHILDREN|| e->type == EVT_KEY_UP_BEFORE_CHILDREN) {
+  if (e->type == EVT_KEY_DOWN || e->type == EVT_KEY_UP || e->type == EVT_KEY_LONG_PRESS ||
+      e->type == EVT_KEY_DOWN_BEFORE_CHILDREN || e->type == EVT_KEY_UP_BEFORE_CHILDREN) {
     shortcut_t shortcut;
     key_event_t* evt = (key_event_t*)e;
 

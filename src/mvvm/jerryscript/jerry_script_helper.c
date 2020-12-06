@@ -33,7 +33,7 @@
 
 #ifndef SCRIPTS_ROOT_DIR
 #include "base/assets_manager.h"
-#endif/*SCRIPTS_ROOT_DIR*/
+#endif /*SCRIPTS_ROOT_DIR*/
 
 #define STR_MODULES "modules"
 #ifndef NDEBUG
@@ -272,13 +272,13 @@ ret_t jerry_script_eval_file(const char* filename, bool_t global) {
 #ifdef SCRIPTS_ROOT_DIR
   char* data = NULL;
   uint32_t size = 0;
-  char path[MAX_PATH+1];
-  if(!file_exist(filename)) {
+  char path[MAX_PATH + 1];
+  if (!file_exist(filename)) {
     tk_snprintf(path, MAX_PATH, "%s/%s.js", SCRIPTS_ROOT_DIR, filename);
     filename = path;
   }
   return_value_if_fail(file_exist(filename), RET_BAD_PARAMS);
-    
+
   data = (char*)file_read(filename, &size);
   return_value_if_fail(data != NULL, RET_BAD_PARAMS);
   ret = jerry_script_eval_buff(data, size, filename, global);

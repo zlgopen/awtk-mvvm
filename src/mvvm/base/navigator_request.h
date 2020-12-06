@@ -69,14 +69,14 @@ struct _navigator_request_t {
    * @annotation ["readable"]
    * 是否关闭当前窗口。
    */
-   bool_t close_current;
-  
-   /**
+  bool_t close_current;
+
+  /**
    * @property {bool_t} open_new
    * @annotation ["readable"]
    * 是否总是打开新窗口。
    */
-   bool_t open_new;
+  bool_t open_new;
 
   void* user_data;
   /*private*/

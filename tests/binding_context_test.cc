@@ -488,8 +488,9 @@ TEST(BindingContextAwtk, fscript4) {
   idle_dispatch();
   widget_set_prop_str(win, WIDGET_PROP_V_MODEL, STR_V_MODEL_TEMP);
   widget_set_name(button, "button");
-  widget_set_prop_str(button, "v-on:pointer_down",
-                      "{fscript, Args=widget_set(window.button.x, widget_get(window.button.x)+10)}");
+  widget_set_prop_str(
+      button, "v-on:pointer_down",
+      "{fscript, Args=widget_set(window.button.x, widget_get(window.button.x)+10)}");
   bind_for_window(win);
   widget_dispatch_pointer_down(button, 30, 30);
 

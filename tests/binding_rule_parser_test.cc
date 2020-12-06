@@ -40,7 +40,8 @@ TEST(CommandBindingParser, args) {
 }
 
 TEST(CommandBindingParser, args_expr) {
-  binding_rule_t* rule = binding_rule_parse("v-on:click", "{fscript, args=set(a, 123);set(b, \"abc\");set(c, a+b)}", TRUE);
+  binding_rule_t* rule = binding_rule_parse(
+      "v-on:click", "{fscript, args=set(a, 123);set(b, \"abc\");set(c, a+b)}", TRUE);
   command_binding_t* cmd = (command_binding_t*)rule;
 
   ASSERT_EQ(string(cmd->command), string("fscript"));

@@ -50,7 +50,6 @@ const char* tk_destruct_array_prop_name(const char* name, uint32_t* index);
  */
 ret_t str_random(str_t* str, const char* format, uint32_t max);
 
-
 /**
  * @method tk_expr_eval
  * expr eval

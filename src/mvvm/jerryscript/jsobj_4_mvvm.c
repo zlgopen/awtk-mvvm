@@ -63,7 +63,6 @@ ret_t jsobj_exec(jerry_value_t obj, const char* name, const char* args) {
   return ret;
 }
 
-
 bool_t jsobj_can_exec(jerry_value_t obj, const char* name, const char* args) {
   bool_t ret = FALSE;
   char jsname[TK_NAME_LEN + 1];

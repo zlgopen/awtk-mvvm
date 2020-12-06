@@ -328,7 +328,8 @@ typedef struct _jerry_value_to_obj_ctx_t {
   object_t* obj;
 } jerry_value_to_obj_ctx_t;
 
-static bool visit_jerry_object_prop(const jerry_value_t property_name, const jerry_value_t property_value, void* user_data_p) {
+static bool visit_jerry_object_prop(const jerry_value_t property_name,
+                                    const jerry_value_t property_value, void* user_data_p) {
   value_t name;
   value_t value;
   jerry_value_to_obj_ctx_t* info = (jerry_value_to_obj_ctx_t*)user_data_p;

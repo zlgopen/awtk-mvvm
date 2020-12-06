@@ -174,7 +174,6 @@ static ret_t data_binding_object_get_prop(object_t* obj, const char* name, value
   return ret;
 }
 
-
 static ret_t data_binding_object_exec(object_t* obj, const char* name, const char* args) {
   data_binding_t* rule = (data_binding_t*)(obj);
   binding_context_t* context = BINDING_RULE_CONTEXT(rule);
@@ -361,7 +360,6 @@ static ret_t vm_set_prop(view_model_t* vm, const char* converter, const char* pa
     }
   }
 }
-
 
 ret_t data_binding_set_prop(data_binding_t* rule, const value_t* raw) {
   view_model_t* view_model = NULL;
