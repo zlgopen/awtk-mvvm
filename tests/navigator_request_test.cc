@@ -32,3 +32,61 @@ TEST(NavigatorRequest, on_result) {
 
   object_unref(OBJECT(req));
 }
+
+TEST(NavigatorRequest, args1) {
+  navigator_request_t* req = navigator_request_create("target?key=value", on_result);
+  ASSERT_STREQ(object_get_prop_str(OBJECT(req->args), "key"), "value");
+  ASSERT_STREQ(req->target, "target");
+  ASSERT_EQ(req->close_current, FALSE);
+  ASSERT_EQ(req->open_new, TRUE);
+  
+  object_unref(OBJECT(req));
+}
+
+TEST(NavigatorRequest, args2) {
+  navigator_request_t* req = navigator_request_create("target?key=", on_result);
+  ASSERT_EQ(object_get_prop_str(OBJECT(req->args), "key"), (const char*)NULL);
+  ASSERT_STREQ(req->target, "target");
+  ASSERT_EQ(req->close_current, FALSE);
+  ASSERT_EQ(req->open_new, TRUE);
+  
+  object_unref(OBJECT(req));
+}
+
+TEST(NavigatorRequest, args3) {
+  navigator_request_t* req = navigator_request_create("target?key", on_result);
+  ASSERT_EQ(object_get_prop_str(OBJECT(req->args), "key"), (const char*)NULL);
+  ASSERT_STREQ(req->target, "target");
+  ASSERT_EQ(req->close_current, FALSE);
+  ASSERT_EQ(req->open_new, TRUE);
+
+  object_unref(OBJECT(req));
+}
+
+TEST(NavigatorRequest, args4) {
+  navigator_request_t* req = navigator_request_create("target?close_current=true", on_result);
+  ASSERT_EQ(req->close_current, TRUE);
+  ASSERT_EQ(req->open_new, TRUE);
+  ASSERT_STREQ(req->target, "target");
+  
+  object_unref(OBJECT(req));
+}
+
+TEST(NavigatorRequest, args5) {
+  navigator_request_t* req = navigator_request_create("target?close_current=true&open_new=false", on_result);
+  ASSERT_EQ(req->close_current, TRUE);
+  ASSERT_EQ(req->open_new, FALSE);
+  ASSERT_STREQ(req->target, "target");
+  
+  object_unref(OBJECT(req));
+}
+
+TEST(NavigatorRequest, args6) {
+  navigator_request_t* req = navigator_request_create("target?close_current=true&open_new=false&path=a/b/c", on_result);
+  ASSERT_EQ(req->close_current, TRUE);
+  ASSERT_EQ(req->open_new, FALSE);
+  ASSERT_STREQ(req->target, "target");
+  ASSERT_STREQ(object_get_prop_str(OBJECT(req->args), "path"), "a/b/c");
+  
+  object_unref(OBJECT(req));
+}

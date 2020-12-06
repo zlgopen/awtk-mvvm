@@ -1053,6 +1053,29 @@
             "desc": "request对象。"
           },
           {
+            "type": "bool_t",
+            "name": "open_new",
+            "desc": "是否打开新窗口。"
+          }
+        ],
+        "annotation": {
+          "scriptable": true
+        },
+        "desc": "设置是否打开新窗口。\n> 缺省情况下，如果目标窗口存在，则切换到目标窗口，否则打开新窗口。",
+        "name": "navigator_request_set_open_new",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "navigator_request_t*",
+            "name": "req",
+            "desc": "request对象。"
+          },
+          {
             "type": "const value_t*",
             "name": "result",
             "desc": "结果。"
@@ -1098,6 +1121,14 @@
       {
         "name": "close_current",
         "desc": "是否关闭当前窗口。",
+        "type": "bool_t",
+        "annotation": {
+          "readable": true
+        }
+      },
+      {
+        "name": "open_new",
+        "desc": "是否总是打开新窗口。",
         "type": "bool_t",
         "annotation": {
           "readable": true
@@ -1273,6 +1304,29 @@
         },
         "desc": "请求打开指定的窗口，并关闭当前窗口。",
         "name": "navigator_replace",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "const char*",
+            "name": "target",
+            "desc": "目标窗口的名称。"
+          },
+          {
+            "type": "bool_t",
+            "name": "close_current",
+            "desc": "是否关闭当前窗口。"
+          }
+        ],
+        "annotation": {
+          "static": true
+        },
+        "desc": "如果目标窗口已经存在，直接切换到该窗口，否则打开新窗口。",
+        "name": "navigator_switch_to",
         "return": {
           "type": "ret_t",
           "desc": "返回RET_OK表示成功，否则表示失败。"

@@ -36,6 +36,16 @@ static const object_vtable_t s_navigator_handler_awtk_vtable = {
 
 static ret_t navigator_handler_awtk_on_request(navigator_handler_t* handler,
                                                navigator_request_t* req) {
+  if (!(req->open_new)) {
+    widget_t* wm = window_manager();
+    widget_t* target_win = widget_child(wm, req->target);
+
+    if (target_win != NULL) {
+      widget_t* curr_win = window_manager_get_top_window(wm);
+      return window_manager_switch_to(wm, curr_win, target_win, req->close_current);
+    }
+  }
+
   return awtk_open_window(req);
 }
 

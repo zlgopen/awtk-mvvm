@@ -1,0 +1,10 @@
+<window text="Temperature" anim_hint="htranslate">
+  <label text="Window Temperature" x="center" y="10" w="80%" h="30" />
+
+  <button text="Keep Current And Open" x="center" y="middle:-40" w="80%" h="30" 
+    v-on:click="{navigate, args=demo33_b}"/>
+  <button text="Close Current And Open" x="center" y="middle" w="80%" h="30" 
+    v-on:click="{navigate, args=demo33_b?close_current=true}"/>
+  <button text="Home" x="center" y="middle:40" w="80%" h="30" 
+    v-on:click="{navigate, args=demo33?close_current=true&open_new=false}"/>
+</window>

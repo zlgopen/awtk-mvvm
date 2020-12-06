@@ -129,7 +129,7 @@ ret_t navigator_unregister_handler(navigator_t* nav, const char* target);
  *
  * @annotation ["static"]
  *
- * @param {const char*} target 目标窗口的名称。
+ * @param {const char*} target 目标窗口的名称及参数(请参考窗口导航文档)。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
@@ -141,11 +141,24 @@ ret_t navigator_to(const char* target);
  *
  * @annotation ["static"]
  *
- * @param {const char*} target 目标窗口的名称。
+ * @param {const char*} target 目标窗口的名称及参数(请参考窗口导航文档)。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
 ret_t navigator_replace(const char* target);
+
+/**
+ * @method navigator_switch_to
+ * 如果目标窗口已经存在，直接切换到该窗口，否则打开新窗口。
+ *
+ * @annotation ["static"]
+ *
+ * @param {const char*} target 目标窗口的名称及参数(请参考窗口导航文档)。
+ * @param {bool_t} close_current 是否关闭当前窗口。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t navigator_switch_to(const char* target, bool_t close_current);
 
 /**
  * @method navigator_to_with_key_value

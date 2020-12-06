@@ -55,18 +55,17 @@ git clone https://hub.fastgit.org/jerryscript-project/jerryscript.git 3rd/jerrys
 python ./scripts/update_res.py all
 ```
 
-* 编译PC版本
+* 编译 PC 版本
 
 ```
 scons
 ```
 
-* 编译LINUX FB版本
+* 编译 LINUX FB 版本
 
 ```
 scons LINUX_FB=true
 ```
-
 
 > 如果不需要 jerryscript，请修改 SConstruct，注释掉下面这行代码，然后重新编译：
 
@@ -80,7 +79,7 @@ os.environ['WITH_JS'] = 'true'
 scons LINUX_FB=true
 ```
 
-> 完整编译选项请参考[编译选项](https://github.com/zlgopen/awtk-widget-generator/blob/master/docs/build_options.md)
+> 完整编译选项请参考 [编译选项](https://github.com/zlgopen/awtk-widget-generator/blob/master/docs/build_options.md)
 
 * 运行 demos
 
@@ -142,11 +141,11 @@ scons LINUX_FB=true
 | demo29   | (no)     | 扩展 app_conf 的命令                  |
 | demo30   | (no)     | 发送按键事件和设置属性                |
 | demo31   | (no)     | 嵌套 view model                       |
-| demo32   | (no)     | 一个 view model 多个 model的用法      |
+| demo32   | (no)     | 一个 view model 多个 model 的用法      |
+| demo33   | (no)     | 演示 navigate 的参数      |
 
 * [完整示例及模板项目](https://github.com/zlgopen/awtk-mvvm-c-hello)
 
 * [awtk-mvvm-c-examples](https://github.com/zlgopen/awtk-mvvm-c-examples) 
 
-* [无需代码对sqlite3进行增删改查](https://github.com/zlgopen/awtk-database-repository)
-
+* [无需代码对 sqlite3 进行增删改查](https://github.com/zlgopen/awtk-database-repository)

@@ -70,6 +70,13 @@ struct _navigator_request_t {
    * 是否关闭当前窗口。
    */
    bool_t close_current;
+  
+   /**
+   * @property {bool_t} open_new
+   * @annotation ["readable"]
+   * 是否总是打开新窗口。
+   */
+   bool_t open_new;
 
   void* user_data;
   /*private*/
@@ -104,6 +111,20 @@ navigator_request_t* navigator_request_create(const char* target,
 ret_t navigator_request_set_close_current(navigator_request_t* req, bool_t close_current);
 
 /**
+ * @method navigator_request_set_open_new
+ * 设置是否打开新窗口。
+ * > 缺省情况下，如果目标窗口存在，则切换到目标窗口，否则打开新窗口。
+ *
+ * @annotation ["scriptable"]
+ *
+ * @param {navigator_request_t*} req request对象。
+ * @param {bool_t} open_new 是否打开新窗口。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t navigator_request_set_open_new(navigator_request_t* req, bool_t open_new);
+
+/**
  * @method navigator_request_on_result
  * navigator hander调用本函数返回结果。
  *
@@ -132,6 +153,8 @@ ret_t navigator_request_on_result(navigator_request_t* req, const value_t* resul
 #define NAVIGATOR_REQ_PICK_DIR "_pick_dir_"
 
 #define NAVIGATOR_ARG_TARGET "target"
+#define NAVIGATOR_ARG_OPEN_NEW "open_new"
+#define NAVIGATOR_ARG_CLOSE_CURRENT "close_current"
 
 #define NAVIGATOR_ARG_MIN "min"
 #define NAVIGATOR_ARG_MAX "max"

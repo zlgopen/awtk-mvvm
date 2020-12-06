@@ -21,6 +21,7 @@
 
 #include "tkc/value.h"
 #include "tkc/utils.h"
+#include "tkc/tokenizer.h"
 #include "tkc/object_default.h"
 #include "mvvm/base/navigator_request.h"
 
@@ -74,6 +75,7 @@ navigator_request_t* navigator_request_create(const char* target,
                                               navigator_request_on_result_t on_result) {
   object_t* obj = NULL;
   navigator_request_t* req = NULL;
+  tokenizer_t t;
   return_value_if_fail(target != NULL, NULL);
 
   obj = object_create(&s_navigator_request_vtable);
@@ -81,11 +83,36 @@ navigator_request_t* navigator_request_create(const char* target,
 
   req->on_result = on_result;
   req->args = object_default_create();
-  tk_strncpy(req->target, target, TK_NAME_LEN);
 
   if (req->args == NULL) {
-    object_unref(obj);
-    obj = NULL;
+    OBJECT_UNREF(obj);
+    req = NULL;
+  }
+
+  if (req != NULL) {
+    value_t v;
+    char key[TK_NAME_LEN + 1];
+    const char* value = NULL;
+    tokenizer_init(&t, target, strlen(target), "?=&");
+    target = tokenizer_next(&t);
+    tk_strncpy(req->target, target, TK_NAME_LEN);
+
+    navigator_request_set_open_new(req, TRUE);
+    while (tokenizer_has_more(&t)) {
+      tk_strncpy(key, tokenizer_next(&t), TK_NAME_LEN);
+      value = tokenizer_next(&t);
+      if (value != NULL) {
+        value_set_str(&v, value);
+        if (tk_str_eq(key, NAVIGATOR_ARG_CLOSE_CURRENT)) {
+          navigator_request_set_close_current(req, value_bool(&v));
+        } else if (tk_str_eq(key, NAVIGATOR_ARG_OPEN_NEW)) {
+          navigator_request_set_open_new(req, value_bool(&v));
+        } else {
+          object_set_prop(req->args, key, &v);
+        }
+      }
+    }
+    tokenizer_deinit(&t);
   }
 
   return req;
@@ -106,6 +133,14 @@ ret_t navigator_request_set_close_current(navigator_request_t* req, bool_t close
   return_value_if_fail(req != NULL, RET_BAD_PARAMS);
 
   req->close_current = close_current;
+
+  return RET_OK;
+}
+
+ret_t navigator_request_set_open_new(navigator_request_t* req, bool_t open_new) {
+  return_value_if_fail(req != NULL, RET_BAD_PARAMS);
+
+  req->open_new = open_new;
 
   return RET_OK;
 }

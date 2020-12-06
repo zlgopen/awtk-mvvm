@@ -1,5 +1,9 @@
 # 最新动态
 
+* 2020/12/05
+  * navigate 的 target 支持参数，具体请[窗口导航](12.navigate.md )文档。
+  * 增加 demo33，演示 navigate 参数。
+
 * 2020/12/04
   * 数据绑定支持 ToModel 和 ToView 两个参数，用 fscript 实现数据格式双向转换的功能。请参考 [数据格式转换](10.data_binding.md)
   * 增加 fscript 命令，用来执行一段 fscript 脚本，并增加了一些函数。请参考 [高级用法](14.advance_usages.md)

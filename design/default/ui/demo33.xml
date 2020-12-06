@@ -1,0 +1,10 @@
+<window anim_hint="htranslate" text="Home">
+  <label text="Window Home" x="center" y="10" w="80%" h="30" />
+
+  <button text="Keep Current And Open" x="center" y="middle:-40" w="80%" h="30" 
+    v-on:click="{navigate, args=demo33_a}"/>
+  <button text="Close Current And Open" x="center" y="middle" w="80%" h="30" 
+    v-on:click="{navigate, args=demo33_a?close_current=true}"/>
+  <button text="Quit" x="center" y="middle:40" w="80%" h="30" 
+    v-on:click="{nothing, QuitApp=true}"/>
+</window>

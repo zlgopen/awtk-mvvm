@@ -1,0 +1,15 @@
+<window text="Humidity" anim_hint="htranslate">
+  <label text="Window Humidity" x="center" y="10" w="80%" h="30" />
+
+  <button text="Close" x="center" y="middle:-40" w="80%" h="30" 
+    v-on:click="{nothing, CloseWindow=true}"/>
+
+  <button text="Back" x="center" y="middle" w="80%" h="30" 
+    v-on:click="{navigate, args=_back_}"/>
+
+  <button text="Temperature" x="center" y="middle:40" w="80%" h="30" 
+    v-on:click="{navigate, args=demo33_a?close_current=true&open_new=false}"/>
+
+  <button text="Home" x="center" y="middle:80" w="80%" h="30" 
+    v-on:click="{navigate, args=demo33?close_current=true&open_new=false}"/>
+</window>

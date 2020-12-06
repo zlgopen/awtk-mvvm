@@ -59,7 +59,6 @@ static ret_t home_on_room_result(navigator_request_t* req, const value_t* result
   } else {
     h->living_room->temp = temp;
     h->living_room->humidity = humidity;
-    ;
   }
 
   emitter_dispatch_simple_event(EMITTER(h), EVT_PROPS_CHANGED);

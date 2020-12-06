@@ -40,6 +40,7 @@ EXPORTS
     navigator_handler_on_request
     navigator_request_create
     navigator_request_set_close_current
+    navigator_request_set_open_new
     navigator_request_on_result
     navigator_create
     navigator
@@ -50,6 +51,7 @@ EXPORTS
     navigator_unregister_handler
     navigator_to
     navigator_replace
+    navigator_switch_to
     navigator_to_with_key_value
     navigator_to_ex
     navigator_toast
