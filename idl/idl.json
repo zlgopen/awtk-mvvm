@@ -1361,47 +1361,6 @@
         }
       },
       {
-        "params": [
-          {
-            "type": "navigator_request_t*",
-            "name": "req",
-            "desc": "request对象。"
-          }
-        ],
-        "annotation": {
-          "static": true
-        },
-        "desc": "请求打开指定的窗口，并可传递参数和返回结果。",
-        "name": "navigator_to_ex",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "const char*",
-            "name": "content",
-            "desc": "信息内容。"
-          },
-          {
-            "type": "uint32_t",
-            "name": "timeout",
-            "desc": "显示时间。"
-          }
-        ],
-        "annotation": {
-          "static": true
-        },
-        "desc": "显示toast信息。",
-        "name": "navigator_toast",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
-        }
-      },
-      {
         "params": [],
         "annotation": {
           "static": true
@@ -1438,6 +1397,47 @@
         },
         "desc": "关闭指定窗口。",
         "name": "navigator_close",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "navigator_request_t*",
+            "name": "req",
+            "desc": "request对象。"
+          }
+        ],
+        "annotation": {
+          "static": true
+        },
+        "desc": "请求打开指定的窗口，并可传递参数和返回结果。",
+        "name": "navigator_to_ex",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "const char*",
+            "name": "content",
+            "desc": "信息内容。"
+          },
+          {
+            "type": "uint32_t",
+            "name": "timeout",
+            "desc": "显示时间。"
+          }
+        ],
+        "annotation": {
+          "static": true
+        },
+        "desc": "显示toast信息。",
+        "name": "navigator_toast",
         "return": {
           "type": "ret_t",
           "desc": "返回RET_OK表示成功，否则表示失败。"

@@ -19,6 +19,8 @@
  *
  */
 
+#include "awtk_global.h"
+#include "tkc/utils.h"
 #include "tkc/fscript.h"
 #include "base/window_manager.h"
 #include "mvvm/base/binding_rule.h"
@@ -91,27 +93,23 @@ static ret_t func_tr(fscript_t* fscript, fscript_args_t* args, value_t* v) {
 }
 
 static ret_t func_quit(fscript_t* fscript, fscript_args_t* args, value_t* v) {
-  binding_rule_t* rule = BINDING_RULE(fscript->obj);
   tk_quit();
   return RET_OK;
 }
 
 static ret_t func_back(fscript_t* fscript, fscript_args_t* args, value_t* v) {
-  binding_rule_t* rule = BINDING_RULE(fscript->obj);
   window_manager_back(window_manager());
 
   return RET_OK;
 }
 
 static ret_t func_back_to_home(fscript_t* fscript, fscript_args_t* args, value_t* v) {
-  binding_rule_t* rule = BINDING_RULE(fscript->obj);
   window_manager_back_to_home(window_manager());
 
   return RET_OK;
 }
 
 static ret_t func_navigator_to(fscript_t* fscript, fscript_args_t* args, value_t* v) {
-  binding_rule_t* rule = BINDING_RULE(fscript->obj);
   return_value_if_fail(args->size == 1, RET_BAD_PARAMS);
 
   return navigator_to(value_str(args->args));

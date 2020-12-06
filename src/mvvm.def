@@ -53,11 +53,11 @@ EXPORTS
     navigator_replace
     navigator_switch_to
     navigator_to_with_key_value
-    navigator_to_ex
-    navigator_toast
     navigator_back_to_home
     navigator_back
     navigator_close
+    navigator_to_ex
+    navigator_toast
     navigator_info
     navigator_warn
     navigator_confirm
