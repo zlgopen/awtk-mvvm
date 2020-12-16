@@ -206,6 +206,19 @@ ret_t navigator_back(void);
 ret_t navigator_close(const char* name);
 
 /**
+ * @method navigator_request_close
+ * 请求关闭关闭指定窗口。
+ *
+ * > 窗口是否被关闭，取决于窗口本身的处理逻辑。
+ *
+ * @param {const char*} name 目标窗口的名称。
+ * @annotation ["static"]
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t navigator_request_close(const char* name);
+
+/**
  * @method navigator_to_ex
  * 请求打开指定的窗口，并可传递参数和返回结果。
  *

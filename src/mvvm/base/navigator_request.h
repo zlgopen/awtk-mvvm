@@ -158,6 +158,7 @@ ret_t navigator_request_on_result(navigator_request_t* req, const value_t* resul
 #define NAVIGATOR_ARG_CLOSE_CURRENT "close_current"
 
 #define NAVIGATOR_ARG_NAME "name"
+#define NAVIGATOR_ARG_FORCE "force"
 #define NAVIGATOR_ARG_MIN "min"
 #define NAVIGATOR_ARG_MAX "max"
 #define NAVIGATOR_ARG_TITLE "title"

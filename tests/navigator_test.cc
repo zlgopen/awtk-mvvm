@@ -244,3 +244,54 @@ TEST(Navigator, pick_file) {
   object_unref(OBJECT(nav));
   navigator_set(old);
 }
+
+static ret_t navigator_on_close(navigator_handler_t* handler, navigator_request_t* req) {
+  value_t v;
+  s_log = string("close:") + string(object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_NAME));
+
+  if(object_get_prop_bool(OBJECT(req), NAVIGATOR_ARG_FORCE, FALSE)) {
+    s_log += " force=true";
+  } else {
+    s_log += " force=false";
+  }
+
+  value_set_bool(&v, TRUE);
+  navigator_request_on_result(req, &v);
+
+  return RET_OK;
+}
+
+TEST(Navigator, close) {
+  str_t str;
+  navigator_t* old = navigator();
+  navigator_t* nav = navigator_create();
+  navigator_set(nav);
+
+  str_init(&str, 0);
+  str_set(&str, " awtk");
+  navigator_register_handler(nav, NAVIGATOR_REQ_CLOSE,
+                             navigator_handler_create(navigator_on_close));
+  ASSERT_EQ(navigator_close("hello"), RET_OK);
+  ASSERT_EQ(s_log, string("close:hello force=true"));
+
+  object_unref(OBJECT(nav));
+  navigator_set(old);
+}
+
+TEST(Navigator, request_close) {
+  str_t str;
+  navigator_t* old = navigator();
+  navigator_t* nav = navigator_create();
+  navigator_set(nav);
+
+  str_init(&str, 0);
+  str_set(&str, " awtk");
+  navigator_register_handler(nav, NAVIGATOR_REQ_CLOSE,
+                             navigator_handler_create(navigator_on_close));
+  ASSERT_EQ(navigator_request_close("hello"), RET_OK);
+  ASSERT_EQ(s_log, string("close:hello force=false"));
+
+  object_unref(OBJECT(nav));
+  navigator_set(old);
+}
+

@@ -39,7 +39,11 @@ static ret_t navigator_handler_awtk_on_request(navigator_handler_t* handler,
   if (tk_str_ieq(req->target, NAVIGATOR_REQ_CLOSE)) {
     const char* name = object_get_prop_str(OBJECT(req->args), NAVIGATOR_ARG_NAME);
     widget_t* win = widget_child(window_manager(), name);
-    return window_manager_close_window_force(window_manager(), win);
+    if(object_get_prop_bool(OBJECT(req->args), NAVIGATOR_ARG_FORCE, FALSE)) {
+      return window_manager_close_window_force(window_manager(), win);
+    } else {
+      return widget_dispatch_simple_event(win, EVT_REQUEST_CLOSE_WINDOW);
+    }
   } else if (tk_str_ieq(req->target, NAVIGATOR_REQ_BACK)) {
     return window_manager_back(window_manager());
   } else if (tk_str_ieq(req->target, NAVIGATOR_REQ_HOME)) {
