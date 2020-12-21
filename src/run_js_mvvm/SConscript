@@ -1,0 +1,10 @@
+import os
+import sys
+
+env=DefaultEnvironment().Clone()
+BIN_DIR=os.environ['BIN_DIR'];
+
+LIBS=['mvvm']+env['LIBS']
+
+if 'WITH_JS' in os.environ:
+  env.Program(os.path.join(BIN_DIR, 'runJsMVVM'), Glob('*.c'),LIBS=LIBS)

@@ -1,0 +1,1 @@
+run js mvvm application.
