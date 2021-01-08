@@ -183,32 +183,6 @@ error:
   return RET_FAIL;
 }
 
-#define STR_GLOBAL "global"
-#define STR_GLOBAL_KEY_UP "global_key_up"
-#define STR_GLOBAL_KEY_DOWN "global_key_down"
-#define STR_VALUE_CHANGED_BY_UI "value_changed_by_ui"
-#define STR_GLOBAL_KEY_LONG_PRESS "global_key_long_press"
-
-#define STR_VALUE_CHANGED_BY_UI "value_changed_by_ui"
-/*TODO: add more event*/
-static int_str_t s_event_map[] = {{EVT_CLICK, "click"},
-                                  {EVT_WINDOW_CLOSE, "window_close"},
-                                  {EVT_WINDOW_OPEN, "window_open"},
-                                  {EVT_POINTER_DOWN, "pointer_down"},
-                                  {EVT_POINTER_UP, "pointer_up"},
-                                  {EVT_KEY_DOWN, "key_down"},
-                                  {EVT_KEY_LONG_PRESS, "key_long_press"},
-                                  {EVT_KEY_UP, "key_up"},
-                                  {EVT_VALUE_CHANGED, "value_changed"},
-                                  {EVT_VALUE_CHANGED, STR_VALUE_CHANGED_BY_UI},
-                                  {EVT_KEY_DOWN_BEFORE_CHILDREN, "key_down_before_children"},
-                                  {EVT_KEY_UP_BEFORE_CHILDREN, "key_up_before_children"},
-                                  {EVT_KEY_DOWN, STR_GLOBAL_KEY_DOWN},
-                                  {EVT_KEY_LONG_PRESS, STR_GLOBAL_KEY_LONG_PRESS},
-                                  {EVT_KEY_UP, STR_GLOBAL_KEY_UP},
-
-                                  {EVT_NONE, NULL}};
-
 static bool_t command_binding_filter(command_binding_t* rule, event_t* e) {
   return_value_if_fail(rule != NULL && e != NULL, TRUE);
   if (!(rule->filter.is_valid)) {
@@ -327,9 +301,9 @@ static ret_t binding_context_bind_command(binding_context_t* ctx, const char* na
 
   goto_error_if_fail(darray_push(&(ctx->command_bindings), rule) == RET_OK);
 
-  event = int_str_name(s_event_map, rule->event, EVT_NONE);
+  event = event_from_name(rule->event);
   if (event != EVT_NONE) {
-    if (strstr(rule->event, STR_GLOBAL) != NULL) {
+    if (strstr(rule->event, STR_GLOBAL_EVENT_PREFIX) != NULL) {
       window_manager_t* wm = WINDOW_MANAGER(widget_get_window_manager(widget));
       uint32_t id = emitter_on(wm->global_emitter, event, on_widget_event, rule);
       if (id != TK_INVALID_ID) {

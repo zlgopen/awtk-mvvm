@@ -30,13 +30,18 @@ EXPORTS
     device_factory_create_device
     device_factory_register
     device_factory_deinit
-    value_converter_to_model
-    value_converter_to_view
-    value_converter_create
-    value_converter_register
-    value_converter_register_generic
-    value_converter_init
-    value_converter_deinit
+    binding_context_awtk_create
+    binding_context_bind_for_window
+    mvvm_awtk_init
+    mvvm_awtk_deinit
+    widget_hardware_create
+    widget_hardware_cast
+    navigator_handler_create
+    navigator_handler_on_request
+    navigator_request_create
+    navigator_request_set_close_current
+    navigator_request_set_open_new
+    navigator_request_on_result
     navigator_create
     navigator
     navigator_set
@@ -62,8 +67,13 @@ EXPORTS
     navigator_pick_color
     str_random
     tk_expr_eval
-    widget_hardware_create
-    widget_hardware_cast
+    value_converter_to_model
+    value_converter_to_view
+    value_converter_create
+    value_converter_register
+    value_converter_register_generic
+    value_converter_init
+    value_converter_deinit
     value_validator_is_valid
     value_validator_fix
     value_validator_set_context
@@ -78,10 +88,6 @@ EXPORTS
     view_model_array_dummy_remove
     view_model_array_dummy_get
     view_model_array_dummy_size
-    binding_context_awtk_create
-    binding_context_bind_for_window
-    mvvm_awtk_init
-    mvvm_awtk_deinit
     view_model_init
     view_model_deinit
     view_model_on_will_mount
@@ -98,31 +104,19 @@ EXPORTS
     view_model_notify_props_changed
     view_model_create_sub_view_model
     view_model_create_sub_view_model_array
-    navigator_handler_create
-    navigator_handler_on_request
     buzzer_log_create
-    navigator_request_create
-    navigator_request_set_close_current
-    navigator_request_set_open_new
-    navigator_request_on_result
     temperature_sensor_random_create
-    view_model_dummy_create
-    value_converter_delegate_create
-    view_model_object_wrapper_create
-    view_model_object_wrapper_create_ex
-    view_model_normal_jerryscript_create
-    mvvm_init
-    mvvm_deinit
-    value_validator_delegate_create
+    navigator_handler_awtk_create
+    command_binding_create
+    command_binding_can_exec
+    command_binding_exec
     data_binding_create
     data_binding_get_prop
     data_binding_set_prop
     mvvm_base_init
     mvvm_base_deinit
-    command_binding_create
-    command_binding_can_exec
-    command_binding_exec
-    navigator_handler_awtk_create
+    value_converter_delegate_create
+    value_validator_delegate_create
     view_model_array_init
     view_model_array_deinit
     view_model_array_inc_cursor
@@ -135,6 +129,9 @@ EXPORTS
     view_model_array_default_can_exec
     view_model_compositor_create
     view_model_compositor_add
+    view_model_dummy_create
+    view_model_object_wrapper_create
+    view_model_object_wrapper_create_ex
     jerryscript_awtk_init
     jerryscript_awtk_deinit
     jerry_value_from_navigator_request
@@ -155,5 +152,8 @@ EXPORTS
     value_validator_jerryscript_deinit
     view_model_array_jerryscript_create
     view_model_jerryscript_create
+    view_model_normal_jerryscript_create
+    mvvm_init
+    mvvm_deinit
     view_model_array_object_wrapper_create
     view_model_array_object_wrapper_create_ex
