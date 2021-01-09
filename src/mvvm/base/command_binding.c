@@ -104,6 +104,8 @@ static ret_t command_binding_get_prop(object_t* obj, const char* name, value_t* 
     value_set_bool(v, rule->quit_app);
   } else if (equal(COMMAND_BINDING_UPDATE_VIEW_MODEL, name)) {
     value_set_bool(v, rule->update_model);
+  } else if (tk_str_eq(name, STR_PROP_SELF)) {
+     value_set_pointer(v, BINDING_RULE(rule)->widget);
   } else {
     ret = object_get_prop(rule->props, name, v);
   }

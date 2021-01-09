@@ -23,6 +23,7 @@
 #define TK_BINDING_RULE_H
 
 #include "tkc/object.h"
+#include "base/widget_consts.h"
 #include "mvvm/base/mvvm_types_def.h"
 #include "mvvm/base/view_model.h"
 

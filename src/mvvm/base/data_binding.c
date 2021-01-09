@@ -143,6 +143,11 @@ static ret_t data_binding_object_get_prop(object_t* obj, const char* name, value
 
   if (BINDING_RULE(rule)->inited) {
     view_model_t* view_model = BINDING_RULE_VIEW_MODEL(rule);
+    if (tk_str_eq(name, STR_PROP_SELF)) {
+      value_set_pointer(v, BINDING_RULE(rule)->widget);
+      return RET_OK; 
+    }
+
     if (tk_str_eq(name, rule->prop) && rule->value != NULL) {
       value_copy(v, rule->value);
       return RET_OK;
