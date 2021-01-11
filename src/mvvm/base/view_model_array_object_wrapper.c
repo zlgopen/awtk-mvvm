@@ -157,7 +157,6 @@ static ret_t view_model_array_object_wrapper_cmd_edit(const char* prefix, const 
 
 static const char* view_model_array_object_wrapper_gen_path(object_t* obj, char* path,
                                                             uint32_t index) {
-  view_model_array_t* vm_array = VIEW_MODEL_ARRAY(obj);
   view_model_array_object_wrapper_t* object_wrapper = VIEW_MODEL_ARRAY_OBJECT_WRAPPPER(obj);
   if (object_wrapper->prop_prefix != NULL) {
     tk_snprintf(path, MAX_PATH, "%s.[%u]", object_wrapper->prop_prefix, index);
