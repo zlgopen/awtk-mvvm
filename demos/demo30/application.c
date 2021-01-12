@@ -21,8 +21,11 @@
 
 #include "awtk.h"
 #include "mvvm/mvvm.h"
+#include "conf_io/app_conf_init_json.h"
 
 ret_t application_init(void) {
+  app_conf_init_json("demo30");
+
   return navigator_to("send_key_set_prop");
 }
 

@@ -1,5 +1,12 @@
 # 最新动态
 
+* 2021/01/12
+  * 完善文档。
+
+* 2021/01/10
+  * 将部分fscript扩展函数移到awt/src/fscript\_ext/fscript\_widget.c中，请参考[fscript_widget](https://github.com/zlgopen/awtk/blob/master/docs/fscript_widget.md)
+
+
 * 2020/12/16
   * 增加navigate\_request\_close函数，用于请求关闭指定窗口。
 

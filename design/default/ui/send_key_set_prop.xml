@@ -1,10 +1,30 @@
-<window >
+<window v-model="app_conf">
   <edit name="edit" x="center" y="middle" w="50%" h="40" text="demo"/>
   <view x="center" y="bottom:20" w="100%" h="80" children_layout="default(r=2,c=3,s=2,m=2)">
-    <button text="Backspace" v-on:click="{SendKey, Args=edit:backspace}"/>
-    <button text="Char" v-on:click="{SendKey, Args=edit:a}"/>
-    <button text="Show" v-on:click="{SetWidgetProp, Args=edit.visible:true}"/>
-    <button text="Hide" v-on:click="{SetWidgetProp, Args=edit.visible:false}"/>
-    <button text="Quit" v-on:click="{nothing, QuitApp=true}"/>
+    <button text="Test1" v-on:click="{fscript, Args=widget_eval(self.code)}">
+      <property name="code"><![CDATA[
+        var a = len(widget_get(window.edit.text))
+        if(a < 10) {
+          send_key(window.edit, str(a)) 
+        } else {
+          widget_set(window.edit, text, "")
+        }
+      ]]></property>
+    </button>
+    <button text="Test2">
+      <property name="on:click"><![CDATA[
+        var a = len(widget_get(window.edit.text))
+        if(a < 10) {
+          send_key(window.edit, str(a)) 
+        } else {
+          widget_set(window.edit, text, "")
+        }
+      ]]></property>
+    </button>
+    <button text="Char:a" on:click="send_key(window.edit, 'a')"/>
+    <button text="Backspace" on:click="send_key(window.edit, 'backspace')"/>
+    <button text="Show" on:click="widget_set(window.edit, visible, true)"/>
+    <button text="Hide" on:click="widget_set(window.edit, visible, false)"/>
+    <button text="Quit" on:click="quit()"/>
   </view>
 </window>
