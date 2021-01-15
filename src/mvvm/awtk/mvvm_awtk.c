@@ -1,4 +1,4 @@
-﻿/**
+/**
  * File:   mvvm.h
  * Author: AWTK Develop Team
  * Brief:  mvvm awtk global functions.
@@ -37,7 +37,6 @@ static ret_t func_navigator_to(fscript_t* fscript, fscript_args_t* args, value_t
 }
 
 static ret_t func_navigator_replace(fscript_t* fscript, fscript_args_t* args, value_t* v) {
-  binding_rule_t* rule = BINDING_RULE(fscript->obj);
   return_value_if_fail(args->size == 1, RET_BAD_PARAMS);
 
   return navigator_replace(value_str(args->args));
