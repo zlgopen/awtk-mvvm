@@ -62,7 +62,7 @@ static ret_t data_binding_on_destroy(object_t* obj) {
 static ret_t data_binding_object_set_prop(object_t* obj, const char* name, const value_t* v) {
   ret_t ret = RET_OK;
   const char* value = value_str(v);
-  data_binding_t* rule = data_binding_cast(obj);
+  data_binding_t* rule = DATA_BINDING(obj);
   return_value_if_fail(rule != NULL, RET_BAD_PARAMS);
 
   if (BINDING_RULE(rule)->inited) {
@@ -138,11 +138,10 @@ static ret_t data_binding_object_set_prop(object_t* obj, const char* name, const
 
 static ret_t data_binding_object_get_prop(object_t* obj, const char* name, value_t* v) {
   ret_t ret = RET_OK;
-  data_binding_t* rule = data_binding_cast(obj);
+  data_binding_t* rule = DATA_BINDING(obj);
   return_value_if_fail(rule != NULL, RET_BAD_PARAMS);
 
   if (BINDING_RULE(rule)->inited) {
-    view_model_t* view_model = BINDING_RULE_VIEW_MODEL(rule);
     if (tk_str_eq(name, STR_PROP_SELF)) {
       value_set_pointer(v, BINDING_RULE(rule)->widget);
       return RET_OK; 
@@ -153,7 +152,12 @@ static ret_t data_binding_object_get_prop(object_t* obj, const char* name, value
       return RET_OK;
     }
 
-    return view_model_get_prop(view_model, name, v);
+    if(BINDING_RULE_CONTEXT(rule) != NULL) {
+      view_model_t* view_model = BINDING_RULE_VIEW_MODEL(rule);
+      return view_model_get_prop(view_model, name, v);
+    } else {
+      return RET_NOT_FOUND;
+    }
   }
 
   if (equal(DATA_BINDING_MODE, name)) {
