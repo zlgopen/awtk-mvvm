@@ -27,7 +27,7 @@
 
 * 2020/11/28
   * 更新关于表达式的文档。
-  * 测试各个 demos, 修复 view\_model\_array\_object\_wrapper.c 和 view\_model\_object\S_wrapper.c 中的问题。
+  * 测试各个 demos, 修复 view\_model\_array\_object\_wrapper.c 和 view\_model\_object\_wrapper.c 中的问题。
   
 * 2020/11/27
   * 表达式引擎升级为 fscript，请参考 [fscript 脚本引擎](https://github.com/zlgopen/awtk/blob/master/docs/fscript.md) 获取更多信息。
