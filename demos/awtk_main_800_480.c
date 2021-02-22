@@ -51,9 +51,4 @@ ret_t application_exit() {
 #endif
 #define LCD_HEIGHT 480
 
-#ifdef APP_DEFAULT_FONT
-#undef APP_DEFAULT_FONT
-#endif
-#define APP_DEFAULT_FONT "default_full"
-
 #include "awtk_main.inc"

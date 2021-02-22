@@ -44,7 +44,7 @@ static ret_t on_app_conf_saved(void* ctx, event_t* e) {
 }
 
 ret_t application_init(void) {
-  app_conf_init_json("demo21");
+  app_conf_init_json("demo26");
 
   emitter_on(EMITTER(app_conf_get_instance()), EVT_PROP_CHANGED, on_app_conf_events, NULL);
   emitter_on(EMITTER(app_conf_get_instance()), EVT_CMD_EXECED, on_app_conf_events, NULL);
