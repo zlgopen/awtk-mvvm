@@ -21,6 +21,7 @@
  */
 
 #include "tkc/utils.h"
+#include "tkc/fscript.h"
 #include "calculator.h"
 #include "mvvm/base/utils.h"
 

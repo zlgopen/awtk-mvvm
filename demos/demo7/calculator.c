@@ -21,6 +21,7 @@
 
 #include "tkc/mem.h"
 #include "tkc/utils.h"
+#include "tkc/fscript.h"
 #include "mvvm/base/utils.h"
 #include "calculator.h"
 
