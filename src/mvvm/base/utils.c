@@ -69,20 +69,3 @@ bool_t tk_is_valid_prop_name(const char* name) {
   return TRUE;
 }
 
-#include "tkc/fscript.h"
-#include "tkc/object_default.h"
-
-double tk_expr_eval(const char* str) {
-  value_t v;
-  double ret = 0;
-  object_t* obj = NULL;
-  return_value_if_fail(str != NULL, 0);
-  obj = object_default_create();
-  value_set_int(&v, 0);
-  fscript_eval(obj, str, &v);
-  ret = value_double(&v);
-  OBJECT_UNREF(obj);
-  value_reset(&v);
-
-  return ret;
-}

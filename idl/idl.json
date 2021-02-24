@@ -1634,22 +1634,6 @@
           "type": "ret_t",
           "desc": "返回RET_OK表示成功，否则表示失败。"
         }
-      },
-      {
-        "params": [
-          {
-            "type": "const char*",
-            "name": "str",
-            "desc": "表达式。"
-          }
-        ],
-        "annotation": {},
-        "desc": "expr eval",
-        "name": "tk_expr_eval",
-        "return": {
-          "type": "double",
-          "desc": "返回表达式的值。"
-        }
       }
     ],
     "events": [],
