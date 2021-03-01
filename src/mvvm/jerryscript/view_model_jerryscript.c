@@ -101,18 +101,18 @@ ret_t view_model_jerryscript_load(const char* name, const char* code, uint32_t c
 
 #define STR_NATIVE_MODEL "nativeModel"
 
-jerry_value_t wrap_notify_props_changed(const jerry_value_t func_obj_val,
-                                        const jerry_value_t this_p, const jerry_value_t args_p[],
+jerry_value_t wrap_notify_props_changed(const jerry_call_info_t *call_info_p,
+                                        const jerry_value_t args_p[],
                                         const jerry_length_t args_cnt) {
-  object_t* obj = OBJECT(jsobj_get_prop_pointer(this_p, STR_NATIVE_MODEL));
+  object_t* obj = OBJECT(jsobj_get_prop_pointer(call_info_p->this_value, STR_NATIVE_MODEL));
 
   return jerry_create_number(object_notify_changed(obj));
 }
 
-jerry_value_t wrap_notify_items_changed(const jerry_value_t func_obj_val,
-                                        const jerry_value_t this_p, const jerry_value_t args_p[],
+jerry_value_t wrap_notify_items_changed(const jerry_call_info_t *call_info_p,
+                                        const jerry_value_t args_p[],
                                         const jerry_length_t args_cnt) {
-  object_t* obj = OBJECT(jsobj_get_prop_pointer(this_p, STR_NATIVE_MODEL));
+  object_t* obj = OBJECT(jsobj_get_prop_pointer(call_info_p->this_value, STR_NATIVE_MODEL));
 
   return jerry_create_number(view_model_array_notify_items_changed(VIEW_MODEL(obj)));
 }

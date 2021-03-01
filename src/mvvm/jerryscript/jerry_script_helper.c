@@ -294,7 +294,7 @@ ret_t jerry_script_eval_file(const char* filename, bool_t global) {
   return ret;
 }
 
-jerry_value_t wrap_require(const jerry_value_t func_obj_val, const jerry_value_t this_p,
+jerry_value_t wrap_require(const jerry_call_info_t *call_info_p,
                            const jerry_value_t argv[], const jerry_length_t argc) {
   jerry_value_t jret = 0;
 

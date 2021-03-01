@@ -86,7 +86,7 @@ static ret_t call_on_timer(const timer_info_t* timer) {
   return (ret_t)jerry_get_number_value(res);
 }
 
-jerry_value_t wrap_timer_add(const jerry_value_t func_obj_val, const jerry_value_t this_p,
+jerry_value_t wrap_timer_add(const jerry_call_info_t *call_info_p,
                              const jerry_value_t args_p[], const jerry_length_t args_cnt) {
   int32_t ret = 0;
   return_value_if_fail(args_cnt >= 2, jerry_create_undefined());
@@ -129,7 +129,7 @@ static ret_t call_on_idle(const idle_info_t* idle) {
   return (ret_t)jerry_get_number_value(res);
 }
 
-jerry_value_t wrap_idle_add(const jerry_value_t func_obj_val, const jerry_value_t this_p,
+jerry_value_t wrap_idle_add(const jerry_call_info_t *call_info_p,
                             const jerry_value_t args_p[], const jerry_length_t args_cnt) {
   int32_t ret = 0;
   return_value_if_fail(args_cnt >= 2, jerry_create_undefined());
@@ -147,7 +147,7 @@ jerry_value_t wrap_idle_add(const jerry_value_t func_obj_val, const jerry_value_
   return jerry_create_number(ret);
 }
 
-jerry_value_t wrap_timer_remove(const jerry_value_t func_obj_val, const jerry_value_t this_p,
+jerry_value_t wrap_timer_remove(const jerry_call_info_t *call_info_p,
                                 const jerry_value_t args_p[], const jerry_length_t args_cnt) {
   ret_t ret = 0;
   uint32_t timer_id = (uint32_t)jerry_get_number_value(args_p[0]);
@@ -156,7 +156,7 @@ jerry_value_t wrap_timer_remove(const jerry_value_t func_obj_val, const jerry_va
   return jerry_create_number(ret);
 }
 
-jerry_value_t wrap_idle_remove(const jerry_value_t func_obj_val, const jerry_value_t this_p,
+jerry_value_t wrap_idle_remove(const jerry_call_info_t *call_info_p,
                                const jerry_value_t args_p[], const jerry_length_t args_cnt) {
   ret_t ret = 0;
   uint32_t idle_id = (uint32_t)jerry_get_number_value(args_p[0]);
@@ -165,13 +165,13 @@ jerry_value_t wrap_idle_remove(const jerry_value_t func_obj_val, const jerry_val
   return jerry_create_number(ret);
 }
 
-jerry_value_t wrap_quit(const jerry_value_t func_obj_val, const jerry_value_t this_p,
+jerry_value_t wrap_quit(const jerry_call_info_t *call_info_p,
                         const jerry_value_t args_p[], const jerry_length_t args_cnt) {
   tk_quit();
   return jerry_create_number(0);
 }
 
-jerry_value_t wrap_navigate_to(const jerry_value_t func_obj_val, const jerry_value_t this_p,
+jerry_value_t wrap_navigate_to(const jerry_call_info_t *call_info_p,
                                const jerry_value_t args_p[], const jerry_length_t args_cnt) {
   str_t str;
   value_t v;
