@@ -261,13 +261,13 @@ error:
   return req;
 }
 
-jerry_value_t js_return_result(const jerry_value_t func_obj_val, const jerry_value_t this_p,
+jerry_value_t js_return_result(const jerry_call_info_t *call_info_p,
                                const jerry_value_t args_p[], const jerry_length_t args_cnt) {
   if (args_cnt > 0) {
     value_t v;
     str_t str;
     jerry_value_t result = args_p[0];
-    navigator_request_t* req = NAVIGATOR_REQUEST(jsobj_get_prop_pointer(this_p, STR_NATIVE_REQ));
+    navigator_request_t* req = NAVIGATOR_REQUEST(jsobj_get_prop_pointer(call_info_p->this_value, STR_NATIVE_REQ));
 
     str_init(&str, 0);
     value_set_int(&v, 0);
