@@ -243,13 +243,13 @@ ret_t jerry_script_eval_buff(const char* script, uint32_t size, const char* file
   return_value_if_fail(script != NULL && size > 0, RET_NOT_FOUND);
 
   if (global) {
-    parsed_code = jerry_parse(NULL, 0, (jerry_char_t*)script, size, JERRY_PARSE_NO_OPTS);
+    parsed_code = jerry_parse((jerry_char_t*)script, size, NULL);
     log_debug("load %s into global\n", filename);
   } else {
     str_t str;
     str_init(&str, size + 100);
     awtk_jerryscript_wrap_mudule(&str, filename, script, size);
-    parsed_code = jerry_parse(NULL, 0, (jerry_char_t*)str.str, str.size, JERRY_PARSE_NO_OPTS);
+    parsed_code = jerry_parse((jerry_char_t*)str.str, str.size, NULL);
     str_reset(&str);
     log_debug("load %s as module\n", filename);
   }
@@ -323,7 +323,7 @@ jerry_value_t wrap_require(const jerry_call_info_t *call_info_p,
   return jerry_create_null();
 }
 
-#define STR_BOOT_JS "var exports = {};\nthis." STR_MODULES "={};\n"
+#define STR_BOOT_JS "var exports = {};\nthis." STR_MODULES "={};var console = {log : print}\n\n"
 
 ret_t jerry_script_register_builtins(void) {
   jerryx_handler_register_global((const jerry_char_t*)"gc", jerryx_handler_gc);

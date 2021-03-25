@@ -258,7 +258,7 @@ static jerry_value_t wait_for_source_callback(
 {
   (void)user_p; /* unused */
   jerry_value_t ret_val =
-      jerry_parse(resource_name_p, resource_name_size, source_p, source_size, JERRY_PARSE_NO_OPTS);
+      jerry_parse(source_p, source_size, NULL);
 
   if (!jerry_value_is_error(ret_val)) {
     jerry_value_t func_val = ret_val;
@@ -612,8 +612,7 @@ int main(int argc, char** argv) {
           break;
         }
 
-        ret_value = jerry_parse((jerry_char_t*)file_names[i], strlen(file_names[i]), source_p,
-                                source_size, JERRY_PARSE_NO_OPTS);
+        ret_value = jerry_parse(source_p, source_size, NULL);
 
         if (!jerry_value_is_error(ret_value) && !is_parse_only) {
           jerry_value_t func_val = ret_value;
@@ -737,7 +736,7 @@ int main(int argc, char** argv) {
         }
 
         /* Evaluate the line */
-        jerry_value_t ret_val = jerry_parse(NULL, 0, buffer, len, JERRY_PARSE_NO_OPTS);
+        jerry_value_t ret_val = jerry_parse(buffer, len, NULL);
 
         if (!jerry_value_is_error(ret_val)) {
           jerry_value_t func_val = ret_val;
