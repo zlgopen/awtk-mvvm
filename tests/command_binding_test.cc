@@ -24,7 +24,7 @@ TEST(CommandBinding, key_filter) {
   command_binding_t* rule = (command_binding_t*)command_binding_create();
   object_t* o = OBJECT(rule);
 
-  ASSERT_EQ(object_set_prop_str(o, COMMAND_BINDING_KEY_FILTER, "ctrl+a"), RET_OK);
+  ASSERT_EQ(object_set_prop_str(o, COMMAND_BINDING_KEY_FILTER, "ctrl_a"), RET_OK);
   ASSERT_EQ(rule->filter.ctrl, TRUE);
   ASSERT_EQ(rule->filter.key, TK_KEY_a);
 
@@ -35,7 +35,7 @@ TEST(CommandBinding, key_filter1) {
   command_binding_t* rule = (command_binding_t*)command_binding_create();
   object_t* o = OBJECT(rule);
 
-  ASSERT_EQ(object_set_prop_str(o, COMMAND_BINDING_KEY_FILTER, "ctrl+shift+LEFT"), RET_OK);
+  ASSERT_EQ(object_set_prop_str(o, COMMAND_BINDING_KEY_FILTER, "ctrl_shift_LEFT"), RET_OK);
   ASSERT_EQ(rule->filter.ctrl, TRUE);
   ASSERT_EQ(rule->filter.shift, TRUE);
   ASSERT_EQ(rule->filter.lctrl, TRUE);

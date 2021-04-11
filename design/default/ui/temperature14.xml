@@ -1,5 +1,5 @@
 <window v-model="temperature" 
- v-on:key_down:ctrl+s="{apply}" 
+ v-on:key_down:ctrl_s="{apply}" 
  v-on:key_long_press:f3="{apply}" 
  v-on:key_down:escape="{nothing, QuitApp=true}">
   <label  x="center" y="middle:-80" w="80%" h="40" text="ctrl+s/long press F3 to apply\nescape to quit"/>
