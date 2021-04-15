@@ -1,0 +1,78 @@
+[
+  {
+    "type": "class",
+    "methods": [
+      {
+        "params": [],
+        "annotation": {
+          "constructor": true
+        },
+        "desc": "创建temperature对象。",
+        "name": "temperature_create",
+        "return": {
+          "type": "temperature_t*",
+          "desc": "返回temperature对象。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "temperature_t*",
+            "name": "temperature",
+            "desc": "temperature对象。"
+          },
+          {
+            "type": "double",
+            "name": "value",
+            "desc": "温度。"
+          }
+        ],
+        "annotation": {},
+        "desc": "设置value。",
+        "name": "temperature_set_value",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "temperature_t*",
+            "name": "temperature",
+            "desc": "temperature对象。"
+          }
+        ],
+        "annotation": {
+          "destructor": true
+        },
+        "desc": "销毁temperature对象。",
+        "name": "temperature_destroy",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      }
+    ],
+    "events": [],
+    "properties": [
+      {
+        "name": "value",
+        "desc": "值。",
+        "type": "double",
+        "annotation": {
+          "readable": true,
+          "writable": true
+        }
+      }
+    ],
+    "header": "demo34/temperature.h",
+    "desc": "temperature info",
+    "name": "temperature_t",
+    "parent": "emitter_t",
+    "annotation": {
+      "model": true
+    },
+    "level": 2
+  }
+]

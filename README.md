@@ -143,6 +143,7 @@ scons LINUX_FB=true
 | demo31   | (no)     | 嵌套 view model                       |
 | demo32   | (no)     | 一个 view model 多个 model 的用法      |
 | demo33   | (no)     | 演示 navigate 的参数      |
+| demo34   | (no)     | 演示模型触发界面更新。|
 
 * [完整示例及模板项目](https://github.com/zlgopen/awtk-mvvm-c-hello)
 
