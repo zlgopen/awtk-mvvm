@@ -171,7 +171,7 @@ static ret_t view_model_compositor_on_unmount(view_model_t* view_model) {
 
   for (i = 0; i < nr; i++) {
     view_model_t* iter = all[i];
-    view_model_on_will_unmount(iter);
+    view_model_on_unmount(iter);
   }
 
   return RET_OK;

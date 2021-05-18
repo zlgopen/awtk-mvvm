@@ -1,5 +1,9 @@
 # 最新动态
 
+* 2021/05/18
+  * 修复data_binding的内存泄漏问题。（感谢周聪提供补丁）
+  * 修复view_model_compositor_on_unmount没有正确on_unmount的问题。（感谢周聪提供补丁）
+
 * 2021/04/15
   * 增加demo34。演示模型触发界面更新。
 
