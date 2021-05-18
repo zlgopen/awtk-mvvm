@@ -55,6 +55,8 @@ static ret_t data_binding_on_destroy(object_t* obj) {
   if (rule->props != NULL) {
     object_unref(rule->props);
   }
+  TKMEM_FREE(rule->to_view);
+  TKMEM_FREE(rule->to_model);
 
   return RET_OK;
 }
@@ -144,7 +146,7 @@ static ret_t data_binding_object_get_prop(object_t* obj, const char* name, value
   if (BINDING_RULE(rule)->inited) {
     if (tk_str_eq(name, STR_PROP_SELF)) {
       value_set_pointer(v, BINDING_RULE(rule)->widget);
-      return RET_OK; 
+      return RET_OK;
     }
 
     if (tk_str_eq(name, rule->prop) && rule->value != NULL) {
@@ -152,7 +154,7 @@ static ret_t data_binding_object_get_prop(object_t* obj, const char* name, value
       return RET_OK;
     }
 
-    if(BINDING_RULE_CONTEXT(rule) != NULL) {
+    if (BINDING_RULE_CONTEXT(rule) != NULL) {
       view_model_t* view_model = BINDING_RULE_VIEW_MODEL(rule);
       return view_model_get_prop(view_model, name, v);
     } else {
