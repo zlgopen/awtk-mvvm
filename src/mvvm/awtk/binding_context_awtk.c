@@ -471,7 +471,7 @@ static ret_t widget_trim_children(binding_context_t* ctx, widget_t* widget, uint
   int32_t i = 0;
   int32_t real_nr = widget_count_children(widget);
 
-  widget->need_relayout_children = TRUE;
+  widget_set_need_relayout(widget);
   if (real_nr <= nr || widget->children == NULL) {
     return RET_OK;
   }
