@@ -24,6 +24,7 @@
 #include "jerryscript-port.h"
 #include "jerryscript-core.h"
 #include "jerryscript-ext/handler.h"
+#include "jerry_script_helper.h"
 
 #include "tkc/fs.h"
 #include "tkc/str.h"

@@ -39,6 +39,8 @@ ret_t jerry_script_eval_file(const char* filename, bool_t global);
 ret_t jerry_script_eval_buff(const char* script, uint32_t size, const char* filename,
                              bool_t global);
 
+#define jerry_get_boolean_value(v) jerry_value_to_boolean(v)
+
 END_C_DECLS
 
 #endif /*JERRY_SCRIPT_HELPER_H*/
