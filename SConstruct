@@ -71,4 +71,4 @@ def dll_def_processor():
 helper = app.Helper(ARGUMENTS);
 helper.set_dll_def('src/mvvm.def').set_dll_def_processor(dll_def_processor).add_cpppath(TK_3RD_DIRS).add_ccflags(APP_CFLAGS).add_libs(APP_LIBS).call(DefaultEnvironment)
 
-SConscript(SConscripts)
+helper.SConscript(SConscripts)

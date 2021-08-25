@@ -988,29 +988,31 @@ ui_loader_mvvm_t* ui_loader_mvvm_cast(ui_loader_t* loader) {
 widget_t* ui_loader_mvvm_load_widget(navigator_request_t* req) {
   const asset_info_t* ui = NULL;
   const char* target = NULL;
+  widget_t* root = NULL;
   return_value_if_fail(req != NULL, NULL);
 
   target = object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_TARGET);
   return_value_if_fail(target != NULL, NULL);
 
   ui = assets_manager_ref(assets_manager(), ASSET_TYPE_UI, target);
-  if (ui != NULL) {
-    if (ui->data != NULL && ui->size > 0) {
-      ui_loader_t* loader = ui_loader_mvvm();
-      ui_builder_t* builder;
+  if (ui != NULL && ui->data != NULL && ui->size > 0) {
+    ui_loader_t* loader = ui_loader_mvvm();
+    ui_builder_t* builder = ui_builder_default_create(target);
 
-      builder = ui_builder_default(target);
+    if (builder != NULL) {
       UI_LOADER_MVVM(loader)->navigator_request = req;
       UI_LOADER_MVVM(loader)->ui = ui;
-
       ui_loader_mvvm_load(loader, ui->data, ui->size, builder);
-      return builder->root;
+      root = builder->root;
+      ui_builder_destroy(builder);
     }
 
-    assets_manager_unref(assets_manager(), ui);
+    if (root == NULL) {
+      assets_manager_unref(assets_manager(), ui);
+    }
   }
 
-  return NULL;
+  return root;
 }
 
 static const asset_info_t* ui_loader_mvvm_get_ui_from_rule(binding_rule_t* rule) {
@@ -1034,11 +1036,12 @@ static const asset_info_t* ui_loader_mvvm_get_ui_from_rule(binding_rule_t* rule)
 }
 
 ret_t ui_loader_mvvm_reload_widget(binding_rule_t* rule) {
+  ret_t ret = RET_OK;
   const asset_info_t* ui = NULL;
   ui_loader_t* loader = ui_loader_mvvm();
-  ui_builder_t* builder = ui_builder_default(NULL);
+  ui_builder_t* builder = ui_builder_default_create(NULL);
   binding_context_t* ctx;
-  return_value_if_fail(rule != NULL, RET_BAD_PARAMS);
+  return_value_if_fail(rule != NULL && builder != NULL, RET_BAD_PARAMS);
 
   ctx = BINDING_RULE_CONTEXT(rule);
   return_value_if_fail(ctx != NULL && ctx->navigator_request != NULL, RET_BAD_PARAMS);
@@ -1051,5 +1054,7 @@ ret_t ui_loader_mvvm_reload_widget(binding_rule_t* rule) {
   UI_LOADER_MVVM(loader)->binding_context = ctx;
   UI_LOADER_MVVM(loader)->navigator_request = ctx->navigator_request;
 
-  return ui_loader_mvvm_load(loader, ui->data, ui->size, builder);
+  ret = ui_loader_mvvm_load(loader, ui->data, ui->size, builder);
+  ui_builder_destroy(builder);
+  return ret;
 }

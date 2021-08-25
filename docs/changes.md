@@ -18,6 +18,7 @@
   * 完善编译脚本。
   * 适配 jerryscript（SHA-1: 3bcd48f72d4af01d1304b754ef19fe1a02c96049）
   * 完善文档。（感谢雨欣提供补丁）
+  * 修正由于 ui_builder_default 接口变化导致编译失败的问题 
 
 * 2021/05/26
   * 修复去掉need_relayout_children的问题。
