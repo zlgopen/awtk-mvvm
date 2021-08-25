@@ -23,8 +23,8 @@
 #define TK_DATA_BINDING_H
 
 #include "tkc/str.h"
+#include "tkc/object.h"
 #include "tkc/fscript.h"
-#include "tkc/object_default.h"
 #include "mvvm/base/binding_rule.h"
 
 BEGIN_C_DECLS
@@ -191,7 +191,27 @@ ret_t data_binding_get_prop(data_binding_t* rule, value_t* v);
  */
 ret_t data_binding_set_prop(data_binding_t* rule, const value_t* v);
 
-#define DATA_BINDING(rule) ((data_binding_t*)rule);
+/**
+ * @method binding_rule_is_data_binding
+ * 判断当前规则是否为数据绑定规则。
+ *
+ * @param {binding_rule_t*} rule 绑定规则对象。
+ *
+ * @return {bool_t} 返回TRUE表示是，否则表示不是。
+ */
+bool_t binding_rule_is_data_binding(binding_rule_t* rule);
+
+/**
+ * @method data_binding_cast
+ * 转换为data_binding对象。
+ * @annotation ["cast"]
+ * @param {void*} rule 绑定规则对象。
+ *
+ * @return {data_binding_t*} 返回绑定规则对象。
+ */
+data_binding_t* data_binding_cast(void* rule);
+
+#define DATA_BINDING(rule) data_binding_cast((void*)rule)
 
 #define DATA_BINDING_PATH "Path"
 #define DATA_BINDING_MODE "Mode"

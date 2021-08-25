@@ -23,7 +23,6 @@
 #define TK_VALUE_CONVERTER_JERRYSCRIPT_H
 
 #include "tkc/str.h"
-#include "jerryscript.h"
 #include "mvvm/base/value_converter.h"
 
 BEGIN_C_DECLS
@@ -40,7 +39,7 @@ BEGIN_C_DECLS
 typedef struct _value_converter_jerryscript_t {
   value_converter_t value_converter;
 
-  /*private*/
+  /*避免每次动态分配内存*/
   str_t temp;
 } value_converter_jerryscript_t;
 

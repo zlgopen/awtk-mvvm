@@ -29,4 +29,25 @@ ret_t application_init(void) {
   return navigator_to("app_conf_reload");
 }
 
-#include "../awtk_main_800_480.c"
+ret_t application_exit(void) {
+  log_debug("application_exit\n");
+
+  if (app_conf_get_instance() != NULL) {
+    app_conf_save();
+    app_conf_deinit();
+  }
+
+  return RET_OK;
+}
+
+#ifdef LCD_WIDTH
+#undef LCD_WIDTH
+#endif
+#define LCD_WIDTH 800
+
+#ifdef LCD_HEIGHT
+#undef LCD_HEIGHT
+#endif
+#define LCD_HEIGHT 480
+
+#include "../main.inc"

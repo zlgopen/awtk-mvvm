@@ -1,5 +1,5 @@
 {
-  "name": "awtk_mvvm",
+  "name": "awtk-mvvm",
   "version": "1.0.0",
   "date": "2020-07-20",
   "team": "AWTK Develop Team",
@@ -26,9 +26,6 @@
           },
           "ap": {
             "text": " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~"
-          },
-          "default_full": {
-            "text": " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~"
           }
         },
         "lcd": {
@@ -44,5 +41,6 @@
     "name": "AWTK Designer",
     "version": "1.0.0"
   },
-  "awtkRoot": "${DesignerPath}/SDK/awtk"
+  "awtkRoot": "${AWTK_SDK_PATH}/awtk",
+  "type": "PROJECT_WIDGETS_APPLICATION"
 }

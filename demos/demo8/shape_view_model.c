@@ -33,8 +33,8 @@ static ret_t shape_view_model_set_prop(object_t* obj, const char* name, const va
     ashape->opacity = value_int32(v);
 
     return RET_OK;
-  } else if (tk_str_ieq("text_align", name)) {
-    ashape->text_align = value_int32(v);
+  } else if (tk_str_ieq("align", name)) {
+    ashape->align = value_int32(v);
 
     return RET_OK;
   } else if (tk_str_ieq("name", name)) {
@@ -71,8 +71,8 @@ static ret_t shape_view_model_get_prop(object_t* obj, const char* name, value_t*
   } else if (tk_str_ieq("opacity", name)) {
     value_set_int32(v, ashape->opacity);
     return RET_OK;
-  } else if (tk_str_ieq("text_align", name)) {
-    value_set_int32(v, ashape->text_align);
+  } else if (tk_str_ieq("align", name)) {
+    value_set_int32(v, ashape->align);
     return RET_OK;
   } else if (tk_str_ieq("name", name)) {
     value_set_str(v, ashape->name.str);
@@ -88,7 +88,7 @@ static ret_t shape_view_model_get_prop(object_t* obj, const char* name, value_t*
 static bool_t shape_view_model_can_exec(object_t* obj, const char* name, const char* args) {
   shape_view_model_t* vm = (shape_view_model_t*)(obj);
   shape_t* ashape = vm->ashape;
-  if (tk_str_ieq("change_type", name)) {
+  if (tk_str_ieq("changeType", name)) {
     return TRUE;
 
   } else if (tk_str_ieq("save", name)) {
@@ -100,7 +100,7 @@ static bool_t shape_view_model_can_exec(object_t* obj, const char* name, const c
 static ret_t shape_view_model_exec(object_t* obj, const char* name, const char* args) {
   shape_view_model_t* vm = (shape_view_model_t*)(obj);
   shape_t* ashape = vm->ashape;
-  if (tk_str_ieq("change_type", name)) {
+  if (tk_str_ieq("changeType", name)) {
     return shape_change_type(ashape, tk_atoi(args));
 
   } else if (tk_str_ieq("save", name)) {

@@ -1,0 +1,30 @@
+<window v-model="com_settings"> 
+  <combo_box x="r:24" y="10" w="200" h="30" options="UART;SOCKET" v-data:value="{type}" readonly="true"/>
+  <pages x="10" y="50" w="-20" h="-90" v-data:value="{type}">
+    <view x="0" y="0" w="100%" h="100%" children_layout="default(c=1,h=25,m=0,s=5)">
+      <row children_layout="default(c=0,r=1,m=0,s=5)">
+        <label text="Device" w="80"/>
+        <combo_box w="200" options="COM1;COM2;COM3" v-data:text="{device}" readonly="true"/>
+      </row>
+      <row children_layout="default(c=0,r=1,m=0,s=5)">
+        <label text="Baud Rate" w="80"/>
+        <combo_box w="200" options="9600;115200;" v-data:text="{baudrate}" readonly="true"/>
+      </row>
+      <row children_layout="default(c=0,r=1,m=0,s=5)">
+        <label text="Parity" w="80"/>
+        <combo_box w="200" options="none;odd;even" v-data:value="{parity}" readonly="true"/>
+      </row>
+    </view>
+    <view x="0" y="0" w="100%" h="100%" children_layout="default(c=1,h=25,m=0,s=5)">
+      <row children_layout="default(c=0,r=1,m=0,s=5)">
+        <label text="IP" w="80"/>
+        <edit w="200" v-data:text="{ip, Trigger=Changing}" max="15"/>
+      </row>
+      <row children_layout="default(c=0,r=1,m=0,s=5)">
+        <label text="Port" w="80"/>
+        <edit  w="200" input_type="uint" min="0" max="10000" auto_fix="true" v-data:text="{port, Trigger=Changing}"/>
+      </row>
+    </view>
+  </pages>
+  <label x="10" y="m" w="100%" h="30" v-data:text="{summary}" />
+</window>

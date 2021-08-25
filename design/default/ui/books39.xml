@@ -1,0 +1,25 @@
+<window anim_hint="htranslate" v-model="books">
+   <label x="0" y="0" w="100%" h="30" v-data:text="{items}"/>
+   <list_view x="0"  y="30" w="100%" h="-80" item_height="40">
+    <scroll_view v-for-items="true" name="column" x="0"  y="0" w="100%" h="100%">
+      <list_item children_layout="default(rows=1,cols=0,s=4)">
+        <property name="v-data:style">
+          <![CDATA[ {(index % 2) ? "odd" : "even"} ]]>
+        </property>
+
+        <label w="20" v-data:text="{index}"/>
+        <label w="35%" v-data:text="{item.name}"/>
+        <label w="40" v-data:text="{item.stock}"/>
+        <column  w="128" children_layout="default(rows=1,cols=0,s=5,ym=5)">
+          <button w="70" text="Remove" v-on:click="{remove}"/>
+          <button w="50" text="Sale" v-on:click="{sale}"/>
+        </column>
+      </list_item>
+    </scroll_view>
+    <scroll_bar_m name="bar" x="right" y="0" w="6" h="100%" value="0"/>
+  </list_view>
+  <column  x="0" y="b" w="100%" h="40" children_layout="default(rows=1,col=2,s=5,m=5)">
+    <button text="Add" v-on:click="{add}"/>
+    <button text="Clear" v-on:click="{clear}"/>
+  </column>
+</window>

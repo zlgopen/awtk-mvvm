@@ -37,7 +37,6 @@ typedef ret_t (*view_model_on_will_unmount_t)(view_model_t* view_model);
 typedef ret_t (*view_model_on_unmount_t)(view_model_t* view_model);
 typedef const char* (*view_model_preprocess_expr_t)(view_model_t* view_model, const char* expr);
 typedef const char* (*view_model_preprocess_prop_t)(view_model_t* view_model, const char* prop);
-
 typedef view_model_t* (*view_model_create_sub_view_model_t)(view_model_t* view_model,
                                                             const char* name);
 typedef view_model_t* (*view_model_create_sub_view_model_array_t)(view_model_t* view_model,
@@ -225,6 +224,17 @@ ret_t view_model_exec(view_model_t* view_model, const char* name, const char* ar
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
 ret_t view_model_notify_props_changed(view_model_t* view_model);
+
+/**
+ * @method view_model_notify_items_changed
+ * 触发items改变事件。
+ *
+ * @param {view_model_t*} view_model view_model对象。
+ * @param {object_t*} target 发生变化的items对象。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t view_model_notify_items_changed(view_model_t* view_model, object_t* target);
 
 /**
  * @method view_model_create_sub_view_model

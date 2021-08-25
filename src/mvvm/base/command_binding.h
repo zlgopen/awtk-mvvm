@@ -94,6 +94,7 @@ typedef struct _command_binding_t {
   bool_t auto_disable;
 
   /*private*/
+  str_t temp;
   shortcut_t filter;
 } command_binding_t;
 
@@ -126,7 +127,27 @@ bool_t command_binding_can_exec(command_binding_t* rule);
  */
 ret_t command_binding_exec(command_binding_t* rule);
 
-#define COMMAND_BINDING(rule) ((command_binding_t*)rule);
+/**
+ * @method binding_rule_is_command_binding
+ * 判断当前规则是否为命令绑定规则。
+ *
+ * @param {binding_rule_t*} rule 绑定规则对象。
+ *
+ * @return {bool_t} 返回TRUE表示是，否则表示不是。
+ */
+bool_t binding_rule_is_command_binding(binding_rule_t* rule);
+
+/**
+ * @method command_binding_cast
+ * 转换为command_binding对象。
+ * @annotation ["cast"]
+ * @param {void*} rule 绑定规则对象。
+ *
+ * @return {data_binding_t*} 返回绑定规则对象。
+ */
+command_binding_t* command_binding_cast(void* rule);
+
+#define COMMAND_BINDING(rule) command_binding_cast((void*)rule)
 
 #define COMMAND_BINDING_CMD_DEBUG "debug"
 #define COMMAND_BINDING_CMD_FSCRIPT "fscript"
@@ -136,6 +157,7 @@ ret_t command_binding_exec(command_binding_t* rule);
 #define COMMAND_BINDING_CMD_SET_WIDGET_PROP "SetWidgetProp"
 
 #define COMMAND_BINDING_ARGS "Args"
+
 #define COMMAND_BINDING_COMMAND "Command"
 #define COMMAND_BINDING_QUIT_APP "QuitApp"
 #define COMMAND_BINDING_AUTO_DISABLE "AutoDisable"

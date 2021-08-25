@@ -1,8 +1,8 @@
 <window
- v-on:global_key_down:f1="{debug}" 
- v-on:global_key_long_press:f2="{debug}" >
+ v-on:global_key_down:f1="{fscript, Args=print(&quot;global_key_down:f1&quot;)}" 
+ v-on:global_key_long_press:f2="{fscript, Args=print(&quot;global_key_long_press:f2&quot;)}">
   <button text="Temperature" x="center" y="middle:-40" w="40%" h="40" 
-    v-on:click="{navigate, args=temperature9}"/>
+    v-on:click="{navigate, Args=temperature9}"/>
   <button text="Humidity" x="center" y="middle:40" w="40%" h="40" 
-    v-on:click="{navigate, args=humidity}"/>
+    v-on:click="{navigate, Args=humidity}"/>
 </window>

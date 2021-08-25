@@ -23,13 +23,10 @@
 
 namespace vm {
 
-ViewModelArray::ViewModelArray(navigator_request_t* request) {
-  this->request = request;
-  emitter_init(&(this->emitter));
+ViewModelArray::ViewModelArray(navigator_request_t* request) : ViewModel(request) {
 }
 
 ViewModelArray::~ViewModelArray() {
-  emitter_deinit(&(this->emitter));
 }
 
 uint32_t ViewModelArray::GetSize() const {
@@ -58,46 +55,6 @@ ret_t ViewModelArray::Remove(int32_t index) {
 
 ret_t ViewModelArray::Clear() {
   return RET_NOT_IMPL;
-}
-
-ret_t ViewModelArray::Off(uint32_t id) {
-  return emitter_off(&(this->emitter), id);
-}
-
-ret_t ViewModelArray::OffByCtx(void* ctx) {
-  return emitter_off_by_ctx(&(this->emitter), ctx);
-}
-
-ret_t ViewModelArray::DispatchEvent(event_t* event) {
-  return emitter_dispatch(&(this->emitter), event);
-}
-
-uint32_t ViewModelArray::On(uint32_t event, event_func_t on_event, void* ctx) {
-  return emitter_on(&(this->emitter), event, on_event, ctx);
-}
-
-ret_t ViewModelArray::OnWillMount(navigator_request_t* request) {
-  log_debug("%s\n", __FUNCTION__);
-
-  return RET_OK;
-}
-
-ret_t ViewModelArray::OnMount() {
-  log_debug("%s\n", __FUNCTION__);
-
-  return RET_OK;
-}
-
-ret_t ViewModelArray::OnWillUnmount() {
-  log_debug("%s\n", __FUNCTION__);
-
-  return RET_OK;
-}
-
-ret_t ViewModelArray::OnUnmount() {
-  log_debug("%s\n", __FUNCTION__);
-
-  return RET_OK;
 }
 
 }  // namespace vm

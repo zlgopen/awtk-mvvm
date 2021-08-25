@@ -102,7 +102,7 @@ static ret_t temperature_humidity_view_model_get_prop(object_t* obj, const char*
 static bool_t temperature_humidity_view_model_can_exec(object_t* obj, const char* name,
                                                        const char* args) {
   temperature_humidity_view_model_t* vm = (temperature_humidity_view_model_t*)(obj);
-  return_value_if_fail(vm != NULL, RET_BAD_PARAMS);
+  return_value_if_fail(vm != NULL, FALSE);
 
   if (tk_str_ieq("outside_temp_reset", name)) {
     return object_can_exec(vm->outside_temperature, "reset", args);

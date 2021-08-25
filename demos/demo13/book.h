@@ -1,18 +1,42 @@
 ﻿
+/**
+ * File:   book.h
+ * Author: AWTK Develop Team
+ * Brief:  book
+ *
+ * Copyright (c) 2020 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * License file for more details.
+ *
+ */
+
+/**
+ * History:
+ * ================================================================
+ * 2021-05-28 Liu YuXin <liuyuxin@zlg.cn> created
+ *
+ */
+
 #ifndef TK_BOOK_H
 #define TK_BOOK_H
 
+#include "tkc/object.h"
 #include "tkc/str.h"
 
 BEGIN_C_DECLS
 
 /**
  * @class book_t
+ * @parent object_t
  * @annotation ["model"]
  * 图书信息。
  *
  */
 typedef struct _book_t {
+  object_t obj;
   /**
    * @property {str_t} name
    * @annotation ["readable", "writable"]
@@ -29,47 +53,25 @@ typedef struct _book_t {
 
 /**
  * @method book_create
- * 创建book对象。
+ * 创建book的obj对象。
  *
  * @annotation ["constructor"]
+ * @return {object_t*} 返回book的obj对象。
+ */
+object_t* book_create(void);
+
+/**
+ * @method book_cast
+ * 转换为book对象。
+ * 
+ * @annotation ["cast"]
+ * @param {object_t*} obj object。
+ * 
  * @return {book_t*} 返回book对象。
  */
-book_t* book_create(void);
+book_t* book_cast(object_t* obj);
 
-/**
- * @method book_destroy
- * 销毁book对象。
- *
- * @annotation ["destructor"]
- * @param {book_t*} book book对象。
- *
- * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
- */
-ret_t book_destroy(book_t* book);
-
-/**
- * @method book_sale
- * 卖掉一本。
- *
- * @annotation ["command"]
- * @param {book_t*} book book对象。
- *
- * @return {ret_t}
- * 返回RET_OK表示成功；返回RET_OBJECT_CHANGED表示模型有变化，View需要刷新；返回其它表示失败。
- */
-ret_t book_sale(book_t* book);
-
-/**
- * @method book_can_sale
- * 检查sale命令是否可以执行。
- *
- * @param {book_t*} book book对象。
- *
- * @return {bool_t} 返回FALSE表示不能执行，否则表示可以执行。
- */
-bool_t book_can_sale(book_t* book);
-
-int book_cmp(book_t* a, book_t* b);
+#define BOOK(obj) book_cast(obj)
 
 END_C_DECLS
 

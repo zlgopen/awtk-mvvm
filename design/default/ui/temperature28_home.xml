@@ -1,25 +1,25 @@
 <window v-model="temperature" children_layout="default(h=30,c=2,m=3,s=2,keep_invisible=true)">
-	<slider name="slider1">
-		<property name="v-data:value">
-			<![CDATA[
-			{value,
-			ToModel=
-			widget_set(window.inc.visible, if(value < 90, true, false))
-			widget_set(window.dec.visible, if(value > 10, true, false))
-			value}
-			]]>
-		</property>
-	</slider>
-	<slider name="slider2" v-data:value="{value, ToModel=value+10, ToView=value-10}" />
-	<label name="text1" v-data:text="{value}" />
-	<label name="text2">
-		<property name="v-data:text">
-			<![CDATA[{if(value < 50, "low", "high")}]]>
-		</property>
-	</label>
-	<button name="inc" text="Inc" v-on:click="{fscript, args=widget_set(window.slider1.value, widget_get(window.slider1.value)+10)}" />
-	<button name="dec" text="Dec" v-on:click="{fscript, args=widget_set(window.slider1.value, widget_get(window.slider1.value)-10)}" />
-	<button text="Open" v-on:click="{fscript, args=navigator_to(temperature28)}" />
-	<button text="Replace" v-on:click="{fscript, args=navigator_replace(temperature28)}" />
-	<button text="Exec Open" v-on:click="{fscript, args=exec(navigate, temperature28)}" />
+  <slider name="slider1">
+    <property name="v-data:value">
+      <![CDATA[
+      {value,
+      ToModel=
+      widget_set(window.inc.visible, if(value < 90, true, false))
+      widget_set(window.dec.visible, if(value > 10, true, false))
+      value}
+      ]]>
+    </property>
+  </slider>
+  <slider name="slider2" v-data:value="{value, ToModel=value+10, ToView=value-10}" />
+  <label name="text1" v-data:text="{value}" />
+  <label name="text2">
+    <property name="v-data:text">
+      <![CDATA[{if(value < 50, "low", "high")}]]>
+    </property>
+  </label>
+  <button name="inc" text="Inc" v-on:click="{fscript, Args=widget_set(window.slider1.value, widget_get(window.slider1.value)+10)}" />
+  <button name="dec" text="Dec" v-on:click="{fscript, Args=widget_set(window.slider1.value, widget_get(window.slider1.value)-10)}" />
+  <button text="Open" v-on:click="{fscript, Args=navigator_to(temperature28)}" />
+  <button text="Replace" v-on:click="{fscript, Args=navigator_replace(temperature28)}" />
+  <button text="Exec Open" v-on:click="{fscript, Args=exec(navigate, temperature28)}" />
 </window>

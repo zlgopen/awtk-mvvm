@@ -5,18 +5,18 @@
     "events": [],
     "properties": [
       {
-        "name": "value",
-        "desc": "值。",
-        "type": "double",
+        "name": "close_current",
+        "desc": "是否关闭当前窗口。",
+        "type": "bool_t",
         "annotation": {
           "readable": true,
           "writable": true
         }
       }
     ],
-    "header": "demo1/temperature.h",
-    "desc": "温度控制器。",
-    "name": "temperature_t",
+    "header": "demo33/controller.h",
+    "desc": "窗口控制器。",
+    "name": "controller_t",
     "annotation": {
       "model": true
     },

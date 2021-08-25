@@ -18,11 +18,11 @@ exec="start_animator:rotation"
 在 MVVM 中，一般是根据模型中数据来控制动画。比如在本例中，温度低于 3 或高于 6 时开始动画，其它暂停动画，可以这样写：
 
 ```
-{($value < 3 || $value > 6) ? "start_animator:rotation" : "pause_animator:rotation"}
+{(value < 3 || value > 6) ? "start_animator:rotation" : "pause_animator:rotation"}
 ```
 
 由于 XML 的属性中不允许出现<>"等字符，我们需要把属性独立出来：
 
 ```
-    <property name="v-data:exec"><![CDATA[ {($value < 3 || $value > 6) ? "start_animator:rotation" : "pause_animator:rotation"} ]]></property>
+    <property name="v-data:exec"><![CDATA[ {(value < 3 || value > 6) ? "start_animator:rotation" : "pause_animator:rotation"} ]]></property>
 ```    

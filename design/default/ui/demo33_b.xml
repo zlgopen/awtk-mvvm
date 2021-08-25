@@ -1,18 +1,13 @@
 <window text="Humidity" anim_hint="htranslate">
   <label text="Window Humidity" x="center" y="10" w="80%" h="30" />
-
-  <button text="Close" x="center" y="middle:-40" w="80%" h="30" 
+  <button text="Close Current" x="center" y="middle:-40" w="80%" h="30" 
     v-on:click="{nothing, CloseWindow=true}"/>
-
-  <button text="Back" x="center" y="middle" w="80%" h="30" 
-    v-on:click="{navigate, args=_back_}"/>
-
-  <button text="Temperature" x="center" y="middle:40" w="80%" h="30" 
-    v-on:click="{navigate, args=demo33_a?close_current=true&open_new=false}"/>
-
-  <button text="Home" x="center" y="middle:80" w="80%" h="30" 
-    v-on:click="{navigate, args=demo33?close_current=true&open_new=false}"/>
-  
-  <button text="Close Temperature" x="center" y="middle:120" w="80%" h="30" 
-    v-on:click="{navigate, args=_close_?name=demo33_a}"/>
+  <button text="Close Current And Open Temperature" x="center" y="middle" w="80%" h="30" 
+    v-on:click="{navigate, Args=string?target=demo33_a&amp;close_current=true&amp;open_new=false}"/>
+  <button text="Close Temperature" x="center" y="middle:40" w="80%" h="30" 
+    v-on:click="{navigate, Args=string?request=_close_&amp;target=demo33_a}"/>
+  <button text="Back" x="center" y="middle:80" w="80%" h="30" 
+    v-on:click="{navigate, Args=string?request=_back_}"/>
+  <button text="Home" x="center" y="middle:120" w="80%" h="30" 
+    v-on:click="{navigate, args=string?request=_home_}"/>
 </window>

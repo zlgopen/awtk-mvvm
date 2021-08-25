@@ -21,8 +21,6 @@
 
 #include "tkc/mem.h"
 #include "tkc/utils.h"
-#include "jerryscript-port.h"
-#include "jerryscript-ext/handler.h"
 #include "mvvm/jerryscript/jsobj_4_mvvm.h"
 #include "mvvm/jerryscript/value_validator_jerryscript.h"
 
@@ -33,31 +31,44 @@ static const object_vtable_t s_value_validator_jerryscript_vtable = {
 
 static bool_t value_validator_jerryscript_is_valid(value_validator_t* c, const value_t* v,
                                                    str_t* msg) {
-  object_t* obj = OBJECT(c);
+  bool_t ret = FALSE;
+  jsvalue_t validator = jsvalue_get_value_validator(OBJECT(c)->name);
 
-  return jsvalue_validator_is_valid(obj->name, v, msg) == RET_OK;
+  ret = js_value_validator_is_valid(validator, v, msg);
+  jsvalue_unref(validator);
+
+  return ret;
 }
 
 static ret_t value_validator_jerryscript_fix(value_validator_t* c, value_t* v) {
-  object_t* obj = OBJECT(c);
+  ret_t ret = RET_OK;
+  jsvalue_t validator = jsvalue_get_value_validator(OBJECT(c)->name);
 
-  return jsvalue_validator_fix(obj->name, v);
+  ret = js_value_validator_fix(validator, v);
+  jsvalue_unref(validator);
+
+  return ret;
 }
 
 static value_validator_t* value_validator_jerryscript_create(const char* name) {
   object_t* obj = NULL;
-  value_validator_t* validator = NULL;
-  return_value_if_fail(jsvalue_validator_exist(name), NULL);
+  jsvalue_t jsobj = jsvalue_get_value_validator(name);
+  return_value_if_fail(jsvalue_check(jsobj) == RET_OK, NULL);
 
-  obj = object_create(&s_value_validator_jerryscript_vtable);
-  return_value_if_fail(obj != NULL, NULL);
+  if (jsvalue_is_object(jsobj)) {
+    obj = object_create(&s_value_validator_jerryscript_vtable);
+    if (obj != NULL) {
+      value_validator_t* validator = VALUE_VALIDATOR(obj);
+      value_validator_jerryscript_t* jsvalidator = VALUE_VALIDATOR_JERRYSCRIPT(obj);
 
-  validator = VALUE_VALIDATOR(obj);
-  validator->is_valid = value_validator_jerryscript_is_valid;
-  validator->fix = value_validator_jerryscript_fix;
-  object_set_name(obj, name);
+      validator->is_valid = value_validator_jerryscript_is_valid;
+      validator->fix = value_validator_jerryscript_fix;
+      object_set_name(obj, name);
+    }
+  }
+  jsvalue_unref(jsobj);
 
-  return validator;
+  return VALUE_VALIDATOR(obj);
 }
 
 ret_t value_validator_jerryscript_init(void) {

@@ -24,9 +24,15 @@
 #include "temperature_timer.h"
 
 ret_t application_init(void) {
-  view_model_factory_register("temperature", temperature_view_model_timer_create);
+  view_model_factory_register("temperature_timer", temperature_view_model_timer_create);
 
   return navigator_to("temperature19");
 }
 
-#include "../awtk_main.c"
+ret_t application_exit(void) {
+  log_debug("application_exit\n");
+
+  return RET_OK;
+}
+
+#include "../main.inc"

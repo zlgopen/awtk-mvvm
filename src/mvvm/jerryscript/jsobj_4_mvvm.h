@@ -22,47 +22,47 @@
 #ifndef TK_JSOBJ_4_MVVM_H
 #define TK_JSOBJ_4_MVVM_H
 
-#include "jsobj.h"
 #include "mvvm/base/navigator_request.h"
+#include "mvvm/jerryscript/jsobj.h"
 
 BEGIN_C_DECLS
 
-jerry_value_t jsobj_get_model(const char* name);
+ret_t jerry_script_register_mvvm_factory(void);
+
+jsvalue_t jsvalue_get_view_model(const char* name);
+ret_t js_view_model_set_native_ptr(jsvalue_t obj, void* ptr);
 
 /**
- * @method jerry_value_from_navigator_request
+ * @method js_view_model_get_native_ptr
  * annotation ["global"]
  * export for test only
  */
-jerry_value_t jerry_value_from_navigator_request(navigator_request_t* req);
+void* js_view_model_get_native_ptr(jsvalue_t obj);
+ret_t js_view_model_delete_native_ptr(jsvalue_t obj);
+
+jsvalue_t jsvalue_get_value_converter(const char* name);
+ret_t js_value_converter_to_view(jsvalue_t converter, const value_t* from, value_t* to,
+                                 str_t* temp);
+ret_t js_value_converter_to_model(jsvalue_t converter, const value_t* from, value_t* to,
+                                  str_t* temp);
+
+jsvalue_t jsvalue_get_value_validator(const char* name);
+bool_t js_value_validator_is_valid(jsvalue_t validator, const value_t* v, str_t* msg);
+ret_t js_value_validator_fix(jsvalue_t validator, value_t* v);
 
 /**
- * @method jerry_value_to_navigator_request
+ * @method jsvalue_to_navigator_request
  * annotation ["global"]
  * export for test only
  */
-navigator_request_t* jerry_value_to_navigator_request(jerry_value_t value);
+navigator_request_t* jsvalue_to_navigator_request(jsvalue_t obj);
 
-ret_t jsobj_exec(jerry_value_t obj, const char* name, const char* args);
-ret_t jsobj_exec_ex(jerry_value_t obj, const char* name, jerry_value_t jsargs);
-bool_t jsobj_can_exec(jerry_value_t obj, const char* name, const char* args);
-
-bool_t jsvalue_converter_exist(const char* name);
-ret_t jsvalue_converter_to_view(const char* name, const value_t* from, value_t* to, str_t* temp);
-ret_t jsvalue_converter_to_model(const char* name, const value_t* from, value_t* to, str_t* temp);
-
-bool_t jsvalue_validator_exist(const char* name);
-ret_t jsvalue_validator_is_valid(const char* name, const value_t* v, str_t* msg);
-ret_t jsvalue_validator_fix(const char* name, value_t* v);
-
-#define JSOBJ_VALUE_CONVERTERS "ValueConverters"
-#define JSOBJ_VALUE_CONVERTER_TO_VIEW "toView"
-#define JSOBJ_VALUE_CONVERTER_TO_VIEW_MODEL "toModel"
-#define JSOBJ_VALUE_VALIDATORS "ValueValidators"
-#define JSOBJ_VALUE_VALIDATOR_FIX "fix"
-#define JSOBJ_VALUE_VALIDATOR_IS_VALID "isValid"
-#define JSOBJ_VALUE_VALIDATOR_RESULT "result"
-#define JSOBJ_VALUE_VALIDATOR_MESSAGE "message"
+/**
+ * @method jsvalue_from_navigator_request
+ * annotation ["global"]
+ * export for test only
+ */
+jsvalue_t jsvalue_from_navigator_request(navigator_request_t* req);
 
 END_C_DECLS
 

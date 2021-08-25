@@ -1,71 +1,71 @@
 ﻿<window text="app_conf" v-model="app_conf">
-	<check_button text="Enable" v-data:value="{serial.enable}"  x="20%" y="10" w="60" h="30" />
+  <check_button text="Enable" v-data:value="{serial.enable}"  x="20%" y="10" w="60" h="30" />
   <row name="view" x="0" y="40" w="100%" h="-40" children_layout="default(r=1,c=2,m=3)" v-model="sub_view_model:serial" v-data:enable="{enable}">
-	<view name="view" x="0" y="0" w="100%" h="100%" children_layout="default(r=0,c=1,m=3)">
-		<row h="36" children_layout="default(r=1,c=0,m=3)">
-			<label style="prop_title" w="40%" text="Type" />
+  <view name="view" x="0" y="0" w="100%" h="100%" children_layout="default(r=0,c=1,m=3)">
+    <row h="36" children_layout="default(r=1,c=0,m=3)">
+      <label style="prop_title" w="40%" text="Type" />
       <combo_box w="60%" options="0:Serial(bulit-in);1:Serial(miniPCIE/USB);2:Serial(via TCP);" value="1" readonly="true" 
         v-data:value="{type}" />
-		</row>
-		<row h="36" children_layout="default(r=1,c=0,m=3)">
-			<label style="prop_title" w="40%" text="Name" />
+    </row>
+    <row h="36" children_layout="default(r=1,c=0,m=3)">
+      <label style="prop_title" w="40%" text="Name" />
       <edit w="60%" text="COM1" action_text="next" 
         v-data:text="{name, Trigger=Changed}"  />
-		</row>
-		<row h="80" children_layout="default(r=1,c=0,m=3)">
-			<label style="prop_title" w="40%" text="Desc" />
+    </row>
+    <row h="80" children_layout="default(r=1,c=0,m=3)">
+      <label style="prop_title" w="40%" text="Desc" />
       <mledit w="60%" text="some desc" action_text="next" 
         v-data:text="{desc, Trigger=Changed}"  />
-		</row>
-		<row h="36" children_layout="default(r=1,c=0,m=3)">
-			<label style="prop_title" w="40%" text="Scan Time" />
+    </row>
+    <row h="36" children_layout="default(r=1,c=0,m=3)">
+      <label style="prop_title" w="40%" text="Scan Time" />
       <edit w="60%" text="1000" action_text="next" input_type="uint" 
         v-data:value="{scan_time, Trigger=Changed}"  />
-		</row>
-		<row h="36" children_layout="default(r=1,c=0,m=3)">
-			<label style="prop_title" w="40%" text="Time Out" />
+    </row>
+    <row h="36" children_layout="default(r=1,c=0,m=3)">
+      <label style="prop_title" w="40%" text="Time Out" />
       <edit w="60%" text="3000" action_text="next" input_type="uint" 
         v-data:value="{timeout, Trigger=Changed}"  />
-		</row>
-		<row h="36" children_layout="default(r=1,c=0,m=3)">
+    </row>
+    <row h="36" children_layout="default(r=1,c=0,m=3)">
       <label style="prop_title" w="40%" text="Retry Times"/>
       <edit w="60%" text="10" action_text="next" input_type="uint" 
         v-data:value="{retry_times, Trigger=Changed}"  />
-		</row>
-		<row h="36" children_layout="default(r=1,c=0,m=3)">
+    </row>
+    <row h="36" children_layout="default(r=1,c=0,m=3)">
       <label style="prop_title" w="40%" text="Reset Time"/>
       <edit w="60%" text="1000" action_text="next" input_type="uint" 
         v-data:value="{reset_time, Trigger=Changed}"  />
-		</row>
-	</view>
+    </row>
+  </view>
 
   <pages x="0" y="0" w="100%" h="100%" value="0" v-data:value="{type, Mode=OnyWay}">
-		<view name="builtin-serial" x="0" y="0" w="100%" h="100%" children_layout="default(h=36,c=1)" v-model="sub_view_model:builtin">
-			<label style="prop_title" text="Serial Port(Builtin)" />
+    <view name="builtin-serial" x="0" y="0" w="100%" h="100%" children_layout="default(h=36,c=1)" v-model="sub_view_model:builtin">
+      <label style="prop_title" text="Serial Port(Builtin)" />
       <?include filename="serial_settings.inc" ?>
-		</view>
-		<view name="usb-serial" x="0" y="0" w="100%" h="100%" children_layout="default(h=36,c=1)" v-model="sub_view_model:usb">
-			<label style="prop_title" text="Serial Port(USB)" />
+    </view>
+    <view name="usb-serial" x="0" y="0" w="100%" h="100%" children_layout="default(h=36,c=1)" v-model="sub_view_model:usb">
+      <label style="prop_title" text="Serial Port(USB)" />
       <?include filename="serial_settings.inc" ?>
-			<row style="empty" children_layout="default(r=1,c=0,m=3)">
-				<label style="prop_title" w="40%" text="USB Serial Adapter" />
+      <row style="empty" children_layout="default(r=1,c=0,m=3)">
+        <label style="prop_title" w="40%" text="USB Serial Adapter" />
         <combo_box w="60%" options="0:CH340;1:CP2012;2:CP2013" value="0" readonly="true" v-data:value="{adapter}"  />
-			</row>
-		</view>
-		<view name="tcp-serial" x="0" y="0" w="100%" h="100%" children_layout="default(h=36,c=1)" v-model="sub_view_model:tcp">
+      </row>
+    </view>
+    <view name="tcp-serial" x="0" y="0" w="100%" h="100%" children_layout="default(h=36,c=1)" v-model="sub_view_model:tcp">
       <label style="prop_title" text="Serial Port(TCP/IP)" />
       <?include filename="serial_settings.inc" ?>
 
-			<row style="empty" children_layout="default(r=1,c=0,m=3)">
-				<label style="prop_title" w="40%" text="Host" />
+      <row style="empty" children_layout="default(r=1,c=0,m=3)">
+        <label style="prop_title" w="40%" text="Host" />
         <edit w="60%" v-data:text="{host, Trigger=Changed}"  input_type="ipv4"/>
-			</row>
-			<row style="empty" children_layout="default(r=1,c=0,m=3)">
-				<label style="prop_title" w="40%" text="Port" />
+      </row>
+      <row style="empty" children_layout="default(r=1,c=0,m=3)">
+        <label style="prop_title" w="40%" text="Port" />
         <edit w="60%" input_type="uint" max="60000" min="1024" v-data:value="{port, Trigger=Changed}"  />
-			</row>
-		</view>
-	</pages>
+      </row>
+    </view>
+  </pages>
   </row>
 
   <row x="10" y="b:10" w="-20" h="40" children_layout="default(r=1,c=3,s=5,m=5)">

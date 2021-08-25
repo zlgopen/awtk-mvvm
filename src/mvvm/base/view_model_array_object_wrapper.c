@@ -29,6 +29,10 @@
 static ret_t view_model_array_object_wrapper_on_changed(void* ctx, event_t* e) {
   view_model_array_object_wrapper_t* object_wrapper = VIEW_MODEL_ARRAY_OBJECT_WRAPPPER(ctx);
 
+  if (e->target == object_wrapper->obj) {
+    e->target = object_wrapper;
+  }
+
   emitter_dispatch(EMITTER(object_wrapper), e);
 
   return RET_OK;
@@ -78,7 +82,7 @@ static ret_t view_model_array_object_wrapper_get_prop(object_t* obj, const char*
   }
 
   if (tk_str_ieq(VIEW_MODEL_PROP_ITEMS, name)) {
-    name = "#size";
+    name = OBJECT_PROP_SIZE;
   }
 
   if (object_wrapper->prop_prefix != NULL) {

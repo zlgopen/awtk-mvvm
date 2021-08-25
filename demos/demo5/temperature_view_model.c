@@ -41,7 +41,7 @@ static ret_t temperature_view_model_on_destroy(object_t* obj) {
   temperature_view_model_t* vm = (temperature_view_model_t*)(obj);
   return_value_if_fail(vm != NULL, RET_BAD_PARAMS);
 
-  TKMEM_FREE(vm->atemperature);
+  temperature_destroy(vm->atemperature);
 
   return view_model_deinit(VIEW_MODEL(obj));
 }
@@ -81,7 +81,7 @@ ret_t temperature_view_model_attach(view_model_t* vm, temperature_t* atemperatur
 }
 
 view_model_t* temperature_view_model_create(navigator_request_t* req) {
-  temperature_t* atemperature = TKMEM_ZALLOC(temperature_t);
+  temperature_t* atemperature = temperature_create();
   return_value_if_fail(atemperature != NULL, NULL);
 
   return temperature_view_model_create_with(atemperature);

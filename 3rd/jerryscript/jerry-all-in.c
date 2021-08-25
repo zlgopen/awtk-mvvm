@@ -5,7 +5,7 @@
 
 #ifdef WIN32
 #pragma comment(lib, "ws2_32")
-#endif/*WIN32*/
+#endif /*WIN32*/
 
 #include "./jerryscript/jerry-ext/handler/handler-assert.c"
 #include "./jerryscript/jerry-ext/handler/handler-resource-name.c"
@@ -36,6 +36,7 @@
 #include "jerryscript/jerry-core/api/jerry.c"
 #include "jerryscript/jerry-core/debugger/debugger.c"
 #include "jerryscript/jerry-core/ecma/base/ecma-alloc.c"
+#include "jerryscript/jerry-core/ecma/base/ecma-errors.c"
 #include "jerryscript/jerry-core/ecma/base/ecma-gc.c"
 #include "jerryscript/jerry-core/ecma/base/ecma-helpers-collection.c"
 #include "jerryscript/jerry-core/ecma/base/ecma-helpers-conversion.c"
@@ -112,6 +113,8 @@
 #include "jerryscript/jerry-core/ecma/builtin-objects/ecma-builtin-set-iterator-prototype.c"
 #include "jerryscript/jerry-core/ecma/builtin-objects/ecma-builtin-set-prototype.c"
 #include "jerryscript/jerry-core/ecma/builtin-objects/ecma-builtin-set.c"
+#include "jerryscript/jerry-core/ecma/builtin-objects/ecma-builtin-shared-arraybuffer.c"
+#include "jerryscript/jerry-core/ecma/builtin-objects/ecma-builtin-shared-arraybuffer-prototype.c"
 #include "jerryscript/jerry-core/ecma/builtin-objects/ecma-builtin-string-iterator-prototype.c"
 #include "jerryscript/jerry-core/ecma/builtin-objects/ecma-builtin-string-prototype.c"
 #include "jerryscript/jerry-core/ecma/builtin-objects/ecma-builtin-string.c"

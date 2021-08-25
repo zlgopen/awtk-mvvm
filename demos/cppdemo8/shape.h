@@ -85,11 +85,11 @@ class Shape {
    */
   int32_t opacity;
   /**
-   * @property {int32_t} text_align
+   * @property {int32_t} align
    * @annotation ["readable", "writable"]
-   * text_align。
+   * align。
    */
-  int32_t text_align;
+  int32_t align;
   /**
    * @property {string} name
    * @annotation ["readable", "writable"]
@@ -108,7 +108,7 @@ class Shape {
    * @method ChangeType
    * 修改类型。
    *
-   * @annotation ["command:change_type"]
+   * @annotation ["command:changeType"]
    * @param {int32_t} type 类型。
    * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
    */

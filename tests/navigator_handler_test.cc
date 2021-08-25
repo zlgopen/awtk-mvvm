@@ -5,10 +5,7 @@
 using std::string;
 
 static ret_t dummy_on_request(navigator_handler_t* handler, navigator_request_t* req) {
-  value_t v;
-  value_set_int(&v, object_get_prop_int(OBJECT(req), NAVIGATOR_ARG_MIN, 0));
-
-  navigator_request_on_result(req, &v);
+  value_set_int(&(req->result), object_get_prop_int(OBJECT(req), NAVIGATOR_ARG_MIN, 0));
 
   return RET_OK;
 }

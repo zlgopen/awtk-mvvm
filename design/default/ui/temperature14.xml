@@ -1,4 +1,4 @@
-<window v-model="temperature" 
+<window v-model="temperature_ex" 
  v-on:key_down:ctrl_s="{apply}" 
  v-on:key_long_press:f3="{apply}" 
  v-on:key_down:escape="{nothing, QuitApp=true}">

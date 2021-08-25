@@ -21,7 +21,7 @@
 
 #include "tkc/mem.h"
 #include "tkc/utils.h"
-#include "base/locale_info.h"
+#include "tkc/object_default.h"
 #include "mvvm/base/utils.h"
 #include "mvvm/base/binding_context.h"
 #include "mvvm/base/data_binding.h"
@@ -34,8 +34,6 @@
 #define BINDING_STR_EXPLICIT "Explicit"
 
 #define equal tk_str_ieq
-
-static data_binding_t* data_binding_cast(void* rule);
 
 static ret_t data_binding_on_destroy(object_t* obj) {
   data_binding_t* rule = data_binding_cast(obj);
@@ -63,14 +61,23 @@ static ret_t data_binding_on_destroy(object_t* obj) {
 
 static ret_t data_binding_object_set_prop(object_t* obj, const char* name, const value_t* v) {
   ret_t ret = RET_OK;
-  const char* value = value_str(v);
+  const char* value;
   data_binding_t* rule = DATA_BINDING(obj);
   return_value_if_fail(rule != NULL, RET_BAD_PARAMS);
 
   if (BINDING_RULE(rule)->inited) {
-    view_model_t* view_model = BINDING_RULE_VIEW_MODEL(rule);
-    return view_model_set_prop(view_model, name, v);
+    binding_context_t* ctx = BINDING_RULE_CONTEXT(rule);
+    ret = binding_context_set_prop_by_rule(ctx, BINDING_RULE(rule), name, v);
+    if (ret == RET_NOT_FOUND) {
+      if (rule->props == NULL) {
+        rule->props = object_default_create();
+      }
+      return object_set_prop(rule->props, name, v);
+    }
+    return ret;
   }
+
+  value = value_str(v);
 
   if (rule->path == NULL && value == NULL) {
     value = name;
@@ -145,20 +152,18 @@ static ret_t data_binding_object_get_prop(object_t* obj, const char* name, value
 
   if (BINDING_RULE(rule)->inited) {
     if (tk_str_eq(name, STR_PROP_SELF)) {
-      value_set_pointer(v, BINDING_RULE(rule)->widget);
+      value_set_pointer(v, BINDING_RULE_WIDGET(rule));
       return RET_OK;
-    }
-
-    if (tk_str_eq(name, rule->prop) && rule->value != NULL) {
+    } else if (tk_str_eq(name, rule->prop) && rule->value != NULL) {
       value_copy(v, rule->value);
       return RET_OK;
-    }
-
-    if (BINDING_RULE_CONTEXT(rule) != NULL) {
-      view_model_t* view_model = BINDING_RULE_VIEW_MODEL(rule);
-      return view_model_get_prop(view_model, name, v);
     } else {
-      return RET_NOT_FOUND;
+      binding_context_t* ctx = BINDING_RULE_CONTEXT(rule);
+      ret = binding_context_get_prop_by_rule(ctx, BINDING_RULE(rule), name, v);
+      if (ret == RET_NOT_FOUND && rule->props != NULL) {
+        return object_get_prop(rule->props, name, v);
+      }
+      return ret;
     }
   }
 
@@ -179,7 +184,9 @@ static ret_t data_binding_object_get_prop(object_t* obj, const char* name, value
   } else if (equal(DATA_BINDING_VALIDATOR, name)) {
     value_set_str(v, rule->validator);
   } else {
-    ret = object_get_prop(rule->props, name, v);
+    if (rule->props != NULL) {
+      ret = object_get_prop(rule->props, name, v);
+    }
   }
 
   return ret;
@@ -196,7 +203,7 @@ static ret_t data_binding_object_exec(object_t* obj, const char* name, const cha
   }
 
   if (object_is_collection(OBJECT(view_model))) {
-    uint32_t cursor = BINDING_RULE(rule)->cursor;
+    uint32_t cursor = binding_context_get_items_cursor_of_rule(context, BINDING_RULE(rule));
     view_model_array_set_cursor(view_model, cursor);
   }
 
@@ -212,27 +219,25 @@ static const object_vtable_t s_data_binding_vtable = {.type = "data_binding",
                                                       .get_prop = data_binding_object_get_prop,
                                                       .set_prop = data_binding_object_set_prop};
 
-static data_binding_t* data_binding_cast(void* rule) {
-  object_t* obj = OBJECT(rule);
-  return_value_if_fail(obj != NULL && obj->vt == &s_data_binding_vtable, NULL);
-
-  return (data_binding_t*)rule;
-}
-
 data_binding_t* data_binding_create(void) {
   object_t* obj = object_create(&s_data_binding_vtable);
   data_binding_t* rule = DATA_BINDING(obj);
   return_value_if_fail(obj != NULL, NULL);
 
   rule->mode = BINDING_ONE_WAY;
-  rule->props = object_default_create();
-
-  if (rule->props == NULL) {
-    object_unref(obj);
-    rule = NULL;
-  }
 
   return rule;
+}
+
+data_binding_t* data_binding_cast(void* rule) {
+  return_value_if_fail(binding_rule_is_data_binding(rule), NULL);
+
+  return (data_binding_t*)rule;
+}
+
+bool_t binding_rule_is_data_binding(binding_rule_t* rule) {
+  object_t* obj = OBJECT(rule);
+  return obj != NULL && obj->vt == &s_data_binding_vtable;
 }
 
 static ret_t value_to_model(const char* name, const value_t* from, value_t* to) {
@@ -280,8 +285,7 @@ static ret_t value_to_view(const char* name, value_t* from, value_t* to) {
   }
 }
 
-static bool_t value_is_valid(view_model_t* view_model, const char* name, const value_t* value,
-                             str_t* msg) {
+static bool_t value_is_valid(object_t* ctx, const char* name, const value_t* value, str_t* msg) {
   bool_t ret = FALSE;
   value_validator_t* validator = NULL;
 
@@ -291,7 +295,7 @@ static bool_t value_is_valid(view_model_t* view_model, const char* name, const v
 
   validator = value_validator_create(name);
   if (validator != NULL) {
-    value_validator_set_context(validator, OBJECT(view_model));
+    value_validator_set_context(validator, ctx);
     ret = value_validator_is_valid(validator, value, msg);
     value_validator_set_context(validator, NULL);
     object_unref(OBJECT(validator));
@@ -302,7 +306,7 @@ static bool_t value_is_valid(view_model_t* view_model, const char* name, const v
   return ret;
 }
 
-static ret_t value_fix(view_model_t* view_model, const char* name, value_t* value) {
+static ret_t value_fix(object_t* ctx, const char* name, value_t* value) {
   ret_t ret = RET_OK;
   value_validator_t* validator = NULL;
 
@@ -312,7 +316,7 @@ static ret_t value_fix(view_model_t* view_model, const char* name, value_t* valu
 
   validator = value_validator_create(name);
   if (validator != NULL) {
-    value_validator_set_context(validator, OBJECT(view_model));
+    value_validator_set_context(validator, ctx);
     ret = value_validator_fix(validator, value);
     value_validator_set_context(validator, NULL);
     object_unref(OBJECT(validator));
@@ -332,7 +336,8 @@ ret_t data_binding_get_prop(data_binding_t* rule, value_t* v) {
   return_value_if_fail(view_model != NULL, RET_BAD_PARAMS);
 
   if (object_is_collection(OBJECT(view_model))) {
-    uint32_t cursor = BINDING_RULE(rule)->cursor;
+    binding_context_t* context = BINDING_RULE_CONTEXT(rule);
+    uint32_t cursor = binding_context_get_items_cursor_of_rule(context, BINDING_RULE(rule));
     view_model_array_set_cursor(view_model, cursor);
 
     if (tk_str_eq(rule->path, VIEW_MODEL_PROP_CURSOR)) {
@@ -358,21 +363,9 @@ ret_t data_binding_get_prop(data_binding_t* rule, value_t* v) {
   return value_to_view(rule->converter, &raw, v);
 }
 
-static ret_t vm_set_prop(view_model_t* vm, const char* converter, const char* path,
-                         const value_t* raw) {
-  if (converter == NULL) {
-    return view_model_set_prop(vm, path, raw);
-  } else {
-    value_t v;
-    if (value_to_model(converter, raw, &v) == RET_OK) {
-      return view_model_set_prop(vm, path, &v);
-    } else {
-      return RET_FAIL;
-    }
-  }
-}
-
 ret_t data_binding_set_prop(data_binding_t* rule, const value_t* raw) {
+  ret_t ret = RET_OK;
+  object_t* obj = OBJECT(rule);
   view_model_t* view_model = NULL;
   return_value_if_fail(rule != NULL && raw != NULL, RET_BAD_PARAMS);
 
@@ -380,8 +373,10 @@ ret_t data_binding_set_prop(data_binding_t* rule, const value_t* raw) {
   return_value_if_fail(view_model != NULL, RET_BAD_PARAMS);
 
   str_clear(&(view_model->last_error));
+
   if (object_is_collection(OBJECT(view_model))) {
-    uint32_t cursor = BINDING_RULE(rule)->cursor;
+    binding_context_t* context = BINDING_RULE_CONTEXT(rule);
+    uint32_t cursor = binding_context_get_items_cursor_of_rule(context, BINDING_RULE(rule));
     view_model_array_set_cursor(view_model, cursor);
   }
 
@@ -390,24 +385,31 @@ ret_t data_binding_set_prop(data_binding_t* rule, const value_t* raw) {
     rule->value = raw;
     fscript_exec(rule->to_model_expr, &v);
     rule->value = NULL;
-    return view_model_set_prop(view_model, rule->path, &v);
-  }
-
-  if (!value_is_valid(view_model, rule->validator, raw, &(view_model->last_error))) {
+    ret = object_set_prop(obj, rule->path, &v);
+  } else {
+    const value_t* temp = raw;
     value_t fix_value;
+    value_t v;
+
     value_set_int(&fix_value, 0);
-    value_deep_copy(&fix_value, raw);
 
-    if (value_fix(view_model, rule->validator, &fix_value) == RET_OK) {
-      ret_t ret = vm_set_prop(view_model, rule->converter, rule->path, &fix_value);
-      value_reset(&fix_value);
-
-      return ret;
+    if (!value_is_valid(obj, rule->validator, raw, &(view_model->last_error))) {
+      value_deep_copy(&fix_value, raw);
+      ret = value_fix(obj, rule->validator, &fix_value);
+      temp = &fix_value;
     }
-    value_reset(&fix_value);
 
-    return RET_BAD_PARAMS;
+    if (ret == RET_OK && rule->converter != NULL) {
+      ret = value_to_model(rule->converter, temp, &v);
+      temp = &v;
+    }
+
+    if (ret == RET_OK) {
+      ret = object_set_prop(obj, rule->path, temp);
+    }
+
+    value_reset(&fix_value);
   }
 
-  return vm_set_prop(view_model, rule->converter, rule->path, raw);
+  return ret;
 }

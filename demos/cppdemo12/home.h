@@ -92,7 +92,7 @@ class Home : public emitter_t {
    */
   ret_t AdjustLivingRoom(void);
 
-  void NotifyObjectChanged(void);
+  void NotifyPropsChanged(void);
   ret_t AdjustRoomSettings(const char* room_name, RoomInfo* info);
   static ret_t OnResult(navigator_request_t* req, const value_t* result);
 

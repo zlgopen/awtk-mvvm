@@ -1,4 +1,5 @@
-var temperature = {
-  value: 20
-}
-
+ViewModel('temperature', {
+  data: {
+    value: 20
+  }
+});

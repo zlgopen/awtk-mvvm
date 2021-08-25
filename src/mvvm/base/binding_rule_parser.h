@@ -23,7 +23,6 @@
 #define TK_BINDING_RULE_PARSER_H
 
 #include "mvvm/base/binding_rule.h"
-#include "mvvm/base/data_binding.h"
 
 BEGIN_C_DECLS
 

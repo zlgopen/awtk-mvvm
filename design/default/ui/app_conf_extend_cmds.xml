@@ -1,10 +1,10 @@
 <window v-model="app_conf" >
   <view w="100%" h="100%" v-model="sub_view_model_array:leds">
-    <view x="0" y="20" w="100%" h="300" children_layout="default(h=30,c=1,s=5,m=5)" v-for-items="true">
+    <view v-for-items="true" x="0" y="20" w="100%" h="300" children_layout="default(h=30,c=1,s=5,m=5)">
       <view children_layout="default(r=1,c=3)">
         <label v-data:text="{item.name}" text="hello"/>
         <label v-data:text="{item.lightness}"/>
-        <button text="Return" v-on:click="{return, args=selected_index}"/>
+        <button text="Return" v-on:click="{return, Args=selected_index}"/>
       </view>
     </view>
 

@@ -53,19 +53,19 @@ ret_t custom_binder_unregister(const char* type) {
   return object_remove_prop((s_custom_binder->binders), type);
 }
 
-ret_t custom_binder_register(const char* type, custom_bind_t bind) {
+ret_t custom_binder_register(const char* type, binding_context_bind_rule_t bind) {
   return_value_if_fail(s_custom_binder != NULL && type != NULL && bind != NULL, RET_BAD_PARAMS);
 
   return object_set_prop_pointer(s_custom_binder->binders, type, bind);
 }
 
-ret_t custom_binder_bind(const char* type, void* widget, binding_context_t* ctx) {
-  custom_bind_t bind = NULL;
+ret_t custom_binder_bind(const char* type, binding_context_t* ctx, binding_rule_t* rule) {
+  binding_context_bind_rule_t bind = NULL;
   return_value_if_fail(s_custom_binder != NULL && type != NULL, RET_BAD_PARAMS);
-  return_value_if_fail(ctx != NULL && widget != NULL, RET_BAD_PARAMS);
-  bind = (custom_bind_t)object_get_prop_pointer(s_custom_binder->binders, type);
+  return_value_if_fail(ctx != NULL && rule != NULL, RET_BAD_PARAMS);
+  bind = (binding_context_bind_rule_t)object_get_prop_pointer(s_custom_binder->binders, type);
   if (bind != NULL) {
-    return bind(widget, ctx);
+    return bind(ctx, rule);
   } else {
     return RET_NOT_FOUND;
   }

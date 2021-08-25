@@ -23,53 +23,10 @@
 
 namespace vm {
 
-ViewModel::ViewModel(navigator_request_t* request) {
-  this->request = request;
-  emitter_init(&(this->emitter));
+ViewModel::ViewModel(navigator_request_t* request) : request(request) {
 }
 
 ViewModel::~ViewModel() {
-  emitter_deinit(&(this->emitter));
-}
-
-ret_t ViewModel::Exec(const char* name, const char* args) {
-  return RET_NOT_IMPL;
-}
-
-bool_t ViewModel::CanExec(const char* name, const char* args) const {
-  return FALSE;
-}
-
-ret_t ViewModel::GetProp(const char* name, value_t* v) const {
-  return RET_NOT_FOUND;
-}
-
-ret_t ViewModel::SetProp(const char* name, const value_t* v) {
-  return RET_NOT_FOUND;
-}
-
-ret_t ViewModel::Off(uint32_t id) {
-  return emitter_off(&(this->emitter), id);
-}
-
-ret_t ViewModel::OffByCtx(void* ctx) {
-  return emitter_off_by_ctx(&(this->emitter), ctx);
-}
-
-ret_t ViewModel::DispatchEvent(event_t* event) {
-  return emitter_dispatch(&(this->emitter), event);
-}
-
-uint32_t ViewModel::On(uint32_t event, event_func_t on_event, void* ctx) {
-  return emitter_on(&(this->emitter), event, on_event, ctx);
-}
-
-ret_t ViewModel::NotifyObjectChanged() {
-  event_t e = event_init(EVT_PROPS_CHANGED, this);
-
-  this->DispatchEvent(&e);
-
-  return RET_OK;
 }
 
 ret_t ViewModel::OnWillMount(navigator_request_t* request) {

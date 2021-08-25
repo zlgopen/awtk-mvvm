@@ -32,4 +32,10 @@ ret_t application_init(void) {
   return navigator_to("demo9_main");
 }
 
-#include "../awtk_main.c"
+ret_t application_exit(void) {
+  log_debug("application_exit\n");
+
+  return RET_OK;
+}
+
+#include "../main.inc"

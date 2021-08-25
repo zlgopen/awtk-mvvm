@@ -22,25 +22,25 @@
 #ifndef TK_VIEW_MODEL_JERRYSCRIPT_H
 #define TK_VIEW_MODEL_JERRYSCRIPT_H
 
-#include "tkc/str.h"
-#include "jerryscript.h"
-#include "mvvm/base/view_model.h"
+#include "tkc/types_def.h"
 
 BEGIN_C_DECLS
 
 /**
- * @method view_model_jerryscript_create
- * 通过一段JS代码创建一个view_model对象。
- *
- * @param {const char*} name 名称(通常是文件名)。
- * @param {const char*} code 代码字符字符串(UTF8)。
- * @param {uint32_t} code_size 代码的长度。
- * @param {navigator_request_t*} req 请求的参数(可选)。
+ * @method view_model_jerryscript_init
+ * 初始化jerryscript view model，注册相应的工厂函数。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
-view_model_t* view_model_jerryscript_create(const char* name, const char* code, uint32_t code_size,
-                                            navigator_request_t* req);
+ret_t view_model_jerryscript_init(void);
+
+/**
+ * @method view_model_jerryscript_deinit
+ * ~初始化jerryscript view model。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t view_model_jerryscript_deinit(void);
 
 END_C_DECLS
 

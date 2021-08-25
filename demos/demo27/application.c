@@ -33,4 +33,15 @@ ret_t application_init() {
   return navigator_to("compositor");
 }
 
-#include "../awtk_main.c"
+ret_t application_exit(void) {
+  log_debug("application_exit\n");
+
+  if (app_conf_get_instance() != NULL) {
+    app_conf_save();
+    app_conf_deinit();
+  }
+
+  return RET_OK;
+}
+
+#include "../main.inc"

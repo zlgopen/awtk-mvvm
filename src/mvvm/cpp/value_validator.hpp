@@ -23,6 +23,7 @@
 #define TK_DATA_VALIDATOR_HPP
 
 #include "mvvm/base/value_validator.h"
+#include "mvvm/cpp/object.hpp"
 
 namespace vm {
 
@@ -34,35 +35,34 @@ namespace vm {
  * 用户在界面上输入的类型可能是无效的，ValueValidator负责将检查用户输入的有效性。
  *
  */
-class ValueValidator {
-  public:
-    ValueValidator() {}
-    virtual ~ValueValidator() {}
-  
-  public:
-    /**
-     * @method IsValid
-     * 检查值是否有效。
-     *
-     * @param {value_t*} value 待验证的值。
-     * @param {str_t*} str 返回错误信息。
-     *
-     * @return {bool_t} 返回TRUE表示有效，否则表示无效。
-     */
-    virtual bool_t IsValid(const value_t* value, str_t* msg) = 0;
+class ValueValidator : public Object {
+ public:
+  ValueValidator();
+  virtual ~ValueValidator();
 
-    /**
-     * @method Fix
-     * 将无效值修改为正确的值。
-     *
-     * @param {value_t*} value 修正后的值。
-     *
-     * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
-     */
-    virtual ret_t Fix(value_t* value) = 0;
+ public:
+  /**
+   * @method IsValid
+   * 检查值是否有效。
+   *
+   * @param {value_t*} value 待验证的值。
+   * @param {str_t*} str 返回错误信息。
+   *
+   * @return {bool_t} 返回TRUE表示有效，否则表示无效。
+   */
+  virtual bool_t IsValid(const value_t* value, str_t* msg);
+
+  /**
+   * @method Fix
+   * 将无效值修改为正确的值。
+   *
+   * @param {value_t*} value 修正后的值。
+   *
+   * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+   */
+  virtual ret_t Fix(value_t* value);
 };
 
-} /*namespae vm*/
+}  // namespace vm
 
-#endif/*TK_DATA_VALIDATOR_HPP*/
-
+#endif /*TK_DATA_VALIDATOR_HPP*/

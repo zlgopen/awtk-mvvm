@@ -23,6 +23,7 @@
 #define TK_DATA_CONVERTER_HPP
 
 #include "mvvm/base/value_converter.h"
+#include "mvvm/cpp/object.hpp"
 
 namespace vm {
 
@@ -34,36 +35,35 @@ namespace vm {
  * 如果数据在View上显示的格式和在Model中保存的格式不一样，ValueConverter负责在两者之间转换。
  *
  */
-class ValueConverter {
-  public:
-    ValueConverter() {}
-    virtual ~ValueConverter() {}
-  
-  public:
-    /**
-     * @method ToModel
-     * 将value转换成适合model存储的格式。
-     *
-     * @param {value_t*} from 源value。
-     * @param {value_t*} to 转换结果。
-     *
-     * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
-     */
-    virtual ret_t ToModel(const value_t* from, value_t* to) = 0;
+class ValueConverter : public Object {
+ public:
+  ValueConverter();
+  virtual ~ValueConverter();
 
-    /**
-     * @method ToView
-     * 将value转换成适合view显示的格式。
-     *
-     * @param {value_t*} from 源value。
-     * @param {value_t*} to 转换结果。
-     *
-     * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
-     */
-    virtual ret_t ToView(const value_t* from, value_t* to) = 0;
+ public:
+  /**
+   * @method ToModel
+   * 将value转换成适合model存储的格式。
+   *
+   * @param {value_t*} from 源value。
+   * @param {value_t*} to 转换结果。
+   *
+   * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+   */
+  virtual ret_t ToModel(const value_t* from, value_t* to);
+
+  /**
+   * @method ToView
+   * 将value转换成适合view显示的格式。
+   *
+   * @param {value_t*} from 源value。
+   * @param {value_t*} to 转换结果。
+   *
+   * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+   */
+  virtual ret_t ToView(const value_t* from, value_t* to);
 };
 
-} /*namespae vm*/
+}  // namespace vm
 
-#endif/*TK_DATA_CONVERTER_HPP*/
-
+#endif /*TK_DATA_CONVERTER_HPP*/

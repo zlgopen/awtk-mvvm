@@ -1,4 +1,0 @@
-<window v-model="temperature.js">
-  <label x="center" y="middle" w="50%" h="40" v-data:text="{value}"/>
-  <slider x="center" y="middle:40" w="80%" h="20" v-data:value="{value, Trigger=Changing}"/>
-</window>

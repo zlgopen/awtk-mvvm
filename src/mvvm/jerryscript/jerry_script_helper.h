@@ -1,4 +1,4 @@
-/**
+﻿/**
  * File:   jerry_script_helper.h
  * Author: AWTK Develop Team
  * Brief:  jerry_script_helper
@@ -20,8 +20,10 @@
  */
 
 #include "tkc/types_def.h"
+#include "mvvm/base/view_model.h"
 #include "jerryscript.h"
-#include "jerryscript-core.h"
+#include "jerryscript-port.h"
+#include "jerryscript-ext/handler.h"
 
 #ifndef JERRY_SCRIPT_HELPER_H
 #define JERRY_SCRIPT_HELPER_H
@@ -29,17 +31,26 @@
 BEGIN_C_DECLS
 
 ret_t jerry_script_init(void);
-
-ret_t jerry_script_register_builtins(void);
-
+ret_t jerry_script_deinit(void);
 void jerry_script_print_error(jerry_value_t error_value);
 
-ret_t jerry_value_check(jerry_value_t value);
-ret_t jerry_script_eval_file(const char* filename, bool_t global);
+/**
+ * @method jerry_script_eval_buff
+ * annotation ["global"]
+ * export for test only
+ */
 ret_t jerry_script_eval_buff(const char* script, uint32_t size, const char* filename,
                              bool_t global);
 
-#define jerry_get_boolean_value(v) jerry_value_to_boolean(v)
+ret_t jerry_script_eval_file(const char* filename, bool_t global);
+ret_t jerry_script_eval_snapshot(const uint8_t* snapshot, uint32_t size);
+
+/**
+ * @method jerry_value_check
+ * annotation ["global"]
+ * export for test only
+ */
+ret_t jerry_value_check(jerry_value_t value);
 
 END_C_DECLS
 

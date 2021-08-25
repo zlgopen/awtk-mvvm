@@ -1,4 +1,5 @@
-var humidity = {
-  value : 30
-}
-
+ViewModel('humidity', {
+  data: {
+    value: 20
+  }
+});

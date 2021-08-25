@@ -1,5 +1,6 @@
 <window v-model="temperature">
-  <buzzer v-data:on="{$value > 50}" duration="" freq="3000" volume="60"/>
-  <temperature_sensor name="sensor0" v-data:value="{value, Mode=OneWayToModel}" 
-    sample_interval="1000"/>
+  <label x="center" y="middle:-40" w="50%" h="40" v-data:visible="{value > 50}" text="Visible if value > 50"/>
+  <label x="center" y="middle:-40" w="50%" h="40" v-data:visible="{value < 50}" text="Visible if value < 50"/>
+  <label x="center" y="middle" w="50%" h="40" v-data:text="{value}"/>
+  <slider x="center" y="middle:40" w="80%" h="20" v-data:value="{value}"/>
 </window>

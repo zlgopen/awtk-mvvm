@@ -33,21 +33,42 @@ TK_3RD_DIRS = [
 ]
 
 os.environ['WITH_JS'] = 'true'
+os.environ['WITH_JS_SNAPSHOT'] = 'true'
+os.environ['WITH_JS_EXTERNAL_CONTEXT'] = 'true'
 
 APP_CFLAGS = '-DMVVM_DLL_EXPORT '
 APP_LIBS = ['streams']
-if 'WITH_JS' in os.environ:
+
+if 'WITH_JS' in os.environ and os.environ['WITH_JS'] == 'true':
   APP_LIBS += ['jerryscript']
-  APP_CFLAGS +=' -DWITH_JERRYSCRIPT -DJERRY_DEBUGGER  -DJERRY_ESNEXT=0 '
-  SConscripts = ['3rd/jerryscript/SConscript', 
-    'src/SConscript', 
-    'demos/SConscript', 
-    'src/run_js_mvvm/SConscript', 
-    'tests/SConscript']
+  APP_CFLAGS +=' -DWITH_JERRYSCRIPT '
+
+  if 'WITH_JS_SNAPSHOT' in os.environ and os.environ['WITH_JS_SNAPSHOT'] == 'true':
+    APP_CFLAGS +=' -DWITH_JERRYSCRIPT_SNAPSHOT '
+
+  if 'WITH_JS_EXTERNAL_CONTEXT' in os.environ and os.environ['WITH_JS_EXTERNAL_CONTEXT'] == 'true':
+    APP_CFLAGS += ' -DJERRY_EXTERNAL_CONTEXT=1 -DJERRY_GLOBAL_HEAP_SIZE=2048 '
+  else:
+    APP_CFLAGS += ' -DCONFIG_MEM_HEAP_AREA_SIZE=2097152 '
+
+  SConscripts = ['3rd/jerryscript/SConscript',
+    'src/SConscript',
+    'demos/SConscript',
+    'src/run_js_mvvm/SConscript',
+    'tests/SConscript',
+    'tools/mvvm_factory_gen/SConscript']
+
 else:
   SConscripts = ['src/SConscript', 'demos/SConscript']
 
-helper = app.Helper(ARGUMENTS);
-helper.set_dll_def('src/mvvm.def').add_cpppath(TK_3RD_DIRS).add_ccflags(APP_CFLAGS).add_libs(APP_LIBS).call(DefaultEnvironment)
+def dll_def_processor():
+  content = ''
+  with open('src/cpp.def', 'r') as f:
+    content = f.read()
+  with open('src/mvvm.def', 'a') as f:
+    f.write(content)
 
-helper.SConscript(SConscripts)
+helper = app.Helper(ARGUMENTS);
+helper.set_dll_def('src/mvvm.def').set_dll_def_processor(dll_def_processor).add_cpppath(TK_3RD_DIRS).add_ccflags(APP_CFLAGS).add_libs(APP_LIBS).call(DefaultEnvironment)
+
+SConscript(SConscripts)

@@ -29,4 +29,15 @@ ret_t application_init(void) {
   return navigator_to("send_key_set_prop");
 }
 
-#include "../awtk_main.c"
+ret_t application_exit(void) {
+  log_debug("application_exit\n");
+
+  if (app_conf_get_instance() != NULL) {
+    app_conf_save();
+    app_conf_deinit();
+  }
+
+  return RET_OK;
+}
+
+#include "../main.inc"

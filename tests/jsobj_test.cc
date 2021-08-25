@@ -1,81 +1,123 @@
-﻿#include "mvvm/jerryscript/jsobj_4_mvvm.h"
+﻿#include "mvvm/base/navigator_request.h"
+#include "mvvm/jerryscript/jsobj_4_mvvm.h"
 #include "gtest/gtest.h"
 
 #include <string>
 using std::string;
 
-TEST(JsValue, pointer) {
-  int a = 123;
-  jerry_value_t jsvalue = jerry_value_from_pointer(&a);
-  int* ap = (int*)jerry_value_to_pointer(jsvalue);
-  ASSERT_EQ(ap, &a);
+TEST(JsValue, native_ptr) {
+  jsvalue_t jsobj = JS_EMPTY_OBJ;
+  object_t* p = (object_t*)0x12345678;
+  object_t* obj = jsobj_get_native_ptr(jsobj);
 
-  jerry_release_value(jsvalue);
+  ASSERT_EQ(obj, (object_t*)NULL);
+  ASSERT_EQ(jsobj_set_native_ptr(jsobj, p), RET_OK);
+
+  obj = jsobj_get_native_ptr(jsobj);
+  ASSERT_EQ(obj, (object_t*)0x12345678);
+
+  jsobj_delete_native_ptr(jsobj);
+  obj = jsobj_get_native_ptr(jsobj);
+  ASSERT_EQ(obj, (object_t*)NULL);
+
+  jsvalue_unref(jsobj);
+}
+
+TEST(JsValue, pointer) {
+  value_t v1, v2;
+  jsvalue_t jsvalue;
+
+  value_set_pointer(&v1, (void*)0x12345678);
+  jsvalue = jsvalue_from_value(&v1, NULL);
+  ASSERT_EQ(jsvalue_check(jsvalue), RET_OK);
+
+  ASSERT_EQ(jsvalue_to_value(jsvalue, &v2, NULL), RET_OK);
+  ASSERT_EQ(value_equal(&v1, &v2), TRUE);
+
+  jsvalue_unref(jsvalue);
 }
 
 TEST(JsValue, int) {
-  value_t v;
-  value_t v1;
-  value_set_int(&v, 123);
-  jerry_value_t jsvalue = jerry_value_from_value(&v, NULL);
+  value_t v1, v2;
+  jsvalue_t jsvalue;
 
-  ASSERT_EQ(jerry_value_to_value(jsvalue, &v1, NULL), RET_OK);
-  ASSERT_EQ(value_int(&v), value_int(&v1));
+  value_set_int(&v1, 123);
+  jsvalue = jsvalue_from_value(&v1, NULL);
+  ASSERT_EQ(jsvalue_check(jsvalue), RET_OK);
 
-  jerry_release_value(jsvalue);
+  ASSERT_EQ(jsvalue_to_value(jsvalue, &v2, NULL), RET_OK);
+  ASSERT_EQ(value_int(&v1), value_int(&v2));
+
+  jsvalue_unref(jsvalue);
 }
 
 TEST(JsValue, float) {
-  value_t v;
-  value_t v1;
-  value_set_float(&v, 123);
-  jerry_value_t jsvalue = jerry_value_from_value(&v, NULL);
+  value_t v1, v2;
+  jsvalue_t jsvalue;
 
-  ASSERT_EQ(jerry_value_to_value(jsvalue, &v1, NULL), RET_OK);
-  ASSERT_EQ(value_float(&v), value_float(&v1));
+  value_set_float(&v1, 123);
+  jsvalue = jsvalue_from_value(&v1, NULL);
+  ASSERT_EQ(jsvalue_check(jsvalue), RET_OK);
 
-  jerry_release_value(jsvalue);
+  ASSERT_EQ(jsvalue_to_value(jsvalue, &v2, NULL), RET_OK);
+  ASSERT_EQ(value_float(&v1), value_float(&v2));
+
+  jsvalue_unref(jsvalue);
 }
 
 TEST(JsValue, str) {
-  value_t v;
-  value_t v1;
   str_t str;
+  value_t v1, v2;
+  jsvalue_t jsvalue;
+
   str_init(&str, 0);
-  value_set_str(&v, "123");
-  jerry_value_t jsvalue = jerry_value_from_value(&v, &str);
+  value_set_str(&v1, "123");
+  jsvalue = jsvalue_from_value(&v1, &str);
+  ASSERT_EQ(jsvalue_check(jsvalue), RET_OK);
 
-  ASSERT_EQ(jerry_value_to_value(jsvalue, &v1, &str), RET_OK);
-  ASSERT_EQ(string(value_str(&v)), string(value_str(&v1)));
+  ASSERT_EQ(jsvalue_to_value(jsvalue, &v2, &str), RET_OK);
+  ASSERT_EQ(string(value_str(&v1)), string(value_str(&v2)));
 
-  jerry_release_value(jsvalue);
+  str_reset(&str);
+  jsvalue_unref(jsvalue);
 }
 
 TEST(JsValue, wstr) {
-  value_t v;
-  value_t v1;
   str_t str;
+  value_t v1, v2;
+  jsvalue_t jsvalue;
+
   str_init(&str, 0);
-  value_set_wstr(&v, L"123");
-  jerry_value_t jsvalue = jerry_value_from_value(&v, &str);
+  value_set_wstr(&v1, L"123");
+  jsvalue = jsvalue_from_value(&v1, &str);
+  ASSERT_EQ(jsvalue_check(jsvalue), RET_OK);
 
-  ASSERT_EQ(jerry_value_to_value(jsvalue, &v1, &str), RET_OK);
-  ASSERT_EQ(string("123"), string(value_str(&v1)));
+  ASSERT_EQ(jsvalue_to_value(jsvalue, &v2, &str), RET_OK);
+  ASSERT_EQ(string("123"), string(value_str(&v2)));
 
-  jerry_release_value(jsvalue);
+  str_reset(&str);
+  jsvalue_unref(jsvalue);
 }
 
 TEST(JsValue, request) {
-  navigator_request_t* req = navigator_request_create("target", NULL);
-  object_set_prop_int(OBJECT(req), "int", 100);
-  object_set_prop_str(OBJECT(req), "str", "str");
-  jerry_value_t value = jerry_value_from_navigator_request(req);
-  navigator_request_t* req1 = jerry_value_to_navigator_request(value);
+  jsvalue_t jsreq = JS_EMPTY_OBJ;
+  jsobj_set_prop_int(jsreq, "int", 100);
+  jsobj_set_prop_str(jsreq, "str", "str");
+  jsobj_set_prop_str(jsreq, NAVIGATOR_ARG_TARGET, "main");
+  jsobj_set_prop_int(jsreq, NAVIGATOR_ARG_OPEN_NEW, TRUE);
+  jsobj_set_prop_int(jsreq, NAVIGATOR_ARG_CLOSE_CURRENT, TRUE);
 
-  ASSERT_EQ(object_get_prop_int(OBJECT(req), "int", 0),
-            object_get_prop_int(OBJECT(req1), "int", 0));
-  ASSERT_STREQ(object_get_prop_str(OBJECT(req), "str"), object_get_prop_str(OBJECT(req1), "str"));
+  navigator_request_t* req = jsvalue_to_navigator_request(jsreq);
+  ASSERT_EQ(object_get_prop_int(OBJECT(req), "int", 0), 100);
+  ASSERT_EQ(string(object_get_prop_str(OBJECT(req), "str")), string("str"));
+  ASSERT_EQ(string(object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_TARGET)), string("main"));
+  ASSERT_EQ(object_get_prop_bool(OBJECT(req), NAVIGATOR_ARG_OPEN_NEW, FALSE), TRUE);
+  ASSERT_EQ(object_get_prop_bool(OBJECT(req), NAVIGATOR_ARG_CLOSE_CURRENT, FALSE), TRUE);
 
-  jerry_release_value(value);
+  jsvalue_t jsreq1 = jsvalue_from_navigator_request(req);
+  ASSERT_EQ(jsreq, jsreq1);
+
+  jsvalue_unref(jsreq1);
+  jsvalue_unref(jsreq);
   object_unref(OBJECT(req));
 }

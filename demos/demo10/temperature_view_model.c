@@ -11,7 +11,9 @@ static ret_t temperature_view_model_set_prop(object_t* obj, const char* name, co
 
   if (tk_str_ieq("value", name)) {
     atemperature->value = value_double(v);
-
+    return RET_OK;
+  } else if (tk_str_ieq("timer", name)) {
+    atemperature->timer = value_uint32(v);
     return RET_OK;
   }
 
@@ -23,6 +25,9 @@ static ret_t temperature_view_model_get_prop(object_t* obj, const char* name, va
 
   if (tk_str_ieq("value", name)) {
     value_set_double(v, atemperature->value);
+    return RET_OK;
+  } else if (tk_str_ieq("timer", name)) {
+    value_set_uint32(v, atemperature->timer);
     return RET_OK;
   }
 

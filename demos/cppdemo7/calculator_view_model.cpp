@@ -32,13 +32,13 @@ static ret_t calculator_view_model_get_prop(object_t* obj, const char* name, val
 static bool_t calculator_view_model_can_exec(object_t* obj, const char* name, const char* args) {
   calculator_view_model_t* vm = (calculator_view_model_t*)(obj);
   Calculator* aCalculator = vm->aCalculator;
-  if (tk_str_ieq("add_char", name)) {
+  if (tk_str_ieq("addChar", name)) {
     return TRUE;
 
-  } else if (tk_str_ieq("remove_char", name)) {
+  } else if (tk_str_ieq("removeChar", name)) {
     return aCalculator->CanRemoveChar();
 
-  } else if (tk_str_ieq("Eval", name)) {
+  } else if (tk_str_ieq("eval", name)) {
     return aCalculator->CanEval();
   }
   return FALSE;
@@ -47,13 +47,13 @@ static bool_t calculator_view_model_can_exec(object_t* obj, const char* name, co
 static ret_t calculator_view_model_exec(object_t* obj, const char* name, const char* args) {
   calculator_view_model_t* vm = (calculator_view_model_t*)(obj);
   Calculator* aCalculator = vm->aCalculator;
-  if (tk_str_ieq("add_char", name)) {
+  if (tk_str_ieq("addChar", name)) {
     return aCalculator->AddChar(args[0]);
 
-  } else if (tk_str_ieq("remove_char", name)) {
+  } else if (tk_str_ieq("removeChar", name)) {
     return aCalculator->RemoveChar();
 
-  } else if (tk_str_ieq("Eval", name)) {
+  } else if (tk_str_ieq("eval", name)) {
     return aCalculator->Eval();
   }
   return RET_NOT_FOUND;

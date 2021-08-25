@@ -21,15 +21,18 @@
 
 #include "awtk.h"
 #include "mvvm/mvvm.h"
-#include "custom_handlers.h"
-
-extern ret_t register_custom_handlers(void);
+#include "address_view_model.h"
 
 ret_t application_init(void) {
-  register_custom_handlers();
-  view_model_factory_register("custom_handlers", custom_handlers_view_model_create);
+  view_model_factory_register("address", address_view_model_create);
 
-  return navigator_to("custom_handlers");
+  return navigator_to("address");
 }
 
-#include "../awtk_main.c"
+ret_t application_exit(void) {
+  log_debug("application_exit\n");
+
+  return RET_OK;
+}
+
+#include "../main.inc"

@@ -1,4 +1,5 @@
-﻿#include "mvvm/jerryscript/view_model_jerryscript.h"
+﻿#include "mvvm/base/view_model_factory.h"
+#include "mvvm/jerryscript/jerry_script_helper.h"
 #include "mvvm/jerryscript/value_validator_jerryscript.h"
 #include "gtest/gtest.h"
 
@@ -7,17 +8,18 @@ using std::string;
 
 TEST(ValueValidatorJerryScript, basic) {
   const char* code =
-      "var ValueValidators = {}; \
-        ValueValidators.jsdummy = {\
-          isValid:function(v) {return v < 10;} \
-        }";
+      "ValueValidator('jsdummy', {\
+         isValid: function(v) {return v < 10;} \
+       });";
   str_t str;
   value_t value;
-  view_model_t* view_model = view_model_jerryscript_create("test", code, strlen(code), NULL);
+  value_validator_t* c;
+
+  jerry_script_eval_buff(code, strlen(code), "test", TRUE);
+  c = value_validator_create("jsdummy");
+  ASSERT_NE(c, VALUE_VALIDATOR(NULL));
 
   str_init(&str, 0);
-  value_validator_t* c = value_validator_create("jsdummy");
-  ASSERT_NE(c, VALUE_VALIDATOR(NULL));
 
   value_set_int(&value, 1);
   ASSERT_EQ(value_validator_is_valid(c, &value, &str), TRUE);
@@ -33,19 +35,18 @@ TEST(ValueValidatorJerryScript, basic) {
 
   str_reset(&str);
   object_unref(OBJECT(c));
-  object_unref(OBJECT(view_model));
 }
 
 TEST(ValueValidatorJerryScript, fix) {
   const char* code =
-      "var ValueValidators = {}; \
-        ValueValidators.jsdummy = {\
-          fix:function(v) {return 10;} \
-        }";
+      "ValueValidator('jsdummy', {\
+         fix: function(v) {return 10;} \
+       });";
   value_t value;
-  view_model_t* view_model = view_model_jerryscript_create("test", code, strlen(code), NULL);
+  value_validator_t* c;
 
-  value_validator_t* c = value_validator_create("jsdummy");
+  jerry_script_eval_buff(code, strlen(code), "test", TRUE);
+  c = value_validator_create("jsdummy");
   ASSERT_NE(c, VALUE_VALIDATOR(NULL));
 
   value_set_int(&value, 10);
@@ -61,24 +62,24 @@ TEST(ValueValidatorJerryScript, fix) {
   ASSERT_EQ(value_int(&value), 10);
 
   object_unref(OBJECT(c));
-  object_unref(OBJECT(view_model));
 }
 
 TEST(ValueValidatorJerryScript, message) {
   const char* code =
-      "var ValueValidators = {}; \
-        ValueValidators.jsdummy = {\
+      "ValueValidator('jsdummy', {\
           isValid:function(v) {\
             if(v < 10) return {result:true, message:'ok'}; \
             else return {result:false, message:'too large'};} \
-        }";
+       });";
   str_t str;
   value_t value;
-  view_model_t* view_model = view_model_jerryscript_create("test", code, strlen(code), NULL);
+  value_validator_t* c;
+
+  jerry_script_eval_buff(code, strlen(code), "test", TRUE);
+  c = value_validator_create("jsdummy");
+  ASSERT_NE(c, VALUE_VALIDATOR(NULL));
 
   str_init(&str, 0);
-  value_validator_t* c = value_validator_create("jsdummy");
-  ASSERT_NE(c, VALUE_VALIDATOR(NULL));
 
   value_set_int(&value, 1);
   ASSERT_EQ(value_validator_is_valid(c, &value, &str), TRUE);
@@ -97,29 +98,16 @@ TEST(ValueValidatorJerryScript, message) {
 
   str_reset(&str);
   object_unref(OBJECT(c));
-  object_unref(OBJECT(view_model));
 }
 
 TEST(ValueValidatorJerryScript, not_exist) {
-  const char* code = "var ValueValidators = {};";
-
-  view_model_t* view_model = view_model_jerryscript_create("test", code, strlen(code), NULL);
-
   value_validator_t* c = value_validator_create("notexist");
   ASSERT_EQ(c, VALUE_VALIDATOR(NULL));
-
-  object_unref(OBJECT(view_model));
 }
 
 TEST(ValueValidatorJerryScript, no_isValid) {
-  const char* code =
-      "var ValueValidators = {}; \
-        ValueValidators.jsdummy = {\
-          isValid:1 \
-        }";
   str_t str;
   value_t value;
-  view_model_t* view_model = view_model_jerryscript_create("test", code, strlen(code), NULL);
   value_validator_t* c = value_validator_create("notexist");
 
   str_init(&str, 0);
@@ -128,5 +116,4 @@ TEST(ValueValidatorJerryScript, no_isValid) {
 
   str_reset(&str);
   object_unref(OBJECT(c));
-  object_unref(OBJECT(view_model));
 }

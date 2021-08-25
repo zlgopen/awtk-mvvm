@@ -8,10 +8,10 @@
   <label v-data:text='{fformat(tr("current temperature %f"), value)+"℃"}'/>
   <label v-data:text='{string(value)+" ℃"}'/>
   <label v-data:text='{if(value > 60, "too height", if(value < 20, "too low", "normal"))}'
-    v-data:style='{if(value >= 20 && value <= 60, "green", "red")}'
+    v-data:style='{if(value >= 20 &amp;&amp; value <= 60, "green", "red")}'
     />
   <label v-data:text="{value}"/>
   <slider v-data:value="{value}"/>
-	<button text="Back" v-on:click="{fscript, args=back()}" />
-	<button text="Home" v-on:click="{fscript, args=back_to_home()}" />
+  <button text="Back" v-on:click="{fscript, Args=back()}" />
+  <button text="Home" v-on:click="{fscript, Args=back_to_home()}" />
 </window>

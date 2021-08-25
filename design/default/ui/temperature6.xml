@@ -1,4 +1,4 @@
-<window v-model="temperature">
+<window v-model="temperature_ex">
   <label  x="center" y="middle:-40" w="80%" h="40" v-data:text="{value}"/>
   <slider x="center" y="middle" w="90%" h="20" v-data:value="{value}"/>
   <button text="Apply" x="center" y="middle:40" w="40%" h="40" v-on:click="{apply}"/>

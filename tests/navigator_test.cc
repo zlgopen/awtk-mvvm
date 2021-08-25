@@ -5,19 +5,15 @@
 using std::string;
 
 static ret_t dummy_on_request(navigator_handler_t* handler, navigator_request_t* req) {
-  value_t v;
-  value_set_int(&v, 123);
-
-  navigator_request_on_result(req, &v);
+  value_set_int(&(req->result), 123);
+  navigator_request_on_result(req, &(req->result));
 
   return RET_OK;
 }
 
 static ret_t default_on_request(navigator_handler_t* handler, navigator_request_t* req) {
-  value_t v;
-  value_set_int(&v, 456);
-
-  navigator_request_on_result(req, &v);
+  value_set_int(&(req->result), 456);
+  navigator_request_on_result(req, &(req->result));
 
   return RET_OK;
 }
@@ -37,7 +33,7 @@ TEST(Navigator, regist) {
 
 TEST(Navigator, no_handler) {
   navigator_t* nav = navigator_create();
-  navigator_request_t* req = navigator_request_create("dummy", NULL);
+  navigator_request_t* req = navigator_request_create("string?request=dummy", NULL);
 
   ASSERT_EQ(navigator_handle_request(nav, req), RET_NOT_FOUND);
 
@@ -46,7 +42,7 @@ TEST(Navigator, no_handler) {
 
 TEST(Navigator, handler_request) {
   navigator_t* nav = navigator_create();
-  navigator_request_t* req = navigator_request_create("dummy", NULL);
+  navigator_request_t* req = navigator_request_create("string?request=dummy", NULL);
 
   navigator_register_handler(nav, "dummy", navigator_handler_create(dummy_on_request));
 
@@ -58,7 +54,7 @@ TEST(Navigator, handler_request) {
 
 TEST(Navigator, default_handler) {
   navigator_t* nav = navigator_create();
-  navigator_request_t* req = navigator_request_create("dummy", NULL);
+  navigator_request_t* req = navigator_request_create("string?request=dummy", NULL);
 
   navigator_register_handler(nav, NAVIGATOR_DEFAULT_HANDLER,
                              navigator_handler_create(default_on_request));
@@ -110,14 +106,12 @@ TEST(Navigator, info) {
 }
 
 static ret_t confirm_on_request(navigator_handler_t* handler, navigator_request_t* req) {
-  value_t v;
-
   s_log = string("confirm:") + string(object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_TITLE)) +
           string(object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_CONTENT));
 
-  value_set_int(&v, RET_FAIL);
+  value_set_int(&(req->result), RET_FAIL);
 
-  navigator_request_on_result(req, &v);
+  navigator_request_on_result(req, &(req->result));
 
   return RET_OK;
 }
@@ -247,9 +241,9 @@ TEST(Navigator, pick_file) {
 
 static ret_t navigator_on_close(navigator_handler_t* handler, navigator_request_t* req) {
   value_t v;
-  s_log = string("close:") + string(object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_NAME));
+  s_log = string("close:") + string(object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_TARGET));
 
-  if(object_get_prop_bool(OBJECT(req), NAVIGATOR_ARG_FORCE, FALSE)) {
+  if (object_get_prop_bool(OBJECT(req), NAVIGATOR_ARG_FORCE, FALSE)) {
     s_log += " force=true";
   } else {
     s_log += " force=false";
@@ -294,4 +288,3 @@ TEST(Navigator, request_close) {
   object_unref(OBJECT(nav));
   navigator_set(old);
 }
-

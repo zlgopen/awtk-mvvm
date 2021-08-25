@@ -33,10 +33,10 @@ shape_t* shape_create(void) {
   shape->w = 30;
   shape->h = 40;
   shape->opacity = 50;
-  shape->text_align = 1;
-  str_init(&(shape->name), 10);
+  shape->align = 1;
+  str_init(&(shape->name), 5);
   str_init(&(shape->overview), 10);
-  str_set(&(shape->name), "中文");
+  str_set(&(shape->name), "name");
 
   return shape;
 }
@@ -55,8 +55,7 @@ ret_t shape_destroy(shape_t* shape) {
 const char* shape_get_overview(shape_t* shape) {
   char buff[256];
   tk_snprintf(buff, sizeof(buff), "%s: type=%d (%d %d %d %d) opacity=%d align=%d", shape->name.str,
-              shape->type, shape->x, shape->y, shape->w, shape->h, shape->opacity,
-              shape->text_align);
+              shape->type, shape->x, shape->y, shape->w, shape->h, shape->opacity, shape->align);
 
   str_set(&(shape->overview), buff);
 

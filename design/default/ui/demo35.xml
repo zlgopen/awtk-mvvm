@@ -1,0 +1,49 @@
+<window v-model="devices">
+  <list_view  x="2" y="2" h="-28" w="-4" style:border_color="#404349" item_height="50" >
+    <view x="0" y="0" w="100%" h="24" style:border_color="#404349" style:border="bottom" children_layout="default(c=0,r=1)" >
+      <label w="10%"  h="100%" text="序号" />
+      <label w="25%" h="100%" text="设备类型" />
+      <label w="25%" h="100%" text="设备参数" />
+      <label w="40%" h="100%" text="数据" />
+    </view>
+    <scroll_view x="0" y="24" w="100%" h="-24">
+      <list_item v-for="items" children_layout="default=(c=0,r=1,s=2,m=5)" v-on:click="{setCurrent, Args=fscript?index=index, AutoDisable=false}">
+        <label name="index" w="10%" v-data:text="{index}"/>
+        <combo_box w="25%" h="80%" readonly="true" value="0" 
+          options="PACK_SKP_1000;PACK_SKP_2000;PACK_SKP_3042;PACK_SKP_3132;PACK_SKP_3142;PACK_SKP_5002"
+          v-data:enable="{unlocked}" v-data:value="{item.pack_type}"/>
+        <combo_box w="25%" readonly="true" value="0"
+          options="None;NTC-2252k;NTC-5k;NTC-10k"
+          v-data:enable='{unlocked}' v-data:value="{item.pack_params}"/>
+        <view v-if="{item.pack_type == 0}" w="40%" children_layout="default(r=1,c=0)">
+          <label w="20%" text="IO1:" style:text_align_h="left" />
+          <check_button w="30%" v-data:value="{item.io1}"/>
+          <label w="20%" text="IO2:" style:text_align_h="left" />
+          <check_button w="30%" v-data:value="{item.io2}"/>
+        </view>
+        <view v-elif="{item.pack_type > 0 &amp;&amp; item.pack_type <= 2}" w="40%" children_layout="default(r=1,c=0)">
+          <label w="20%" text="Temp:" style:text_align_h="left" />
+          <label w="80%" v-data:text='{fformat("%lf", item.temp)}'/>
+        </view>
+        <view v-elif="{item.pack_type > 2 &amp;&amp; item.pack_type <= 4}" w="40%" children_layout="default(r=1,c=0)">
+          <label w="20%" text="A1:" style:text_align_h="left" />
+          <label w="30%" v-data:text='{fformat("%d", item.a1)}' />
+          <label w="20%" text="A2:" style:text_align_h="left" />
+          <label w="30%" v-data:text='{fformat("%d", item.a2)}' />
+        </view>
+        <view v-else="" w="40%" children_layout="default(r=1,c=0)">
+          <label w="20%" text=" TPS:" style:text_align_h="left" />
+          <label w="80%" v-data:text='{fformat("%d", item.tps)}'/>
+        </view>
+      </list_item>
+    </scroll_view>
+    <scroll_bar_m style:fg_color="#05e6ff" x="right" y="24" w="6" h="-24" value="0"/>
+  </list_view>
+  <view x="2" y="b:2" w="-4" h="24" children_layout="default(c=5,r=1,s=2)">
+    <check_button text="Unlock" v-data:value="unlocked"/>
+    <button text="Remove" v-on:click="remove"/>
+    <button text="Insert" v-on:click="insert"/>
+    <button text="Clear" v-on:click="clear"/>
+    <button text="Reset" v-on:click="reset"/>
+  </view>
+</window>

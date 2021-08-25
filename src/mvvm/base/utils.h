@@ -27,6 +27,9 @@
 
 BEGIN_C_DECLS
 
+#define COMMAND_ARGS_STRING_PREFIX "string?"
+#define COMMAND_ARGS_FSCRIPT_PREFIX "fscript?"
+
 /**
  * @method tk_destruct_array_prop_name
  * 从完整属性名中取出属性名和索引。
@@ -37,6 +40,39 @@ BEGIN_C_DECLS
  * @return {const char*} 返回属性名。
  */
 const char* tk_destruct_array_prop_name(const char* name, uint32_t* index);
+
+/**
+ * @method tk_command_arguments_to_object
+ * 将字符串类型的命令参数转换为object_t。
+ * @annotation ["global"]
+ * @param {const char*} args 命令参数。
+ * @param {value_t*} obj 返回转换后的结果。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t tk_command_arguments_to_object(const char* args, object_t* obj);
+
+/**
+ * @method tk_command_arguments_from_object
+ * 将object_t类型的命令参数转换为字符串。
+ * @annotation ["global"]
+ * @param {const value_t*} args 命令参数。
+ * @param {uint32_t*} temp  返回转换后的结果。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t tk_command_arguments_from_object(object_t* args, str_t* temp);
+
+/**
+ * @method tk_command_arguments_fscript
+ * 读取命令参数上各参数的内容并执行。
+ * @annotation ["global"]
+ * @param {const value_t*} args 命令参数。
+ * @param {uint32_t*} temp  返回转换后的结果。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t tk_command_arguments_fscript(object_t* args, object_t* ctx);
 
 /**
  * @method str_random

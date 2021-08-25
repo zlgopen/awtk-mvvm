@@ -1,10 +1,9 @@
-<window text="Temperature" anim_hint="htranslate">
+<window text="Temperature" anim_hint="htranslate" v-model="controller">
   <label text="Window Temperature" x="center" y="10" w="80%" h="30" />
-
-  <button text="Keep Current And Open" x="center" y="middle:-40" w="80%" h="30" 
-    v-on:click="{navigate, args=demo33_b}"/>
-  <button text="Close Current And Open" x="center" y="middle" w="80%" h="30" 
-    v-on:click="{navigate, args=demo33_b?close_current=true}"/>
+  <check_button x="center" y="middle:-40" w="80%" h="30" text="Close Current" v-data:value="close_current"/>
+  <button x="center" y="middle" w="80%" h="30" 
+    v-data:text="{close_current ? &quot;Close Current And Open Humidity&quot; : &quot;Keep Current And Open Humidity&quot;}" 
+    v-on:click="{navigate, Args=fscript?target=demo33_b&amp;close_current=close_current}"/>
   <button text="Home" x="center" y="middle:40" w="80%" h="30" 
-    v-on:click="{navigate, args=demo33?close_current=true&open_new=false}"/>
+    v-on:click="{navigate, Args=string?target=demo33&amp;close_current=true&amp;open_new=false}"/>
 </window>

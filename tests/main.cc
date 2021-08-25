@@ -30,25 +30,23 @@
 #include <stdio.h>
 
 #include "awtk.h"
-#include "tkc/mem.h"
 #include "mvvm/mvvm.h"
-#include "base/idle.h"
-#include "base/system_info.h"
 #include "gtest/gtest.h"
-#include "demos/assets.h"
 
 GTEST_API_ int main(int argc, char** argv) {
   printf("Running main() from gtest_main.cc\n");
   testing::InitGoogleTest(&argc, argv);
 
   platform_prepare();
+
   system_info_init(APP_SIMULATOR, NULL, "./");
   tk_init_internal();
+  tk_init_assets();
+
   mvvm_init();
 #ifdef WITH_JERRYSCRIPT
   mvvm_jerryscript_init();
 #endif /*WITH_JERRYSCRIPT*/
-  tk_init_assets();
 
   RUN_ALL_TESTS();
 
@@ -56,6 +54,7 @@ GTEST_API_ int main(int argc, char** argv) {
   mvvm_jerryscript_deinit();
 #endif /*WITH_JERRYSCRIPT*/
   mvvm_deinit();
+
   tk_deinit_internal();
 
   return 0;

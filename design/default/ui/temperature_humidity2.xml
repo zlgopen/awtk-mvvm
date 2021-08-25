@@ -1,14 +1,14 @@
 <window anim_hint="htranslate">
-	<view v-model="temperature" w="100%" h="100%" children_layout="default(r=2, c=1, m=10)">
-		<view>
-			<label text="1" x="center" y="middle" w="50%" h="40" v-data:text="{temp}" />
-			<slider value="1" x="center" y="middle:40" w="80%" h="20" v-data:value="{temp, Trigger=Changing}" />
-		</view>
-		<view v-model="humidity">
-			<label text="1" x="center" y="middle:-40" w="50%" h="40" v-data:text="{temp}" />
-			<label text="1" x="center" y="middle" w="50%" h="40" v-data:text="{humi}" />
-			<slider value="1" x="center" y="middle:40" w="80%" h="20" v-data:value="{humi, Trigger=Changing}" />
-		</view>
-	</view>
-	<button text="Close" floating="true" x="right:10" y="bottom:4" w="60" h="30" v-on:click="{nothing, CloseWindow=True, QuitApp=true}" />
+  <view v-model="temperature" w="100%" h="100%" children_layout="default(r=2, c=1, m=10)">
+    <view>
+      <label text="1" x="center" y="middle" w="50%" h="40" v-data:text="{temp}" />
+      <slider value="1" x="center" y="middle:40" w="80%" h="20" v-data:value="{temp, Trigger=Changing}" />
+    </view>
+    <view v-model="humidity">
+      <label text="1" x="center" y="middle:-40" w="50%" h="40" v-data:text="{temp}" />
+      <label text="1" x="center" y="middle" w="50%" h="40" v-data:text="{humi}" />
+      <slider value="1" x="center" y="middle:40" w="80%" h="20" v-data:value="{humi, Trigger=Changing}" />
+    </view>
+  </view>
+  <button text="Close" floating="true" x="right:10" y="bottom:4" w="60" h="30" v-on:click="{nothing, CloseWindow=True, QuitApp=true}" />
 </window>

@@ -23,9 +23,15 @@
 #include "mvvm/mvvm.h"
 
 ret_t application_init() {
-  navigator_to("js_temperature1");
+  navigator_to("temperature1");
 
   return RET_OK;
 }
 
-#include "../awtk_main.c"
+ret_t application_exit(void) {
+  log_debug("application_exit\n");
+
+  return RET_OK;
+}
+
+#include "../main.inc"

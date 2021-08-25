@@ -3,7 +3,7 @@
  * Author: AWTK Develop Team
  * Brief:  application
  *
- * Copyright (c) 2018 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2020 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -27,7 +27,13 @@
 ret_t application_init(void) {
   view_model_factory_register("books", book_store_view_model_create);
 
-  return navigator_to("books");
+  return navigator_to("books13");
 }
 
-#include "../awtk_main.c"
+ret_t application_exit(void) {
+  log_debug("application_exit\n");
+
+  return RET_OK;
+}
+
+#include "../main.inc"

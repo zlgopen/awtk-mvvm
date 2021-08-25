@@ -15,21 +15,23 @@
 /**
  * History:
  * ================================================================
- * 2019-02-02 Li XianJing <xianjimli@hotmail.com> created
+ * 2019-05-28 Li XianJing <xianjimli@hotmail.com> created
  *
  */
 
 #include "awtk.h"
 #include "mvvm/mvvm.h"
-#include "temperature_view_model.h"
 
-extern ret_t hardware_init(void);
+ret_t application_init() {
+  navigator_to("com_settings");
 
-ret_t application_init(void) {
-  hardware_init();
-  view_model_factory_register("temperature", temperature_view_model_create);
-
-  return navigator_to("temperature16");
+  return RET_OK;
 }
 
-#include "../awtk_main.c"
+ret_t application_exit(void) {
+  log_debug("application_exit\n");
+
+  return RET_OK;
+}
+
+#include "../main.inc"

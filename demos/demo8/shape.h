@@ -77,11 +77,11 @@ typedef struct _shape_t {
   int32_t opacity;
 
   /**
-   * @property {int32_t} text_align
+   * @property {int32_t} align
    * @annotation ["readable", "writable"]
    * 文本对齐。
    */
-  int32_t text_align;
+  int32_t align;
 
   /**
    * @property {str_t} name
@@ -146,7 +146,7 @@ const char* shape_get_overview(shape_t* shape);
  * @method shape_change_type
  * 改变shape的类型。
  *
- * @annotation ["command"]
+ * @annotation ["command:changeType"]
  * @param {shape_t*} shape shape对象。
  * @param {int32_t} type 类型。
  *

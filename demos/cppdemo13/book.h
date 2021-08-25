@@ -1,10 +1,10 @@
-
+﻿
 /**
  * File:  book.h
  * Author: AWTK Develop Team
  * Brief:  book
  *
- * Copyright (c) 2020 - 2020  Guangzhou ZHIYUAN Electronics Co.,Ltd.
+ * Copyright (c) 2020 - 2021  Guangzhou ZHIYUAN Electronics Co.,Ltd.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -16,7 +16,7 @@
 /**
  * History:
  * ================================================================
- * 2020-01-31 Li XianJing <xianjimli@hotmail.com> created
+ * 2021-05-31 Liu YuXin <liuyuxin@zlg.cn> created
  *
  */
 
@@ -24,20 +24,26 @@
 #define TK_BOOK_H
 
 #include <string>
-#include <vector>
 #include "tkc/types_def.h"
+#include "mvvm/cpp/adapter.hpp"
 
 using std::string;
-using std::vector;
 
-/**
- * @class Book
- * @annotation ["model", "cpp"]
- * 图书信息。
- *
- */
-class Book {
+class Book : public vm::Object {
  public:
+  string name;
+  uint32_t stock;
+
+ public:
+  /**
+   * @method Create
+   * Book obj对象的Create函数。
+   *
+   * @annotation ["constructor"]
+   * @return {object_t*} 返回Book的obj对象。
+   */
+  static object_t* Create();
+
   /**
    * @method Book
    * 构造函数。
@@ -49,38 +55,19 @@ class Book {
   ~Book();
 
  public:
-  /**
-   * @method Sale
-   * 卖掉一本。
-   *
-   * @annotation ["command"]
-   *
-   * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
-   */
-  ret_t Sale();
-
-  /**
-   * @method CanSale
-   * 检查sale命令是否可以执行。
-   *
-   * @return {bool_t} 返回FALSE表示不能执行，否则表示可以执行。
-   */
-  bool_t CanSale(void) const;
-
- public:
-  /**
-   * @property {string} name
-   * @annotation ["readable", "writable"]
-   * 书名。
-   */
-  string name;
-
-  /**
-   * @property {uint32_t} stock
-   * @annotation ["readable", "writable"]
-   * 库存。
-   */
-  uint32_t stock;
+  virtual ret_t Exec(const char* name, const char* args);
+  virtual bool_t CanExec(const char* name, const char* args) const;
+  virtual ret_t GetProp(const char* name, value_t* v) const;
+  virtual ret_t SetProp(const char* name, const value_t* v);
 };
+
+/**
+ * @method book_create
+ * 创建book的obj对象。
+ *
+ * @annotation ["constructor"]
+ * @return {object_t*} 返回book的obj对象。
+ */
+object_t* book_create(void);
 
 #endif /*TK_BOOK_H*/

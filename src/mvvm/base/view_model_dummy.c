@@ -1,4 +1,4 @@
-/**
+﻿/**
  * File:   view_model_dummy.c
  * Author: AWTK Develop Team
  * Brief:  view_model_dummy

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * File:   navigator.c
  * Author: AWTK Develop Team
  * Brief:  navigator navigator
@@ -69,15 +69,20 @@ static navigator_handler_t* navigator_find_handler(navigator_t* nav, const char*
 
 ret_t navigator_handle_request(navigator_t* nav, navigator_request_t* req) {
   navigator_handler_t* handler = NULL;
+  const char* request_type = NULL;
   return_value_if_fail(nav != NULL && req != NULL, RET_BAD_PARAMS);
 
-  handler = navigator_find_handler(nav, req->target);
+  request_type = object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_REQ);
+  if (request_type != NULL) {
+    handler = navigator_find_handler(nav, request_type);
+  }
+
   if (handler == NULL) {
     handler = navigator_find_handler(nav, NAVIGATOR_DEFAULT_HANDLER);
   }
 
   if (handler == NULL) {
-    log_warn("not found %s\n", req->target);
+    log_warn("not found %s\n", request_type);
   }
   return_value_if_fail(handler != NULL, RET_NOT_FOUND);
 
@@ -122,13 +127,47 @@ navigator_t* navigator(void) {
   return s_navigator;
 }
 
-ret_t navigator_to(const char* target) {
+ret_t navigator_to(const char* args) {
+  ret_t ret = RET_OK;
+  navigator_request_t* req = NULL;
+  return_value_if_fail(args != NULL && navigator() != NULL, RET_BAD_PARAMS);
+
+  req = navigator_request_create(args, NULL);
+  return_value_if_fail(req != NULL, RET_OOM);
+
+  ret = navigator_handle_request(navigator(), req);
+  object_unref(OBJECT(req));
+
+  return ret;
+}
+
+ret_t navigator_to_by_object(object_t* args) {
+  ret_t ret = RET_OK;
+  const char* target = NULL;
+  navigator_request_t* req = NULL;
+  return_value_if_fail(args != NULL && navigator() != NULL, RET_BAD_PARAMS);
+
+  req = navigator_request_create(NULL, NULL);
+  return_value_if_fail(req != NULL, RET_OOM);
+
+  navigator_request_set_args(req, args);
+
+  ret = navigator_handle_request(navigator(), req);
+  object_unref(OBJECT(req));
+
+  return ret;
+}
+
+ret_t navigator_to_with_key_value(const char* target, const char* key, const char* value) {
   ret_t ret = RET_OK;
   navigator_request_t* req = NULL;
   return_value_if_fail(target != NULL && navigator() != NULL, RET_BAD_PARAMS);
 
-  req = navigator_request_create(target, NULL);
+  req = navigator_request_create(NULL, NULL);
   return_value_if_fail(req != NULL, RET_OOM);
+
+  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_TARGET, target);
+  object_set_prop_str(OBJECT(req), key, value);
 
   ret = navigator_handle_request(navigator(), req);
   object_unref(OBJECT(req));
@@ -141,10 +180,12 @@ ret_t navigator_replace(const char* target) {
   navigator_request_t* req = NULL;
   return_value_if_fail(target != NULL && navigator() != NULL, RET_BAD_PARAMS);
 
-  req = navigator_request_create(target, NULL);
+  req = navigator_request_create(NULL, NULL);
   return_value_if_fail(req != NULL, RET_OOM);
 
-  navigator_request_set_close_current(req, TRUE);
+  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_TARGET, target);
+  object_set_prop_bool(OBJECT(req), NAVIGATOR_ARG_CLOSE_CURRENT, TRUE);
+
   ret = navigator_handle_request(navigator(), req);
   object_unref(OBJECT(req));
 
@@ -156,25 +197,13 @@ ret_t navigator_switch_to(const char* target, bool_t close_current) {
   navigator_request_t* req = NULL;
   return_value_if_fail(target != NULL && navigator() != NULL, RET_BAD_PARAMS);
 
-  req = navigator_request_create(target, NULL);
+  req = navigator_request_create(NULL, NULL);
   return_value_if_fail(req != NULL, RET_OOM);
 
-  navigator_request_set_open_new(req, FALSE);
-  navigator_request_set_close_current(req, close_current);
-  ret = navigator_handle_request(navigator(), req);
-  object_unref(OBJECT(req));
+  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_TARGET, target);
+  object_set_prop_bool(OBJECT(req), NAVIGATOR_ARG_CLOSE_CURRENT, close_current);
+  object_set_prop_bool(OBJECT(req), NAVIGATOR_ARG_OPEN_NEW, FALSE);
 
-  return ret;
-}
-
-ret_t navigator_to_with_key_value(const char* target, const char* key, const char* value) {
-  ret_t ret = RET_OK;
-  navigator_request_t* req = NULL;
-  return_value_if_fail(target != NULL && navigator() != NULL, RET_BAD_PARAMS);
-
-  req = navigator_request_create(target, NULL);
-  return_value_if_fail(req != NULL, RET_OOM);
-  object_set_prop_str(OBJECT(req), key, value);
   ret = navigator_handle_request(navigator(), req);
   object_unref(OBJECT(req));
 
@@ -182,15 +211,35 @@ ret_t navigator_to_with_key_value(const char* target, const char* key, const cha
 }
 
 ret_t navigator_back_to_home(void) {
-  return navigator_to(NAVIGATOR_REQ_HOME);
+  ret_t ret = RET_OK;
+  navigator_request_t* req = NULL;
+  return_value_if_fail(navigator() != NULL, RET_BAD_PARAMS);
+
+  req = navigator_request_create(NULL, NULL);
+  return_value_if_fail(req != NULL, RET_OOM);
+
+  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_HOME);
+
+  ret = navigator_handle_request(navigator(), req);
+  object_unref(OBJECT(req));
+
+  return ret;
 }
 
 ret_t navigator_back(void) {
-  return navigator_to(NAVIGATOR_REQ_BACK);
-}
+  ret_t ret = RET_OK;
+  navigator_request_t* req = NULL;
+  return_value_if_fail(navigator() != NULL, RET_BAD_PARAMS);
 
-ret_t navigator_to_ex(navigator_request_t* req) {
-  return navigator_handle_request(navigator(), req);
+  req = navigator_request_create(NULL, NULL);
+  return_value_if_fail(req != NULL, RET_OOM);
+
+  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_BACK);
+
+  ret = navigator_handle_request(navigator(), req);
+  object_unref(OBJECT(req));
+
+  return ret;
 }
 
 ret_t navigator_toast(const char* content, uint32_t timeout) {
@@ -199,9 +248,10 @@ ret_t navigator_toast(const char* content, uint32_t timeout) {
   return_value_if_fail(content != NULL, RET_BAD_PARAMS);
   return_value_if_fail(navigator() != NULL, RET_BAD_PARAMS);
 
-  req = navigator_request_create(NAVIGATOR_REQ_TOAST, NULL);
+  req = navigator_request_create(NULL, NULL);
   return_value_if_fail(req != NULL, RET_OOM);
 
+  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_TOAST);
   object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_CONTENT, content);
   object_set_prop_int(OBJECT(req), NAVIGATOR_ARG_DURATION, timeout);
 
@@ -217,9 +267,10 @@ ret_t navigator_info(const char* title, const char* content) {
   return_value_if_fail(navigator() != NULL, RET_BAD_PARAMS);
   return_value_if_fail(title != NULL && content != NULL, RET_BAD_PARAMS);
 
-  req = navigator_request_create(NAVIGATOR_REQ_INFO, NULL);
+  req = navigator_request_create(NULL, NULL);
   return_value_if_fail(req != NULL, RET_OOM);
 
+  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_INFO);
   object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_TITLE, title);
   object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_CONTENT, content);
 
@@ -235,9 +286,10 @@ ret_t navigator_warn(const char* title, const char* content) {
   return_value_if_fail(navigator() != NULL, RET_BAD_PARAMS);
   return_value_if_fail(title != NULL && content != NULL, RET_BAD_PARAMS);
 
-  req = navigator_request_create(NAVIGATOR_REQ_WARN, NULL);
+  req = navigator_request_create(NULL, NULL);
   return_value_if_fail(req != NULL, RET_OOM);
 
+  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_WARN);
   object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_TITLE, title);
   object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_CONTENT, content);
 
@@ -253,9 +305,10 @@ ret_t navigator_confirm(const char* title, const char* content) {
   return_value_if_fail(navigator() != NULL, RET_BAD_PARAMS);
   return_value_if_fail(title != NULL && content != NULL, RET_BAD_PARAMS);
 
-  req = navigator_request_create(NAVIGATOR_REQ_CONFIRM, NULL);
+  req = navigator_request_create(NULL, NULL);
   return_value_if_fail(req != NULL, RET_OOM);
 
+  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_CONFIRM);
   object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_TITLE, title);
   object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_CONTENT, content);
 
@@ -282,29 +335,11 @@ ret_t navigator_pick_dir(const char* title, str_t* result) {
   return_value_if_fail(navigator() != NULL, RET_BAD_PARAMS);
   return_value_if_fail(title != NULL && result != NULL, RET_BAD_PARAMS);
 
-  req = navigator_request_create(NAVIGATOR_REQ_PICK_DIR, on_str_result);
+  req = navigator_request_create(NULL, on_str_result);
   return_value_if_fail(req != NULL, RET_OOM);
 
   req->user_data = result;
-  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_TITLE, title);
-  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_DEFAULT, result->str);
-
-  ret = navigator_handle_request(navigator(), req);
-  object_unref(OBJECT(req));
-
-  return ret;
-}
-
-ret_t navigator_pick_color(const char* title, str_t* result) {
-  ret_t ret = RET_OK;
-  navigator_request_t* req = NULL;
-  return_value_if_fail(navigator() != NULL, RET_BAD_PARAMS);
-  return_value_if_fail(title != NULL && result != NULL, RET_BAD_PARAMS);
-
-  req = navigator_request_create(NAVIGATOR_REQ_PICK_COLOR, on_str_result);
-  return_value_if_fail(req != NULL, RET_OOM);
-
-  req->user_data = result;
+  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_PICK_DIR);
   object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_TITLE, title);
   object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_DEFAULT, result->str);
 
@@ -320,12 +355,13 @@ ret_t navigator_pick_file(const char* title, const char* filter, bool_t for_save
   return_value_if_fail(navigator() != NULL, RET_BAD_PARAMS);
   return_value_if_fail(title != NULL && result != NULL, RET_BAD_PARAMS);
 
-  req = navigator_request_create(NAVIGATOR_REQ_PICK_FILE, on_str_result);
+  req = navigator_request_create(NULL, on_str_result);
   return_value_if_fail(req != NULL, RET_OOM);
 
   req->user_data = result;
+  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_PICK_FILE);
   object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_TITLE, title);
-  object_set_prop_int(OBJECT(req), NAVIGATOR_ARG_FOR_SAVE, for_save);
+  object_set_prop_bool(OBJECT(req), NAVIGATOR_ARG_FOR_SAVE, for_save);
   object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_DEFAULT, result->str);
   object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_FILTER, filter);
 
@@ -335,22 +371,138 @@ ret_t navigator_pick_file(const char* title, const char* filter, bool_t for_save
   return ret;
 }
 
-ret_t navigator_close(const char* name) {
-  char target[MAX_PATH + 1];
-  return_value_if_fail(name != NULL, RET_BAD_PARAMS);
+ret_t navigator_pick_color(const char* title, str_t* result) {
+  ret_t ret = RET_OK;
+  navigator_request_t* req = NULL;
+  return_value_if_fail(navigator() != NULL, RET_BAD_PARAMS);
+  return_value_if_fail(title != NULL && result != NULL, RET_BAD_PARAMS);
 
-  tk_snprintf(target, sizeof(target) - 1, "%s?%s=%s&force=true", NAVIGATOR_REQ_CLOSE, NAVIGATOR_ARG_NAME,
-              name);
+  req = navigator_request_create(NULL, on_str_result);
+  return_value_if_fail(req != NULL, RET_OOM);
 
-  return navigator_to(target);
+  req->user_data = result;
+  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_PICK_COLOR);
+  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_TITLE, title);
+  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_DEFAULT, result->str);
+
+  ret = navigator_handle_request(navigator(), req);
+  object_unref(OBJECT(req));
+
+  return ret;
 }
 
-ret_t navigator_request_close(const char* name) {
-  char target[MAX_PATH + 1];
-  return_value_if_fail(name != NULL, RET_BAD_PARAMS);
+ret_t navigator_close(const char* target) {
+  ret_t ret = RET_OK;
+  navigator_request_t* req = NULL;
+  return_value_if_fail(navigator() != NULL, RET_BAD_PARAMS);
+  return_value_if_fail(target != NULL, RET_BAD_PARAMS);
 
-  tk_snprintf(target, sizeof(target) - 1, "%s?%s=%s", NAVIGATOR_REQ_CLOSE, NAVIGATOR_ARG_NAME,
-              name);
+  req = navigator_request_create(NULL, on_str_result);
+  return_value_if_fail(req != NULL, RET_OOM);
 
-  return navigator_to(target);
+  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_CLOSE);
+  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_TARGET, target);
+  object_set_prop_bool(OBJECT(req), NAVIGATOR_ARG_FORCE, TRUE);
+
+  ret = navigator_handle_request(navigator(), req);
+  object_unref(OBJECT(req));
+
+  return ret;
+}
+
+ret_t navigator_request_close(const char* target) {
+  ret_t ret = RET_OK;
+  navigator_request_t* req = NULL;
+  return_value_if_fail(navigator() != NULL, RET_BAD_PARAMS);
+  return_value_if_fail(target != NULL, RET_BAD_PARAMS);
+
+  req = navigator_request_create(NULL, on_str_result);
+  return_value_if_fail(req != NULL, RET_OOM);
+
+  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_CLOSE);
+  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_TARGET, target);
+
+  ret = navigator_handle_request(navigator(), req);
+  object_unref(OBJECT(req));
+
+  return ret;
+}
+
+int32_t navigator_count_view_models(const char* target) {
+  int32_t cnt = 0;
+  navigator_request_t* req = NULL;
+  return_value_if_fail(navigator() != NULL, 0);
+
+  req = navigator_request_create(NULL, NULL);
+  return_value_if_fail(req != NULL, 0);
+
+  req->user_data = &cnt;
+  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_COUNT_VIEW_MODEL);
+  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_TARGET, target);
+
+  if (navigator_handle_request(navigator(), req) == RET_OK) {
+    cnt = value_int(&(req->result));
+  }
+  object_unref(OBJECT(req));
+
+  return cnt;
+}
+
+ret_t navigator_get_view_models(const char* target, darray_t* result) {
+  ret_t ret = RET_OK;
+  navigator_request_t* req = NULL;
+  return_value_if_fail(navigator() != NULL && result != NULL, 0);
+
+  req = navigator_request_create(NULL, NULL);
+  return_value_if_fail(req != NULL, 0);
+
+  req->user_data = result;
+  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_GET_VIEW_MODEL);
+  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_TARGET, target);
+
+  ret = navigator_handle_request(navigator(), req);
+  object_unref(OBJECT(req));
+
+  return ret;
+}
+
+ret_t navigator_notify_view_models_props_changed(const char* target) {
+  ret_t ret = RET_OK;
+  navigator_request_t* req = NULL;
+  return_value_if_fail(navigator() != NULL, 0);
+
+  req = navigator_request_create(NULL, NULL);
+  return_value_if_fail(req != NULL, 0);
+
+  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_NOTIFY_VIEW_MODEL);
+  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_TARGET, target);
+  object_set_prop_bool(OBJECT(req), NAVIGATOR_ARG_PROPS_CHANGED, TRUE);
+
+  ret = navigator_handle_request(navigator(), req);
+  object_unref(OBJECT(req));
+
+  return ret;
+}
+
+ret_t navigator_notify_view_models_items_changed(const char* target, object_t* items) {
+  ret_t ret = RET_OK;
+  navigator_request_t* req = NULL;
+  return_value_if_fail(navigator() != NULL, 0);
+
+  req = navigator_request_create(NULL, NULL);
+  return_value_if_fail(req != NULL, 0);
+
+  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_NOTIFY_VIEW_MODEL);
+  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_TARGET, target);
+  object_set_prop_bool(OBJECT(req), NAVIGATOR_ARG_ITEMS_CHANGED, TRUE);
+  object_set_prop_object(OBJECT(req), NAVIGATOR_ARG_EVENT_SOURCE, items);
+
+  ret = navigator_handle_request(navigator(), req);
+  object_unref(OBJECT(req));
+
+  return ret;
+}
+
+ret_t navigator_to_ex(navigator_request_t* req) {
+  return navigator_handle_request(navigator(), req);
 }

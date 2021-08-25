@@ -30,6 +30,7 @@
 #include "mvvm/base/value_validator.h"
 #include "mvvm/base/value_converter.h"
 
+#include "mvvm/cpp/object.hpp"
 #include "mvvm/cpp/view_model.hpp"
 #include "mvvm/cpp/view_model_array.hpp"
 #include "mvvm/cpp/value_converter.hpp"
@@ -42,24 +43,26 @@
 #define MVVM_API __declspec(dllimport)
 #endif
 #else
-#define MVVM_API 
+#define MVVM_API
 #endif
 
 namespace vm {
 
+/*将C++的Object适配成C的Object*/
+MVVM_API object_t* To(Object* cpp, bool_t auto_destroy_cpp = TRUE);
+
 /*将C++的ViewModel适配成C的ViewModel*/
- MVVM_API view_model_t* To(ViewModel* cpp);
+MVVM_API view_model_t* To(ViewModel* cpp, bool_t auto_destroy_cpp = TRUE);
 
 /*将C++的ViewModelArray适配成C的ViewModel*/
- MVVM_API view_model_t* To(ViewModelArray* cpp);
+MVVM_API view_model_t* To(ViewModelArray* cpp, bool_t auto_destroy_cpp = TRUE);
 
 /*将C++的ValueConverter适配成C的ValueConverter*/
- MVVM_API value_converter_t* To(ValueConverter* cpp);
+MVVM_API value_converter_t* To(ValueConverter* cpp, bool_t auto_destroy_cpp = TRUE);
 
 /*将C++的ValueValidator适配成C的ValueValidator*/
- MVVM_API value_validator_t* To(ValueValidator* cpp);
+MVVM_API value_validator_t* To(ValueValidator* cpp, bool_t auto_destroy_cpp = TRUE);
 
-} /*namespae vm*/
+}  // namespace vm
 
-#endif/*TK_VIEW_MODEL_ADAPTER_H*/
-
+#endif /*TK_VIEW_MODEL_ADAPTER_H*/

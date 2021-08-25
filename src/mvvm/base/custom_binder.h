@@ -26,8 +26,6 @@
 
 BEGIN_C_DECLS
 
-typedef ret_t (*custom_bind_t)(void* widget, binding_context_t* ctx);
-
 /**
  * @class custom_binder_t
  *
@@ -63,7 +61,7 @@ bool_t custom_binder_exist(const char* type);
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
-ret_t custom_binder_register(const char* type, custom_bind_t bind);
+ret_t custom_binder_register(const char* type, binding_context_bind_rule_t bind);
 
 /**
  * @method custom_binder_unregister
@@ -83,7 +81,7 @@ ret_t custom_binder_unregister(const char* type);
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
-ret_t custom_binder_bind(const char* type, void* widget, binding_context_t* ctx);
+ret_t custom_binder_bind(const char* type, binding_context_t* ctx, binding_rule_t* rule);
 
 /**
  * @method custom_binder_deinit

@@ -29,13 +29,16 @@
 
 BEGIN_C_DECLS
 
+struct _binding_rule_t;
+typedef struct _binding_rule_t binding_rule_t;
+
 /**
  * @class binding_rule_t
  * @parent object_t
  *
  * 绑定规则基类。
  */
-typedef struct _binding_rule_t {
+struct _binding_rule_t {
   object_t object;
   /**
    * @property {void*} widget
@@ -50,28 +53,28 @@ typedef struct _binding_rule_t {
    */
   binding_context_t* binding_context;
   /**
-   * @property {view_model_t*} view_model
+   * @property {binding_rule_t*} parent
    * @annotation ["readable"]
-   * 绑定的ViewModel。
+   * 上一级的绑定规则。
    */
-  view_model_t* view_model;
-  /**
-   * @property {uint32_t} cursor;
-   * @annotation ["readable"]
-   * 对于数组的ViewModel，保存cursor。
-   */
-  uint32_t cursor;
+  binding_rule_t* parent;
 
   /*private*/
   bool_t inited;
-} binding_rule_t;
+};
 
 #define BINDING_RULE(rule) ((binding_rule_t*)(rule))
-#define BINDING_RULE_CONTEXT(rule) (((binding_rule_t*)rule)->binding_context)
-#define BINDING_RULE_VIEW_MODEL(rule) (((binding_rule_t*)rule)->binding_context->view_model)
+#define BINDING_RULE_CONTEXT(rule) (BINDING_RULE(rule)->binding_context)
+#define BINDING_RULE_VIEW_MODEL(rule) (BINDING_RULE_CONTEXT(rule)->view_model)
+#define BINDING_RULE_WIDGET(rule) (BINDING_RULE(rule)->widget)
+#define BINDING_RULE_PARENT(rule) (BINDING_RULE(rule)->parent)
 
 #define BINDING_RULE_DATA_PREFIX "v-data"
 #define BINDING_RULE_COMMAND_PREFIX "v-on"
+#define BINDING_RULE_ITEMS "v-for"
+#define BINDING_RULE_CONDITION_IF "v-if"
+#define BINDING_RULE_CONDITION_ELIF "v-elif"
+#define BINDING_RULE_CONDITION_ELSE "v-else"
 #define BINDING_RULE_PROP_INITED "inited"
 
 END_C_DECLS

@@ -236,14 +236,8 @@ view_model_t* view_model_compositor_create(navigator_request_t* req) {
 static ret_t view_model_compositor_forward_events(void* ctx, event_t* e) {
   view_model_compositor_t* compositor = VIEW_MODEL_COMPOSITOR(ctx);
 
-  if (e->type == EVT_PROP_CHANGED) {
-    prop_change_event_t evt = *(prop_change_event_t*)e;
-
-    evt.e.target = ctx;
-    emitter_dispatch(EMITTER(compositor), (event_t*)&evt);
-  } else {
-    emitter_dispatch_simple_event(EMITTER(compositor), e->type);
-  }
+  e->target = ctx;
+  emitter_dispatch(EMITTER(compositor), e);
 
   return RET_OK;
 }

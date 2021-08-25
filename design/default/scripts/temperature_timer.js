@@ -1,32 +1,32 @@
-function Temperature () {
-  this.value = 0;
-  console.log('Temperature');
-}
+ViewModel('temperature_timer', {
+  data: {
+    value: 0,
+    timer: 10
+  },
 
-Temperature.prototype.onTimer = function() {
-  this.value++;
-  this.notifyPropsChanged();
+  methods: {
+    onTimer: function () {
+      if (this.value < 100) {
+        this.value++;
+      }
+      this.timer--;
+      console.log(this.value);
+      this.notifyPropsChanged();
+      return this.timer > 0 ? RET_REPEAT : RET_REMOVE;
+    }
+  },
 
-  return this.value < 10 ? RET_REPEAT : RET_REMOVE;
-}
-
-Temperature.prototype.onWillMount = function(req) {
-  console.log('onWillMount');
-}
-
-Temperature.prototype.onMount = function() {
-  timerAdd(this.onTimer.bind(this), 1000);
-  console.log('onMount');
-}
-
-Temperature.prototype.onWillUnmount = function() {
-  console.log('onWillUnmount');
-}
-
-Temperature.prototype.onUnmount = function() {
-  console.log('onUnmount');
-}
-
-function createTemperatureTimer(req) {
-  return new Temperature(); 
-}
+  onWillMount: function (req) {
+    console.log('onWillMount');
+  },
+  onMount: function () {
+    timerAdd(this.onTimer, 1000);
+    console.log('onMount');
+  },
+  onWillUnmount: function () {
+    console.log('onWillUnmount');
+  },
+  onUnmount: function () {
+    console.log('onUnmount');
+  }
+});

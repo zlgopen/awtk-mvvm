@@ -8,11 +8,15 @@ sources= [
   "jerry-all-in.c"
 ]
 
-env=DefaultEnvironment().Clone()
+if 'WITH_JS' in os.environ and os.environ['WITH_JS'] == 'true':
+  env=DefaultEnvironment().Clone()
 
-env['CCFLAGS'] = env['CCFLAGS'] + ' -DJERRY_ES2015=0 -DCONFIG_MEM_HEAP_AREA_SIZE=2097152 -DJERRY_CPOINTER_32_BIT -DJERRY_ENABLE_ERROR_MESSAGES -DJERRY_ENABLE_LOGGING -DJERRY_COMMIT_HASH=\\\"\\\"';
+  env['CCFLAGS'] = env['CCFLAGS'] + ' -DJERRY_DEBUGGER -DJERRY_ESNEXT=0 -DJERRY_LOGGING=1 -DJERRY_ERROR_MESSAGES=1 -DJERRY_CPOINTER_32_BIT=1 -DJERRY_COMMIT_HASH=\\\"\\\" ';
 
-if 'WITH_JS' in os.environ:
+  if 'WITH_JS_SNAPSHOT' in os.environ and os.environ['WITH_JS_SNAPSHOT'] == 'true':
+    env['CCFLAGS'] += ' -DJERRY_SNAPSHOT_SAVE=1 -DJERRY_SNAPSHOT_EXEC=1 '
+
   env.Library(os.path.join(LIB_DIR, 'jerryscript'), sources)
+
   sources=["jerryscript/jerry-main/main-jerry.c", "jerryscript/jerry-main/main-utils.c", "jerryscript/jerry-main/main-options.c", "jerryscript/jerry-main/cli.c"]
   env.Program(os.path.join(BIN_DIR, 'jerry'), sources)

@@ -6,7 +6,7 @@
   
   <column children_layout="default(row=1,col=2)">
     <label text="Alignment:" />
-    <combo_box left_margin="6" options="0:left;1:center;2:right;" v-data:value="{text_align}" readonly="true"/>
+    <combo_box left_margin="6" options="0:left;1:center;2:right;" v-data:value="{align}" readonly="true"/>
   </column>
 
   <column children_layout="default(row=1,col=2)">
@@ -35,9 +35,9 @@
   </column>
   
   <column children_layout="default(row=1,col=3)">
-    <radio_button text="Rect" v-data:value="{$type==1}" v-on:click="{change_type, args=1}"/>
-    <radio_button text="Circle" v-data:value="{$type==2}" v-on:click="{change_type, args=2}" />
-    <radio_button text="Line" v-data:value="{$type==3}" v-on:click="{change_type, args=3}"/>
+    <radio_button text="Rect" v-data:value="{type==1}" v-on:click="{changeType, Args=1}"/>
+    <radio_button text="Circle" v-data:value="{type==2}" v-on:click="{changeType, Args=2}" />
+    <radio_button text="Line" v-data:value="{type==3}" v-on:click="{changeType, Args=3}"/>
   </column>
   
   <column children_layout="default(row=1,col=1)">

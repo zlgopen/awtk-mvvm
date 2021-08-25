@@ -1,2 +1,2 @@
-# 本示例展示了navigate命令常见用法。
+# 本示例展示了 navigate 命令以及 Args 的基本用法。
 

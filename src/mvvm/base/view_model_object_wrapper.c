@@ -28,6 +28,10 @@
 static ret_t view_model_object_wrapper_on_changed(void* ctx, event_t* e) {
   view_model_object_wrapper_t* object_wrapper = VIEW_MODEL_OBJECT_WRAPPPER(ctx);
 
+  if (e->target == object_wrapper->obj) {
+    e->target = object_wrapper;
+  }
+
   emitter_dispatch(EMITTER(object_wrapper), e);
 
   return RET_OK;

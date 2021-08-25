@@ -32,7 +32,6 @@ static view_model_t* test_view_model_compositor_create(const char* vmodel,
 
 TEST(ViewModelCompositor, basic) {
   value_t v;
-  view_model_factory_init();
   navigator_request_t req;
   memset(&req, 0x00, sizeof(req));
   view_model_factory_register("temp", temperature_view_model_create);
@@ -61,5 +60,4 @@ TEST(ViewModelCompositor, basic) {
   ASSERT_NE(view_model_exec(vm, "not_exist", NULL), RET_OK);
 
   OBJECT_UNREF(vm);
-  view_model_factory_deinit();
 }

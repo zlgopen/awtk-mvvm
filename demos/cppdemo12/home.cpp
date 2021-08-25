@@ -66,12 +66,12 @@ ret_t Home::OnResult(navigator_request_t* req, const value_t* result) {
   info->temp = object_get_prop_float(res, ROOM_SETTINGS_RESULT_TEMP, info->temp);
   info->humidity = object_get_prop_float(res, ROOM_SETTINGS_RESULT_HUMIDITY, info->humidity);
 
-  h->NotifyObjectChanged();
+  h->NotifyPropsChanged();
 
   return RET_OK;
 }
 
-void Home::NotifyObjectChanged(void) {
+void Home::NotifyPropsChanged(void) {
   this->Sync();
   emitter_dispatch_simple_event(this, EVT_PROPS_CHANGED);
 }

@@ -47,7 +47,11 @@ scons
 git clone https://github.com/zlgopen/awtk-mvvm.git
 cd awtk-mvvm
 git clone https://hub.fastgit.org/jerryscript-project/jerryscript.git 3rd/jerryscript/jerryscript
+cd 3rd/jerryscript/jerryscript
+git checkout 3bcd48f72d4af01d1304b754ef19fe1a02c96049
 ```
+
+> 当前适配的 jerryscript 的 SHA-1 为 3bcd48f72d4af01d1304b754ef19fe1a02c96049；如果更新 jerryscript 为最新的代码，则可能会有兼容问题。
 
 * 生成资源
 
@@ -105,45 +109,47 @@ scons LINUX_FB=true
 
 * 基本示例
 
-|  C DEMO  | JS DEMO  | 说明 |
-| -------- | -------  | ---------------------------------    |
-| demo1    | jsdemo1  | 数据绑定基本用法                     |
-| demo2    | jsdemo2  | trigger 参数的用法                   |
-| demo3    | jsdemo3  | converter 参数的用法                 |
-| demo4    | jsdemo4  | 显式更新 (Trigger=Explicit) 的用法   |
-| demo5    | jsdemo5  | validator 参数的用法                 |
-| demo6    | jsdemo6  | 命令绑定的基本用法                   |
-| demo7    | jsdemo7  | 以计算器为例的综合用法               |
-| demo8    | jsdemo8  | 以 shape 编辑为例的综合用法          |
-| demo9    | jsdemo9  | 多窗口的基本用法                     |
-| demo10   | jsdemo10 | 定时器的基本用法                     |
-| demo11   | jsdemo11 | 一个视图多个 ViewModel 的用法        |
-| demo12   | jsdemo12 | 多窗口之间参数传递                   |
-| demo13   | jsdemo13 | 列表视图的基本用法                   |
-| demo14   | jsdemo14 | 快捷键的基本用法                     |
-| demo15   | （no）   | 自定义导航器处理插件，以及 MVVM 窗口和非 MVVM 窗口的交互 |
-| (no)     | jsdemo15 | combox 数据联动                     |
-| (no)     | jsdemo16 | 动态界面                            |
-| demo16   | (no)     | 集成硬件外设                        |
-| demo17   | (no)     | 无 GUI 情况集成硬件外设             |
-| (no)     | jsdemo17 | 控制控件的可见性                    |
-| (no)     | jsdemo18 | 复杂属性值的表示方法                |
-| demo19   | (no)     | 控制动画启停                        |
-| demo20   | (no)     | 串口读取数据                        |
-| demo21   | (no)     | 操作系统设置的基本用法（无需编写代码）|
-| demo22   | (no)     | 通过 sub view model 操作系统设置的基本用法（无需编写代码）    |
-| demo23   | (no)     | 动态系统设置（无需编写代码）          |
-| demo24   | (no)     | 复杂的系统设置（无需编写代码）        |
-| demo25   | (no)     | 系统设置增删改查（无需编写代码）      |
-| demo26   | (no)     | 让配置生效                            |
-| demo27   | (no)     | 组合 view model                       |
-| demo28   | (no)     | 表达式综合应用                        |
-| demo29   | (no)     | 扩展 app_conf 的命令                  |
-| demo30   | (no)     | 发送按键事件和设置属性                |
-| demo31   | (no)     | 嵌套 view model                       |
-| demo32   | (no)     | 一个 view model 多个 model 的用法      |
-| demo33   | (no)     | 演示 navigate 的参数      |
-| demo34   | (no)     | 演示模型触发界面更新。|
+|  C DEMO  | JS DEMO  | CPP DEMO  |  说明 |
+| -------- | -------  | --------  | ---------------------------------    |
+| demo1    | jsdemo1  | cppdemo1  | 数据绑定基本用法                     |
+| demo2    | jsdemo2  | cppdemo2  | trigger 参数的用法                   |
+| demo3    | jsdemo3  | cppdemo3  | converter 参数的用法                 |
+| demo4    | jsdemo4  | cppdemo4  | 显式更新 (Trigger=Explicit) 的用法   |
+| demo5    | jsdemo5  | cppdemo5  | validator 参数的用法                 |
+| demo6    | jsdemo6  | cppdemo6  | 命令绑定的基本用法                   |
+| demo7    | jsdemo7  | cppdemo7  | 以计算器为例的综合用法               |
+| demo8    | jsdemo8  | cppdemo8  | 以 shape 编辑为例的综合用法          |
+| demo9    | jsdemo9  | cppdemo9  | 多窗口的基本用法                     |
+| demo10   | jsdemo10 | cppdemo10 | 定时器的基本用法                     |
+| demo11   | jsdemo11 | cppdemo11 | 一个视图多个 ViewModel 的用法        |
+| demo12   | jsdemo12 | cppdemo12 | 多窗口之间参数传递                   |
+| demo13   | jsdemo13 | cppdemo13 | 列表渲染的基本用法 (v-for)           |
+| demo14   | jsdemo14 | (no)      | 快捷键的基本用法                     |
+| demo15   | jsdemo15 | (no)      | combox 数据联动                     |
+| demo16   | jsdemo16 | (no)      | 动态界面                            |
+| demo17   | jsdemo17 | (no)      | 控制控件的可见性                    |
+| demo18   | jsdemo18 | (no)      | 复杂属性值的表示方法                |
+| demo19   | jsdemo19 | (no)      | 控制动画启停                        |
+| demo20   | (no)     | (no)      | 串口读取数据                        |
+| demo21   | (no)     | (no)      | 操作系统设置的基本用法（无需编写代码）|
+| demo22   | (no)     | (no)      | 通过 sub view model 操作系统设置的基本用法（无需编写代码）    |
+| demo23   | (no)     | (no)      | 动态系统设置（无需编写代码）          |
+| demo24   | (no)     | (no)      | 复杂的系统设置（无需编写代码）        |
+| demo25   | (no)     | (no)      | 系统设置增删改查（无需编写代码）      |
+| demo26   | (no)     | (no)      | 让配置生效                            |
+| demo27   | (no)     | (no)      | 组合 view model                       |
+| demo28   | (no)     | (no)      | 表达式综合应用                        |
+| demo29   | (no)     | (no)      | 扩展 app_conf 的命令                  |
+| demo30   | jsdemo30 | (no)      | 发送按键事件和设置属性                |
+| demo31   | (no)     | (no)      | 嵌套 view model                       |
+| demo32   | jsdemo32 | (no)      | 一个 view model 多个 model 的用法      |
+| demo33   | jsdemo33 | (no)      | 演示 navigate 命令以及 Args 的基本用法     |
+| demo34   | (no)     | (no)      | 演示模型触发界面更新。|
+| demo35   | jsdemo35 | (no)      | 条件渲染的基本用法      |
+| demo36   | (no)     | (no)      | 自定义导航器处理插件，以及 MVVM 窗口和非 MVVM 窗口的交互 |
+| demo37   | (no)     | (no)      | 集成硬件外设                        |
+| demo38   | (no)     | (no)      | 无 GUI 情况集成硬件外设             |
+| demo39   | (no)     | cppdemo39 | 列表渲染的过时用法 (v-for-item)     |
 
 * [完整示例及模板项目](https://github.com/zlgopen/awtk-mvvm-c-hello)
 

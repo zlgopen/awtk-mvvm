@@ -19,26 +19,18 @@
  *
  */
 
-#include "jerryscript.h"
-#include "jerryscript-port.h"
-#include "jerryscript-ext/handler.h"
-#include "jsobj_4_mvvm.h"
-
 #include "tkc/utils.h"
 #include "base/idle.h"
 #include "base/timer.h"
 #include "base/widget.h"
 #include "src/awtk_global.h"
-#include "mvvm/jerryscript/jsobj.h"
-#include "mvvm/jerryscript/jerryscript_awtk.h"
 #include "mvvm/base/navigator.h"
 #include "mvvm/base/view_model_factory.h"
-#include "mvvm/jerryscript/jsobj.h"
+#include "mvvm/jerryscript/jsobj_4_mvvm.h"
 #include "mvvm/jerryscript/jerryscript_awtk.h"
-#include "mvvm/jerryscript/mvvm_jerryscript.h"
 
 static ret_t ret_t_init(void) {
-  jerry_value_t obj = jerry_get_global_object();
+  jsvalue_t obj = jsvalue_get_global_object();
 
   jsobj_set_prop_int(obj, "RET_OK", RET_OK);
   jsobj_set_prop_int(obj, "RET_OOM", RET_OOM);
@@ -57,7 +49,7 @@ static ret_t ret_t_init(void) {
   jsobj_set_prop_int(obj, "RET_ITEMS_CHANGED", RET_ITEMS_CHANGED);
   jsobj_set_prop_int(obj, "RET_OBJECT_CHANGED", RET_OBJECT_CHANGED);
 
-  jerry_release_value(obj);
+  jsvalue_unref(obj);
 
   return RET_OK;
 }
@@ -66,34 +58,32 @@ static ret_t timer_info_on_destroy(void* data) {
   timer_info_t* item = (timer_info_t*)data;
 
   uint32_t func = (char*)(item->ctx) - (char*)NULL;
-  jerry_release_value(func);
+  jsvalue_unref(func);
 
   return RET_OK;
 }
 
 static ret_t call_on_timer(const timer_info_t* timer) {
-  jerry_value_t res;
-  jerry_value_t args[1];
-  jerry_value_t this_value = jerry_create_undefined();
-  jerry_value_t func = (jerry_value_t)((char*)timer->ctx - (char*)NULL);
+  jsvalue_t res;
+  jsvalue_t args[1];
+  jsvalue_t this_value = JS_UNDEFINED;
+  jsvalue_t func = (jsvalue_t)((char*)timer->ctx - (char*)NULL);
 
-  args[0] = jerry_create_undefined();
-  res = jerry_call_function(func, this_value, args, 1);
+  args[0] = JS_UNDEFINED;
+  res = jsfunc_call(func, this_value, args, 1);
 
-  jerry_release_value(args[0]);
-  jerry_release_value(this_value);
+  jsvalue_unref(args[0]);
+  jsvalue_unref(this_value);
 
-  return (ret_t)jerry_get_number_value(res);
+  return (ret_t)jsvalue_to_number(res);
 }
 
-jerry_value_t wrap_timer_add(const jerry_call_info_t *call_info_p,
-                             const jerry_value_t args_p[], const jerry_length_t args_cnt) {
-  int32_t ret = 0;
-  return_value_if_fail(args_cnt >= 2, jerry_create_undefined());
+static JSFUNC_DECL(wrap_timer_add) {
+  int32_t ret = RET_BAD_PARAMS;
 
-  if (args_cnt >= 2) {
-    jerry_value_t on_timer = jerry_acquire_value(args_p[0]);
-    uint32_t duration_ms = (uint32_t)jerry_get_number_value(args_p[1]);
+  if (args_count >= 2) {
+    jsvalue_t on_timer = jsvalue_ref(args_p[0]);
+    uint32_t duration_ms = (uint32_t)jsvalue_to_number(args_p[1]);
     void* ctx = (char*)NULL + (int32_t)on_timer;
 
     ret = (uint32_t)timer_add(call_on_timer, ctx, duration_ms);
@@ -102,40 +92,38 @@ jerry_value_t wrap_timer_add(const jerry_call_info_t *call_info_p,
     log_warn("%s invalid args\n", __FUNCTION__);
   }
 
-  return jerry_create_number(ret);
+  return jsvalue_from_number(ret);
 }
 
 static ret_t idle_info_on_destroy(void* data) {
   idle_info_t* item = (idle_info_t*)data;
 
-  uint32_t func = (char*)(item->ctx) - (char*)NULL;
-  jerry_release_value(func);
+  jsvalue_t func = (jsvalue_t)((char*)(item->ctx) - (char*)NULL);
+  jsvalue_unref(func);
 
   return RET_OK;
 }
 
 static ret_t call_on_idle(const idle_info_t* idle) {
-  jerry_value_t res;
-  jerry_value_t args[1];
-  jerry_value_t this_value = jerry_create_undefined();
-  jerry_value_t func = (jerry_value_t)((char*)idle->ctx - (char*)NULL);
+  jsvalue_t res;
+  jsvalue_t args[1];
+  jsvalue_t this_value = JS_UNDEFINED;
+  jsvalue_t func = (jsvalue_t)((char*)idle->ctx - (char*)NULL);
 
-  args[0] = jerry_create_undefined();
-  res = jerry_call_function(func, this_value, args, 1);
+  args[0] = JS_UNDEFINED;
+  res = jsfunc_call(func, this_value, args, 1);
 
-  jerry_release_value(args[0]);
-  jerry_release_value(this_value);
+  jsvalue_unref(args[0]);
+  jsvalue_unref(this_value);
 
-  return (ret_t)jerry_get_number_value(res);
+  return (ret_t)jsvalue_to_number(res);
 }
 
-jerry_value_t wrap_idle_add(const jerry_call_info_t *call_info_p,
-                            const jerry_value_t args_p[], const jerry_length_t args_cnt) {
-  int32_t ret = 0;
-  return_value_if_fail(args_cnt >= 2, jerry_create_undefined());
+static JSFUNC_DECL(wrap_idle_add) {
+  int32_t ret = RET_BAD_PARAMS;
 
-  if (args_cnt >= 1) {
-    jerry_value_t on_idle = jerry_acquire_value(args_p[0]);
+  if (args_count >= 1) {
+    jsvalue_t on_idle = jsvalue_ref(args_p[0]);
     void* ctx = (char*)NULL + (int32_t)on_idle;
 
     ret = (uint32_t)idle_add(call_on_idle, ctx);
@@ -144,104 +132,176 @@ jerry_value_t wrap_idle_add(const jerry_call_info_t *call_info_p,
     log_warn("%s invalid args\n", __FUNCTION__);
   }
 
-  return jerry_create_number(ret);
+  return jsvalue_from_number(ret);
 }
 
-jerry_value_t wrap_timer_remove(const jerry_call_info_t *call_info_p,
-                                const jerry_value_t args_p[], const jerry_length_t args_cnt) {
-  ret_t ret = 0;
-  uint32_t timer_id = (uint32_t)jerry_get_number_value(args_p[0]);
-  ret = (ret_t)timer_remove(timer_id);
-
-  return jerry_create_number(ret);
-}
-
-jerry_value_t wrap_idle_remove(const jerry_call_info_t *call_info_p,
-                               const jerry_value_t args_p[], const jerry_length_t args_cnt) {
-  ret_t ret = 0;
-  uint32_t idle_id = (uint32_t)jerry_get_number_value(args_p[0]);
-  ret = (ret_t)idle_remove(idle_id);
-
-  return jerry_create_number(ret);
-}
-
-jerry_value_t wrap_quit(const jerry_call_info_t *call_info_p,
-                        const jerry_value_t args_p[], const jerry_length_t args_cnt) {
-  tk_quit();
-  return jerry_create_number(0);
-}
-
-jerry_value_t wrap_navigate_to(const jerry_call_info_t *call_info_p,
-                               const jerry_value_t args_p[], const jerry_length_t args_cnt) {
-  str_t str;
-  value_t v;
+static JSFUNC_DECL(wrap_timer_remove) {
   ret_t ret = RET_BAD_PARAMS;
 
-  str_init(&str, 0);
-  value_set_int(&v, 0);
+  if (args_count == 1) {
+    uint32_t timer_id = (uint32_t)jsvalue_to_number(args_p[0]);
+    ret = (ret_t)timer_remove(timer_id);
+  }
 
-  if (args_cnt == 1) {
-    jerry_value_t req = args_p[0];
+  return jsvalue_from_number(ret);
+}
 
-    if (jerry_value_is_object(req)) {
-      navigator_request_t* request = jerry_value_to_navigator_request(req);
-      goto_error_if_fail(request != NULL);
-      navigator_to_ex(request);
-      object_unref(OBJECT(request));
+static JSFUNC_DECL(wrap_idle_remove) {
+  ret_t ret = RET_BAD_PARAMS;
 
-    } else if (jerry_value_is_string(req)) {
-      ret = jerry_value_to_value(req, &v, &str);
-      goto_error_if_fail(ret == RET_OK);
+  if (args_count >= 1) {
+    uint32_t idle_id = (uint32_t)jsvalue_to_number(args_p[0]);
+    ret = (ret_t)idle_remove(idle_id);
+  }
 
-      navigator_to(value_str(&v));
+  return jsvalue_from_number(ret);
+}
+
+static JSFUNC_DECL(wrap_quit) {
+  tk_quit();
+  return jsvalue_from_number(0);
+}
+
+static JSFUNC_DECL(wrap_navigate_to) {
+  ret_t ret = RET_BAD_PARAMS;
+
+  if (args_count >= 1) {
+    jsvalue_t jsreq = args_p[0];
+
+    if (jsvalue_is_object(jsreq)) {
+      navigator_request_t* req = jsvalue_to_navigator_request(jsreq);
+      if (req != NULL) {
+        ret = navigator_to_ex(req);
+        object_unref(OBJECT(req));
+      }
+    } else if (jerry_value_is_string(jsreq)) {
+      str_t str;
+      str_init(&str, 0);
+      if (jsvalue_to_utf8(jsreq, &str) != NULL) {
+        ret = navigator_to(str.str);
+      }
+      str_reset(&str);
     }
   }
 
-error:
-  value_reset(&v);
-  str_reset(&str);
-
-  return jerry_create_number(ret);
+  return jsvalue_from_number(ret);
 }
 
-static view_model_t* view_model_jerryscript_create_with_widget(navigator_request_t* req) {
-  char* p = NULL;
-  view_model_t* view_model = NULL;
-  const char* vmodel = NULL;
-  char name[TK_NAME_LEN + 5];
-  const asset_info_t* asset = NULL;
-  widget_t* widget = WIDGET(object_get_prop_pointer(OBJECT(req), NAVIGATOR_ARG_VIEW));
-  return_value_if_fail(widget != NULL, NULL);
+static JSFUNC_DECL(wrap_count_view_models) {
+  int32_t cnt = 0;
+  const char* target = NULL;
+  str_t str;
+  str_init(&str, 0);
 
-  vmodel = widget_get_prop_str(widget, WIDGET_PROP_V_MODEL, NULL);
-  return_value_if_fail(vmodel != NULL, NULL);
-
-  tk_strncpy(name, vmodel, sizeof(name) - 1);
-  p = strrchr(name, '.');
-  if (p != NULL) {
-    *p = '\0';
+  if (args_count >= 1) {
+    if (jerry_value_is_string(args_p[0])) {
+      if (jsvalue_to_utf8(args_p[0], &str) != NULL) {
+        target = str.str;
+      }
+    }
   }
 
-  asset = widget_load_asset(widget, ASSET_TYPE_SCRIPT, name);
-  return_value_if_fail(asset != NULL, NULL);
+  cnt = navigator_count_view_models(target);
+  str_reset(&str);
 
-  view_model = view_model_jerryscript_create(name, (const char*)(asset->data), asset->size, req);
-  widget_unload_asset(widget, asset);
+  return jsvalue_from_number(cnt);
+}
 
-  return view_model;
+static JSFUNC_DECL(wrap_get_view_models) {
+  jsvalue_t ret = JS_EMPTY_ARRAY;
+  darray_t* temp = darray_create(1, NULL, NULL);
+
+  if (temp != NULL) {
+    const char* target = NULL;
+    str_t str;
+    str_init(&str, 0);
+
+    if (args_count >= 1) {
+      if (jerry_value_is_string(args_p[0])) {
+        if (jsvalue_to_utf8(args_p[0], &str) != NULL) {
+          target = str.str;
+        }
+      }
+    }
+
+    if (navigator_get_view_models(target, temp) == RET_OK) {
+      uint32_t i = 0;
+      for (i = 0; i < temp->size; i++) {
+        jsvalue_t vm = jsvalue_from_obj(OBJECT(temp->elms[i]));
+        jsobj_set_prop_value_by_index(ret, i, vm);
+      }
+    }
+
+    str_reset(&str);
+    darray_destroy(temp);
+  }
+
+  return ret;
+}
+
+static JSFUNC_DECL(wrap_notify_props_changed_to_view_models) {
+  ret_t ret = RET_FAIL;
+  const char* target = NULL;
+  str_t str;
+  str_init(&str, 0);
+
+  if (args_count >= 1) {
+    if (jerry_value_is_string(args_p[0])) {
+      if (jsvalue_to_utf8(args_p[0], &str) != NULL) {
+        target = str.str;
+      }
+    }
+  }
+
+  ret = navigator_notify_view_models_props_changed(target);
+  str_reset(&str);
+
+  return jsvalue_from_number(ret);
+}
+
+static JSFUNC_DECL(wrap_notify_items_changed_to_view_models) {
+  ret_t ret = RET_FAIL;
+  const char* target = NULL;
+  object_t* items = NULL;
+  str_t str;
+  str_init(&str, 0);
+
+  if (args_count >= 1) {
+    if (jerry_value_is_string(args_p[0])) {
+      if (jsvalue_to_utf8(args_p[0], &str) != NULL) {
+        target = str.str;
+      }
+    }
+  }
+
+  if (args_count >= 2) {
+    if (jsvalue_is_object(args_p[1])) {
+      items = jsvalue_to_obj(args_p[1]);
+    }
+  }
+
+  ret = navigator_notify_view_models_items_changed(target, items);
+  str_reset(&str);
+
+  return jsvalue_from_number(ret);
 }
 
 ret_t jerryscript_awtk_init(void) {
   ret_t_init();
-  jerryx_handler_register_global((const jerry_char_t*)"exit", wrap_quit);
-  jerryx_handler_register_global((const jerry_char_t*)"quit", wrap_quit);
 
-  jerryx_handler_register_global((const jerry_char_t*)"timerAdd", wrap_timer_add);
-  jerryx_handler_register_global((const jerry_char_t*)"timerRemove", wrap_timer_remove);
-  jerryx_handler_register_global((const jerry_char_t*)"idleAdd", wrap_idle_add);
-  jerryx_handler_register_global((const jerry_char_t*)"idleRemove", wrap_idle_remove);
-  jerryx_handler_register_global((const jerry_char_t*)"navigateTo", wrap_navigate_to);
-  view_model_factory_register(".js", view_model_jerryscript_create_with_widget);
+  jsfunc_register_global("exit", wrap_quit);
+  jsfunc_register_global("quit", wrap_quit);
+  jsfunc_register_global("timerAdd", wrap_timer_add);
+  jsfunc_register_global("timerRemove", wrap_timer_remove);
+  jsfunc_register_global("idleAdd", wrap_idle_add);
+  jsfunc_register_global("idleRemove", wrap_idle_remove);
+  jsfunc_register_global("navigateTo", wrap_navigate_to);
+  jsfunc_register_global("countViewModels", wrap_count_view_models);
+  jsfunc_register_global("getViewModels", wrap_get_view_models);
+  jsfunc_register_global("notifyPropsChangedToViewModels",
+                         wrap_notify_props_changed_to_view_models);
+  jsfunc_register_global("notifyItemsChangedToViewModels",
+                         wrap_notify_items_changed_to_view_models);
 
   return RET_OK;
 }

@@ -1,5 +1,24 @@
 # 最新动态
 
+* 2021/08/25
+  * 新增 ui_loader_mvvm，MVVM 绑定改为在 UI 数据加载时完成，减少控件上不必要的绑定属性的存储，以及方便实现条件渲染和列表渲染。
+  * 新增条件渲染（v-if、v-elif、v-else）。
+  * 新增列表渲染（v-for）。
+  * 统一 command_binding 的 Args 字段的格式。
+  * 完善 binding_context（主要是修改部分接口以便 ui_loader_mvvm 和 binding_rule 调用，细化 widget 和 ViewModel 的绑定逻辑）。
+  * 修改 custom_binder 以适应新的 binding_context。
+  * 新增 view_model_notify_items_changed 函数，用于触发 items 变化事件时可以指定发生变化的数组。
+  * 完善 navigator（主要是重构 navigator_request_t，修改 navigator_request_t 的字符串形式的 Args 的格式与 command_binding 的 Args 字段一致，以及新增 ViewModel 相关的请求处理器）。
+  * 重构 JS 形式的 ViewModel、ValueValidator、ValueConverter。
+  * 新增注册 object_t 对象为 jerryscript 的全局对象的接口。
+  * 完善 CPP Adapter。（感谢雨欣提供补丁）
+  * 整理 Demo，将功能相同的 C、CPP、JS 的 Demo 改为使用同一个 ui，同时添加新的 Demo。（感谢雨欣提供补丁）
+  * 导出 jsobj 的相关函数，以便自定义控件实现 custom_binder 时可以调用。（感谢雨欣提供补丁）
+  * 完善 runJsMVVM。
+  * 完善编译脚本。
+  * 适配 jerryscript（SHA-1: 3bcd48f72d4af01d1304b754ef19fe1a02c96049）
+  * 完善文档。（感谢雨欣提供补丁）
+
 * 2021/05/26
   * 修复去掉need_relayout_children的问题。
 

@@ -1,0 +1,8 @@
+<window v-model="temperature">
+  <label x="center" y="middle:-40" w="50%" h="40">
+    <property name="v-data:text"><![CDATA[ {(value < 50) ? "low" : "high"} ]]></property>
+    <property name="v-data:style"><![CDATA[ {(value < 50) ? "green" : "default" }]]></property>
+  </label>
+  <label x="center" y="middle" w="50%" h="40" v-data:text="{value}"/>
+  <slider x="center" y="middle:40" w="80%" h="20" v-data:value="{value}"/>
+</window>

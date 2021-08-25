@@ -20,44 +20,36 @@
  */
 
 #include "tkc/utils.h"
-#include "jerryscript-port.h"
-#include "jerryscript-ext/handler.h"
-#include "mvvm/base/view_model_factory.h"
 #include "mvvm/jerryscript/jsobj_4_mvvm.h"
+#include "mvvm/jerryscript/view_model_jerryscript.h"
+#include "mvvm/jerryscript/value_converter_jerryscript.h"
+#include "mvvm/jerryscript/value_validator_jerryscript.h"
 #include "mvvm/jerryscript/jerryscript_awtk.h"
 #include "mvvm/jerryscript/mvvm_jerryscript.h"
-#include "mvvm/jerryscript/jerry_script_helper.h"
-
-const char* s_boot_code =
-    "var ValueConverters = {};\n \
-                           var ValueValidators = {};\n \
-                           var console = { \n \
-                            log: function(args) { \n \
-                              print(args); \n \
-                            } \n \
-                           }; \n \
-                           console.log('hello awtk'); \n \
-                           ";
 
 ret_t mvvm_jerryscript_init(void) {
-  jerry_init(JERRY_INIT_EMPTY);
-  jerry_script_register_builtins();
+  jerry_script_init();
+  jerry_script_register_mvvm_factory();
 
   return_value_if_fail(value_validator_jerryscript_init() == RET_OK, RET_FAIL);
   return_value_if_fail(value_converter_jerryscript_init() == RET_OK, RET_FAIL);
+  return_value_if_fail(view_model_jerryscript_init() == RET_OK, RET_FAIL);
 
   jerryscript_awtk_init();
-  jerry_script_eval_buff(s_boot_code, strlen(s_boot_code), "mvvm_boot.js", TRUE);
 
   return RET_OK;
 }
 
+ret_t mvvm_jerryscript_run(const char* filename) {
+  return jerry_script_eval_file(filename, TRUE);
+}
+
 ret_t mvvm_jerryscript_deinit(void) {
+  jerryscript_awtk_deinit();
   value_converter_jerryscript_deinit();
   value_validator_jerryscript_deinit();
-  jerryscript_awtk_deinit();
-
-  jerry_cleanup();
+  view_model_jerryscript_deinit();
+  jerry_script_deinit();
 
   return RET_OK;
 }

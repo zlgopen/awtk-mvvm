@@ -21,8 +21,6 @@
 
 #include "tkc/mem.h"
 #include "tkc/utils.h"
-#include "jerryscript-port.h"
-#include "jerryscript-ext/handler.h"
 #include "mvvm/jerryscript/jsobj_4_mvvm.h"
 #include "mvvm/jerryscript/value_converter_jerryscript.h"
 
@@ -42,39 +40,51 @@ static const object_vtable_t s_value_converter_jerryscript_vtable = {
 
 static ret_t value_converter_jerryscript_to_view(value_converter_t* c, const value_t* from,
                                                  value_t* to) {
-  object_t* obj = OBJECT(c);
+  ret_t ret = RET_OK;
   value_converter_jerryscript_t* jsconverter = VALUE_CONVERTER_JERRYSCRIPT(c);
+  str_t* temp = &(jsconverter->temp);
+  jsvalue_t converter = jsvalue_get_value_converter(OBJECT(c)->name);
 
-  return jsvalue_converter_to_view(obj->name, from, to, &(jsconverter->temp));
+  ret = js_value_converter_to_view(converter, from, to, temp);
+  jsvalue_unref(converter);
+
+  return ret;
 }
 
 static ret_t value_converter_jerryscript_to_model(value_converter_t* c, const value_t* from,
                                                   value_t* to) {
-  object_t* obj = OBJECT(c);
+  ret_t ret = RET_OK;
   value_converter_jerryscript_t* jsconverter = VALUE_CONVERTER_JERRYSCRIPT(c);
+  str_t* temp = &(jsconverter->temp);
+  jsvalue_t converter = jsvalue_get_value_converter(OBJECT(c)->name);
 
-  return jsvalue_converter_to_model(obj->name, from, to, &(jsconverter->temp));
+  ret = js_value_converter_to_model(converter, from, to, temp);
+  jsvalue_unref(converter);
+
+  return ret;
 }
 
 static value_converter_t* value_converter_jerryscript_create(const char* name) {
   object_t* obj = NULL;
-  value_converter_t* value_convert = NULL;
-  value_converter_jerryscript_t* jsconverter = NULL;
-  return_value_if_fail(jsvalue_converter_exist(name), NULL);
+  jsvalue_t jsobj = jsvalue_get_value_converter(name);
+  return_value_if_fail(jsvalue_check(jsobj) == RET_OK, NULL);
 
-  obj = object_create(&s_value_converter_jerryscript_vtable);
-  return_value_if_fail(obj != NULL, NULL);
+  if (jsvalue_is_object(jsobj)) {
+    obj = object_create(&s_value_converter_jerryscript_vtable);
+    if (obj != NULL) {
+      value_converter_t* converter = VALUE_CONVERTER(obj);
+      value_converter_jerryscript_t* jsconverter = VALUE_CONVERTER_JERRYSCRIPT(obj);
 
-  value_convert = VALUE_CONVERTER(obj);
-  value_convert->to_view = value_converter_jerryscript_to_view;
-  value_convert->to_model = value_converter_jerryscript_to_model;
+      converter->to_view = value_converter_jerryscript_to_view;
+      converter->to_model = value_converter_jerryscript_to_model;
+      str_init(&(jsconverter->temp), 0);
+      object_set_name(obj, name);
+    }
+  }
 
-  jsconverter = VALUE_CONVERTER_JERRYSCRIPT(obj);
-  str_init(&(jsconverter->temp), 0);
+  jsvalue_unref(jsobj);
 
-  object_set_name(obj, name);
-
-  return value_convert;
+  return VALUE_CONVERTER(obj);
 }
 
 ret_t value_converter_jerryscript_init(void) {

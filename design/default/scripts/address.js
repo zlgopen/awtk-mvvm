@@ -1,68 +1,57 @@
-function Address() {
-  this._province = '广东';
-  this._city = '广州';
-  this.country = '天河区';
-  this.detail = '';
-
-  this.data = {
-    '北京': {
-      '北京': ['东城区', '西城区', '朝阳区','丰台区','石景山区','海淀区','']
-    }, 
-    '上海': {
-      '上海': ['黄浦区', '徐汇区','长宁区','静安区','普陀区','虹口区','杨浦区']
-    }, 
-    '广东': {
-      '广州':['天河区','黄埔区','荔湾区','越秀区','海珠区'],
-      '深圳':['罗湖区','福田区','南山区','宝安区','龙岗区']
+ViewModel('address', {
+  _data : {
+    'Beijing' : {'Beijing' : [ 'Dongcheng', 'Xicheng', 'Chaoyang', 'Fengtai', 'Shijingshan', 'Haidian' ]},
+    'Shanghai' : {'Shanghai' : [ 'Xuhui', 'Changning', 'Jingan', 'Putuo', 'Hongkou', 'Yangpu' ]},
+    'Guangdong' : {
+      'Guangzhou' : [ 'Tianhe', 'Huangpu', 'Liwan', 'Yuexiu', 'Haizhu' ],
+      'Shenzhen' : [ 'Luohu', 'Futian', 'Nanshan', 'Baoan', 'Longgang' ]
     }
-  };
-}
-
-Object.defineProperty(Address.prototype, 'province_list', {
-  get: function () {
-    return Object.keys(this.data).join(';');
-  }
-})
-
-Object.defineProperty(Address.prototype, 'city_list', {
-  get: function () {
-    return Object.keys(this.data[this._province]).join(';');
-  }
-})
-
-Object.defineProperty(Address.prototype, 'country_list', {
-  get: function () {
-    return this.data[this._province][this._city].join(';');
-  }
-})
-
-Object.defineProperty(Address.prototype, 'address', {
-  get: function () {
-    return this._province + this._city + this.country + this.detail;
-  }
-})
-
-Object.defineProperty(Address.prototype, 'province', {
-  get: function () {
-    return this._province;
   },
-  set: function (val) {
-    this._province = val;
-    this.city = this.city_list.split(';')[0]; 
-  }
-})
-
-Object.defineProperty(Address.prototype, 'city', {
-  get: function () {
-    return this._city;
+  _province : 'Beijing',
+  _city : 'Beijing',
+  data : {
+    country : 'Dongcheng',
+    detail: ''
   },
-  set: function (val) {
-    this._city = val;
-    this.country = this.country_list.split(';')[0]; 
+  computed : {
+    province_list : {
+      get : function() {
+        console.log(this._data);
+        return Object.keys(this._data).join(';');
+      }
+    },
+    city_list : {
+      get : function() {
+        return Object.keys(this._data[this.province]).join(';');
+      }
+    },
+    country_list : {
+      get : function() {
+        return this._data[this.province][this.city].join(';');
+      }
+    },
+    address : {
+      get : function() {
+        return this.province + ' ' + this.city + ' ' + this.country + ' ' + this.detail;
+      }
+    },
+    province : {
+      get : function() {
+        return this._province;
+      },
+      set : function(val) {
+        this._province = val;
+        this._city = this.city_list.split(';')[0];
+      }
+    },
+    city : {
+      get : function() {
+        return this._city;
+      },
+      set : function(val) {
+        this._city = val;
+        this.country = this.country_list.split(';')[0];
+      }
+    }
   }
-})
-
-function createAddress(req) {
-  return new Address();
-}
-
+});

@@ -29,4 +29,10 @@ ret_t application_init() {
   return navigator_to("shape");
 }
 
-#include "../awtk_main.c"
+ret_t application_exit(void) {
+  log_debug("application_exit\n");
+
+  return RET_OK;
+}
+
+#include "../main.inc"

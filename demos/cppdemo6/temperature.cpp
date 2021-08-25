@@ -24,7 +24,7 @@
 
 Temperature::Temperature(void) {
   this->value = 20;
-  this->old_value = 0;
+  this->old_value = 20;
 }
 
 ret_t Temperature::Apply(void) {

@@ -1,4 +1,4 @@
-<window v-model="temperature">
+<window v-model="temperature_ex">
   <label x="0" y="middle" w="40%" h="40" v-data:text="{value}"/>
   <label x="right" y="middle" w="40%" h="40" v-data:text="{error.of.value}"/>
   <slider x="center" y="middle:40" w="80%" h="20" v-data:value="{value, validator=water_temp}"/>

@@ -23,6 +23,8 @@
 #include "tkc/tokenizer.h"
 #include "mvvm/base/data_binding.h"
 #include "mvvm/base/command_binding.h"
+#include "mvvm/base/items_binding.h"
+#include "mvvm/base/condition_binding.h"
 #include "mvvm/base/binding_rule_parser.h"
 
 /*
@@ -86,8 +88,13 @@ static binding_rule_t* binding_rule_create(const char* name, bool_t inputable) {
           rule = NULL;
         }
       }
+    } else if (tk_str_ieq(type, BINDING_RULE_ITEMS)) {
+      rule = BINDING_RULE(items_binding_create());
+    } else if (tk_str_ieq(type, BINDING_RULE_CONDITION_IF)) {
+      rule = BINDING_RULE(condition_binding_create());
     }
   }
+
   tokenizer_deinit(&t);
 
   return rule;
@@ -129,8 +136,9 @@ binding_rule_t* binding_rule_parse(const char* name, const char* value, bool_t i
     }
   }
 
-  tokenizer_deinit(&t);
   object_set_prop_str(OBJECT(rule), BINDING_RULE_PROP_INITED, "TRUE");
+
+  tokenizer_deinit(&t);
 
   return rule;
 }

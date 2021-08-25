@@ -1,9 +1,12 @@
 ﻿#ifndef AWTK_NOGUI
 #include "awtk.h"
+#include "ui_loader/ui_loader_xml.h"
+#include "ui_loader/ui_binary_writer.h"
 #include "mvvm/base/view_model_factory.h"
 #include "mvvm/base/view_model_dummy.h"
 #include "mvvm/base/view_model_array_dummy.h"
 #include "mvvm/awtk/binding_context_awtk.h"
+#include "mvvm/base/binding_rule_parser.h"
 #include "gtest/gtest.h"
 #include "test_obj.h"
 
@@ -88,24 +91,36 @@ static ret_t test_view_model_deinit(void) {
   return RET_OK;
 }
 
-static ret_t bind_for_window(widget_t* win) {
+static binding_context_t* binding_context_create(binding_context_t* parent, const char* vmodel,
+                                                 widget_t* widget) {
   navigator_request_t* req = navigator_request_create("test", NULL);
+  binding_context_t* ctx = binding_context_awtk_create(parent, vmodel, req, widget);
 
-  binding_context_bind_for_window(win, req);
   object_unref(OBJECT(req));
 
-  return RET_OK;
+  return ctx;
+}
+
+static binding_rule_t* binding_rule_create(widget_t* widget, const char* name, const char* val) {
+  binding_rule_t* rule = binding_rule_parse(name, val, widget->vt->inputable);
+
+  rule->widget = widget;
+  return rule;
 }
 
 TEST(BindingContextAwtk, data_two_way) {
   value_t v;
   widget_t* win = window_create(NULL, 0, 0, 400, 300);
   widget_t* slider = slider_create(win, 0, 0, 128, 30);
+  binding_context_t* ctx;
+  binding_rule_t* rule;
+
   test_view_model_init();
 
-  widget_set_prop_str(win, WIDGET_PROP_V_MODEL, STR_V_MODEL_TEMP);
-  widget_set_prop_str(slider, "v-data:value", "{i32}");
-  bind_for_window(win);
+  ctx = binding_context_create(NULL, STR_V_MODEL_TEMP, win);
+  rule = binding_rule_create(slider, "v-data:value", "{i32}");
+  binding_context_bind_data(ctx, rule);
+  binding_context_set_bound(ctx, TRUE);
 
   widget_set_value(slider, 99);
   ASSERT_EQ(object_get_prop(OBJECT(s_temp_view_model), "i32", &v), RET_OK);
@@ -124,16 +139,20 @@ TEST(BindingContextAwtk, multi_view_model) {
   widget_t* win = window_create(NULL, 0, 0, 400, 300);
   widget_t* temp_slider = slider_create(win, 0, 0, 128, 30);
   widget_t* humidity_slider = slider_create(win, 0, 70, 128, 30);
+  binding_context_t* ctx;
+  binding_rule_t* rule;
 
   test_view_model_init();
 
-  widget_set_prop_str(temp_slider, WIDGET_PROP_V_MODEL, STR_V_MODEL_TEMP);
-  widget_set_prop_str(temp_slider, "v-data:value", "{i32}");
+  ctx = binding_context_create(NULL, STR_V_MODEL_TEMP, temp_slider);
+  rule = binding_rule_create(temp_slider, "v-data:value", "{i32}");
+  binding_context_bind_data(ctx, rule);
+  binding_context_set_bound(ctx, TRUE);
 
-  widget_set_prop_str(humidity_slider, WIDGET_PROP_V_MODEL, STR_V_MODEL_HUMIDITY);
-  widget_set_prop_str(humidity_slider, "v-data:value", "{i32}");
-
-  bind_for_window(win);
+  ctx = binding_context_create(NULL, STR_V_MODEL_HUMIDITY, humidity_slider);
+  rule = binding_rule_create(humidity_slider, "v-data:value", "{i32}");
+  binding_context_bind_data(ctx, rule);
+  binding_context_set_bound(ctx, TRUE);
 
   widget_set_value(temp_slider, 99);
   widget_set_value(humidity_slider, 66);
@@ -149,15 +168,20 @@ TEST(BindingContextAwtk, data_once) {
   value_t v;
   widget_t* win = window_create(NULL, 0, 0, 400, 300);
   widget_t* slider = slider_create(win, 0, 0, 128, 30);
+  binding_context_t* ctx;
+  binding_rule_t* rule;
+
   test_view_model_init();
 
-  widget_set_prop_str(win, WIDGET_PROP_V_MODEL, STR_V_MODEL_TEMP);
   value_set_int(&v, 66);
   object_set_prop(OBJECT(s_temp_view_model), "i32", &v);
 
-  widget_set_prop_str(slider, "v-data:value", "{i32, Mode=Once}");
-  bind_for_window(win);
+  ctx = binding_context_create(NULL, STR_V_MODEL_TEMP, win);
+  rule = binding_rule_create(slider, "v-data:value", "{i32, Mode=Once}");
+  binding_context_bind_data(ctx, rule);
+  binding_context_set_bound(ctx, TRUE);
 
+  ASSERT_EQ(widget_get_value(slider), 66);
   widget_set_value(slider, 99);
   ASSERT_EQ(object_get_prop(OBJECT(s_temp_view_model), "i32", &v), RET_OK);
   ASSERT_EQ(value_int(&v), 66);
@@ -170,14 +194,19 @@ TEST(BindingContextAwtk, data_one_way) {
   value_t v;
   widget_t* win = window_create(NULL, 0, 0, 400, 300);
   widget_t* slider = slider_create(win, 0, 0, 128, 30);
+  binding_context_t* ctx;
+  binding_rule_t* rule;
+
   test_view_model_init();
 
-  widget_set_prop_str(win, WIDGET_PROP_V_MODEL, STR_V_MODEL_TEMP);
   value_set_int(&v, 66);
   object_set_prop(OBJECT(s_temp_view_model), "i32", &v);
 
-  widget_set_prop_str(slider, "v-data:value", "{i32, Mode=OneWay}");
-  bind_for_window(win);
+  ctx = binding_context_create(NULL, STR_V_MODEL_TEMP, win);
+  rule = binding_rule_create(slider, "v-data:value", "{i32, Mode=OneWay}");
+  binding_context_bind_data(ctx, rule);
+  binding_context_set_bound(ctx, TRUE);
+
   ASSERT_EQ(widget_get_value(slider), 66);
 
   widget_set_value(slider, 99);
@@ -197,14 +226,19 @@ TEST(BindingContextAwtk, data_changed) {
   value_t v;
   widget_t* win = window_create(NULL, 0, 0, 400, 300);
   widget_t* slider = slider_create(win, 0, 0, 128, 30);
+  binding_context_t* ctx;
+  binding_rule_t* rule;
+
   test_view_model_init();
 
-  widget_set_prop_str(win, WIDGET_PROP_V_MODEL, STR_V_MODEL_TEMP);
+  ctx = binding_context_create(NULL, STR_V_MODEL_TEMP, win);
+  rule = binding_rule_create(slider, "v-data:value", "{i32, Mode=TwoWay, Trigger=Changed}");
+  binding_context_bind_data(ctx, rule);
+  binding_context_set_bound(ctx, TRUE);
+
   value_set_int(&v, 66);
   object_set_prop(OBJECT(s_temp_view_model), "i32", &v);
-
-  widget_set_prop_str(slider, "v-data:value", "{i32, Mode=TwoWay, Trigger=Changed}");
-  bind_for_window(win);
+  idle_dispatch();
   ASSERT_EQ(widget_get_value(slider), 66);
 
   widget_set_value(slider, 99);
@@ -223,14 +257,19 @@ TEST(BindingContextAwtk, data_changing) {
   value_t v;
   widget_t* win = window_create(NULL, 0, 0, 400, 300);
   widget_t* slider = slider_create(win, 0, 0, 128, 30);
+  binding_context_t* ctx;
+  binding_rule_t* rule;
+
   test_view_model_init();
 
-  widget_set_prop_str(win, WIDGET_PROP_V_MODEL, STR_V_MODEL_TEMP);
+  ctx = binding_context_create(NULL, STR_V_MODEL_TEMP, win);
+  rule = binding_rule_create(slider, "v-data:value", "{i32, Mode=TwoWay, Trigger=Changing}");
+  binding_context_bind_data(ctx, rule);
+  binding_context_set_bound(ctx, TRUE);
+
   value_set_int(&v, 66);
   object_set_prop(OBJECT(s_temp_view_model), "i32", &v);
-
-  widget_set_prop_str(slider, "v-data:value", "{i32, Mode=TwoWay, Trigger=Changing}");
-  bind_for_window(win);
+  idle_dispatch();
   ASSERT_EQ(widget_get_value(slider), 66);
 
   widget_set_value(slider, 99);
@@ -249,14 +288,19 @@ TEST(BindingContextAwtk, data_explicit) {
   value_t v;
   widget_t* win = window_create(NULL, 0, 0, 400, 300);
   widget_t* slider = slider_create(win, 0, 0, 128, 30);
+  binding_context_t* ctx;
+  binding_rule_t* rule;
+
   test_view_model_init();
 
-  widget_set_prop_str(win, WIDGET_PROP_V_MODEL, STR_V_MODEL_TEMP);
+  ctx = binding_context_create(NULL, STR_V_MODEL_TEMP, win);
+  rule = binding_rule_create(slider, "v-data:value", "{i32, Mode=TwoWay, Trigger=Explicit}");
+  binding_context_bind_data(ctx, rule);
+  binding_context_set_bound(ctx, TRUE);
+
   value_set_int(&v, 66);
   object_set_prop(OBJECT(s_temp_view_model), "i32", &v);
-
-  widget_set_prop_str(slider, "v-data:value", "{i32, Mode=TwoWay, Trigger=Explicit}");
-  bind_for_window(win);
+  idle_dispatch();
   ASSERT_EQ(widget_get_value(slider), 66);
 
   widget_set_value(slider, 99);
@@ -276,15 +320,21 @@ TEST(BindingContextAwtk, command_update_to_view_model) {
   pointer_event_t e;
   widget_t* win = window_create(NULL, 0, 0, 400, 300);
   widget_t* slider = slider_create(win, 0, 0, 128, 30);
+  binding_context_t* ctx;
+  binding_rule_t* rule;
+
   test_view_model_init();
 
-  widget_set_prop_str(win, WIDGET_PROP_V_MODEL, STR_V_MODEL_TEMP);
+  ctx = binding_context_create(NULL, STR_V_MODEL_TEMP, win);
+  rule = binding_rule_create(slider, "v-data:value", "{i32, Mode=TwoWay, Trigger=Explicit}");
+  binding_context_bind_data(ctx, rule);
+  rule = binding_rule_create(slider, "v-on:pointer_down", "{save, Args=2, UpdateModel=True}");
+  binding_context_bind_command(ctx, rule);
+  binding_context_set_bound(ctx, TRUE);
+
   value_set_int(&v, 66);
   object_set_prop(OBJECT(s_temp_view_model), "i32", &v);
-
-  widget_set_prop_str(slider, "v-data:value", "{i32, Mode=TwoWay, Trigger=Explicit}");
-  widget_set_prop_str(slider, "v-on:pointer_down", "{save, Args=2, UpdateModel=True}");
-  bind_for_window(win);
+  idle_dispatch();
   ASSERT_EQ(widget_get_value(slider), 66);
 
   widget_set_value(slider, 99);
@@ -310,17 +360,20 @@ TEST(BindingContextAwtk, command_update_to_view_model) {
 }
 
 TEST(BindingContextAwtk, command_close_window) {
+  binding_context_t* ctx;
+  binding_rule_t* rule;
   pointer_event_t e;
   widget_t* win = window_create(NULL, 0, 0, 400, 300);
-  window_manager_open_window(window_manager(), win);
-
   widget_t* button = button_create(win, 0, 0, 128, 30);
-  test_view_model_init();
 
+  test_view_model_init();
+  window_manager_open_window(window_manager(), win);
   idle_dispatch();
-  widget_set_prop_str(win, WIDGET_PROP_V_MODEL, STR_V_MODEL_TEMP);
-  widget_set_prop_str(button, "v-on:pointer_down", "{save, Args=2, CloseWindow=True}");
-  bind_for_window(win);
+
+  ctx = binding_context_create(NULL, STR_V_MODEL_TEMP, win);
+  rule = binding_rule_create(button, "v-on:pointer_down", "{save, Args=2, CloseWindow=True}");
+  binding_context_bind_command(ctx, rule);
+  binding_context_set_bound(ctx, TRUE);
 
   e.e = event_init(EVT_POINTER_DOWN, button);
   e.x = 30;
@@ -332,84 +385,6 @@ TEST(BindingContextAwtk, command_close_window) {
   test_view_model_deinit();
 }
 
-TEST(BindingContextAwtk, array) {
-  uint32_t i = 0;
-  widget_t* win = window_create(NULL, 0, 0, 400, 300);
-  widget_t* list_view = list_view_create(win, 0, 0, 128, 300);
-  widget_t* list_item = list_item_create(list_view, 0, 0, 128, 30);
-
-  widget_t* a = slider_create(list_item, 0, 0, 0, 0);
-  widget_t* b = slider_create(list_item, 0, 0, 0, 0);
-  widget_t* c = slider_create(list_item, 0, 0, 0, 0);
-  widget_t* d = slider_create(list_item, 0, 0, 0, 0);
-
-  widget_set_name(a, "a");
-  widget_set_name(b, "b");
-  widget_set_name(c, "c");
-  widget_set_name(d, "d");
-  slider_set_max(a, 50000);
-  slider_set_max(b, 50000);
-  slider_set_max(c, 50000);
-  slider_set_max(d, 50000);
-
-  widget_set_prop_str(a, "v-data:value", "{item.a}");
-  widget_set_prop_str(b, "v-data:value", "{item.b}");
-  widget_set_prop_str(c, "v-data:value", "{item.c}");
-  widget_set_prop_str(d, "v-data:value", "{item.a + item.b - item.c + 1}");
-
-  test_view_model_init();
-
-  widget_set_prop_bool(list_view, WIDGET_PROP_V_FOR_ITEMS, TRUE);
-  widget_set_prop_str(win, WIDGET_PROP_V_MODEL, STR_V_MODEL_PERSONS);
-
-  bind_for_window(win);
-
-  ASSERT_EQ(view_model_array_dummy_size(s_persons_view_model), 10);
-  ASSERT_EQ(list_view->children->size, view_model_array_dummy_size(s_persons_view_model));
-
-  for (i = 0; i < view_model_array_dummy_size(s_persons_view_model); i++) {
-    list_item = widget_get_child(list_view, i);
-    log_debug("i=%d\n", i);
-    a = widget_child(list_item, "a");
-    b = widget_child(list_item, "b");
-    c = widget_child(list_item, "c");
-    d = widget_child(list_item, "d");
-
-    ASSERT_EQ(widget_get_value(a), i);
-    ASSERT_EQ(widget_get_value(b), i + 1);
-    ASSERT_EQ(widget_get_value(c), i + 2);
-    ASSERT_EQ(widget_get_value(d), i);
-  }
-
-  view_model_array_dummy_clear(s_persons_view_model);
-  ASSERT_EQ(view_model_array_dummy_size(s_persons_view_model), 0);
-  view_model_array_notify_items_changed(VIEW_MODEL(s_persons_view_model));
-  idle_dispatch();
-  ASSERT_EQ(list_view->children->size, view_model_array_dummy_size(s_persons_view_model));
-
-  persons_gen(s_persons_view_model, 10000);
-  view_model_array_notify_items_changed(VIEW_MODEL(s_persons_view_model));
-  idle_dispatch();
-  for (i = 0; i < view_model_array_dummy_size(s_persons_view_model); i++) {
-    list_item = widget_get_child(list_view, i);
-    log_debug("i=%d\n", i);
-    a = widget_child(list_item, "a");
-    b = widget_child(list_item, "b");
-    c = widget_child(list_item, "c");
-    d = widget_child(list_item, "d");
-
-    ASSERT_EQ(widget_get_value(a), i);
-    ASSERT_EQ(widget_get_value(b), i + 1);
-    ASSERT_EQ(widget_get_value(c), i + 2);
-    ASSERT_EQ(widget_get_value(d), i);
-  }
-
-  widget_destroy(win);
-  test_view_model_deinit();
-
-  idle_dispatch();
-}
-
 static ret_t widget_dispatch_pointer_down(widget_t* widget, int x, int y) {
   pointer_event_t e;
   e.e = event_init(EVT_POINTER_DOWN, widget);
@@ -419,19 +394,22 @@ static ret_t widget_dispatch_pointer_down(widget_t* widget, int x, int y) {
 }
 
 TEST(BindingContextAwtk, fscript1) {
+  binding_context_t* ctx;
+  binding_rule_t* rule;
   widget_t* win = window_create(NULL, 0, 0, 400, 300);
-  window_manager_open_window(window_manager(), win);
-
   widget_t* button = button_create(win, 0, 0, 128, 30);
+
   test_view_model_init();
-
+  window_manager_open_window(window_manager(), win);
   idle_dispatch();
-  widget_set_prop_str(win, WIDGET_PROP_V_MODEL, STR_V_MODEL_TEMP);
-  widget_set_prop_str(button, "v-on:pointer_down",
-                      "{fscript, Args=widget_set(x, widget_get(x)+10)}");
-  bind_for_window(win);
-  widget_dispatch_pointer_down(button, 30, 30);
 
+  ctx = binding_context_create(NULL, STR_V_MODEL_TEMP, win);
+  rule = binding_rule_create(button, "v-on:pointer_down",
+                             "{fscript, Args=widget_set(x, widget_get(x)+10)}");
+  binding_context_bind_command(ctx, rule);
+  binding_context_set_bound(ctx, TRUE);
+
+  widget_dispatch_pointer_down(button, 30, 30);
   ASSERT_EQ(button->x, 10);
 
   idle_dispatch();
@@ -439,19 +417,22 @@ TEST(BindingContextAwtk, fscript1) {
 }
 
 TEST(BindingContextAwtk, fscript2) {
+  binding_context_t* ctx;
+  binding_rule_t* rule;
   widget_t* win = window_create(NULL, 0, 0, 400, 300);
-  window_manager_open_window(window_manager(), win);
-
   widget_t* button = button_create(win, 0, 0, 128, 30);
+
   test_view_model_init();
-
+  window_manager_open_window(window_manager(), win);
   idle_dispatch();
-  widget_set_prop_str(win, WIDGET_PROP_V_MODEL, STR_V_MODEL_TEMP);
-  widget_set_prop_str(button, "v-on:pointer_down",
-                      "{fscript, Args=widget_set(parent.x, widget_get(parent.x)+10)}");
-  bind_for_window(win);
-  widget_dispatch_pointer_down(button, 30, 30);
 
+  ctx = binding_context_create(NULL, STR_V_MODEL_TEMP, win);
+  rule = binding_rule_create(button, "v-on:pointer_down",
+                             "{fscript, Args=widget_set(parent.x, widget_get(parent.x)+10)}");
+  binding_context_bind_command(ctx, rule);
+  binding_context_set_bound(ctx, TRUE);
+
+  widget_dispatch_pointer_down(button, 30, 30);
   ASSERT_EQ(win->x, 10);
 
   idle_dispatch();
@@ -459,19 +440,22 @@ TEST(BindingContextAwtk, fscript2) {
 }
 
 TEST(BindingContextAwtk, fscript3) {
+  binding_context_t* ctx;
+  binding_rule_t* rule;
   widget_t* win = window_create(NULL, 0, 0, 400, 300);
-  window_manager_open_window(window_manager(), win);
-
   widget_t* button = button_create(win, 0, 0, 128, 30);
+
   test_view_model_init();
-
+  window_manager_open_window(window_manager(), win);
   idle_dispatch();
-  widget_set_prop_str(win, WIDGET_PROP_V_MODEL, STR_V_MODEL_TEMP);
-  widget_set_prop_str(button, "v-on:pointer_down",
-                      "{fscript, Args=widget_set(window.x, widget_get(window.x)+10)}");
-  bind_for_window(win);
-  widget_dispatch_pointer_down(button, 30, 30);
 
+  ctx = binding_context_create(NULL, STR_V_MODEL_TEMP, win);
+  rule = binding_rule_create(button, "v-on:pointer_down",
+                             "{fscript, Args=widget_set(window.x, widget_get(window.x)+10)}");
+  binding_context_bind_command(ctx, rule);
+  binding_context_set_bound(ctx, TRUE);
+
+  widget_dispatch_pointer_down(button, 30, 30);
   ASSERT_EQ(win->x, 10);
 
   idle_dispatch();
@@ -479,21 +463,24 @@ TEST(BindingContextAwtk, fscript3) {
 }
 
 TEST(BindingContextAwtk, fscript4) {
+  binding_context_t* ctx;
+  binding_rule_t* rule;
   widget_t* win = window_create(NULL, 0, 0, 400, 300);
-  window_manager_open_window(window_manager(), win);
-
   widget_t* button = button_create(win, 0, 0, 128, 30);
-  test_view_model_init();
 
-  idle_dispatch();
-  widget_set_prop_str(win, WIDGET_PROP_V_MODEL, STR_V_MODEL_TEMP);
+  test_view_model_init();
   widget_set_name(button, "button");
-  widget_set_prop_str(
+  window_manager_open_window(window_manager(), win);
+  idle_dispatch();
+
+  ctx = binding_context_create(NULL, STR_V_MODEL_TEMP, win);
+  rule = binding_rule_create(
       button, "v-on:pointer_down",
       "{fscript, Args=widget_set(window.button.x, widget_get(window.button.x)+10)}");
-  bind_for_window(win);
-  widget_dispatch_pointer_down(button, 30, 30);
+  binding_context_bind_command(ctx, rule);
+  binding_context_set_bound(ctx, TRUE);
 
+  widget_dispatch_pointer_down(button, 30, 30);
   ASSERT_EQ(button->x, 10);
 
   idle_dispatch();

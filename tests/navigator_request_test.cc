@@ -6,11 +6,13 @@
 using std::string;
 
 TEST(NavigatorRequest, basic) {
-  navigator_request_t* req = navigator_request_create(NAVIGATOR_REQ_TOAST, NULL);
+  navigator_request_t* req = navigator_request_create(NULL, NULL);
+  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_TOAST);
 
   ASSERT_EQ(object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_TITLE, "hello awtk"), RET_OK);
   ASSERT_EQ(string(object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_TITLE)), string("hello awtk"));
-  ASSERT_EQ(string(req->target), string(NAVIGATOR_REQ_TOAST));
+  ASSERT_EQ(string(object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_REQ)),
+            string(NAVIGATOR_REQ_TOAST));
 
   object_unref(OBJECT(req));
 }
@@ -34,61 +36,71 @@ TEST(NavigatorRequest, on_result) {
 }
 
 TEST(NavigatorRequest, args1) {
-  navigator_request_t* req = navigator_request_create("target?key=value", on_result);
-  ASSERT_STREQ(object_get_prop_str(OBJECT(req->args), "key"), "value");
-  ASSERT_STREQ(req->target, "target");
-  ASSERT_EQ(req->close_current, FALSE);
-  ASSERT_EQ(req->open_new, TRUE);
+  const char* target = "string?target=target&key=value";
+  navigator_request_t* req = navigator_request_create(target, on_result);
+
+  ASSERT_STREQ(object_get_prop_str(OBJECT(req), "key"), "value");
+  ASSERT_STREQ(object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_TARGET), "target");
+  ASSERT_EQ(object_get_prop_bool(OBJECT(req), NAVIGATOR_ARG_CLOSE_CURRENT, FALSE), FALSE);
+  ASSERT_EQ(object_get_prop_bool(OBJECT(req), NAVIGATOR_ARG_OPEN_NEW, FALSE), FALSE);
 
   object_unref(OBJECT(req));
 }
 
 TEST(NavigatorRequest, args2) {
-  navigator_request_t* req = navigator_request_create("target?key=", on_result);
-  ASSERT_EQ(object_get_prop_str(OBJECT(req->args), "key"), (const char*)NULL);
-  ASSERT_STREQ(req->target, "target");
-  ASSERT_EQ(req->close_current, FALSE);
-  ASSERT_EQ(req->open_new, TRUE);
+  const char* target = "string?target=target&key=";
+  navigator_request_t* req = navigator_request_create(target, on_result);
+
+  ASSERT_EQ(object_get_prop_str(OBJECT(req), "key"), (const char*)NULL);
+  ASSERT_STREQ(object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_TARGET), "target");
+  ASSERT_EQ(object_get_prop_bool(OBJECT(req), NAVIGATOR_ARG_CLOSE_CURRENT, FALSE), FALSE);
+  ASSERT_EQ(object_get_prop_bool(OBJECT(req), NAVIGATOR_ARG_OPEN_NEW, FALSE), FALSE);
 
   object_unref(OBJECT(req));
 }
 
 TEST(NavigatorRequest, args3) {
-  navigator_request_t* req = navigator_request_create("target?key", on_result);
-  ASSERT_EQ(object_get_prop_str(OBJECT(req->args), "key"), (const char*)NULL);
-  ASSERT_STREQ(req->target, "target");
-  ASSERT_EQ(req->close_current, FALSE);
-  ASSERT_EQ(req->open_new, TRUE);
+  const char* target = "string?target=target&key";
+  navigator_request_t* req = navigator_request_create(target, on_result);
+
+  ASSERT_EQ(object_get_prop_str(OBJECT(req), "key"), (const char*)NULL);
+  ASSERT_STREQ(object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_TARGET), "target");
+  ASSERT_EQ(object_get_prop_bool(OBJECT(req), NAVIGATOR_ARG_CLOSE_CURRENT, FALSE), FALSE);
+  ASSERT_EQ(object_get_prop_bool(OBJECT(req), NAVIGATOR_ARG_OPEN_NEW, FALSE), FALSE);
 
   object_unref(OBJECT(req));
 }
 
 TEST(NavigatorRequest, args4) {
-  navigator_request_t* req = navigator_request_create("target?close_current=true", on_result);
-  ASSERT_EQ(req->close_current, TRUE);
-  ASSERT_EQ(req->open_new, TRUE);
-  ASSERT_STREQ(req->target, "target");
+  const char* target = "string?target=target&close_current=true";
+  navigator_request_t* req = navigator_request_create(target, on_result);
+
+  ASSERT_STREQ(object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_TARGET), "target");
+  ASSERT_EQ(object_get_prop_bool(OBJECT(req), NAVIGATOR_ARG_CLOSE_CURRENT, FALSE), TRUE);
+  ASSERT_EQ(object_get_prop_bool(OBJECT(req), NAVIGATOR_ARG_OPEN_NEW, FALSE), FALSE);
 
   object_unref(OBJECT(req));
 }
 
 TEST(NavigatorRequest, args5) {
-  navigator_request_t* req =
-      navigator_request_create("target?close_current=true&open_new=false", on_result);
-  ASSERT_EQ(req->close_current, TRUE);
-  ASSERT_EQ(req->open_new, FALSE);
-  ASSERT_STREQ(req->target, "target");
+  const char* target = "string?target=target&close_current=true&open_new=true";
+  navigator_request_t* req = navigator_request_create(target, on_result);
+
+  ASSERT_STREQ(object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_TARGET), "target");
+  ASSERT_EQ(object_get_prop_bool(OBJECT(req), NAVIGATOR_ARG_CLOSE_CURRENT, FALSE), TRUE);
+  ASSERT_EQ(object_get_prop_bool(OBJECT(req), NAVIGATOR_ARG_OPEN_NEW, FALSE), TRUE);
 
   object_unref(OBJECT(req));
 }
 
 TEST(NavigatorRequest, args6) {
-  navigator_request_t* req =
-      navigator_request_create("target?close_current=true&open_new=false&path=a/b/c", on_result);
-  ASSERT_EQ(req->close_current, TRUE);
-  ASSERT_EQ(req->open_new, FALSE);
-  ASSERT_STREQ(req->target, "target");
-  ASSERT_STREQ(object_get_prop_str(OBJECT(req->args), "path"), "a/b/c");
+  const char* target = "string?target=target&close_current=true&open_new=false&path=a/b/c";
+  navigator_request_t* req = navigator_request_create(target, on_result);
+
+  ASSERT_STREQ(object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_TARGET), "target");
+  ASSERT_EQ(object_get_prop_bool(OBJECT(req), NAVIGATOR_ARG_CLOSE_CURRENT, FALSE), TRUE);
+  ASSERT_EQ(object_get_prop_bool(OBJECT(req), NAVIGATOR_ARG_OPEN_NEW, FALSE), FALSE);
+  ASSERT_STREQ(object_get_prop_str(OBJECT(req), "path"), "a/b/c");
 
   object_unref(OBJECT(req));
 }

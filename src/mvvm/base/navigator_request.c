@@ -21,8 +21,9 @@
 
 #include "tkc/value.h"
 #include "tkc/utils.h"
-#include "tkc/tokenizer.h"
+#include "tkc/mem.h"
 #include "tkc/object_default.h"
+#include "mvvm/base/utils.h"
 #include "mvvm/base/navigator_request.h"
 
 static ret_t navigator_request_on_destroy(object_t* obj) {
@@ -41,6 +42,10 @@ static int32_t navigator_request_compare(object_t* obj, object_t* other) {
 static ret_t navigator_request_set_prop(object_t* obj, const char* name, const value_t* v) {
   navigator_request_t* req = NAVIGATOR_REQUEST(obj);
   return_value_if_fail(obj != NULL && name != NULL && v != NULL, RET_BAD_PARAMS);
+
+  if (req->args == NULL) {
+    req->args = object_default_create();
+  }
 
   return object_set_prop(req->args, name, v);
 }
@@ -65,54 +70,30 @@ static const object_vtable_t s_navigator_request_vtable = {
     .size = sizeof(navigator_request_t),
     .is_collection = FALSE,
     .on_destroy = navigator_request_on_destroy,
-
     .compare = navigator_request_compare,
     .get_prop = navigator_request_get_prop,
     .set_prop = navigator_request_set_prop,
     .foreach_prop = object_default_foreach_prop};
 
-navigator_request_t* navigator_request_create(const char* target,
+navigator_request_t* navigator_request_create(const char* args,
                                               navigator_request_on_result_t on_result) {
-  object_t* obj = NULL;
-  navigator_request_t* req = NULL;
-  tokenizer_t t;
-  return_value_if_fail(target != NULL, NULL);
-
-  obj = object_create(&s_navigator_request_vtable);
-  req = NAVIGATOR_REQUEST(obj);
+  object_t* obj = object_create(&s_navigator_request_vtable);
+  navigator_request_t* req = NAVIGATOR_REQUEST(obj);
 
   req->on_result = on_result;
-  req->args = object_default_create();
 
-  if (req->args == NULL) {
-    OBJECT_UNREF(obj);
-    req = NULL;
-  }
-
-  if (req != NULL) {
-    value_t v;
-    char key[TK_NAME_LEN + 1];
-    const char* value = NULL;
-    tokenizer_init(&t, target, strlen(target), "?=&");
-    target = tokenizer_next(&t);
-    tk_strncpy(req->target, target, TK_NAME_LEN);
-
-    navigator_request_set_open_new(req, TRUE);
-    while (tokenizer_has_more(&t)) {
-      tk_strncpy(key, tokenizer_next(&t), TK_NAME_LEN);
-      value = tokenizer_next(&t);
-      if (value != NULL) {
-        value_set_str(&v, value);
-        if (tk_str_eq(key, NAVIGATOR_ARG_CLOSE_CURRENT)) {
-          navigator_request_set_close_current(req, value_bool(&v));
-        } else if (tk_str_eq(key, NAVIGATOR_ARG_OPEN_NEW)) {
-          navigator_request_set_open_new(req, value_bool(&v));
-        } else {
-          object_set_prop(req->args, key, &v);
-        }
+  if (args != NULL && *args != '\0') {
+    req->args = object_default_create();
+    if (req->args != NULL) {
+      if (tk_str_start_with(args, COMMAND_ARGS_STRING_PREFIX)) {
+        tk_command_arguments_to_object(args, req->args);
+      } else {
+        object_set_prop_str(req->args, NAVIGATOR_ARG_TARGET, args);
       }
+    } else {
+      OBJECT_UNREF(obj);
+      req = NULL;
     }
-    tokenizer_deinit(&t);
   }
 
   return req;
@@ -121,26 +102,21 @@ navigator_request_t* navigator_request_create(const char* target,
 ret_t navigator_request_on_result(navigator_request_t* req, const value_t* result) {
   return_value_if_fail(req != NULL && result != NULL, RET_BAD_PARAMS);
 
-  value_deep_copy(&(req->result), result);
   if (req->on_result != NULL) {
-    req->on_result(req, &(req->result));
+    req->on_result(req, result);
   }
 
   return RET_OK;
 }
 
-ret_t navigator_request_set_close_current(navigator_request_t* req, bool_t close_current) {
+ret_t navigator_request_set_args(navigator_request_t* req, object_t* args) {
   return_value_if_fail(req != NULL, RET_BAD_PARAMS);
 
-  req->close_current = close_current;
+  OBJECT_UNREF(req->args);
 
-  return RET_OK;
-}
-
-ret_t navigator_request_set_open_new(navigator_request_t* req, bool_t open_new) {
-  return_value_if_fail(req != NULL, RET_BAD_PARAMS);
-
-  req->open_new = open_new;
+  if (args != NULL) {
+    req->args = OBJECT_REF(args);
+  }
 
   return RET_OK;
 }

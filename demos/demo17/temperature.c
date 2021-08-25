@@ -23,7 +23,9 @@
 #include "temperature.h"
 
 temperature_t* temperature_create(void) {
-  return TKMEM_ZALLOC(temperature_t);
+  temperature_t* temperature = TKMEM_ZALLOC(temperature_t);
+  temperature->value = 20;
+  return temperature;
 }
 
 ret_t temperature_destroy(temperature_t* temperature) {

@@ -29,7 +29,8 @@ Shape::Shape(void) {
   this->w = 30;
   this->h = 40;
   this->opacity = 50;
-  this->text_align = 1;
+  this->align = 1;
+  this->name = string("name");
 }
 
 Shape::~Shape() {
@@ -54,7 +55,7 @@ const char* Shape::GetOverview() {
   char buff[256];
   tk_snprintf(buff, sizeof(buff), "%s: type=%d (%d %d %d %d) opacity=%d align=%d",
               this->name.c_str(), this->type, this->x, this->y, this->w, this->h, this->opacity,
-              this->text_align);
+              this->align);
   this->overview = buff;
 
   return this->overview.c_str();

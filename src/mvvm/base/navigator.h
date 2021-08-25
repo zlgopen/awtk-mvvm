@@ -23,8 +23,10 @@
 #define TK_NAVIGATOR_H
 
 #include "tkc/str.h"
+#include "tkc/darray.h"
 #include "mvvm/base/navigator_request.h"
 #include "mvvm/base/navigator_handler.h"
+#include "mvvm/base/view_model.h"
 
 BEGIN_C_DECLS
 
@@ -37,7 +39,7 @@ typedef ret_t (*navigator_on_result_t)(navigator_t* nav, const value_t* result);
  * @class navigator_t
  * @parent object_t
  *
- * 导航器。负责打开指定的窗口。
+ * 导航器。负责窗口导航。
  *
  */
 struct _navigator_t {
@@ -125,40 +127,30 @@ ret_t navigator_unregister_handler(navigator_t* nav, const char* target);
 
 /**
  * @method navigator_to
- * 请求打开指定的窗口。
+ * 发送指定的请求。
+ * 发送请求时可以用"string?"为前缀、用"&"分隔的格式传递参数。
+ * 比如，"string?arg1=xx&arg2=yy"表示有两个参数，参数arg1的值为"xx"，参数arg2的值为"yy",
+ * 如果没有用上述格式指定参数，则默认为target参数的值。
  *
  * @annotation ["static"]
  *
- * @param {const char*} target 目标窗口的名称及参数(请参考窗口导航文档)。
+ * @param {const char*} args 发送请求时要传递的参数。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
-ret_t navigator_to(const char* target);
+ret_t navigator_to(const char* args);
 
 /**
- * @method navigator_replace
- * 请求打开指定的窗口，并关闭当前窗口。
+ * @method navigator_to_by_object
+ * 发送指定的请求。
  *
  * @annotation ["static"]
  *
- * @param {const char*} target 目标窗口的名称及参数(请参考窗口导航文档)。
+ * @param {const char*} args 发送请求时要传递的参数。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
-ret_t navigator_replace(const char* target);
-
-/**
- * @method navigator_switch_to
- * 如果目标窗口已经存在，直接切换到该窗口，否则打开新窗口。
- *
- * @annotation ["static"]
- *
- * @param {const char*} target 目标窗口的名称及参数(请参考窗口导航文档)。
- * @param {bool_t} close_current 是否关闭当前窗口。
- *
- * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
- */
-ret_t navigator_switch_to(const char* target, bool_t close_current);
+ret_t navigator_to_by_object(object_t* args);
 
 /**
  * @method navigator_to_with_key_value
@@ -173,6 +165,31 @@ ret_t navigator_switch_to(const char* target, bool_t close_current);
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
 ret_t navigator_to_with_key_value(const char* target, const char* key, const char* value);
+
+/**
+ * @method navigator_replace
+ * 请求打开指定的窗口，并关闭当前窗口。
+ *
+ * @annotation ["static"]
+ *
+ * @param {const char*} target 目标窗口的名称。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t navigator_replace(const char* target);
+
+/**
+ * @method navigator_switch_to
+ * 如果目标窗口已经存在，直接切换到该窗口，否则打开新窗口。
+ *
+ * @annotation ["static"]
+ *
+ * @param {const char*} target 目标窗口的名称。
+ * @param {bool_t} close_current 是否关闭当前窗口。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t navigator_switch_to(const char* target, bool_t close_current);
 
 /**
  * @method navigator_back_to_home
@@ -198,12 +215,12 @@ ret_t navigator_back(void);
  * @method navigator_close
  * 关闭指定窗口。
  *
- * @param {const char*} name 目标窗口的名称。
+ * @param {const char*} target 目标窗口的名称。
  * @annotation ["static"]
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
-ret_t navigator_close(const char* name);
+ret_t navigator_close(const char* target);
 
 /**
  * @method navigator_request_close
@@ -211,24 +228,12 @@ ret_t navigator_close(const char* name);
  *
  * > 窗口是否被关闭，取决于窗口本身的处理逻辑。
  *
- * @param {const char*} name 目标窗口的名称。
+ * @param {const char*} target 目标窗口的名称。
  * @annotation ["static"]
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
-ret_t navigator_request_close(const char* name);
-
-/**
- * @method navigator_to_ex
- * 请求打开指定的窗口，并可传递参数和返回结果。
- *
- * @annotation ["static"]
- *
- * @param {navigator_request_t*} req request对象。
- *
- * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
- */
-ret_t navigator_to_ex(navigator_request_t* req);
+ret_t navigator_request_close(const char* target);
 
 /**
  * @method navigator_toast
@@ -322,6 +327,80 @@ ret_t navigator_pick_file(const char* title, const char* filter, bool_t for_save
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
 ret_t navigator_pick_color(const char* title, str_t* result);
+
+/**
+ * @method navigator_count_view_models
+ * 获取指定的ViewModel实例的个数。
+ * > 路径为NULL时表示当前全部的ViewModel实例；
+ * > 路径为空字符串时表示最上面的窗口绑定的全部ViewModel实例；
+ * > 其他则为实际的路径，比如“a.[0]”时表示属性name为"a"的窗体的第0个子控件上绑定的ViewModel实例。
+ *
+ * @annotation ["static"]
+ *
+ * @param {const char*} target ViewModel路径
+ *
+ * @return {ret_t} 返回实例的个数。
+ */
+int32_t navigator_count_view_models(const char* target);
+
+/**
+ * @method navigator_get_view_models
+ * 获取指定的ViewModel实例。
+ * > 路径为NULL时表示当前全部的ViewModel实例；
+ * > 路径为空字符串时表示最上面的窗口绑定的全部ViewModel实例；
+ * > 其他则为具体的路径，比如“a.[0]”表示name属性值为"a"的窗体的第0个子控件上绑定的ViewModel实例。
+ *
+ * @annotation ["static"]
+ *
+ * @param {const char*} target ViewModel路径
+ * @param {darray_t*} result 返回ViewModel实例。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t navigator_get_view_models(const char* target, darray_t* result);
+
+/**
+ * @method navigator_notify_view_models_props_changed
+ * 触发指定的ViewModel实例的props改变事件。
+ * > 路径为NULL时表示当前全部的ViewModel实例；
+ * > 路径为空字符串时表示最上面的窗口绑定的全部ViewModel实例；
+ * > 其他则为具体的路径，比如“a.[0]”表示name属性值为"a"的窗体的第0个子控件上绑定的ViewModel实例。
+ *
+ * @annotation ["static"]
+ *
+ * @param {const char*} target ViewModel路径
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t navigator_notify_view_models_props_changed(const char* target);
+
+/**
+ * @method navigator_notify_view_models_items_changed
+ * 触发指定的ViewModel实例的items改变事件。
+ * > 路径为NULL时表示当前全部的ViewModel实例；
+ * > 路径为空字符串时表示最上面的窗口绑定的全部ViewModel实例；
+ * > 其他则为具体的路径，比如“a.[0]”表示name属性值为"a"的窗体的第0个子控件上绑定的ViewModel实例。
+ *
+ * @annotation ["static"]
+ *
+ * @param {const char*} target ViewModel路径
+ * @param {object_t*} items 发生变化的items对象。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t navigator_notify_view_models_items_changed(const char* target, object_t* items);
+
+/**
+ * @method navigator_to_ex
+ * 发送指定的请求，并可传递参数和返回结果。
+ *
+ * @annotation ["static"]
+ *
+ * @param {navigator_request_t*} req request对象。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t navigator_to_ex(navigator_request_t* req);
 
 #define NAVIGATOR(nav) ((navigator_t*)(nav))
 #define NAVIGATOR_DEFAULT_HANDLER "default_handler"

@@ -50,6 +50,13 @@ class Temperature {
    */
   double value;
 
+  /**
+   * @property {uint32_t} timer
+   * @annotation ["readable", "writable"]
+   * 计时（倒数）。
+   */
+  uint32_t timer;
+
  public:
   /**
    * @method Apply

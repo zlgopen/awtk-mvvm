@@ -22,9 +22,12 @@
 #ifndef TK_VIEW_MODEL_FACTORY_H
 #define TK_VIEW_MODEL_FACTORY_H
 
+#include "tkc/slist.h"
 #include "mvvm/base/view_model.h"
 
 BEGIN_C_DECLS
+
+typedef view_model_t* (*view_model_generic_create_t)(const char* type, navigator_request_t* req);
 
 /**
  * @class view_model_factory_t
@@ -34,6 +37,7 @@ BEGIN_C_DECLS
  */
 typedef struct _model_factory_t {
   object_t* creators;
+  slist_t generic_creators;
 } view_model_factory_t;
 
 /**
@@ -71,6 +75,17 @@ ret_t view_model_factory_register(const char* type, view_model_create_t create);
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
 ret_t view_model_factory_unregister(const char* type);
+
+/**
+ * @method view_model_factory_register_generic
+ *
+ * 注册模型的通用创建函数(主要用于脚本语言)。
+ * @annotation ["static"]
+ * @param {view_model_generic_create_t} create 创建函数。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t view_model_factory_register_generic(view_model_generic_create_t create);
 
 /**
  * @method view_model_factory_create_model

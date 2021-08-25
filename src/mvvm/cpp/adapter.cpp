@@ -21,14 +21,122 @@
 
 #include "mvvm/cpp/adapter.hpp"
 
-/****************************view model*****************************/
-
 namespace vm {
+
+/****************************object*****************************/
+
+typedef struct _object_adapter_t {
+  object_t obj;
+
+  Object* cpp;
+  bool_t auto_destroy_cpp;
+} object_adapter_t;
+
+static ret_t object_adapter_set_prop(object_t* obj, const char* name, const value_t* v) {
+  object_adapter_t* adapter = (object_adapter_t*)(obj);
+  return_value_if_fail(adapter->cpp != NULL, RET_BAD_PARAMS);
+
+  return adapter->cpp->SetProp(name, v);
+}
+
+static ret_t object_adapter_get_prop(object_t* obj, const char* name, value_t* v) {
+  object_adapter_t* adapter = (object_adapter_t*)(obj);
+  return_value_if_fail(adapter->cpp != NULL, RET_BAD_PARAMS);
+
+  return adapter->cpp->GetProp(name, v);
+}
+
+static bool_t object_adapter_can_exec(object_t* obj, const char* name, const char* args) {
+  object_adapter_t* adapter = (object_adapter_t*)(obj);
+  return_value_if_fail(adapter->cpp != NULL, RET_BAD_PARAMS);
+
+  return adapter->cpp->CanExec(name, args);
+}
+
+static ret_t object_adapter_exec(object_t* obj, const char* name, const char* args) {
+  object_adapter_t* adapter = (object_adapter_t*)(obj);
+  return_value_if_fail(adapter->cpp != NULL, RET_BAD_PARAMS);
+
+  return adapter->cpp->Exec(name, args);
+}
+
+static ret_t object_adapter_on_destroy(object_t* obj) {
+  object_adapter_t* adapter = (object_adapter_t*)(obj);
+  return_value_if_fail(adapter != NULL, RET_BAD_PARAMS);
+
+  adapter->cpp->adapter = NULL;
+
+  if (adapter->auto_destroy_cpp) {
+    delete adapter->cpp;
+    adapter->cpp = NULL;
+  }
+
+  return RET_OK;
+}
+
+static ret_t object_adapter_on_cpp_props_changed(void* ctx, event_t* event) {
+  event_t e = *event;
+  Object* obj = static_cast<Object*>(event->target);
+  e.target = obj->adapter;
+  return emitter_dispatch(EMITTER(ctx), &e);
+}
+
+static ret_t object_adapter_on_cpp_items_changed(void* ctx, event_t* event) {
+  event_t e = *event;
+  Object* obj = static_cast<Object*>(event->target);
+  e.target = obj->adapter;
+  return emitter_dispatch(EMITTER(ctx), &e);
+}
+
+static object_vtable_t s_object_adapter_vtable;
+static ret_t object_adapter_init_vtable(object_vtable_t* vt) {
+  vt->type = "object_adapter";
+  vt->desc = "object_adapter for cpp";
+  vt->size = sizeof(object_adapter_t);
+  vt->exec = object_adapter_exec;
+  vt->can_exec = object_adapter_can_exec;
+  vt->get_prop = object_adapter_get_prop;
+  vt->set_prop = object_adapter_set_prop;
+  vt->on_destroy = object_adapter_on_destroy;
+
+  return RET_OK;
+}
+
+object_t* object_cpp_create(Object* cpp, bool_t auto_destroy_cpp) {
+  object_t* obj = NULL;
+  object_adapter_t* adapter = NULL;
+  return_value_if_fail(cpp != NULL, NULL);
+
+  if (cpp->adapter != NULL) {
+    return OBJECT_REF(cpp->adapter);
+  }
+
+  if (s_object_adapter_vtable.type == NULL) {
+    object_adapter_init_vtable(&s_object_adapter_vtable);
+  }
+
+  obj = object_create(&s_object_adapter_vtable);
+  return_value_if_fail(obj != NULL, NULL);
+
+  adapter = (object_adapter_t*)(obj);
+  adapter->cpp = cpp;
+  adapter->auto_destroy_cpp = auto_destroy_cpp;
+
+  cpp->On(EVT_PROP_CHANGED, object_adapter_on_cpp_props_changed, obj);
+  cpp->On(EVT_PROPS_CHANGED, object_adapter_on_cpp_props_changed, obj);
+  cpp->On(EVT_ITEMS_CHANGED, object_adapter_on_cpp_items_changed, obj);
+  cpp->adapter = OBJECT(adapter);
+
+  return obj;
+}
+
+/****************************view model*****************************/
 
 typedef struct _view_model_adapter_t {
   view_model_t view_model;
 
   ViewModel* cpp;
+  bool_t auto_destroy_cpp;
 } view_model_adapter_t;
 
 static ret_t view_model_adapter_on_will_mount(view_model_t* view_model, navigator_request_t* req) {
@@ -55,40 +163,16 @@ static ret_t view_model_adapter_on_unmount(view_model_t* view_model) {
   return adapter->cpp->OnUnmount();
 }
 
-static ret_t view_model_adapter_set_prop(object_t* obj, const char* name, const value_t* v) {
-  view_model_adapter_t* adapter = (view_model_adapter_t*)(obj);
-  return_value_if_fail(adapter->cpp != NULL, RET_BAD_PARAMS);
-
-  return adapter->cpp->SetProp(name, v);
-}
-
-static ret_t view_model_adapter_get_prop(object_t* obj, const char* name, value_t* v) {
-  view_model_adapter_t* adapter = (view_model_adapter_t*)(obj);
-  return_value_if_fail(adapter->cpp != NULL, RET_BAD_PARAMS);
-
-  return adapter->cpp->GetProp(name, v);
-}
-
-static bool_t view_model_adapter_can_exec(object_t* obj, const char* name, const char* args) {
-  view_model_adapter_t* adapter = (view_model_adapter_t*)(obj);
-  return_value_if_fail(adapter->cpp != NULL, RET_BAD_PARAMS);
-
-  return adapter->cpp->CanExec(name, args);
-}
-
-static ret_t view_model_adapter_exec(object_t* obj, const char* name, const char* args) {
-  view_model_adapter_t* adapter = (view_model_adapter_t*)(obj);
-  return_value_if_fail(adapter->cpp != NULL, RET_BAD_PARAMS);
-
-  return adapter->cpp->Exec(name, args);
-}
-
 static ret_t view_model_adapter_on_destroy(object_t* obj) {
   view_model_adapter_t* adapter = (view_model_adapter_t*)(obj);
   return_value_if_fail(adapter != NULL, RET_BAD_PARAMS);
 
-  delete adapter->cpp;
-  adapter->cpp = NULL;
+  adapter->cpp->adapter = NULL;
+
+  if (adapter->auto_destroy_cpp) {
+    delete adapter->cpp;
+    adapter->cpp = NULL;
+  }
 
   return view_model_deinit(VIEW_MODEL(obj));
 }
@@ -98,10 +182,10 @@ static ret_t view_model_adapter_init_object_vtable(object_vtable_t* vt) {
   vt->type = "view_model_adapter";
   vt->desc = "view_model_adapter for cpp";
   vt->size = sizeof(view_model_adapter_t);
-  vt->exec = view_model_adapter_exec;
-  vt->can_exec = view_model_adapter_can_exec;
-  vt->get_prop = view_model_adapter_get_prop;
-  vt->set_prop = view_model_adapter_set_prop;
+  vt->exec = object_adapter_exec;
+  vt->can_exec = object_adapter_can_exec;
+  vt->get_prop = object_adapter_get_prop;
+  vt->set_prop = object_adapter_set_prop;
   vt->on_destroy = view_model_adapter_on_destroy;
 
   return RET_OK;
@@ -117,15 +201,15 @@ static ret_t view_model_adapter_init_vtable(view_model_vtable_t* vt) {
   return RET_OK;
 }
 
-static ret_t view_model_adapter_on_cpp_changed(void* ctx, event_t* event) {
-  return emitter_dispatch(EMITTER(ctx), event);
-}
-
-view_model_t* view_model_cpp_create(ViewModel* cpp) {
+view_model_t* view_model_cpp_create(ViewModel* cpp, bool_t auto_destroy_cpp) {
   object_t* obj = NULL;
   view_model_t* view_model = NULL;
   view_model_adapter_t* adapter = NULL;
   return_value_if_fail(cpp != NULL, NULL);
+
+  if (cpp->adapter != NULL) {
+    return VIEW_MODEL(OBJECT_REF(cpp->adapter));
+  }
 
   if (s_view_model_adapter_object_vtable.type == NULL) {
     view_model_adapter_init_vtable(&s_view_model_adapter_vtable);
@@ -133,127 +217,21 @@ view_model_t* view_model_cpp_create(ViewModel* cpp) {
   }
 
   obj = object_create(&s_view_model_adapter_object_vtable);
-  return_value_if_fail(obj != NULL, NULL);
-
   view_model = view_model_init(VIEW_MODEL(obj));
-  adapter = (view_model_adapter_t*)(view_model);
+  return_value_if_fail(view_model != NULL, NULL);
+
   view_model->vt = &s_view_model_adapter_vtable;
 
+  adapter = (view_model_adapter_t*)(view_model);
   adapter->cpp = cpp;
-  cpp->On(EVT_PROP_CHANGED, view_model_adapter_on_cpp_changed, view_model);
-  cpp->On(EVT_PROPS_CHANGED, view_model_adapter_on_cpp_changed, view_model);
+  adapter->auto_destroy_cpp = auto_destroy_cpp;
+
+  cpp->On(EVT_PROP_CHANGED, object_adapter_on_cpp_props_changed, view_model);
+  cpp->On(EVT_PROPS_CHANGED, object_adapter_on_cpp_props_changed, view_model);
+  cpp->On(EVT_ITEMS_CHANGED, object_adapter_on_cpp_items_changed, view_model);
+  cpp->adapter = OBJECT(adapter);
 
   return view_model;
-}
-
-/****************************converter*****************************/
-
-static object_vtable_t s_value_converter_adapter_vtable;
-typedef struct _value_converter_adapter_t {
-  value_converter_t value_converter;
-
-  /*private*/
-  ValueConverter* cpp;
-} value_converter_adapter_t;
-
-static ret_t value_converter_adapter_init_vtable(object_vtable_t* vt) {
-  vt->type = "value_converter_adapter";
-  vt->desc = "value_converter_adapter";
-  vt->size = sizeof(value_converter_adapter_t);
-  vt->is_collection = FALSE;
-
-  return RET_OK;
-}
-
-#define VALUE_CONVERTER_ADAPTER(obj) ((value_converter_adapter_t*)(obj))
-
-static ret_t value_converter_adapter_to_view(value_converter_t* c, const value_t* from,
-                                             value_t* to) {
-  value_converter_adapter_t* value_convert_adapter = VALUE_CONVERTER_ADAPTER(c);
-
-  return value_convert_adapter->cpp->ToView(from, to);
-}
-
-static ret_t value_converter_adapter_to_model(value_converter_t* c, const value_t* from,
-                                              value_t* to) {
-  value_converter_adapter_t* value_convert_adapter = VALUE_CONVERTER_ADAPTER(c);
-
-  return value_convert_adapter->cpp->ToModel(from, to);
-}
-
-value_converter_t* value_converter_cpp_create(ValueConverter* cpp) {
-  object_t* obj = NULL;
-  value_converter_t* value_convert = NULL;
-  value_converter_adapter_t* value_convert_adapter = NULL;
-  return_value_if_fail(cpp != NULL, NULL);
-
-  value_converter_adapter_init_vtable(&s_value_converter_adapter_vtable);
-  obj = object_create(&s_value_converter_adapter_vtable);
-  return_value_if_fail(obj != NULL, NULL);
-
-  value_convert = VALUE_CONVERTER(obj);
-  value_convert->to_view = value_converter_adapter_to_view;
-  value_convert->to_model = value_converter_adapter_to_model;
-
-  value_convert_adapter = VALUE_CONVERTER_ADAPTER(obj);
-  value_convert_adapter->cpp = cpp;
-
-  return value_convert;
-}
-
-/****************************validator*****************************/
-
-static object_vtable_t s_value_validator_adapter_vtable;
-
-typedef struct _value_validator_adapter_t {
-  value_validator_t value_validator;
-
-  /*private*/
-  ValueValidator* cpp;
-} value_validator_adapter_t;
-
-static ret_t value_validator_adapter_init_vtable(object_vtable_t* vt) {
-  vt->type = "value_validator_adapter";
-  vt->desc = "value_validator_adapter";
-  vt->size = sizeof(value_validator_adapter_t);
-  vt->is_collection = FALSE;
-
-  return RET_OK;
-}
-
-#define VALUE_VALIDATOR_ADAPTER(obj) ((value_validator_adapter_t*)(obj))
-
-static bool_t value_validator_adapter_is_valid(value_validator_t* c, const value_t* value,
-                                               str_t* msg) {
-  value_validator_adapter_t* value_convert_adapter = VALUE_VALIDATOR_ADAPTER(c);
-
-  return value_convert_adapter->cpp->IsValid(value, msg);
-}
-
-static ret_t value_validator_adapter_fix(value_validator_t* c, value_t* value) {
-  value_validator_adapter_t* value_convert_adapter = VALUE_VALIDATOR_ADAPTER(c);
-
-  return value_convert_adapter->cpp->Fix(value);
-}
-
-value_validator_t* value_validator_cpp_create(ValueValidator* cpp) {
-  object_t* obj = NULL;
-  value_validator_t* value_convert = NULL;
-  return_value_if_fail(cpp != NULL, NULL);
-  value_validator_adapter_t* value_convert_adapter = NULL;
-
-  value_validator_adapter_init_vtable(&s_value_validator_adapter_vtable);
-  obj = object_create(&s_value_validator_adapter_vtable);
-  return_value_if_fail(obj != NULL, NULL);
-
-  value_convert = VALUE_VALIDATOR(obj);
-  value_convert->fix = value_validator_adapter_fix;
-  value_convert->is_valid = value_validator_adapter_is_valid;
-
-  value_convert_adapter = VALUE_VALIDATOR_ADAPTER(obj);
-  value_convert_adapter->cpp = cpp;
-
-  return value_convert;
 }
 
 /****************************view model array*****************************/
@@ -262,32 +240,8 @@ typedef struct _view_model_array_adapter_t {
   view_model_array_t view_model_array;
 
   ViewModelArray* cpp;
+  bool_t auto_destroy_cpp;
 } view_model_array_adapter_t;
-
-static ret_t view_model_array_adapter_on_will_mount(view_model_t* view_model,
-                                                    navigator_request_t* req) {
-  view_model_array_adapter_t* adapter = (view_model_array_adapter_t*)(view_model);
-
-  return adapter->cpp->OnWillMount(req);
-}
-
-static ret_t view_model_array_adapter_on_mount(view_model_t* view_model) {
-  view_model_array_adapter_t* adapter = (view_model_array_adapter_t*)(view_model);
-
-  return adapter->cpp->OnMount();
-}
-
-static ret_t view_model_array_adapter_on_will_unmount(view_model_t* view_model) {
-  view_model_array_adapter_t* adapter = (view_model_array_adapter_t*)(view_model);
-
-  return adapter->cpp->OnWillUnmount();
-}
-
-static ret_t view_model_array_adapter_on_unmount(view_model_t* view_model) {
-  view_model_array_adapter_t* adapter = (view_model_array_adapter_t*)(view_model);
-
-  return adapter->cpp->OnUnmount();
-}
 
 uint32_t view_model_array_adapter_size(view_model_t* view_model) {
   view_model_array_adapter_t* adapter = (view_model_array_adapter_t*)(view_model);
@@ -377,17 +331,20 @@ static ret_t view_model_array_adapter_on_destroy(object_t* obj) {
   view_model_t* view_model = VIEW_MODEL(obj);
   view_model_array_adapter_t* adapter = (view_model_array_adapter_t*)(view_model);
 
-  delete adapter->cpp;
-  adapter->cpp = NULL;
+  adapter->cpp->adapter = NULL;
+
+  if (adapter->auto_destroy_cpp) {
+    delete adapter->cpp;
+    adapter->cpp = NULL;
+  }
 
   return view_model_array_deinit(VIEW_MODEL(obj));
 }
 
 static object_vtable_t s_view_model_array_adapter_object_vtable;
-
 static ret_t view_model_array_adapter_init_object_vtable(object_vtable_t* vt) {
   vt->type = "view_model_array_adapter";
-  vt->desc = "view_model_array_adapter";
+  vt->desc = "view_model_array_adapter for cpp";
   vt->is_collection = TRUE;
   vt->size = sizeof(view_model_array_adapter_t);
   vt->exec = view_model_array_adapter_exec;
@@ -401,19 +358,23 @@ static ret_t view_model_array_adapter_init_object_vtable(object_vtable_t* vt) {
 
 static view_model_vtable_t s_view_model_array_adapter_vtable;
 static ret_t view_model_array_adapter_init_vtable(view_model_vtable_t* vt) {
-  vt->on_will_mount = view_model_array_adapter_on_will_mount;
-  vt->on_mount = view_model_array_adapter_on_mount;
-  vt->on_will_unmount = view_model_array_adapter_on_will_unmount;
-  vt->on_unmount = view_model_array_adapter_on_unmount;
+  vt->on_will_mount = view_model_adapter_on_will_mount;
+  vt->on_mount = view_model_adapter_on_mount;
+  vt->on_will_unmount = view_model_adapter_on_will_unmount;
+  vt->on_unmount = view_model_adapter_on_unmount;
 
   return RET_OK;
 }
 
-view_model_t* view_model_array_cpp_create(ViewModelArray* cpp) {
+view_model_t* view_model_array_cpp_create(ViewModelArray* cpp, bool_t auto_destroy_cpp) {
   object_t* obj = NULL;
   view_model_t* view_model = NULL;
   view_model_array_adapter_t* adapter = NULL;
   return_value_if_fail(cpp != NULL, NULL);
+
+  if (cpp->adapter != NULL) {
+    return VIEW_MODEL(OBJECT_REF(cpp->adapter));
+  }
 
   if (s_view_model_array_adapter_object_vtable.type == NULL) {
     view_model_array_adapter_init_vtable(&s_view_model_array_adapter_vtable);
@@ -422,29 +383,199 @@ view_model_t* view_model_array_cpp_create(ViewModelArray* cpp) {
 
   obj = object_create(&s_view_model_array_adapter_object_vtable);
   view_model = view_model_array_init(VIEW_MODEL(obj));
-  adapter = (view_model_array_adapter_t*)(view_model);
   return_value_if_fail(view_model != NULL, NULL);
+
   view_model->vt = &s_view_model_array_adapter_vtable;
 
+  adapter = (view_model_array_adapter_t*)(view_model);
   adapter->cpp = cpp;
+  adapter->auto_destroy_cpp = auto_destroy_cpp;
+
+  cpp->On(EVT_PROP_CHANGED, object_adapter_on_cpp_props_changed, view_model);
+  cpp->On(EVT_PROPS_CHANGED, object_adapter_on_cpp_props_changed, view_model);
+  cpp->On(EVT_ITEMS_CHANGED, object_adapter_on_cpp_items_changed, view_model);
+  cpp->adapter = OBJECT(adapter);
 
   return view_model;
 }
 
-view_model_t* To(ViewModel* cpp) {
-  return view_model_cpp_create(cpp);
+/****************************converter*****************************/
+
+#define VALUE_CONVERTER_ADAPTER(obj) ((value_converter_adapter_t*)(obj))
+
+typedef struct _value_converter_adapter_t {
+  value_converter_t value_converter;
+
+  ValueConverter* cpp;
+  bool_t auto_destroy_cpp;
+} value_converter_adapter_t;
+
+static ret_t value_converter_adapter_on_destroy(object_t* obj) {
+  value_converter_adapter_t* adapter = (value_converter_adapter_t*)(obj);
+  return_value_if_fail(adapter != NULL, RET_BAD_PARAMS);
+
+  adapter->cpp->adapter = NULL;
+
+  if (adapter->auto_destroy_cpp) {
+    delete adapter->cpp;
+    adapter->cpp = NULL;
+  }
+
+  return RET_OK;
 }
 
-view_model_t* To(ViewModelArray* cpp) {
-  return view_model_array_cpp_create(cpp);
+static object_vtable_t s_value_converter_adapter_vtable;
+static ret_t value_converter_adapter_init_vtable(object_vtable_t* vt) {
+  vt->type = "value_converter_adapter";
+  vt->desc = "value_converter_adapter for cpp";
+  vt->size = sizeof(value_converter_adapter_t);
+  vt->is_collection = FALSE;
+  vt->on_destroy = value_converter_adapter_on_destroy;
+
+  return RET_OK;
 }
 
-value_converter_t* To(ValueConverter* cpp) {
-  return value_converter_cpp_create(cpp);
+static ret_t value_converter_adapter_to_view(value_converter_t* c, const value_t* from,
+                                             value_t* to) {
+  value_converter_adapter_t* value_convert_adapter = VALUE_CONVERTER_ADAPTER(c);
+
+  return value_convert_adapter->cpp->ToView(from, to);
 }
 
-value_validator_t* To(ValueValidator* cpp) {
-  return value_validator_cpp_create(cpp);
+static ret_t value_converter_adapter_to_model(value_converter_t* c, const value_t* from,
+                                              value_t* to) {
+  value_converter_adapter_t* value_convert_adapter = VALUE_CONVERTER_ADAPTER(c);
+
+  return value_convert_adapter->cpp->ToModel(from, to);
+}
+
+value_converter_t* value_converter_cpp_create(ValueConverter* cpp, bool_t auto_destroy_cpp) {
+  object_t* obj = NULL;
+  value_converter_t* value_convert = NULL;
+  value_converter_adapter_t* adapter = NULL;
+  return_value_if_fail(cpp != NULL, NULL);
+
+  if (cpp->adapter != NULL) {
+    return VALUE_CONVERTER(OBJECT_REF(cpp->adapter));
+  }
+
+  if (s_value_converter_adapter_vtable.type == NULL) {
+    value_converter_adapter_init_vtable(&s_value_converter_adapter_vtable);
+  }
+
+  obj = object_create(&s_value_converter_adapter_vtable);
+  return_value_if_fail(obj != NULL, NULL);
+
+  value_convert = VALUE_CONVERTER(obj);
+  value_convert->to_view = value_converter_adapter_to_view;
+  value_convert->to_model = value_converter_adapter_to_model;
+
+  adapter = VALUE_CONVERTER_ADAPTER(obj);
+  adapter->cpp = cpp;
+  adapter->auto_destroy_cpp = auto_destroy_cpp;
+
+  cpp->adapter = OBJECT(adapter);
+
+  return value_convert;
+}
+
+/****************************validator*****************************/
+
+#define VALUE_VALIDATOR_ADAPTER(obj) ((value_validator_adapter_t*)(obj))
+
+typedef struct _value_validator_adapter_t {
+  value_validator_t value_validator;
+
+  ValueValidator* cpp;
+  bool_t auto_destroy_cpp;
+} value_validator_adapter_t;
+
+static ret_t value_validator_adapter_on_destroy(object_t* obj) {
+  value_validator_adapter_t* adapter = (value_validator_adapter_t*)(obj);
+  return_value_if_fail(adapter != NULL, RET_BAD_PARAMS);
+
+  adapter->cpp->adapter = NULL;
+
+  if (adapter->auto_destroy_cpp) {
+    delete adapter->cpp;
+    adapter->cpp = NULL;
+  }
+
+  return RET_OK;
+}
+
+static object_vtable_t s_value_validator_adapter_vtable;
+static ret_t value_validator_adapter_init_vtable(object_vtable_t* vt) {
+  vt->type = "value_validator_adapter";
+  vt->desc = "value_validator_adapter";
+  vt->size = sizeof(value_validator_adapter_t);
+  vt->is_collection = FALSE;
+  vt->on_destroy = value_validator_adapter_on_destroy;
+
+  return RET_OK;
+}
+
+static bool_t value_validator_adapter_is_valid(value_validator_t* c, const value_t* value,
+                                               str_t* msg) {
+  value_validator_adapter_t* value_convert_adapter = VALUE_VALIDATOR_ADAPTER(c);
+
+  return value_convert_adapter->cpp->IsValid(value, msg);
+}
+
+static ret_t value_validator_adapter_fix(value_validator_t* c, value_t* value) {
+  value_validator_adapter_t* value_convert_adapter = VALUE_VALIDATOR_ADAPTER(c);
+
+  return value_convert_adapter->cpp->Fix(value);
+}
+
+value_validator_t* value_validator_cpp_create(ValueValidator* cpp, bool_t auto_destroy_cpp) {
+  object_t* obj = NULL;
+  value_validator_t* value_convert = NULL;
+  return_value_if_fail(cpp != NULL, NULL);
+  value_validator_adapter_t* adapter = NULL;
+
+  if (cpp->adapter != NULL) {
+    return VALUE_VALIDATOR(OBJECT_REF(cpp->adapter));
+  }
+
+  if (s_value_validator_adapter_vtable.type == NULL) {
+    value_validator_adapter_init_vtable(&s_value_validator_adapter_vtable);
+  }
+
+  obj = object_create(&s_value_validator_adapter_vtable);
+  return_value_if_fail(obj != NULL, NULL);
+
+  value_convert = VALUE_VALIDATOR(obj);
+  value_convert->fix = value_validator_adapter_fix;
+  value_convert->is_valid = value_validator_adapter_is_valid;
+
+  adapter = VALUE_VALIDATOR_ADAPTER(obj);
+  adapter->cpp = cpp;
+  adapter->auto_destroy_cpp = auto_destroy_cpp;
+
+  cpp->adapter = OBJECT(adapter);
+
+  return value_convert;
+}
+
+object_t* To(Object* cpp, bool_t auto_destroy_cpp) {
+  return object_cpp_create(cpp, auto_destroy_cpp);
+}
+
+view_model_t* To(ViewModel* cpp, bool_t auto_destroy_cpp) {
+  return view_model_cpp_create(cpp, auto_destroy_cpp);
+}
+
+view_model_t* To(ViewModelArray* cpp, bool_t auto_destroy_cpp) {
+  return view_model_array_cpp_create(cpp, auto_destroy_cpp);
+}
+
+value_converter_t* To(ValueConverter* cpp, bool_t auto_destroy_cpp) {
+  return value_converter_cpp_create(cpp, auto_destroy_cpp);
+}
+
+value_validator_t* To(ValueValidator* cpp, bool_t auto_destroy_cpp) {
+  return value_validator_cpp_create(cpp, auto_destroy_cpp);
 }
 
 }  // namespace vm

@@ -22,10 +22,7 @@
 #ifndef TK_MVVM_JERRYSCRIPT_H
 #define TK_MVVM_JERRYSCRIPT_H
 
-#include "mvvm/base/binding_context.h"
-#include "mvvm/jerryscript/view_model_jerryscript.h"
-#include "mvvm/jerryscript/value_validator_jerryscript.h"
-#include "mvvm/jerryscript/value_converter_jerryscript.h"
+#include "mvvm/base/mvvm_types_def.h"
 
 BEGIN_C_DECLS
 
@@ -38,28 +35,13 @@ BEGIN_C_DECLS
 ret_t mvvm_jerryscript_init(void);
 
 /**
- * @method jerryscript_run
+ * @method mvvm_jerryscript_run
  * 执行js代码。
- * @export none
- * @param {const char*} name 文件名。
- * @param {const char*} code 代码。
- * @param {uint32_t} code_size 代码长度。
+ * @param {const char*} filename 文件名。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
-ret_t jerryscript_run(const char* name, const char* code, uint32_t code_size);
-
-/**
- * @method jerryscript_eval
- * @export none
- * 执行js代码，并返回jerry对象。
- * @param {const char*} name 文件名。
- * @param {const char*} code 代码。
- * @param {uint32_t} code_size 代码长度。
- *
- * @return {jerry_value_t} 返回jerry_value对象。
- */
-jerry_value_t jerryscript_eval(const char* name, const char* code, uint32_t code_size);
+ret_t mvvm_jerryscript_run(const char* filename);
 
 /**
  * @method mvvm_jerryscript_deinit

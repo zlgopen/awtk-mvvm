@@ -21,14 +21,26 @@
 
 #include "awtk.h"
 #include "mvvm/mvvm.h"
-#include "temperature_validator.hpp"
+#include "value_validator.hpp"
 #include "temperature_view_model.h"
 
+static ret_t value_validators_init(void) {
+  value_validator_register("water_temp", TemperatureValidator::Create);
+
+  return RET_OK;
+}
+
 ret_t application_init() {
-  temperature_validator_init();
-  view_model_factory_register("temperature", temperature_view_model_create);
+  value_validators_init();
+  view_model_factory_register("temperature_ex", temperature_view_model_create);
 
   return navigator_to("temperature5");
 }
 
-#include "../awtk_main.c"
+ret_t application_exit(void) {
+  log_debug("application_exit\n");
+
+  return RET_OK;
+}
+
+#include "../main.inc"

@@ -22,13 +22,25 @@
 #include "awtk.h"
 #include "mvvm/mvvm.h"
 #include "temperature_view_model.h"
-#include "temperature_converter.hpp"
+#include "value_converter.hpp"
+
+static ret_t value_converters_init(void) {
+  value_converter_register("fahrenheit", TemperatureConverter::Create);
+
+  return RET_OK;
+}
 
 ret_t application_init() {
-  temperature_converter_init();
-  view_model_factory_register("temperature", temperature_view_model_create);
+  value_converters_init();
+  view_model_factory_register("temperature_ex", temperature_view_model_create);
 
   return navigator_to("temperature3");
 }
 
-#include "../awtk_main.c"
+ret_t application_exit(void) {
+  log_debug("application_exit\n");
+
+  return RET_OK;
+}
+
+#include "../main.inc"

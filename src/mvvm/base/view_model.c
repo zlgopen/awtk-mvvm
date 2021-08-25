@@ -21,7 +21,6 @@
 
 #include "tkc/str.h"
 #include "tkc/utils.h"
-#include "base/locale_info.h"
 #include "mvvm/base/utils.h"
 #include "mvvm/base/view_model.h"
 
@@ -274,7 +273,7 @@ ret_t view_model_exec(view_model_t* view_model, const char* name, const char* ar
   if (ret == RET_OBJECT_CHANGED) {
     emitter_dispatch_simple_event(EMITTER(view_model), EVT_PROP_CHANGED);
   } else if (ret == RET_ITEMS_CHANGED) {
-    emitter_dispatch_simple_event(EMITTER(view_model), EVT_ITEMS_CHANGED);
+    view_model_notify_items_changed(view_model, OBJECT(view_model));
   }
 
   return ret;
@@ -282,6 +281,13 @@ ret_t view_model_exec(view_model_t* view_model, const char* name, const char* ar
 
 ret_t view_model_notify_props_changed(view_model_t* view_model) {
   return emitter_dispatch_simple_event(EMITTER(view_model), EVT_PROPS_CHANGED);
+}
+
+ret_t view_model_notify_items_changed(view_model_t* view_model, object_t* target) {
+  emitter_t* emitter = EMITTER(view_model);
+  event_t e = event_init(EVT_ITEMS_CHANGED, target != NULL ? target : OBJECT(view_model));
+
+  return emitter_dispatch(emitter, &e);
 }
 
 view_model_t* view_model_create_sub_view_model(view_model_t* view_model, const char* name) {
