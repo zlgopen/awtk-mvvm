@@ -180,6 +180,16 @@ ret_t jsvalue_to_value(jsvalue_t value, value_t* v, str_t* temp);
 ret_t jsobj_register_global(const char* name, object_t* obj);
 
 /**
+ * @method jsobj_unregister_global
+ * 注销指定名称的全局js对象。
+ * @annotation ["global"]
+ * @param {const char*} name 全局js对象的名称。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t jsobj_unregister_global(const char* name);
+
+/**
  * @method jsobj_set_native_ptr
  * 设置js对象的原生obj。
  * @annotation ["global"]

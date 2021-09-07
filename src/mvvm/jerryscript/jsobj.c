@@ -370,6 +370,19 @@ ret_t jsobj_register_global(const char* name, object_t* obj) {
   return RET_OK;
 }
 
+ret_t jsobj_unregister_global(const char* name) {
+  jsvalue_t global_obj;
+  return_value_if_fail(name != NULL, RET_BAD_PARAMS);
+
+  global_obj = jsvalue_get_global_object();
+  jsobj_remove_prop(global_obj, name);
+  jsvalue_unref(global_obj);
+
+  js_gc();
+
+  return RET_OK;
+}
+
 static void tkc_object_free_callback(void* native_p) {
   object_t* obj = OBJECT(native_p);
   object_unref(obj);

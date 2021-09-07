@@ -1,7 +1,7 @@
 LIBRARY   mvvm
 EXPORTS
+    jerry_value_to_boolean
     jsvalue_to_value
-    jsvalue_from_value
     object_js_factory
     object_js_factory_set
     object_js_factory_create
@@ -48,7 +48,7 @@ EXPORTS
     jsvalue_from_obj
     jsvalue_from_obj_copy
     jsvalue_to_obj
-    jerry_value_to_boolean
+    jsvalue_from_value
     binding_context_init
     binding_context_destroy
     binding_context_get_root
@@ -74,6 +74,7 @@ EXPORTS
     binding_context_set_prop_by_rule
     binding_rule_parse
     jsobj_register_global
+    jsobj_unregister_global
     jsobj_set_native_ptr
     jsobj_get_native_ptr
     jsobj_delete_native_ptr
@@ -105,35 +106,6 @@ EXPORTS
     jerry_get_number_value
     jerry_create_number
     jerry_value_is_boolean
-    navigator_create
-    navigator
-    navigator_set
-    navigator_handle_request
-    navigator_register_handler
-    navigator_has_handler
-    navigator_unregister_handler
-    navigator_to
-    navigator_to_by_object
-    navigator_to_with_key_value
-    navigator_replace
-    navigator_switch_to
-    navigator_back_to_home
-    navigator_back
-    navigator_close
-    navigator_request_close
-    navigator_toast
-    navigator_info
-    navigator_warn
-    navigator_confirm
-    navigator_pick_dir
-    navigator_pick_file
-    navigator_pick_color
-    navigator_count_view_models
-    navigator_get_view_models
-    navigator_notify_view_models_props_changed
-    navigator_notify_view_models_items_changed
-    navigator_to_ex
-    str_random
     widget_hardware_create
     widget_hardware_cast
     binding_context_awtk_create
@@ -192,6 +164,35 @@ EXPORTS
     ui_loader_mvvm_cast
     object_js_default_create
     object_is_object_js_default
+    navigator_create
+    navigator
+    navigator_set
+    navigator_handle_request
+    navigator_register_handler
+    navigator_has_handler
+    navigator_unregister_handler
+    navigator_to
+    navigator_to_by_object
+    navigator_to_with_key_value
+    navigator_replace
+    navigator_switch_to
+    navigator_back_to_home
+    navigator_back
+    navigator_close
+    navigator_request_close
+    navigator_toast
+    navigator_info
+    navigator_warn
+    navigator_confirm
+    navigator_pick_dir
+    navigator_pick_file
+    navigator_pick_color
+    navigator_count_view_models
+    navigator_get_view_models
+    navigator_notify_view_models_props_changed
+    navigator_notify_view_models_items_changed
+    navigator_to_ex
+    str_random
     value_validator_delegate_create
     navigator_handler_awtk_create
     view_model_object_wrapper_create

@@ -1,5 +1,16 @@
 [
   {
+    "params": [],
+    "annotation": {
+      "global": true
+    },
+    "desc": "export jerryscript function for external call",
+    "name": "jerry_value_to_boolean",
+    "type": "method",
+    "header": "jerryscript/jsobj.h",
+    "level": 1
+  },
+  {
     "params": [
       {
         "type": "jsvalue_t",
@@ -25,32 +36,6 @@
     "return": {
       "type": "ret_t",
       "desc": "返回RET_OK表示成功，否则表示失败。"
-    },
-    "type": "method",
-    "header": "jerryscript/jsobj.h",
-    "level": 1
-  },
-  {
-    "params": [
-      {
-        "type": "const value_t*",
-        "name": "v",
-        "desc": "值。"
-      },
-      {
-        "type": "str_t*",
-        "name": "temp",
-        "desc": "字符串。"
-      }
-    ],
-    "annotation": {
-      "global": true
-    },
-    "desc": "将value值或字符串转换为js对象。",
-    "name": "jsvalue_from_value",
-    "return": {
-      "type": "jsvalue_t",
-      "desc": "返回js对象（使用完毕需要调用 jsvalue_unref 接口将引用计数减1）。"
     },
     "type": "method",
     "header": "jerryscript/jsobj.h",
@@ -1116,12 +1101,27 @@
     "level": 1
   },
   {
-    "params": [],
+    "params": [
+      {
+        "type": "const value_t*",
+        "name": "v",
+        "desc": "值。"
+      },
+      {
+        "type": "str_t*",
+        "name": "temp",
+        "desc": "字符串。"
+      }
+    ],
     "annotation": {
       "global": true
     },
-    "desc": "export jerryscript function for external call",
-    "name": "jerry_value_to_boolean",
+    "desc": "将value值或字符串转换为js对象。",
+    "name": "jsvalue_from_value",
+    "return": {
+      "type": "jsvalue_t",
+      "desc": "返回js对象（使用完毕需要调用 jsvalue_unref 接口将引用计数减1）。"
+    },
     "type": "method",
     "header": "jerryscript/jsobj.h",
     "level": 1
@@ -1752,6 +1752,27 @@
     },
     "desc": "将object_t对象注册为指定的全局js对象。",
     "name": "jsobj_register_global",
+    "return": {
+      "type": "ret_t",
+      "desc": "返回RET_OK表示成功，否则表示失败。"
+    },
+    "type": "method",
+    "header": "jerryscript/jsobj.h",
+    "level": 1
+  },
+  {
+    "params": [
+      {
+        "type": "const char*",
+        "name": "name",
+        "desc": "全局js对象的名称。"
+      }
+    ],
+    "annotation": {
+      "global": true
+    },
+    "desc": "注销指定名称的全局js对象。",
+    "name": "jsobj_unregister_global",
     "return": {
       "type": "ret_t",
       "desc": "返回RET_OK表示成功，否则表示失败。"
@@ -2545,609 +2566,6 @@
     "type": "method",
     "header": "jerryscript/jsobj.h",
     "level": 1
-  },
-  {
-    "type": "class",
-    "methods": [
-      {
-        "params": [],
-        "annotation": {
-          "constructor": true
-        },
-        "desc": "创建navigator对象。",
-        "name": "navigator_create",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回navigator对象。"
-        }
-      },
-      {
-        "params": [],
-        "annotation": {
-          "constructor": true
-        },
-        "desc": "获取缺省的navigator对象。",
-        "name": "navigator",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回navigator对象。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "navigator_t*",
-            "name": "nav",
-            "desc": "navigator对象。"
-          }
-        ],
-        "annotation": {},
-        "desc": "设置缺省navigator对象。",
-        "name": "navigator_set",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "navigator_t*",
-            "name": "nav",
-            "desc": "navigator对象。"
-          },
-          {
-            "type": "navigator_request_t*",
-            "name": "req",
-            "desc": "request对象。"
-          }
-        ],
-        "annotation": {},
-        "desc": "处理打开窗口的请求。",
-        "name": "navigator_handle_request",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "navigator_t*",
-            "name": "nav",
-            "desc": "navigator对象。"
-          },
-          {
-            "type": "const char*",
-            "name": "target",
-            "desc": "目标窗口的名称。"
-          },
-          {
-            "type": "navigator_handler_t*",
-            "name": "handler",
-            "desc": "但请求打开target窗口时，执行本handler。"
-          }
-        ],
-        "annotation": {},
-        "desc": "注册请求处理器。",
-        "name": "navigator_register_handler",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "navigator_t*",
-            "name": "nav",
-            "desc": "navigator对象。"
-          },
-          {
-            "type": "const char*",
-            "name": "target",
-            "desc": "目标窗口的名称。"
-          }
-        ],
-        "annotation": {},
-        "desc": "检查是否存在指定名称的请求处理器。",
-        "name": "navigator_has_handler",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回TRUE表示存在，否则表示不存在。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "navigator_t*",
-            "name": "nav",
-            "desc": "navigator对象。"
-          },
-          {
-            "type": "const char*",
-            "name": "target",
-            "desc": "目标窗口的名称。"
-          }
-        ],
-        "annotation": {},
-        "desc": "注销请求处理器。",
-        "name": "navigator_unregister_handler",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "const char*",
-            "name": "args",
-            "desc": "发送请求时要传递的参数。"
-          }
-        ],
-        "annotation": {
-          "static": true
-        },
-        "desc": "发送指定的请求。\n发送请求时可以用\"string?\"为前缀、用\"&\"分隔的格式传递参数。\n比如，\"string?arg1=xx&arg2=yy\"表示有两个参数，参数arg1的值为\"xx\"，参数arg2的值为\"yy\",\n如果没有用上述格式指定参数，则默认为target参数的值。",
-        "name": "navigator_to",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "const char*",
-            "name": "args",
-            "desc": "发送请求时要传递的参数。"
-          }
-        ],
-        "annotation": {
-          "static": true
-        },
-        "desc": "发送指定的请求。",
-        "name": "navigator_to_by_object",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "const char*",
-            "name": "target",
-            "desc": "目标窗口的名称。"
-          },
-          {
-            "type": "const char*",
-            "name": "key",
-            "desc": "参数名。"
-          },
-          {
-            "type": "const char*",
-            "name": "value",
-            "desc": "参数值。"
-          }
-        ],
-        "annotation": {
-          "static": true
-        },
-        "desc": "请求打开指定的窗口。",
-        "name": "navigator_to_with_key_value",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "const char*",
-            "name": "target",
-            "desc": "目标窗口的名称。"
-          }
-        ],
-        "annotation": {
-          "static": true
-        },
-        "desc": "请求打开指定的窗口，并关闭当前窗口。",
-        "name": "navigator_replace",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "const char*",
-            "name": "target",
-            "desc": "目标窗口的名称。"
-          },
-          {
-            "type": "bool_t",
-            "name": "close_current",
-            "desc": "是否关闭当前窗口。"
-          }
-        ],
-        "annotation": {
-          "static": true
-        },
-        "desc": "如果目标窗口已经存在，直接切换到该窗口，否则打开新窗口。",
-        "name": "navigator_switch_to",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
-        }
-      },
-      {
-        "params": [],
-        "annotation": {
-          "static": true
-        },
-        "desc": "回到主屏。",
-        "name": "navigator_back_to_home",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
-        }
-      },
-      {
-        "params": [],
-        "annotation": {
-          "static": true
-        },
-        "desc": "关闭当前窗口，回到前一窗口。",
-        "name": "navigator_back",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "const char*",
-            "name": "target",
-            "desc": "目标窗口的名称。"
-          }
-        ],
-        "annotation": {
-          "static": true
-        },
-        "desc": "关闭指定窗口。",
-        "name": "navigator_close",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "const char*",
-            "name": "target",
-            "desc": "目标窗口的名称。"
-          }
-        ],
-        "annotation": {
-          "static": true
-        },
-        "desc": "请求关闭关闭指定窗口。\n\n> 窗口是否被关闭，取决于窗口本身的处理逻辑。",
-        "name": "navigator_request_close",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "const char*",
-            "name": "content",
-            "desc": "信息内容。"
-          },
-          {
-            "type": "uint32_t",
-            "name": "timeout",
-            "desc": "显示时间。"
-          }
-        ],
-        "annotation": {
-          "static": true
-        },
-        "desc": "显示toast信息。",
-        "name": "navigator_toast",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "const char*",
-            "name": "title",
-            "desc": "标题。"
-          },
-          {
-            "type": "const char*",
-            "name": "content",
-            "desc": "内容。"
-          }
-        ],
-        "annotation": {
-          "static": true
-        },
-        "desc": "显示信息。",
-        "name": "navigator_info",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "const char*",
-            "name": "title",
-            "desc": "标题。"
-          },
-          {
-            "type": "const char*",
-            "name": "content",
-            "desc": "内容。"
-          }
-        ],
-        "annotation": {
-          "static": true
-        },
-        "desc": "显示警告信息。",
-        "name": "navigator_warn",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "const char*",
-            "name": "title",
-            "desc": "标题。"
-          },
-          {
-            "type": "const char*",
-            "name": "content",
-            "desc": "内容。"
-          }
-        ],
-        "annotation": {
-          "static": true
-        },
-        "desc": "显示确认信息。",
-        "name": "navigator_confirm",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "const char*",
-            "name": "title",
-            "desc": "标题。"
-          },
-          {
-            "type": "str_t*",
-            "name": "result",
-            "desc": "用于传递缺省值和返回结果。"
-          }
-        ],
-        "annotation": {
-          "static": true
-        },
-        "desc": "选择目录。",
-        "name": "navigator_pick_dir",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "const char*",
-            "name": "title",
-            "desc": "标题。"
-          },
-          {
-            "type": "const char*",
-            "name": "filter",
-            "desc": "文件过滤(如：.txt.html), NULL表示不过滤。"
-          },
-          {
-            "type": "bool_t",
-            "name": "for_save",
-            "desc": "TRUE表示用于保存，FALSE表示用于打开。"
-          },
-          {
-            "type": "str_t*",
-            "name": "result",
-            "desc": "用于传递缺省值和返回结果。"
-          }
-        ],
-        "annotation": {
-          "static": true
-        },
-        "desc": "选择文件。",
-        "name": "navigator_pick_file",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "const char*",
-            "name": "title",
-            "desc": "标题。"
-          },
-          {
-            "type": "str_t*",
-            "name": "result",
-            "desc": "用于传递缺省值和返回结果。"
-          }
-        ],
-        "annotation": {
-          "static": true
-        },
-        "desc": "选择颜色。",
-        "name": "navigator_pick_color",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "const char*",
-            "name": "target",
-            "desc": "ViewModel路径"
-          }
-        ],
-        "annotation": {
-          "static": true
-        },
-        "desc": "获取指定的ViewModel实例的个数。\n> 路径为NULL时表示当前全部的ViewModel实例；\n> 路径为空字符串时表示最上面的窗口绑定的全部ViewModel实例；\n> 其他则为实际的路径，比如“a.[0]”时表示属性name为\"a\"的窗体的第0个子控件上绑定的ViewModel实例。",
-        "name": "navigator_count_view_models",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回实例的个数。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "const char*",
-            "name": "target",
-            "desc": "ViewModel路径"
-          },
-          {
-            "type": "darray_t*",
-            "name": "result",
-            "desc": "返回ViewModel实例。"
-          }
-        ],
-        "annotation": {
-          "static": true
-        },
-        "desc": "获取指定的ViewModel实例。\n> 路径为NULL时表示当前全部的ViewModel实例；\n> 路径为空字符串时表示最上面的窗口绑定的全部ViewModel实例；\n> 其他则为具体的路径，比如“a.[0]”表示name属性值为\"a\"的窗体的第0个子控件上绑定的ViewModel实例。",
-        "name": "navigator_get_view_models",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "const char*",
-            "name": "target",
-            "desc": "ViewModel路径"
-          }
-        ],
-        "annotation": {
-          "static": true
-        },
-        "desc": "触发指定的ViewModel实例的props改变事件。\n> 路径为NULL时表示当前全部的ViewModel实例；\n> 路径为空字符串时表示最上面的窗口绑定的全部ViewModel实例；\n> 其他则为具体的路径，比如“a.[0]”表示name属性值为\"a\"的窗体的第0个子控件上绑定的ViewModel实例。",
-        "name": "navigator_notify_view_models_props_changed",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "const char*",
-            "name": "target",
-            "desc": "ViewModel路径"
-          },
-          {
-            "type": "object_t*",
-            "name": "items",
-            "desc": "发生变化的items对象。"
-          }
-        ],
-        "annotation": {
-          "static": true
-        },
-        "desc": "触发指定的ViewModel实例的items改变事件。\n> 路径为NULL时表示当前全部的ViewModel实例；\n> 路径为空字符串时表示最上面的窗口绑定的全部ViewModel实例；\n> 其他则为具体的路径，比如“a.[0]”表示name属性值为\"a\"的窗体的第0个子控件上绑定的ViewModel实例。",
-        "name": "navigator_notify_view_models_items_changed",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "navigator_request_t*",
-            "name": "req",
-            "desc": "request对象。"
-          }
-        ],
-        "annotation": {
-          "static": true
-        },
-        "desc": "发送指定的请求，并可传递参数和返回结果。",
-        "name": "navigator_to_ex",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "str_t*",
-            "name": "str",
-            "desc": "str对象。"
-          },
-          {
-            "type": "const char*",
-            "name": "",
-            "desc": "。"
-          },
-          {
-            "type": "uint32_t",
-            "name": "max",
-            "desc": "最大长度。"
-          }
-        ],
-        "annotation": {},
-        "desc": "生产一个随机字符串。",
-        "name": "str_random",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
-        }
-      }
-    ],
-    "events": [],
-    "properties": [],
-    "header": "base/navigator.h",
-    "desc": "导航器。负责窗口导航。",
-    "name": "navigator_t",
-    "parent": "object_t",
-    "level": 2
   },
   {
     "type": "class",
@@ -4585,6 +4003,609 @@
     "header": "jerryscript/object_js_default.h",
     "desc": "将通用的jerry script object包装成tkc形式的object。",
     "name": "object_js_default_t",
+    "parent": "object_t",
+    "level": 2
+  },
+  {
+    "type": "class",
+    "methods": [
+      {
+        "params": [],
+        "annotation": {
+          "constructor": true
+        },
+        "desc": "创建navigator对象。",
+        "name": "navigator_create",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回navigator对象。"
+        }
+      },
+      {
+        "params": [],
+        "annotation": {
+          "constructor": true
+        },
+        "desc": "获取缺省的navigator对象。",
+        "name": "navigator",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回navigator对象。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "navigator_t*",
+            "name": "nav",
+            "desc": "navigator对象。"
+          }
+        ],
+        "annotation": {},
+        "desc": "设置缺省navigator对象。",
+        "name": "navigator_set",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "navigator_t*",
+            "name": "nav",
+            "desc": "navigator对象。"
+          },
+          {
+            "type": "navigator_request_t*",
+            "name": "req",
+            "desc": "request对象。"
+          }
+        ],
+        "annotation": {},
+        "desc": "处理打开窗口的请求。",
+        "name": "navigator_handle_request",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "navigator_t*",
+            "name": "nav",
+            "desc": "navigator对象。"
+          },
+          {
+            "type": "const char*",
+            "name": "target",
+            "desc": "目标窗口的名称。"
+          },
+          {
+            "type": "navigator_handler_t*",
+            "name": "handler",
+            "desc": "但请求打开target窗口时，执行本handler。"
+          }
+        ],
+        "annotation": {},
+        "desc": "注册请求处理器。",
+        "name": "navigator_register_handler",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "navigator_t*",
+            "name": "nav",
+            "desc": "navigator对象。"
+          },
+          {
+            "type": "const char*",
+            "name": "target",
+            "desc": "目标窗口的名称。"
+          }
+        ],
+        "annotation": {},
+        "desc": "检查是否存在指定名称的请求处理器。",
+        "name": "navigator_has_handler",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回TRUE表示存在，否则表示不存在。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "navigator_t*",
+            "name": "nav",
+            "desc": "navigator对象。"
+          },
+          {
+            "type": "const char*",
+            "name": "target",
+            "desc": "目标窗口的名称。"
+          }
+        ],
+        "annotation": {},
+        "desc": "注销请求处理器。",
+        "name": "navigator_unregister_handler",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "const char*",
+            "name": "args",
+            "desc": "发送请求时要传递的参数。"
+          }
+        ],
+        "annotation": {
+          "static": true
+        },
+        "desc": "发送指定的请求。\n发送请求时可以用\"string?\"为前缀、用\"&\"分隔的格式传递参数。\n比如，\"string?arg1=xx&arg2=yy\"表示有两个参数，参数arg1的值为\"xx\"，参数arg2的值为\"yy\",\n如果没有用上述格式指定参数，则默认为target参数的值。",
+        "name": "navigator_to",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "const char*",
+            "name": "args",
+            "desc": "发送请求时要传递的参数。"
+          }
+        ],
+        "annotation": {
+          "static": true
+        },
+        "desc": "发送指定的请求。",
+        "name": "navigator_to_by_object",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "const char*",
+            "name": "target",
+            "desc": "目标窗口的名称。"
+          },
+          {
+            "type": "const char*",
+            "name": "key",
+            "desc": "参数名。"
+          },
+          {
+            "type": "const char*",
+            "name": "value",
+            "desc": "参数值。"
+          }
+        ],
+        "annotation": {
+          "static": true
+        },
+        "desc": "请求打开指定的窗口。",
+        "name": "navigator_to_with_key_value",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "const char*",
+            "name": "target",
+            "desc": "目标窗口的名称。"
+          }
+        ],
+        "annotation": {
+          "static": true
+        },
+        "desc": "请求打开指定的窗口，并关闭当前窗口。",
+        "name": "navigator_replace",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "const char*",
+            "name": "target",
+            "desc": "目标窗口的名称。"
+          },
+          {
+            "type": "bool_t",
+            "name": "close_current",
+            "desc": "是否关闭当前窗口。"
+          }
+        ],
+        "annotation": {
+          "static": true
+        },
+        "desc": "如果目标窗口已经存在，直接切换到该窗口，否则打开新窗口。",
+        "name": "navigator_switch_to",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [],
+        "annotation": {
+          "static": true
+        },
+        "desc": "回到主屏。",
+        "name": "navigator_back_to_home",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [],
+        "annotation": {
+          "static": true
+        },
+        "desc": "关闭当前窗口，回到前一窗口。",
+        "name": "navigator_back",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "const char*",
+            "name": "target",
+            "desc": "目标窗口的名称。"
+          }
+        ],
+        "annotation": {
+          "static": true
+        },
+        "desc": "关闭指定窗口。",
+        "name": "navigator_close",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "const char*",
+            "name": "target",
+            "desc": "目标窗口的名称。"
+          }
+        ],
+        "annotation": {
+          "static": true
+        },
+        "desc": "请求关闭关闭指定窗口。\n\n> 窗口是否被关闭，取决于窗口本身的处理逻辑。",
+        "name": "navigator_request_close",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "const char*",
+            "name": "content",
+            "desc": "信息内容。"
+          },
+          {
+            "type": "uint32_t",
+            "name": "timeout",
+            "desc": "显示时间。"
+          }
+        ],
+        "annotation": {
+          "static": true
+        },
+        "desc": "显示toast信息。",
+        "name": "navigator_toast",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "const char*",
+            "name": "title",
+            "desc": "标题。"
+          },
+          {
+            "type": "const char*",
+            "name": "content",
+            "desc": "内容。"
+          }
+        ],
+        "annotation": {
+          "static": true
+        },
+        "desc": "显示信息。",
+        "name": "navigator_info",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "const char*",
+            "name": "title",
+            "desc": "标题。"
+          },
+          {
+            "type": "const char*",
+            "name": "content",
+            "desc": "内容。"
+          }
+        ],
+        "annotation": {
+          "static": true
+        },
+        "desc": "显示警告信息。",
+        "name": "navigator_warn",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "const char*",
+            "name": "title",
+            "desc": "标题。"
+          },
+          {
+            "type": "const char*",
+            "name": "content",
+            "desc": "内容。"
+          }
+        ],
+        "annotation": {
+          "static": true
+        },
+        "desc": "显示确认信息。",
+        "name": "navigator_confirm",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "const char*",
+            "name": "title",
+            "desc": "标题。"
+          },
+          {
+            "type": "str_t*",
+            "name": "result",
+            "desc": "用于传递缺省值和返回结果。"
+          }
+        ],
+        "annotation": {
+          "static": true
+        },
+        "desc": "选择目录。",
+        "name": "navigator_pick_dir",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "const char*",
+            "name": "title",
+            "desc": "标题。"
+          },
+          {
+            "type": "const char*",
+            "name": "filter",
+            "desc": "文件过滤(如：.txt.html), NULL表示不过滤。"
+          },
+          {
+            "type": "bool_t",
+            "name": "for_save",
+            "desc": "TRUE表示用于保存，FALSE表示用于打开。"
+          },
+          {
+            "type": "str_t*",
+            "name": "result",
+            "desc": "用于传递缺省值和返回结果。"
+          }
+        ],
+        "annotation": {
+          "static": true
+        },
+        "desc": "选择文件。",
+        "name": "navigator_pick_file",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "const char*",
+            "name": "title",
+            "desc": "标题。"
+          },
+          {
+            "type": "str_t*",
+            "name": "result",
+            "desc": "用于传递缺省值和返回结果。"
+          }
+        ],
+        "annotation": {
+          "static": true
+        },
+        "desc": "选择颜色。",
+        "name": "navigator_pick_color",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "const char*",
+            "name": "target",
+            "desc": "ViewModel路径"
+          }
+        ],
+        "annotation": {
+          "static": true
+        },
+        "desc": "获取指定的ViewModel实例的个数。\n> 路径为NULL时表示当前全部的ViewModel实例；\n> 路径为空字符串时表示最上面的窗口绑定的全部ViewModel实例；\n> 其他则为实际的路径，比如“a.[0]”时表示属性name为\"a\"的窗体的第0个子控件上绑定的ViewModel实例。",
+        "name": "navigator_count_view_models",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回实例的个数。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "const char*",
+            "name": "target",
+            "desc": "ViewModel路径"
+          },
+          {
+            "type": "darray_t*",
+            "name": "result",
+            "desc": "返回ViewModel实例。"
+          }
+        ],
+        "annotation": {
+          "static": true
+        },
+        "desc": "获取指定的ViewModel实例。\n> 路径为NULL时表示当前全部的ViewModel实例；\n> 路径为空字符串时表示最上面的窗口绑定的全部ViewModel实例；\n> 其他则为具体的路径，比如“a.[0]”表示name属性值为\"a\"的窗体的第0个子控件上绑定的ViewModel实例。",
+        "name": "navigator_get_view_models",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "const char*",
+            "name": "target",
+            "desc": "ViewModel路径"
+          }
+        ],
+        "annotation": {
+          "static": true
+        },
+        "desc": "触发指定的ViewModel实例的props改变事件。\n> 路径为NULL时表示当前全部的ViewModel实例；\n> 路径为空字符串时表示最上面的窗口绑定的全部ViewModel实例；\n> 其他则为具体的路径，比如“a.[0]”表示name属性值为\"a\"的窗体的第0个子控件上绑定的ViewModel实例。",
+        "name": "navigator_notify_view_models_props_changed",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "const char*",
+            "name": "target",
+            "desc": "ViewModel路径"
+          },
+          {
+            "type": "object_t*",
+            "name": "items",
+            "desc": "发生变化的items对象。"
+          }
+        ],
+        "annotation": {
+          "static": true
+        },
+        "desc": "触发指定的ViewModel实例的items改变事件。\n> 路径为NULL时表示当前全部的ViewModel实例；\n> 路径为空字符串时表示最上面的窗口绑定的全部ViewModel实例；\n> 其他则为具体的路径，比如“a.[0]”表示name属性值为\"a\"的窗体的第0个子控件上绑定的ViewModel实例。",
+        "name": "navigator_notify_view_models_items_changed",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "navigator_request_t*",
+            "name": "req",
+            "desc": "request对象。"
+          }
+        ],
+        "annotation": {
+          "static": true
+        },
+        "desc": "发送指定的请求，并可传递参数和返回结果。",
+        "name": "navigator_to_ex",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "str_t*",
+            "name": "str",
+            "desc": "str对象。"
+          },
+          {
+            "type": "const char*",
+            "name": "",
+            "desc": "。"
+          },
+          {
+            "type": "uint32_t",
+            "name": "max",
+            "desc": "最大长度。"
+          }
+        ],
+        "annotation": {},
+        "desc": "生产一个随机字符串。",
+        "name": "str_random",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      }
+    ],
+    "events": [],
+    "properties": [],
+    "header": "base/navigator.h",
+    "desc": "导航器。负责窗口导航。",
+    "name": "navigator_t",
     "parent": "object_t",
     "level": 2
   },
