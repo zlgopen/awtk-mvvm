@@ -269,3 +269,35 @@ navigator_request_t* jsvalue_to_navigator_request(jsvalue_t obj) {
 jsvalue_t jsvalue_from_navigator_request(navigator_request_t* req) {
   return jsvalue_from_obj_copy(OBJECT(req));
 }
+
+jsvalue_t jsvalue_get_application(void) {
+  return jsvalue_get_model_from_mvvm_factory(NULL, "getApplication");
+}
+
+ret_t js_application_on_launch(void) {
+  ret_t ret = RET_NOT_FOUND;
+  jsvalue_t jsapp = jsvalue_get_application();
+
+  if (jsvalue_check(jsapp) == RET_OK) {
+    jsvalue_t jsargs = JS_UNDEFINED;
+    ret = jsobj_exec_ex(jsapp, "onLaunch", jsargs);
+    jsvalue_unref(jsargs);
+    jsvalue_unref(jsapp);
+  }
+
+  return ret;
+}
+
+ret_t js_application_on_exit(void) {
+  ret_t ret = RET_NOT_FOUND;
+  jsvalue_t jsapp = jsvalue_get_application();
+
+  if (jsvalue_check(jsapp) == RET_OK) {
+    jsvalue_t jsargs = JS_UNDEFINED;
+    ret = jsobj_exec_ex(jsapp, "onExit", jsargs);
+    jsvalue_unref(jsargs);
+    jsvalue_unref(jsapp);
+  }
+
+  return ret;
+}

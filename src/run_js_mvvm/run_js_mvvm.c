@@ -1,4 +1,4 @@
-/**
+﻿/**
  * File:   demo_main.c
  * Author: AWTK Develop Team
  * Brief:  demo main
@@ -23,6 +23,10 @@
 #include "conf_io/app_conf.h"
 #include "tkc/dl.h"
 #include "mvvm_app.inc"
+
+#ifdef WITH_JERRYSCRIPT
+#include "mvvm/jerryscript/jsobj_4_mvvm.h"
+#endif
 
 #define GLOBAL_INIT() mvvm_app_init()
 #define GLOBAL_EXIT() mvvm_app_deinit()
@@ -204,8 +208,29 @@ static ret_t custom_widgets_register(void) {
   return RET_OK;
 }
 
+static ret_t application_on_launch(void) {
+  // 当程序初始化完成时调用，全局只触发一次。
+
+#ifdef WITH_JERRYSCRIPT
+  js_application_on_launch();
+#endif
+
+  return RET_OK;
+}
+
+static ret_t application_on_exit(void) {
+  // 当程序退出时调用，全局只触发一次。
+
+#ifdef WITH_JERRYSCRIPT
+  js_application_on_exit();
+#endif
+
+  return RET_OK;
+}
+
 static ret_t application_init(void) {
   custom_widgets_register();
+  application_on_launch();
 
   if (s_system_bar != NULL && *s_system_bar != '\0') {
     navigator_to(s_system_bar);
@@ -222,6 +247,7 @@ static ret_t application_init(void) {
 
 static ret_t application_exit() {
   log_debug("application_exit\n");
+  application_on_exit();
 
   return RET_OK;
 }

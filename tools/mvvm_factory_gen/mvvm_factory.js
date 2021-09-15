@@ -2,6 +2,7 @@ var MvvmFactory = (function() {
   var valueConverters = {};
   var valueValidators = {};
   var viewModelTemplates = {};
+  var application = undefined;
 
   var noop = function() {};
   var sharedPropertyDefinition = {enumerable : true, configurable : true, get : noop, set : noop};
@@ -155,6 +156,15 @@ var MvvmFactory = (function() {
     }
   };
 
+  var initApplication = function(app) {
+    var keys = Object.keys(app);
+    for (var key in keys) {
+      if (typeof app[key] === 'function') {
+        bind(app[key], app);
+      }
+    }
+  }
+
   var deepClone = function(data) {
     var o, i, n;
     if (Array.isArray(data)) {
@@ -225,6 +235,15 @@ var MvvmFactory = (function() {
         return undefined;
       }
       return valueValidators[name];
+    },
+    registerApplication: function(app) {
+      if (application === undefined) {
+        application = app;
+        initApplication(app);
+      }
+    },
+    getApplication: function() {
+      return application;
     }
   }
 }());
@@ -240,3 +259,7 @@ var ValueConverter = function(name, obj) {
 var ValueValidator = function(name, obj) {
   MvvmFactory.registerValueValidator(name, obj);
 };
+
+var Application = function(obj) {
+  MvvmFactory.registerApplication(obj);
+}

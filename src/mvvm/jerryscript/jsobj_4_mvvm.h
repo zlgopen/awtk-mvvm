@@ -64,6 +64,35 @@ navigator_request_t* jsvalue_to_navigator_request(jsvalue_t obj);
  */
 jsvalue_t jsvalue_from_navigator_request(navigator_request_t* req);
 
+/**
+ * @method jsvalue_get_application
+ * 获取JS Application实例（有且仅有一个）。
+ * @annotation ["global"]
+ *
+ * @return {jsvalue_t} 返回对象句柄。
+ */
+jsvalue_t jsvalue_get_application(void);
+
+/**
+ * @method js_application_on_launch
+ * 调用JS Application实例的生命周期函数onLaunch。
+ * > 当程序初始化完成时调用，全局只触发一次。
+ * @annotation ["global"]
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t js_application_on_launch(void);
+
+/**
+ * @method js_application_on_exit
+ * 调用JS Application实例的生命周期函数onExit。
+ * > 当程序退出时调用，全局只触发一次。
+ * @annotation ["global"]
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t js_application_on_exit(void);
+
 END_C_DECLS
 
 #endif /*TK_JSOBJ_4_MVVM_H*/

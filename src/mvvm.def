@@ -1,7 +1,7 @@
 LIBRARY   mvvm
 EXPORTS
-    jerry_value_to_boolean
-    jsvalue_to_value
+    jsvalue_from_value
+    jsvalue_to_obj
     object_js_factory
     object_js_factory_set
     object_js_factory_create
@@ -40,6 +40,9 @@ EXPORTS
     device_factory_register
     device_factory_deinit
     jerry_create_boolean
+    jsvalue_get_application
+    js_application_on_launch
+    js_application_on_exit
     js_gc
     jsvalue_get_global
     jsvalue_compare
@@ -47,8 +50,7 @@ EXPORTS
     jsvalue_to_utf8
     jsvalue_from_obj
     jsvalue_from_obj_copy
-    jsvalue_to_obj
-    jsvalue_from_value
+    jerry_value_to_boolean
     binding_context_init
     binding_context_destroy
     binding_context_get_root
@@ -73,6 +75,7 @@ EXPORTS
     binding_context_get_prop_by_rule
     binding_context_set_prop_by_rule
     binding_rule_parse
+    jsvalue_to_value
     jsobj_register_global
     jsobj_unregister_global
     jsobj_set_native_ptr
@@ -106,28 +109,6 @@ EXPORTS
     jerry_get_number_value
     jerry_create_number
     jerry_value_is_boolean
-    widget_hardware_create
-    widget_hardware_cast
-    binding_context_awtk_create
-    mvvm_awtk_init
-    mvvm_awtk_deinit
-    view_model_init
-    view_model_deinit
-    view_model_on_will_mount
-    view_model_on_mount
-    view_model_on_will_unmount
-    view_model_on_unmount
-    view_model_preprocess_expr
-    view_model_preprocess_prop
-    view_model_has_prop
-    view_model_get_prop
-    view_model_set_prop
-    view_model_can_exec
-    view_model_exec
-    view_model_notify_props_changed
-    view_model_notify_items_changed
-    view_model_create_sub_view_model
-    view_model_create_sub_view_model_array
     buzzer_log_create
     object_js_array_create
     object_is_object_js_array
@@ -193,6 +174,28 @@ EXPORTS
     navigator_notify_view_models_items_changed
     navigator_to_ex
     str_random
+    widget_hardware_create
+    widget_hardware_cast
+    binding_context_awtk_create
+    mvvm_awtk_init
+    mvvm_awtk_deinit
+    view_model_init
+    view_model_deinit
+    view_model_on_will_mount
+    view_model_on_mount
+    view_model_on_will_unmount
+    view_model_on_unmount
+    view_model_preprocess_expr
+    view_model_preprocess_prop
+    view_model_has_prop
+    view_model_get_prop
+    view_model_set_prop
+    view_model_can_exec
+    view_model_exec
+    view_model_notify_props_changed
+    view_model_notify_items_changed
+    view_model_create_sub_view_model
+    view_model_create_sub_view_model_array
     value_validator_delegate_create
     navigator_handler_awtk_create
     view_model_object_wrapper_create
