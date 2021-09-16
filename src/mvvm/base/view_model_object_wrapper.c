@@ -165,6 +165,7 @@ view_model_t* view_model_object_wrapper_create_ex(object_t* obj, const char* pro
   view_model->vt = &s_view_model_vtable;
   object_wrapper->obj = object_ref(obj);
   object_wrapper->prop_prefix = prop_prefix != NULL ? tk_strdup(prop_prefix) : NULL;
+  emitter_on(EMITTER(obj), EVT_ITEMS_CHANGED, emitter_forward, model);
   emitter_on(EMITTER(obj), EVT_PROPS_CHANGED, view_model_object_wrapper_on_changed, model);
   emitter_on(EMITTER(obj), EVT_PROP_CHANGED, view_model_object_wrapper_on_changed, model);
 

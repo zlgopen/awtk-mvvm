@@ -11,6 +11,7 @@
 
 static ret_t temperature_humidity_view_model_on_create(view_model_t* view_model,
                                                        navigator_request_t* req) {
+  value_t v;
   object_t* obj;
   temperature_humidity_view_model_t* vm = (temperature_humidity_view_model_t*)(view_model);
   return_value_if_fail(vm != NULL, RET_BAD_PARAMS);
@@ -26,24 +27,28 @@ static ret_t temperature_humidity_view_model_on_create(view_model_t* view_model,
   vm->inside_temperatures = object_array_create();
 
   obj = temperature_create();
-  object_set_prop_object(vm->inside_temperatures, "-1", obj);
+  value_set_object(&v, obj);
+  object_array_push(vm->inside_temperatures, &v);
   emitter_on(EMITTER(obj), EVT_PROP_CHANGED, (event_func_t)emitter_dispatch, vm);
   OBJECT_UNREF(obj);
 
   obj = temperature_create();
-  object_set_prop_object(vm->inside_temperatures, "-1", obj);
+  value_set_object(&v, obj);
+  object_array_push(vm->inside_temperatures, &v);
   emitter_on(EMITTER(obj), EVT_PROP_CHANGED, (event_func_t)emitter_dispatch, vm);
   OBJECT_UNREF(obj);
 
   vm->inside_humidities = object_array_create();
 
   obj = humidity_create();
-  object_set_prop_object(vm->inside_humidities, "-1", obj);
+  value_set_object(&v, obj);
+  object_array_push(vm->inside_humidities, &v);
   emitter_on(EMITTER(obj), EVT_PROP_CHANGED, (event_func_t)emitter_dispatch, vm);
   OBJECT_UNREF(obj);
 
   obj = humidity_create();
-  object_set_prop_object(vm->inside_humidities, "-1", obj);
+  value_set_object(&v, obj);
+  object_array_push(vm->inside_humidities, &v);
   emitter_on(EMITTER(obj), EVT_PROP_CHANGED, (event_func_t)emitter_dispatch, vm);
   OBJECT_UNREF(obj);
 
@@ -66,6 +71,11 @@ static ret_t temperature_humidity_view_model_set_prop(object_t* obj, const char*
                                                       const value_t* v) {
   temperature_humidity_view_model_t* vm = ((temperature_humidity_view_model_t*)(obj));
 
+  object_t* sub = object_get_child_object(obj, name, &name);
+  if (sub != NULL) {
+    return object_set_prop(sub, name, v);
+  }
+
   if (tk_str_ieq("outside_temp", name)) {
     return object_set_prop(vm->outside_temperature, "temp", v);
   } else if (tk_str_ieq("outside_humi", name)) {
@@ -77,6 +87,11 @@ static ret_t temperature_humidity_view_model_set_prop(object_t* obj, const char*
 
 static ret_t temperature_humidity_view_model_get_prop(object_t* obj, const char* name, value_t* v) {
   temperature_humidity_view_model_t* vm = ((temperature_humidity_view_model_t*)(obj));
+
+  object_t* sub = object_get_child_object(obj, name, &name);
+  if (sub != NULL) {
+    return object_get_prop(sub, name, v);
+  }
 
   if (tk_str_ieq("outside_temperature", name)) {
     value_set_object(v, vm->outside_temperature);
@@ -104,6 +119,11 @@ static bool_t temperature_humidity_view_model_can_exec(object_t* obj, const char
   temperature_humidity_view_model_t* vm = (temperature_humidity_view_model_t*)(obj);
   return_value_if_fail(vm != NULL, FALSE);
 
+  object_t* sub = object_get_child_object(obj, name, &name);
+  if (sub != NULL) {
+    return object_can_exec(sub, name, args);
+  }
+
   if (tk_str_ieq("outside_temp_reset", name)) {
     return object_can_exec(vm->outside_temperature, "reset", args);
   } else if (tk_str_ieq("outside_humi_apply", name)) {
@@ -116,6 +136,11 @@ static ret_t temperature_humidity_view_model_exec(object_t* obj, const char* nam
                                                   const char* args) {
   temperature_humidity_view_model_t* vm = (temperature_humidity_view_model_t*)(obj);
   return_value_if_fail(vm != NULL, RET_BAD_PARAMS);
+
+  object_t* sub = object_get_child_object(obj, name, &name);
+  if (sub != NULL) {
+    return object_exec(sub, name, args);
+  }
 
   if (tk_str_ieq("outside_temp_reset", name)) {
     return object_exec(vm->outside_temperature, "reset", args);

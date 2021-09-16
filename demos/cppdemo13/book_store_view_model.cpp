@@ -54,6 +54,11 @@ static ret_t book_store_view_model_set_prop(object_t* obj, const char* name, con
 static ret_t book_store_view_model_get_prop(object_t* obj, const char* name, value_t* v) {
   book_store_view_model_t* vm = ((book_store_view_model_t*)(obj));
 
+  object_t* sub = object_get_child_object(obj, name, &name);
+  if (sub != NULL) {
+    return object_get_prop(sub, name, v);
+  }
+
   if (tk_str_ieq("items", name)) {
     value_set_object(v, vm->abook_store);
     return RET_OK;

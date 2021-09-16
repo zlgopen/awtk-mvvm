@@ -45,6 +45,11 @@ static ret_t object_js_array_set_prop(object_t* obj, const char* name, const val
   object_js_base_t* o = OBJECT_JS_BASE(obj);
   return_value_if_fail(o != NULL, RET_BAD_PARAMS);
 
+  object_t* sub = object_get_child_object(obj, name, &name);
+  if (sub != NULL) {
+    return object_set_prop(sub, name, v);
+  }
+
   if (name[0] == '[') {
     uint32_t index = tk_atoi(name + 1);
     return jsobj_set_prop_by_index(o->jsobj, index, v, &(o->temp));
@@ -61,6 +66,11 @@ static ret_t object_js_array_get_prop(object_t* obj, const char* name, value_t* 
     value_set_int(v, jerry_get_array_length(o->jsobj));
     return RET_OK;
   } else if (name[0] == '[') {
+    object_t* sub = object_get_child_object(obj, name, &name);
+    if (sub != NULL) {
+      return object_get_prop(sub, name, v);
+    }
+
     uint32_t index = tk_atoi(name + 1);
     uint32_t len = jerry_get_array_length(o->jsobj);
     if (index >= len) {

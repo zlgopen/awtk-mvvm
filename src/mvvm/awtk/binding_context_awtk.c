@@ -896,6 +896,12 @@ static ret_t binding_context_awtk_update_command_stat_of_widget(binding_context_
   return RET_OK;
 }
 
+static ret_t visit_clear_binding(void* ctx, const void* data) {
+  widget_t* widget = WIDGET(data);
+  binding_context_t* bctx = BINDING_CONTEXT(ctx);
+  return binding_context_clear_bindings_of_widget(ctx, widget);
+}
+
 static ret_t visit_dynamic_binding_update_to_view(void* ctx, const void* data) {
   binding_rule_t* rule = BINDING_RULE(data);
   binding_context_t* bctx = BINDING_RULE_CONTEXT(data);
@@ -910,8 +916,15 @@ static ret_t visit_dynamic_binding_update_to_view(void* ctx, const void* data) {
 
     new_widget = widget_get_child(parent, index);
     if (new_widget != NULL && new_widget != old_widget) {
-      binding_context_awtk_update_data_of_widget(bctx, new_widget);
-      binding_context_awtk_update_command_stat_of_widget(bctx, new_widget);
+      bool_t should_update = (bool_t)(ctx);
+
+      /* 由于控件为异步销毁，无法立即清除绑定规则，故在此处强制清除，避免无效的绑定被执行 */
+      widget_foreach(old_widget, visit_clear_binding, bctx);
+
+      if (should_update) {
+        binding_context_awtk_update_data_of_widget(bctx, new_widget);
+        binding_context_awtk_update_command_stat_of_widget(bctx, new_widget);
+      }
     }
   }
 
@@ -921,14 +934,13 @@ static ret_t visit_dynamic_binding_update_to_view(void* ctx, const void* data) {
 static ret_t widget_visit_dynamic_binding_update_to_view(void* ctx, const void* data) {
   darray_t* node = (darray_t*)data;
 
-  (void)ctx;
-  return darray_foreach(node, visit_dynamic_binding_update_to_view, NULL);
+  return darray_foreach(node, visit_dynamic_binding_update_to_view, ctx);
 }
 
 static ret_t binding_context_awtk_update_to_view_sync(binding_context_t* ctx) {
+  slist_foreach(&(ctx->dynamic_bindings), widget_visit_dynamic_binding_update_to_view, FALSE);
   slist_foreach(&(ctx->data_bindings), widget_visit_data_binding_update_to_view, NULL);
   slist_foreach(&(ctx->command_bindings), widget_visit_command_binding_update_to_view, NULL);
-  slist_foreach(&(ctx->dynamic_bindings), widget_visit_dynamic_binding_update_to_view, NULL);
   widget_invalidate_force(WIDGET(ctx->widget), NULL);
   ctx->updating_view = FALSE;
 

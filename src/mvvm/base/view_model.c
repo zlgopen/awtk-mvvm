@@ -119,18 +119,11 @@ const char* view_model_preprocess_prop(view_model_t* view_model, const char* pro
 }
 
 bool_t view_model_has_prop(view_model_t* view_model, const char* name) {
-  bool_t ret = FALSE;
   object_t* obj = OBJECT(view_model);
   return_value_if_fail(view_model != NULL && name != NULL, FALSE);
   name = view_model_preprocess_prop(view_model, name);
 
-  ret = object_has_prop(obj, name);
-
-  if (!ret && !object_is_collection(obj)) {
-    ret = object_has_prop_by_path(obj, name);
-  }
-
-  return ret;
+  return object_has_prop(obj, name);
 }
 
 ret_t view_model_get_prop(view_model_t* view_model, const char* name, value_t* value) {
@@ -140,10 +133,6 @@ ret_t view_model_get_prop(view_model_t* view_model, const char* name, value_t* v
   name = view_model_preprocess_prop(view_model, name);
 
   ret = object_get_prop(obj, name, value);
-
-  if (ret == RET_NOT_FOUND && !object_is_collection(obj)) {
-    ret = object_get_prop_by_path(obj, name, value);
-  }
 
   if (ret == RET_NOT_FOUND) {
     if (view_model->parent != NULL) {
@@ -160,10 +149,6 @@ static ret_t view_model_set_prop_recursive(view_model_t* view_model, const char*
   object_t* obj = OBJECT(view_model);
 
   ret = object_set_prop(obj, name, v);
-
-  if (ret == RET_NOT_FOUND && !object_is_collection(obj)) {
-    ret = object_set_prop_by_path(obj, name, v);
-  }
 
   if (ret == RET_NOT_FOUND) {
     if (view_model->parent != NULL) {
@@ -225,10 +210,6 @@ bool_t view_model_can_exec(view_model_t* view_model, const char* name, const cha
     }
   } else {
     ret = object_can_exec(obj, name, args);
-
-    if (!ret) {
-      ret = object_can_exec_by_path(obj, name, args);
-    }
   }
 
   if (!ret) {
@@ -257,10 +238,6 @@ ret_t view_model_exec(view_model_t* view_model, const char* name, const char* ar
     }
   } else {
     ret = object_exec(obj, name, args);
-
-    if (ret == RET_NOT_FOUND) {
-      ret = object_exec_by_path(obj, name, args);
-    }
   }
 
   if (ret == RET_NOT_FOUND || ret == RET_NOT_IMPL) {

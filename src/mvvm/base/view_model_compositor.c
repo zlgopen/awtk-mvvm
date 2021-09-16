@@ -247,7 +247,7 @@ ret_t view_model_compositor_add(view_model_t* view_model, view_model_t* vm) {
   return_value_if_fail(view_model != NULL && vm != NULL, RET_BAD_PARAMS);
 
   if (darray_push(&(compositor->view_models), vm) == RET_OK) {
-    emitter_on(EMITTER(vm), EVT_ITEMS_CHANGED, view_model_compositor_forward_events, view_model);
+    emitter_on(EMITTER(vm), EVT_ITEMS_CHANGED, emitter_forward, view_model);
     emitter_on(EMITTER(vm), EVT_PROPS_CHANGED, view_model_compositor_forward_events, view_model);
     emitter_on(EMITTER(vm), EVT_PROP_CHANGED, view_model_compositor_forward_events, view_model);
 

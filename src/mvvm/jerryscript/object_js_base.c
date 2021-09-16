@@ -71,9 +71,11 @@ ret_t object_js_base_set_prop(object_t* obj, const char* name, const value_t* v)
   if (tk_str_eq(name, JSOBJ_PROP_NATIVE_OBJ)) {
     return RET_BAD_PARAMS;
   } else {
-    if (strstr(name, ".") != NULL) {
-      return RET_NOT_FOUND;
+    object_t* sub = object_get_child_object(obj, name, &name);
+    if (sub != NULL) {
+      return object_set_prop(sub, name, v);
     }
+
     return jsobj_set_prop(o->jsobj, name, v, &(o->temp));
   }
 
@@ -88,6 +90,11 @@ ret_t object_js_base_get_prop(object_t* obj, const char* name, value_t* v) {
   if (tk_str_eq(name, JSOBJ_PROP_NATIVE_OBJ)) {
     value_set_uint32(v, o->jsobj);
   } else {
+    object_t* sub = object_get_child_object(obj, name, &name);
+    if (sub != NULL) {
+      return object_get_prop(sub, name, v);
+    }
+
     ret = jsobj_get_prop(o->jsobj, name, v, &(o->temp));
     if (ret == RET_OK && v->type == VALUE_TYPE_OBJECT) {
       object_t* val = value_object(v);
@@ -130,6 +137,11 @@ bool_t object_js_base_can_exec(object_t* obj, const char* name, const char* args
   object_js_base_t* o = OBJECT_JS_BASE(obj);
   return_value_if_fail(o != NULL, FALSE);
 
+  object_t* sub = object_get_child_object(obj, name, &name);
+  if (sub != NULL) {
+    return object_can_exec(sub, name, args);
+  }
+
   if (args == NULL || !tk_str_start_with(args, COMMAND_ARGS_STRING_PREFIX)) {
     value_set_str(&v, args);
     ret = jsobj_can_exec(o->jsobj, name, &v, &(o->temp));
@@ -155,6 +167,11 @@ ret_t object_js_base_exec(object_t* obj, const char* name, const char* args) {
   value_t v;
   object_js_base_t* o = OBJECT_JS_BASE(obj);
   return_value_if_fail(o != NULL, RET_BAD_PARAMS);
+
+  object_t* sub = object_get_child_object(obj, name, &name);
+  if (sub != NULL) {
+    return object_exec(sub, name, args);
+  }
 
   if (args == NULL || !tk_str_start_with(args, COMMAND_ARGS_STRING_PREFIX)) {
     value_set_str(&v, args);
@@ -194,9 +211,9 @@ ret_t object_js_base_register_listener(object_t* obj, object_t* listener) {
 
   emitter_on(EMITTER(listener), EVT_DESTROY, object_js_base_on_unregister_listener, obj);
   emitter_on(EMITTER(obj), EVT_DESTROY, object_js_base_on_unregister_listener, listener);
-  emitter_on(EMITTER(obj), EVT_ITEMS_CHANGED, (event_func_t)emitter_dispatch, listener);
-  emitter_on(EMITTER(obj), EVT_PROPS_CHANGED, (event_func_t)emitter_dispatch, listener);
-  emitter_on(EMITTER(obj), EVT_PROP_CHANGED, (event_func_t)emitter_dispatch, listener);
+  emitter_on(EMITTER(obj), EVT_ITEMS_CHANGED, emitter_forward, listener);
+  emitter_on(EMITTER(obj), EVT_PROPS_CHANGED, emitter_forward, listener);
+  emitter_on(EMITTER(obj), EVT_PROP_CHANGED, emitter_forward, listener);
 
   return RET_OK;
 }

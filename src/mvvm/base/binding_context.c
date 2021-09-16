@@ -181,14 +181,15 @@ ret_t binding_context_set_view_model(binding_context_t* ctx, view_model_t* vm) {
     object_ref(OBJECT(view_model));
     view_model_on_will_mount(view_model, ctx->navigator_request);
 
-    emitter_on(EMITTER(view_model), EVT_PROP_CHANGED, binding_context_on_prop_changed, ctx);
-    emitter_on(EMITTER(view_model), EVT_PROPS_CHANGED, binding_context_on_prop_changed, ctx);
     emitter_on(EMITTER(view_model), EVT_ITEMS_CHANGED, binding_context_on_items_changed, ctx);
+    emitter_on(EMITTER(view_model), EVT_PROPS_CHANGED, binding_context_on_prop_changed, ctx);
+    emitter_on(EMITTER(view_model), EVT_PROP_CHANGED, binding_context_on_prop_changed, ctx);
 
     view_model->parent = parent_view_model;
     if (parent_view_model != NULL) {
-      emitter_on(EMITTER(parent_view_model), EVT_PROP_CHANGED, emitter_forward, view_model);
+      emitter_on(EMITTER(parent_view_model), EVT_ITEMS_CHANGED, emitter_forward, view_model);
       emitter_on(EMITTER(parent_view_model), EVT_PROPS_CHANGED, emitter_forward, view_model);
+      emitter_on(EMITTER(parent_view_model), EVT_PROP_CHANGED, emitter_forward, view_model);
     }
   } else {
     if (parent_view_model != NULL) {
@@ -249,8 +250,9 @@ ret_t binding_context_set_parent(binding_context_t* ctx, binding_context_t* pare
       view_model->parent = parent_view_model;
       if (parent_view_model != NULL) {
         object_ref(OBJECT(parent_view_model));
-        emitter_on(EMITTER(parent_view_model), EVT_PROP_CHANGED, emitter_forward, view_model);
+        emitter_on(EMITTER(parent_view_model), EVT_ITEMS_CHANGED, emitter_forward, view_model);
         emitter_on(EMITTER(parent_view_model), EVT_PROPS_CHANGED, emitter_forward, view_model);
+        emitter_on(EMITTER(parent_view_model), EVT_PROP_CHANGED, emitter_forward, view_model);
       }
     }
   }

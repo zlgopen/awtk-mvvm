@@ -31,29 +31,25 @@ static object_t* device_view_model_create_device(device_type_t type) {
 
   object_set_prop_int32(obj, "pack_type", type);
   object_set_prop_int32(obj, "pack_params", random() % DEV_PARAMS_MAX_COUNT);
-
-  if (type == DEV_TYPE_PACK_SKP_1000) {
-    object_set_prop_bool(obj, "io1", random() % 2 == 0);
-    object_set_prop_bool(obj, "io2", random() % 2 == 0);
-  } else if (type == DEV_TYPE_PACK_SKP_2000 || type == DEV_TYPE_PACK_SKP_3042) {
-    object_set_prop_double(obj, "temp", random());
-  } else if (type == DEV_TYPE_PACK_SKP_3132 || type == DEV_TYPE_PACK_SKP_3142) {
-    object_set_prop_int32(obj, "a1", random());
-    object_set_prop_int32(obj, "a2", random());
-  } else {
-    object_set_prop_double(obj, "tps", random());
-  }
+  object_set_prop_bool(obj, "io1", random() % 2 == 0);
+  object_set_prop_bool(obj, "io2", random() % 2 == 0);
+  object_set_prop_double(obj, "temp", random());
+  object_set_prop_int32(obj, "a1", random());
+  object_set_prop_int32(obj, "a2", random());
+  object_set_prop_double(obj, "tps", random());
 
   return obj;
 }
 
 static ret_t device_view_model_reset_devices(devices_view_model_t* vm) {
+  value_t v;
   uint32_t i;
   object_t* obj;
 
   for (i = 0; i < 300; i++) {
     obj = device_view_model_create_device(random() % DEV_TYPE_MAX_COUNT);
-    object_set_prop_object(vm->devices, "-1", obj);
+    value_set_object(&v, obj);
+    object_array_push(vm->devices, &v);
     emitter_on(EMITTER(obj), EVT_PROP_CHANGED, (event_func_t)emitter_dispatch, vm);
     OBJECT_UNREF(obj);
   }
@@ -68,6 +64,7 @@ static ret_t devices_view_model_on_create(view_model_t* view_model, navigator_re
   vm->unlocked = FALSE;
   vm->current_index = -1;
   vm->devices = object_array_create();
+  emitter_on(EMITTER(vm->devices), EVT_ITEMS_CHANGED, (event_func_t)emitter_dispatch, vm);
   device_view_model_reset_devices(vm);
 
   return RET_OK;
@@ -85,6 +82,11 @@ static ret_t devices_view_model_on_destroy(object_t* obj) {
 static ret_t devices_view_model_set_prop(object_t* obj, const char* name, const value_t* v) {
   devices_view_model_t* vm = ((devices_view_model_t*)(obj));
 
+  object_t* sub = object_get_child_object(obj, name, &name);
+  if (sub != NULL) {
+    return object_set_prop(sub, name, v);
+  }
+
   if (tk_str_ieq("unlocked", name)) {
     vm->unlocked = value_bool(v);
     return RET_OK;
@@ -98,6 +100,11 @@ static ret_t devices_view_model_set_prop(object_t* obj, const char* name, const 
 
 static ret_t devices_view_model_get_prop(object_t* obj, const char* name, value_t* v) {
   devices_view_model_t* vm = ((devices_view_model_t*)(obj));
+
+  object_t* sub = object_get_child_object(obj, name, &name);
+  if (sub != NULL) {
+    return object_get_prop(sub, name, v);
+  }
 
   if (tk_str_ieq("items", name)) {
     value_set_object(v, vm->devices);
@@ -117,6 +124,11 @@ static bool_t devices_view_model_can_exec(object_t* obj, const char* name, const
   int32_t len;
   devices_view_model_t* vm = (devices_view_model_t*)(obj);
   return_value_if_fail(vm != NULL, FALSE);
+
+  object_t* sub = object_get_child_object(obj, name, &name);
+  if (sub != NULL) {
+    return object_can_exec(sub, name, args);
+  }
 
   len = object_get_prop_int32(vm->devices, "length", -1);
   if (tk_str_ieq("remove", name)) {
@@ -140,12 +152,13 @@ static ret_t devices_view_model_exec(object_t* obj, const char* name, const char
   devices_view_model_t* vm = (devices_view_model_t*)(obj);
   return_value_if_fail(vm != NULL, RET_BAD_PARAMS);
 
-  if (tk_str_ieq("remove", name)) {
-    if (object_array_remove(vm->devices, vm->current_index) == RET_OK) {
-      view_model_notify_items_changed(VIEW_MODEL(vm), vm->devices);
-    }
+  object_t* sub = object_get_child_object(obj, name, &name);
+  if (sub != NULL) {
+    return object_exec(sub, name, args);
+  }
 
-    return RET_OK;
+  if (tk_str_ieq("remove", name)) {
+    return object_array_remove(vm->devices, vm->current_index);
   } else if (tk_str_ieq("insert", name)) {
     value_t v;
     object_t* o = device_view_model_create_device(random() % DEV_TYPE_MAX_COUNT);
@@ -153,23 +166,13 @@ static ret_t devices_view_model_exec(object_t* obj, const char* name, const char
 
     value_set_object(&v, o);
     emitter_on(EMITTER(o), EVT_PROP_CHANGED, (event_func_t)emitter_dispatch, vm);
-
-    if (object_array_insert(vm->devices, vm->current_index, &v) == RET_OK) {
-      view_model_notify_items_changed(VIEW_MODEL(vm), vm->devices);
-    }
-
+    object_array_insert(vm->devices, vm->current_index, &v);
     OBJECT_UNREF(o);
     return RET_OK;
   } else if (tk_str_ieq("clear", name)) {
-    if (object_array_clear_props(vm->devices) == RET_OK) {
-      view_model_notify_items_changed(VIEW_MODEL(vm), vm->devices);
-    }
-    return RET_OK;
+    return object_array_clear_props(vm->devices);
   } else if (tk_str_ieq("reset", name)) {
-    if (device_view_model_reset_devices(vm) == RET_OK) {
-      view_model_notify_items_changed(VIEW_MODEL(vm), vm->devices);
-    }
-    return RET_OK;
+    return device_view_model_reset_devices(vm);
   } else if (tk_str_ieq("setCurrent", name)) {
     object_t* a = object_default_create();
     tk_command_arguments_to_object(args, a);

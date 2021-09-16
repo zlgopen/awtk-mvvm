@@ -541,11 +541,18 @@ static ret_t ui_loader_mvvm_build_condition_widget(ui_loader_mvvm_t* loader, rbu
   while (TRUE) {
     if (!is_ok) {
       value_t v;
-      const char* str = *expr == '{' ? (expr + 1) : expr;
+      str_t str;
+      uint32_t len = 0;
+      const char* l_str = *expr == '{' ? (expr + 1) : expr;
+      const char* r_str = tk_strrstr(l_str, "}");
+      len = r_str != NULL ? r_str - l_str : tk_strlen(l_str);
+      str_init(&str, 0);
+      str_set_with_len(&str, l_str, len);
       value_set_bool(&v, FALSE);
-      if (fscript_eval(OBJECT(rule), str, &v) == RET_OK && value_bool(&v)) {
+      if (fscript_eval(OBJECT(rule), str.str, &v) == RET_OK && value_bool(&v)) {
         is_ok = TRUE;
       }
+      str_reset(&str);
     }
 
     if (!is_ok) {
@@ -640,7 +647,7 @@ static ret_t ui_loader_mvvm_get_widget_id(binding_context_t* ctx, binding_rule_t
     value_set_str(v, id);
     return RET_OK;
   } else {
-    return object_get_prop_by_path(obj, id, v);
+    return object_get_prop(obj, id, v);
   }
 }
 
