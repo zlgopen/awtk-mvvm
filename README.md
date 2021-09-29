@@ -46,12 +46,19 @@ scons
 ```
 git clone https://github.com/zlgopen/awtk-mvvm.git
 cd awtk-mvvm
-git clone https://hub.fastgit.org/jerryscript-project/jerryscript.git 3rd/jerryscript/jerryscript
+git clone https://github.com/jerryscript-project/jerryscript.git 3rd/jerryscript/jerryscript
 cd 3rd/jerryscript/jerryscript
-git checkout 3bcd48f72d4af01d1304b754ef19fe1a02c96049
+git reset --hard 8b3eb931670a563bd7bf52ed344263d9409f60b6
 ```
 
-> 当前适配的 jerryscript 的 SHA-1 为 3bcd48f72d4af01d1304b754ef19fe1a02c96049；如果更新 jerryscript 为最新的代码，则可能会有兼容问题。
+> 当前适配的 jerryscript 的 SHA-1 为 8b3eb931670a563bd7bf52ed344263d9409f60b6；如果更新 jerryscript 为最新的代码，则可能会有兼容问题。
+> 如果启用了 WITH_JS_SNAPSHOT, 那更新 jerryscript 后，需重新编译生成 mvvm_factory_gen 工具，之后使用该工具重新生成 mvvm_factory 快照，再重新编译 mvvm。
+
+如果可以访问gitlab，可以用如下命令clone jerryscript：
+
+```
+git clone git@gitlab:zlgopen/jerryscript.git 3rd/jerryscript/jerryscript
+```
 
 * 生成资源
 
