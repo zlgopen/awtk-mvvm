@@ -194,7 +194,7 @@ ret_t object_js_base_exec(object_t* obj, const char* name, const char* args) {
 }
 
 bool_t object_js_base_is_listener_registered(object_t* obj, object_t* listener) {
-  return emitter_exist(EMITTER(obj), EVT_PROP_CHANGED, (event_func_t)emitter_dispatch, listener);
+  return emitter_exist(EMITTER(obj), EVT_PROP_CHANGED, emitter_forward, listener);
 }
 
 static ret_t object_js_base_on_unregister_listener(void* ctx, event_t* e) {
