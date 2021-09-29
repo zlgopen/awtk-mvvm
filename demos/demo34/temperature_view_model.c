@@ -75,8 +75,8 @@ view_model_t* temperature_view_model_create_with(temperature_t* atemperature) {
 
   temperature_view_model->atemperature = atemperature;
   
-  emitter_on(EMITTER(atemperature), EVT_PROPS_CHANGED, (event_func_t)emitter_dispatch, vm);
-  emitter_on(EMITTER(atemperature), EVT_ITEMS_CHANGED, (event_func_t)emitter_dispatch, vm);
+  emitter_on(EMITTER(atemperature), EVT_PROPS_CHANGED, emitter_forward, vm);
+  emitter_on(EMITTER(atemperature), EVT_ITEMS_CHANGED, emitter_forward, vm);
 
 
   return vm;

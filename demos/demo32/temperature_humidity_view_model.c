@@ -18,24 +18,24 @@ static ret_t temperature_humidity_view_model_on_create(view_model_t* view_model,
 
   obj = temperature_create();
   vm->outside_temperature = obj;
-  emitter_on(EMITTER(obj), EVT_PROP_CHANGED, (event_func_t)emitter_dispatch, vm);
+  emitter_on(EMITTER(obj), EVT_PROP_CHANGED, emitter_forward, vm);
 
   obj = humidity_create();
   vm->outside_humidity = obj;
-  emitter_on(EMITTER(obj), EVT_PROP_CHANGED, (event_func_t)emitter_dispatch, vm);
+  emitter_on(EMITTER(obj), EVT_PROP_CHANGED, emitter_forward, vm);
 
   vm->inside_temperatures = object_array_create();
 
   obj = temperature_create();
   value_set_object(&v, obj);
   object_array_push(vm->inside_temperatures, &v);
-  emitter_on(EMITTER(obj), EVT_PROP_CHANGED, (event_func_t)emitter_dispatch, vm);
+  emitter_on(EMITTER(obj), EVT_PROP_CHANGED, emitter_forward, vm);
   OBJECT_UNREF(obj);
 
   obj = temperature_create();
   value_set_object(&v, obj);
   object_array_push(vm->inside_temperatures, &v);
-  emitter_on(EMITTER(obj), EVT_PROP_CHANGED, (event_func_t)emitter_dispatch, vm);
+  emitter_on(EMITTER(obj), EVT_PROP_CHANGED, emitter_forward, vm);
   OBJECT_UNREF(obj);
 
   vm->inside_humidities = object_array_create();
@@ -43,13 +43,13 @@ static ret_t temperature_humidity_view_model_on_create(view_model_t* view_model,
   obj = humidity_create();
   value_set_object(&v, obj);
   object_array_push(vm->inside_humidities, &v);
-  emitter_on(EMITTER(obj), EVT_PROP_CHANGED, (event_func_t)emitter_dispatch, vm);
+  emitter_on(EMITTER(obj), EVT_PROP_CHANGED, emitter_forward, vm);
   OBJECT_UNREF(obj);
 
   obj = humidity_create();
   value_set_object(&v, obj);
   object_array_push(vm->inside_humidities, &v);
-  emitter_on(EMITTER(obj), EVT_PROP_CHANGED, (event_func_t)emitter_dispatch, vm);
+  emitter_on(EMITTER(obj), EVT_PROP_CHANGED, emitter_forward, vm);
   OBJECT_UNREF(obj);
 
   return RET_OK;

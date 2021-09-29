@@ -50,7 +50,7 @@ static ret_t device_view_model_reset_devices(devices_view_model_t* vm) {
     obj = device_view_model_create_device(random() % DEV_TYPE_MAX_COUNT);
     value_set_object(&v, obj);
     object_array_push(vm->devices, &v);
-    emitter_on(EMITTER(obj), EVT_PROP_CHANGED, (event_func_t)emitter_dispatch, vm);
+    emitter_on(EMITTER(obj), EVT_PROP_CHANGED, emitter_forward, vm);
     OBJECT_UNREF(obj);
   }
 
@@ -64,7 +64,7 @@ static ret_t devices_view_model_on_create(view_model_t* view_model, navigator_re
   vm->unlocked = FALSE;
   vm->current_index = -1;
   vm->devices = object_array_create();
-  emitter_on(EMITTER(vm->devices), EVT_ITEMS_CHANGED, (event_func_t)emitter_dispatch, vm);
+  emitter_on(EMITTER(vm->devices), EVT_ITEMS_CHANGED, emitter_forward, vm);
   device_view_model_reset_devices(vm);
 
   return RET_OK;
@@ -165,7 +165,7 @@ static ret_t devices_view_model_exec(object_t* obj, const char* name, const char
     return_value_if_fail(o != NULL, RET_FAIL);
 
     value_set_object(&v, o);
-    emitter_on(EMITTER(o), EVT_PROP_CHANGED, (event_func_t)emitter_dispatch, vm);
+    emitter_on(EMITTER(o), EVT_PROP_CHANGED, emitter_forward, vm);
     object_array_insert(vm->devices, vm->current_index, &v);
     OBJECT_UNREF(o);
     return RET_OK;

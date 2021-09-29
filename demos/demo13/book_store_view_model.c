@@ -117,7 +117,7 @@ static ret_t book_store_view_model_exec(object_t* obj, const char* name, const c
     return_value_if_fail(book != NULL, RET_FAIL);
 
     value_set_object(&v, book);
-    emitter_on(EMITTER(book), EVT_PROP_CHANGED, (event_func_t)emitter_dispatch, vm);
+    emitter_on(EMITTER(book), EVT_PROP_CHANGED, emitter_forward, vm);
     if (object_array_push(vm->abook_store, &v) == RET_OK) {
       view_model_notify_items_changed(VIEW_MODEL(vm), vm->abook_store);
     }
