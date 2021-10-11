@@ -4017,7 +4017,7 @@
           {
             "type": "const char*",
             "name": "target",
-            "desc": "ViewModel路径"
+            "desc": "ViewModel路径。"
           }
         ],
         "annotation": {
@@ -4035,7 +4035,7 @@
           {
             "type": "const char*",
             "name": "target",
-            "desc": "ViewModel路径"
+            "desc": "ViewModel路径。"
           },
           {
             "type": "darray_t*",
@@ -4058,14 +4058,14 @@
           {
             "type": "const char*",
             "name": "target",
-            "desc": "ViewModel路径"
+            "desc": "ViewModel路径。"
           }
         ],
         "annotation": {
           "static": true
         },
-        "desc": "触发指定的ViewModel实例的props改变事件。\n> 路径为NULL时表示当前全部的ViewModel实例；\n> 路径为空字符串时表示最上面的窗口绑定的全部ViewModel实例；\n> 其他则为具体的路径，比如“a.[0]”表示name属性值为\"a\"的窗体的第0个子控件上绑定的ViewModel实例。",
-        "name": "navigator_notify_view_models_props_changed",
+        "desc": "触发指定的View实例的props改变事件。\n> 路径为NULL时表示当前全部的ViewModel实例；\n> 路径为空字符串时表示最上面的窗口绑定的全部ViewModel实例；\n> 其他则为具体的路径，比如“a.[0]”表示name属性值为\"a\"的窗体的第0个子控件上绑定的ViewModel实例。",
+        "name": "navigator_notify_view_props_changed",
         "return": {
           "type": "ret_t",
           "desc": "返回RET_OK表示成功，否则表示失败。"
@@ -4074,21 +4074,21 @@
       {
         "params": [
           {
-            "type": "const char*",
-            "name": "target",
-            "desc": "ViewModel路径"
-          },
-          {
             "type": "object_t*",
             "name": "items",
             "desc": "发生变化的items对象。"
+          },
+          {
+            "type": "const char*",
+            "name": "target",
+            "desc": "ViewModel路径。"
           }
         ],
         "annotation": {
           "static": true
         },
-        "desc": "触发指定的ViewModel实例的items改变事件。\n> 路径为NULL时表示当前全部的ViewModel实例；\n> 路径为空字符串时表示最上面的窗口绑定的全部ViewModel实例；\n> 其他则为具体的路径，比如“a.[0]”表示name属性值为\"a\"的窗体的第0个子控件上绑定的ViewModel实例。",
-        "name": "navigator_notify_view_models_items_changed",
+        "desc": "触发指定的View实例的items改变事件。\n> 路径为NULL时表示当前全部的ViewModel实例；\n> 路径为空字符串时表示最上面的窗口绑定的全部ViewModel实例；\n> 其他则为具体的路径，比如“a.[0]”表示name属性值为\"a\"的窗体的第0个子控件上绑定的ViewModel实例。",
+        "name": "navigator_notify_view_items_changed",
         "return": {
           "type": "ret_t",
           "desc": "返回RET_OK表示成功，否则表示失败。"

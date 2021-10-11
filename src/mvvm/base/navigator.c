@@ -466,7 +466,7 @@ ret_t navigator_get_view_models(const char* target, darray_t* result) {
   return ret;
 }
 
-ret_t navigator_notify_view_models_props_changed(const char* target) {
+ret_t navigator_notify_view_props_changed(const char* target) {
   ret_t ret = RET_OK;
   navigator_request_t* req = NULL;
   return_value_if_fail(navigator() != NULL, 0);
@@ -484,7 +484,7 @@ ret_t navigator_notify_view_models_props_changed(const char* target) {
   return ret;
 }
 
-ret_t navigator_notify_view_models_items_changed(const char* target, object_t* items) {
+ret_t navigator_notify_view_items_changed(object_t* items, const char* target) {
   ret_t ret = RET_OK;
   navigator_request_t* req = NULL;
   return_value_if_fail(navigator() != NULL, 0);

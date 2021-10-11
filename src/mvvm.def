@@ -170,8 +170,8 @@ EXPORTS
     navigator_pick_color
     navigator_count_view_models
     navigator_get_view_models
-    navigator_notify_view_models_props_changed
-    navigator_notify_view_models_items_changed
+    navigator_notify_view_props_changed
+    navigator_notify_view_items_changed
     navigator_to_ex
     str_random
     widget_hardware_create

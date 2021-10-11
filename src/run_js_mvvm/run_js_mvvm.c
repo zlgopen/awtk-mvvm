@@ -28,8 +28,6 @@
 #include "mvvm/jerryscript/jsobj_4_mvvm.h"
 #endif
 
-#define GLOBAL_INIT() mvvm_app_init()
-#define GLOBAL_EXIT() mvvm_app_deinit()
 #define MAX_ARGV 10
 
 static const char* s_start_page = "home_page";
@@ -298,5 +296,16 @@ static ret_t assets_init(void) {
   tk_init_assets();
   return RET_OK;
 }
+
+
+static ret_t global_init(void) {
+  mvvm_app_init();
+  mvvm_app_run_default_scripts();
+
+  return RET_OK;
+}
+
+#define GLOBAL_INIT() global_init()
+#define GLOBAL_EXIT() mvvm_app_deinit()
 
 #include "awtk_main.inc"

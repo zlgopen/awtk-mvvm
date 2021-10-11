@@ -253,7 +253,7 @@ static JSFUNC_DECL(wrap_notify_props_changed_to_view_models) {
     }
   }
 
-  ret = navigator_notify_view_models_props_changed(target);
+  ret = navigator_notify_view_props_changed(target);
   str_reset(&str);
 
   return jsvalue_from_number(ret);
@@ -267,20 +267,20 @@ static JSFUNC_DECL(wrap_notify_items_changed_to_view_models) {
   str_init(&str, 0);
 
   if (args_count >= 1) {
-    if (jerry_value_is_string(args_p[0])) {
-      if (jsvalue_to_utf8(args_p[0], &str) != NULL) {
+    if (jsvalue_is_object(args_p[0])) {
+      items = jsvalue_to_obj(args_p[0]);
+    }
+  }
+
+  if (args_count >= 2) {
+    if (jerry_value_is_string(args_p[1])) {
+      if (jsvalue_to_utf8(args_p[1], &str) != NULL) {
         target = str.str;
       }
     }
   }
 
-  if (args_count >= 2) {
-    if (jsvalue_is_object(args_p[1])) {
-      items = jsvalue_to_obj(args_p[1]);
-    }
-  }
-
-  ret = navigator_notify_view_models_items_changed(target, items);
+  ret = navigator_notify_view_items_changed(items, target);
   str_reset(&str);
 
   return jsvalue_from_number(ret);
@@ -298,9 +298,9 @@ ret_t jerryscript_awtk_init(void) {
   jsfunc_register_global("navigateTo", wrap_navigate_to);
   jsfunc_register_global("countViewModels", wrap_count_view_models);
   jsfunc_register_global("getViewModels", wrap_get_view_models);
-  jsfunc_register_global("notifyPropsChangedToViewModels",
+  jsfunc_register_global("notifyViewPropsChanged",
                          wrap_notify_props_changed_to_view_models);
-  jsfunc_register_global("notifyItemsChangedToViewModels",
+  jsfunc_register_global("notifyViewItemsChanged",
                          wrap_notify_items_changed_to_view_models);
 
   return RET_OK;

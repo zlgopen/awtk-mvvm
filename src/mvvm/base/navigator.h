@@ -337,7 +337,7 @@ ret_t navigator_pick_color(const char* title, str_t* result);
  *
  * @annotation ["static"]
  *
- * @param {const char*} target ViewModel路径
+ * @param {const char*} target ViewModel路径。
  *
  * @return {ret_t} 返回实例的个数。
  */
@@ -352,7 +352,7 @@ int32_t navigator_count_view_models(const char* target);
  *
  * @annotation ["static"]
  *
- * @param {const char*} target ViewModel路径
+ * @param {const char*} target ViewModel路径。
  * @param {darray_t*} result 返回ViewModel实例。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
@@ -360,35 +360,35 @@ int32_t navigator_count_view_models(const char* target);
 ret_t navigator_get_view_models(const char* target, darray_t* result);
 
 /**
- * @method navigator_notify_view_models_props_changed
- * 触发指定的ViewModel实例的props改变事件。
+ * @method navigator_notify_view_props_changed
+ * 触发指定的View实例的props改变事件。
  * > 路径为NULL时表示当前全部的ViewModel实例；
  * > 路径为空字符串时表示最上面的窗口绑定的全部ViewModel实例；
  * > 其他则为具体的路径，比如“a.[0]”表示name属性值为"a"的窗体的第0个子控件上绑定的ViewModel实例。
  *
  * @annotation ["static"]
  *
- * @param {const char*} target ViewModel路径
+ * @param {const char*} target ViewModel路径。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
-ret_t navigator_notify_view_models_props_changed(const char* target);
+ret_t navigator_notify_view_props_changed(const char* target);
 
 /**
- * @method navigator_notify_view_models_items_changed
- * 触发指定的ViewModel实例的items改变事件。
+ * @method navigator_notify_view_items_changed
+ * 触发指定的View实例的items改变事件。
  * > 路径为NULL时表示当前全部的ViewModel实例；
  * > 路径为空字符串时表示最上面的窗口绑定的全部ViewModel实例；
  * > 其他则为具体的路径，比如“a.[0]”表示name属性值为"a"的窗体的第0个子控件上绑定的ViewModel实例。
  *
  * @annotation ["static"]
  *
- * @param {const char*} target ViewModel路径
  * @param {object_t*} items 发生变化的items对象。
+ * @param {const char*} target ViewModel路径。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
-ret_t navigator_notify_view_models_items_changed(const char* target, object_t* items);
+ret_t navigator_notify_view_items_changed(object_t* items, const char* target);
 
 /**
  * @method navigator_to_ex

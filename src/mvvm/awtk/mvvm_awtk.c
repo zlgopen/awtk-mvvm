@@ -62,9 +62,93 @@ static ret_t func_navigator_replace(fscript_t* fscript, fscript_args_t* args, va
   return navigator_replace(value_str(args->args));
 }
 
+static ret_t func_count_view_models(fscript_t* fscript, fscript_args_t* args, value_t* v) {
+  int32_t cnt = 0;
+  const char* target = NULL;
+
+  if (args->size >= 1) {
+    target = value_str(args->args);
+  }
+
+  cnt = navigator_count_view_models(target);
+  value_set_int(v, cnt);
+
+  return RET_OK;
+}
+
+static ret_t func_get_view_models(fscript_t* fscript, fscript_args_t* args, value_t* v) {
+  ret_t ret = RET_OK;
+  const char* target = NULL;
+  darray_t* temp = darray_create(1, NULL, NULL);
+
+  if (args->size >= 1) {
+    target = value_str(args->args);
+  }
+
+  ret = navigator_get_view_models(target, temp);
+  if (ret == RET_OK) {
+    object_t* obj = object_array_create();
+    uint32_t i = 0;
+    value_t elm;
+
+    value_set_object(v, obj);
+    v->free_handle = TRUE;
+
+    for (i = 0; i < temp->size; i++) {
+      value_set_object(&elm, OBJECT(temp->elms[i]));
+      if (object_array_push(obj, &elm) != RET_OK) {
+        break;
+      }
+    }
+  }
+
+  darray_destroy(temp);
+
+  return ret;
+}
+
+static ret_t func_notify_props_changed_to_view_models(fscript_t* fscript, fscript_args_t* args,
+                                                      value_t* v) {
+  ret_t ret = RET_OK;
+  const char* target = NULL;
+
+  if (args->size >= 1) {
+    target = value_str(args->args);
+  }
+
+  ret = navigator_notify_view_props_changed(target);
+
+  return ret;
+}
+
+static ret_t func_notify_items_changed_to_view_models(fscript_t* fscript, fscript_args_t* args,
+                                                      value_t* v) {
+  ret_t ret = RET_OK;
+  const char* target = NULL;
+  object_t* items = NULL;
+
+  if (args->size >= 1) {
+    items = value_object(args->args);
+  }
+
+  if (args->size >= 2) {
+    target = value_str(args->args + 1);
+  }
+
+  ret = navigator_notify_view_items_changed(items, target);
+
+  return ret;
+}
+
 static ret_t mvvm_funcs_init(void) {
   fscript_register_func("navigator_to", func_navigator_to);
   fscript_register_func("navigator_replace", func_navigator_replace);
+  fscript_register_func("count_view_models", func_count_view_models);
+  fscript_register_func("get_view_models", func_get_view_models);
+  fscript_register_func("notify_view_props_changed",
+                        func_notify_props_changed_to_view_models);
+  fscript_register_func("notify_view_items_changed",
+                        func_notify_items_changed_to_view_models);
 
   return RET_OK;
 }

@@ -1,5 +1,10 @@
 # 最新动态
 
+* 2021/10/11
+  * fscript 添加 view model 相关的API；
+  * 统一 C/JS/fscript 的 view model 相关的 API 的名称。
+  * 完善 mvvm_app.inc
+
 * 2021/09/29
   * 修改 object_js_base_is_listener_registered 有误导致死循环的问题。
   * 完善 demo。
