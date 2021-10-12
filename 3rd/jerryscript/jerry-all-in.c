@@ -7,6 +7,10 @@
 #pragma comment(lib, "ws2_32")
 #endif /*WIN32*/
 
+#ifdef _MSC_VER
+#define __func__ __FUNCTION__
+#endif /* _MSC_VER */
+
 #include "./jerryscript/jerry-ext/handler/handler-assert.c"
 #include "./jerryscript/jerry-ext/handler/handler-resource-name.c"
 #include "./jerryscript/jerry-ext/handler/handler-register.c"

@@ -1,5 +1,8 @@
 # 最新动态
 
+* 2021/10/12
+  * 修正缺少__func__宏导致编译出错的问题（感谢陈谭提供补丁）
+
 * 2021/10/11
   * fscript 添加 view model 相关的API；
   * 统一 C/JS/fscript 的 view model 相关的 API 的名称。
