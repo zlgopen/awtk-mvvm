@@ -63,8 +63,12 @@ else:
 
 def dll_def_processor():
   content = ''
-  with open('src/cpp.def', 'r') as f:
-    content = f.read()
+  if helper.awtk.TARGET_ARCH == 'x86':
+    with open('src/cpp_x86.def', 'r') as f:
+      content = f.read()
+  else:
+    with open('src/cpp.def', 'r') as f:
+      content = f.read()
   with open('src/mvvm.def', 'a') as f:
     f.write(content)
 
