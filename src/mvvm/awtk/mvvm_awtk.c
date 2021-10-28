@@ -23,6 +23,7 @@
 #include "tkc/utils.h"
 #include "tkc/fscript.h"
 #include "tkc/object_default.h"
+#include "tkc/object_array.h"
 #include "base/window_manager.h"
 #include "mvvm/base/utils.h"
 #include "mvvm/base/binding_rule.h"
