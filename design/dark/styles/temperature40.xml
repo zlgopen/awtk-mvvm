@@ -1,0 +1,30 @@
+<window>
+  <style name="default">
+    <normal bg_color="#664d74"/>
+  </style>
+</window>
+
+<button>
+  <style name="default" border_color="#a0a0a0"  text_color="black">
+    <normal     bg_color="#f0f0f0" />
+    <pressed    bg_color="#c0c0c0" x_offset="1" y_offset="1"/>
+    <over       bg_color="#e0e0e0" />
+    <focused    bg_color="#e0e0e0" />
+    <disable    bg_color="gray" text_color="#d0d0d0" />
+  </style>
+</button>
+
+<label>
+  <style name="default">
+    <normal text_color="white" />
+  </style>
+</label>
+
+<slider>
+  <style>
+    <normal bg_color="#a0a0a0" fg_color="blue" border_color="#ffd700"/>
+    <pressed bg_color="#a0a0a0" fg_color="blue" border_color="#ffa700"/>
+    <over bg_color="#a0a0a0" fg_color="blue" border_color="#ffe700"/>    
+    <focused bg_color="#a0a0a0" fg_color="blue" border_color="#ffe700"/>    
+  </style>
+</slider>

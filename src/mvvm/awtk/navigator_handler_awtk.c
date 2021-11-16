@@ -20,6 +20,7 @@
  */
 
 #include "tkc/utils.h"
+#include "tkc/object_default.h"
 #include "base/dialog.h"
 #include "base/window_manager.h"
 #include "ui_loader/ui_serializer.h"
@@ -634,6 +635,117 @@ static ret_t navigator_handler_awtk_on_notify_view_model(navigator_handler_t* ha
   return RET_OK;
 }
 
+static ret_t navigator_handler_awtk_on_get_locale(navigator_handler_t* handler,
+                                                  navigator_request_t* req) {
+  object_t* obj = NULL;
+  widget_t* widget = NULL;
+  locale_info_t* info = NULL;
+  widget_t* wm = window_manager();
+  const char* target = object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_TARGET);
+  return_value_if_fail(wm != NULL, RET_FAIL);
+
+  if (target == NULL) {
+    widget = wm;
+  } else if (tk_str_eq(target, "")) {
+    widget = window_manager_get_top_window(wm);
+  } else {
+    widget = navigator_handler_awtk_lookup_widget_by_path(wm, target);
+  }
+
+  if (widget != NULL) {
+    info = widget_get_locale_info(widget);
+  }
+  if (info != NULL) {
+    obj = object_default_create();
+    object_set_prop_str(obj, "language", info->language);
+    object_set_prop_str(obj, "country", info->country);
+  }
+
+  value_set_object(&(req->result), obj);
+  req->result.free_handle = TRUE;
+
+  return RET_OK;
+}
+
+static ret_t navigator_handler_awtk_on_set_locale(navigator_handler_t* handler,
+                                                  navigator_request_t* req) {
+  ret_t ret = RET_OK;
+  widget_t* widget = NULL;
+  locale_info_t* info = NULL;
+  widget_t* wm = window_manager();
+  const char* target = object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_TARGET);
+  const char* language = object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_LANGUAGE);
+  const char* country = object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_COUNTRY);
+  return_value_if_fail(wm != NULL && language != NULL && country != NULL, RET_FAIL);
+
+  if (target == NULL) {
+    widget = wm;
+  } else if (tk_str_eq(target, "")) {
+    widget = window_manager_get_top_window(wm);
+  } else {
+    widget = navigator_handler_awtk_lookup_widget_by_path(wm, target);
+  }
+
+  if (widget != NULL) {
+    info = widget_get_locale_info(widget);
+  }
+  if (info != NULL) {
+    ret = locale_info_change(info, language, country);
+  }
+
+  return ret;
+}
+
+static ret_t navigator_handler_awtk_on_get_theme(navigator_handler_t* handler,
+                                                 navigator_request_t* req) {
+  widget_t* widget = NULL;
+  assets_manager_t* am = NULL;
+  widget_t* wm = window_manager();
+  const char* target = object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_TARGET);
+  return_value_if_fail(wm != NULL, RET_FAIL);
+
+  if (target == NULL) {
+    widget = wm;
+  } else if (tk_str_eq(target, "")) {
+    widget = window_manager_get_top_window(wm);
+  } else {
+    widget = navigator_handler_awtk_lookup_widget_by_path(wm, target);
+  }
+
+  if (widget != NULL) {
+    am = widget_get_assets_manager(widget);
+  }
+  if (am != NULL) {
+    value_set_str(&(req->result), am->theme);
+  }
+
+  return RET_OK;
+}
+
+static ret_t navigator_handler_awtk_on_set_theme(navigator_handler_t* handler,
+                                                 navigator_request_t* req) {
+  ret_t ret = RET_OK;
+  widget_t* widget = NULL;
+  widget_t* wm = window_manager();
+  const char* target = object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_TARGET);
+  const char* theme = object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_THEME);
+  return_value_if_fail(wm != NULL && theme != NULL, RET_FAIL);
+
+  if (target == NULL) {
+    widget = wm;
+  } else if (tk_str_eq(target, "")) {
+    widget = window_manager_get_top_window(wm);
+  } else {
+    widget = navigator_handler_awtk_lookup_widget_by_path(wm, target);
+  }
+
+  if (widget != NULL) {
+    ret = widget_set_theme(widget, theme);
+  }
+
+  return ret;
+}
+
 navigator_handler_t* navigator_handler_awtk_notify_view_model_create(void) {
   object_t* obj = NULL;
   navigator_handler_t* handler = NULL;
@@ -643,6 +755,58 @@ navigator_handler_t* navigator_handler_awtk_notify_view_model_create(void) {
   return_value_if_fail(handler != NULL, NULL);
 
   handler->on_request = navigator_handler_awtk_on_notify_view_model;
+
+  return handler;
+}
+
+navigator_handler_t* navigator_handler_awtk_get_locale_create(void) {
+  object_t* obj = NULL;
+  navigator_handler_t* handler = NULL;
+
+  obj = object_create(&s_navigator_handler_awtk_vtable);
+  handler = NAVIGATOR_HANDLER(obj);
+  return_value_if_fail(handler != NULL, NULL);
+
+  handler->on_request = navigator_handler_awtk_on_get_locale;
+
+  return handler;
+}
+
+navigator_handler_t* navigator_handler_awtk_set_locale_create(void) {
+  object_t* obj = NULL;
+  navigator_handler_t* handler = NULL;
+
+  obj = object_create(&s_navigator_handler_awtk_vtable);
+  handler = NAVIGATOR_HANDLER(obj);
+  return_value_if_fail(handler != NULL, NULL);
+
+  handler->on_request = navigator_handler_awtk_on_set_locale;
+
+  return handler;
+}
+
+navigator_handler_t* navigator_handler_awtk_get_theme_create(void) {
+  object_t* obj = NULL;
+  navigator_handler_t* handler = NULL;
+
+  obj = object_create(&s_navigator_handler_awtk_vtable);
+  handler = NAVIGATOR_HANDLER(obj);
+  return_value_if_fail(handler != NULL, NULL);
+
+  handler->on_request = navigator_handler_awtk_on_get_theme;
+
+  return handler;
+}
+
+navigator_handler_t* navigator_handler_awtk_set_theme_create(void) {
+  object_t* obj = NULL;
+  navigator_handler_t* handler = NULL;
+
+  obj = object_create(&s_navigator_handler_awtk_vtable);
+  handler = NAVIGATOR_HANDLER(obj);
+  return_value_if_fail(handler != NULL, NULL);
+
+  handler->on_request = navigator_handler_awtk_on_set_theme;
 
   return handler;
 }

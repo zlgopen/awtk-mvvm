@@ -1,5 +1,11 @@
 # 最新动态
 
+* 2021/11/16
+  * 增加 navigator\_get\_locale、navigator\_set\_locale，用于获取和设置界面的语言。（感谢雨欣提供补丁）
+  * 增加 navigator\_get\_theme、navigator\_set\_theme，用于获取和设置界面的主题。（感谢雨欣提供补丁）
+  * 增加 demo40、jsdemo40，演示界面主题和语言的切换。（感谢雨欣提供补丁）
+  * 完善文档。
+
 * 2021/11/14
   * 修改最新jerryscript文件改名的问题。
 

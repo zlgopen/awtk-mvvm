@@ -125,3 +125,23 @@
 <language name="en_US">Current Temperature: %lf</language>
 <language name="zh_CN">当前温度：%lf</language>
 </string>
+
+<string name="centigrade">
+<language name="en_US">C</language>
+<language name="zh_CN">摄氏度</language>
+</string>
+
+<string name="fahrenheit">
+<language name="en_US">F</language>
+<language name="zh_CN">华氏度</language>
+</string>
+
+<string name="translate">
+<language name="en_US">切换到中文</language>
+<language name="zh_CN">Switch to English</language>
+</string>
+
+<string name="switch_theme">
+<language name="en_US">Switch Theme</language>
+<language name="zh_CN">切换主题</language>
+</string>

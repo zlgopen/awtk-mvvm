@@ -333,11 +333,14 @@ ret_t navigator_pick_color(const char* title, str_t* result);
  * 获取指定的ViewModel实例的个数。
  * > 路径为NULL时表示当前全部的ViewModel实例；
  * > 路径为空字符串时表示最上面的窗口绑定的全部ViewModel实例；
- * > 其他则为实际的路径，比如“a.[0]”时表示属性name为"a"的窗体的第0个子控件上绑定的ViewModel实例。
+ * > 其他则为具体的路径，比如：
+ * > 1."window.widget"：表示name属性值为"window"的窗体中name属性值为"widget"的子控件上绑定的ViewModel实例。
+ * > 2."window.[0]"：表示name属性值为"window"的窗体的第0个子控件上绑定的ViewModel实例。
+ * > 注意：使用数字作为界面路径索引时必须用中括号括起来。
  *
  * @annotation ["static"]
  *
- * @param {const char*} target ViewModel路径。
+ * @param {const char*} target 与ViewModel实例绑定的控件的路径。
  *
  * @return {ret_t} 返回实例的个数。
  */
@@ -348,11 +351,14 @@ int32_t navigator_count_view_models(const char* target);
  * 获取指定的ViewModel实例。
  * > 路径为NULL时表示当前全部的ViewModel实例；
  * > 路径为空字符串时表示最上面的窗口绑定的全部ViewModel实例；
- * > 其他则为具体的路径，比如“a.[0]”表示name属性值为"a"的窗体的第0个子控件上绑定的ViewModel实例。
+ * > 其他则为具体的路径，比如：
+ * > 1."window.widget"：表示name属性值为"window"的窗体中name属性值为"widget"的子控件上绑定的ViewModel实例。
+ * > 2."window.[0]"：表示name属性值为"window"的窗体的第0个子控件上绑定的ViewModel实例。
+ * > 注意：使用数字作为界面路径索引时必须用中括号括起来。
  *
  * @annotation ["static"]
  *
- * @param {const char*} target ViewModel路径。
+ * @param {const char*} target 与ViewModel实例绑定的控件的路径。
  * @param {darray_t*} result 返回ViewModel实例。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
@@ -364,11 +370,14 @@ ret_t navigator_get_view_models(const char* target, darray_t* result);
  * 触发指定的View实例的props改变事件。
  * > 路径为NULL时表示当前全部的ViewModel实例；
  * > 路径为空字符串时表示最上面的窗口绑定的全部ViewModel实例；
- * > 其他则为具体的路径，比如“a.[0]”表示name属性值为"a"的窗体的第0个子控件上绑定的ViewModel实例。
+ * > 其他则为具体的路径，比如：
+ * > 1."window.widget"：表示name属性值为"window"的窗体中name属性值为"widget"的子控件上绑定的ViewModel实例。
+ * > 2."window.[0]"：表示name属性值为"window"的窗体的第0个子控件上绑定的ViewModel实例。
+ * > 注意：使用数字作为界面路径索引时必须用中括号括起来。
  *
  * @annotation ["static"]
  *
- * @param {const char*} target ViewModel路径。
+ * @param {const char*} target 与ViewModel实例绑定的控件的路径。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
@@ -379,16 +388,94 @@ ret_t navigator_notify_view_props_changed(const char* target);
  * 触发指定的View实例的items改变事件。
  * > 路径为NULL时表示当前全部的ViewModel实例；
  * > 路径为空字符串时表示最上面的窗口绑定的全部ViewModel实例；
- * > 其他则为具体的路径，比如“a.[0]”表示name属性值为"a"的窗体的第0个子控件上绑定的ViewModel实例。
+ * > 其他则为具体的路径，比如：
+ * > 1."window.widget"：表示name属性值为"window"的窗体中name属性值为"widget"的子控件上绑定的ViewModel实例。
+ * > 2."window.[0]"：表示name属性值为"window"的窗体的第0个子控件上绑定的ViewModel实例。
+ * > 注意：使用数字作为界面路径索引时必须用中括号括起来。
  *
  * @annotation ["static"]
  *
  * @param {object_t*} items 发生变化的items对象。
- * @param {const char*} target ViewModel路径。
+ * @param {const char*} target 与ViewModel实例绑定的控件的路径。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
 ret_t navigator_notify_view_items_changed(object_t* items, const char* target);
+
+/**
+ * @method navigator_get_locale
+ * 获取指定的本地化信息（国家和语言）。
+ * > 路径为NULL时表示窗口管理器；
+ * > 路径为空字符串时表示最上面的窗口；
+ * > 其他则为具体的路径，比如：
+ * > 1."window.widget"：表示name属性值为"window"的窗体中name属性值为"widget"的子控件。
+ * > 2."window.[0]"：表示name属性值为"window"的窗体的第0个子控件。
+ * > 注意：使用数字作为界面路径索引时必须用中括号括起来。
+ *
+ * @annotation ["static"]
+ *
+ * @param {const char*} target 控件的路径。
+ *
+ * @return {object_t*} 返回本地化信息对象，其中属性"language"表示语言，属性"country"表示国家或地区。
+ */
+object_t* navigator_get_locale(const char* target);
+
+/**
+ * @method navigator_get_locale
+ * 设置指定的本地化信息（国家和语言）。
+ * > 路径为NULL时表示窗口管理器；
+ * > 路径为空字符串时表示最上面的窗口；
+ * > 其他则为具体的路径，比如：
+ * > 1."window.widget"：表示name属性值为"window"的窗体中name属性值为"widget"的子控件。
+ * > 2."window.[0]"：表示name属性值为"window"的窗体的第0个子控件。
+ * > 注意：使用数字作为界面路径索引时必须用中括号括起来。
+ *
+ * @annotation ["static"]
+ *
+ * @param {const char*} language 语言。
+ * @param {const char*} country 国家或地区。
+ * @param {const char*} target 控件的路径。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t navigator_set_locale(const char* language, const char* country, const char* target);
+
+/**
+ * @method navigator_get_theme
+ * 获取指定的主题。
+ * > 路径为NULL时表示窗口管理器；
+ * > 路径为空字符串时表示最上面的窗口；
+ * > 其他则为具体的路径，比如：
+ * > 1."window.widget"：表示name属性值为"window"的窗体中name属性值为"widget"的子控件。
+ * > 2."window.[0]"：表示name属性值为"window"的窗体的第0个子控件。
+ * > 注意：使用数字作为界面路径索引时必须用中括号括起来。
+ *
+ * @annotation ["static"]
+ *
+ * @param {const char*} target 控件的路径。
+ *
+ * @return {const char*} 返回主题名称。
+ */
+const char* navigator_get_theme(const char* target);
+
+/**
+ * @method navigator_set_theme
+ * 设置指定的主题。
+ * > 路径为NULL时表示窗口管理器；
+ * > 路径为空字符串时表示最上面的窗口；
+ * > 其他则为具体的路径，比如：
+ * > 1."window.widget"：表示name属性值为"window"的窗体中name属性值为"widget"的子控件。
+ * > 2."window.[0]"：表示name属性值为"window"的窗体的第0个子控件。
+ * > 注意：使用数字作为界面路径索引时必须用中括号括起来。
+ *
+ * @annotation ["static"]
+ *
+ * @param {const char*} theme 主题。
+ * @param {const char*} target 控件的路径。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t navigator_set_theme(const char* theme, const char* target);
 
 /**
  * @method navigator_to_ex

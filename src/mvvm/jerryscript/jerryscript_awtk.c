@@ -23,7 +23,7 @@
 #include "base/idle.h"
 #include "base/timer.h"
 #include "base/widget.h"
-#include "src/awtk_global.h"
+#include "awtk_global.h"
 #include "mvvm/base/navigator.h"
 #include "mvvm/base/view_model_factory.h"
 #include "mvvm/jerryscript/jsobj_4_mvvm.h"
@@ -286,6 +286,111 @@ static JSFUNC_DECL(wrap_notify_items_changed_to_view_models) {
   return jsvalue_from_number(ret);
 }
 
+static JSFUNC_DECL(wrap_get_locale) {
+  jsvalue_t res;
+  object_t* obj = NULL;
+  const char* target = NULL;
+  str_t str;
+  str_init(&str, 0);
+
+  if (args_count >= 1) {
+    if (jerry_value_is_string(args_p[0])) {
+      if (jsvalue_to_utf8(args_p[0], &str) != NULL) {
+        target = str.str;
+      }
+    }
+  }
+
+  obj = navigator_get_locale(target);
+  res = jsvalue_from_obj_copy(obj);
+  object_unref(obj);
+  str_reset(&str);
+
+  return res;
+}
+
+static JSFUNC_DECL(wrap_set_locale) {
+  ret_t ret = RET_FAIL;
+  char language[3] = {0};
+  char country[3] = {0};
+  const char* target = NULL;
+  str_t str;
+  str_init(&str, 0);
+
+  if (args_count >= 2) {
+    if (jerry_value_is_string(args_p[0])) {
+      if (jsvalue_to_utf8(args_p[0], &str) != NULL) {
+        tk_strncpy_s(language, sizeof(language), str.str, tk_strlen(str.str));
+      }
+    }
+    if (jerry_value_is_string(args_p[1])) {
+      if (jsvalue_to_utf8(args_p[1], &str) != NULL) {
+        tk_strncpy_s(country, sizeof(country), str.str, tk_strlen(str.str));
+      }
+    }
+    if (args_count >= 3 && jerry_value_is_string(args_p[2])) {
+      if (jsvalue_to_utf8(args_p[2], &str) != NULL) {
+        target = str.str;
+      }
+    }
+  }
+
+  ret = navigator_set_locale(language, country, target);
+  str_reset(&str);
+
+  return jsvalue_from_number(ret);
+}
+
+static JSFUNC_DECL(wrap_get_theme) {
+  jsvalue_t ret;
+  const char* theme = NULL;
+  const char* target = NULL;
+  str_t str;
+  str_init(&str, 0);
+
+  if (args_count >= 1) {
+    if (jerry_value_is_string(args_p[0])) {
+      if (jsvalue_to_utf8(args_p[0], &str) != NULL) {
+        target = str.str;
+      }
+    }
+  }
+
+  theme = navigator_get_theme(target);
+  ret = jsvalue_from_utf8(theme);
+  str_reset(&str);
+
+  return ret;
+}
+
+static JSFUNC_DECL(wrap_set_theme) {
+  ret_t ret = RET_FAIL;
+  char* theme = NULL;
+  const char* target = NULL;
+
+  str_t str;
+  str_init(&str, 0);
+
+  if (args_count >= 1) {
+    if (jerry_value_is_string(args_p[0])) {
+      if (jsvalue_to_utf8(args_p[0], &str) != NULL) {
+        theme = tk_str_copy(theme, str.str);
+      }
+    }
+    if (args_count >= 2 && jerry_value_is_string(args_p[1])) {
+      if (jsvalue_to_utf8(args_p[1], &str) != NULL) {
+        target = str.str;
+      }
+    }
+  }
+
+  ret = navigator_set_theme(theme, target);
+  str_reset(&str);
+  TKMEM_FREE(theme);
+
+  return jsvalue_from_number(ret);
+}
+
 ret_t jerryscript_awtk_init(void) {
   ret_t_init();
 
@@ -298,10 +403,12 @@ ret_t jerryscript_awtk_init(void) {
   jsfunc_register_global("navigateTo", wrap_navigate_to);
   jsfunc_register_global("countViewModels", wrap_count_view_models);
   jsfunc_register_global("getViewModels", wrap_get_view_models);
-  jsfunc_register_global("notifyViewPropsChanged",
-                         wrap_notify_props_changed_to_view_models);
-  jsfunc_register_global("notifyViewItemsChanged",
-                         wrap_notify_items_changed_to_view_models);
+  jsfunc_register_global("notifyViewPropsChanged", wrap_notify_props_changed_to_view_models);
+  jsfunc_register_global("notifyViewItemsChanged", wrap_notify_items_changed_to_view_models);
+  jsfunc_register_global("getLocale", wrap_get_locale);
+  jsfunc_register_global("setLocale", wrap_set_locale);
+  jsfunc_register_global("getTheme", wrap_get_theme);
+  jsfunc_register_global("setTheme", wrap_set_theme);
 
   return RET_OK;
 }

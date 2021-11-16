@@ -146,10 +146,8 @@ static ret_t mvvm_funcs_init(void) {
   fscript_register_func("navigator_replace", func_navigator_replace);
   fscript_register_func("count_view_models", func_count_view_models);
   fscript_register_func("get_view_models", func_get_view_models);
-  fscript_register_func("notify_view_props_changed",
-                        func_notify_props_changed_to_view_models);
-  fscript_register_func("notify_view_items_changed",
-                        func_notify_items_changed_to_view_models);
+  fscript_register_func("notify_view_props_changed", func_notify_props_changed_to_view_models);
+  fscript_register_func("notify_view_items_changed", func_notify_items_changed_to_view_models);
 
   return RET_OK;
 }
@@ -175,6 +173,14 @@ ret_t mvvm_awtk_init(void) {
                              navigator_handler_awtk_get_view_model_create());
   navigator_register_handler(navigator(), NAVIGATOR_REQ_NOTIFY_VIEW_MODEL,
                              navigator_handler_awtk_notify_view_model_create());
+  navigator_register_handler(navigator(), NAVIGATOR_REQ_GET_LOCALE,
+                             navigator_handler_awtk_get_locale_create());
+  navigator_register_handler(navigator(), NAVIGATOR_REQ_SET_LOCALE,
+                             navigator_handler_awtk_set_locale_create());
+  navigator_register_handler(navigator(), NAVIGATOR_REQ_GET_THEME,
+                             navigator_handler_awtk_get_theme_create());
+  navigator_register_handler(navigator(), NAVIGATOR_REQ_SET_THEME,
+                             navigator_handler_awtk_set_theme_create());
 
   return RET_OK;
 }

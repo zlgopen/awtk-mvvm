@@ -195,6 +195,30 @@ ret_t navigator_request_on_result(navigator_request_t* req, const value_t* resul
 #define NAVIGATOR_REQ_NOTIFY_VIEW_MODEL "_notify_view_model_"
 
 /**
+ * @const NAVIGATOR_REQ_GET_LOCALE
+ * 请求获取指定的本地化信息。
+ */
+#define NAVIGATOR_REQ_GET_LOCALE "_get_locale_"
+
+/**
+ * @const NAVIGATOR_REQ_SET_LOCALE
+ * 请求设置指定的本地化信息。
+ */
+#define NAVIGATOR_REQ_SET_LOCALE "_set_locale_"
+
+/**
+ * @const NAVIGATOR_REQ_GET_THEME
+ * 请求获取指定的主题。
+ */
+#define NAVIGATOR_REQ_GET_THEME "_get_theme_"
+
+/**
+ * @const NAVIGATOR_REQ_SET_THEME
+ * 请求设置指定的主题。
+ */
+#define NAVIGATOR_REQ_SET_THEME "_set_theme_"
+
+/**
  * @enum navigator_request_argument_type_t
  * @annotation ["scriptable", "string"]
  * @prefix NAVIGATOR_ARG_
@@ -302,6 +326,24 @@ ret_t navigator_request_on_result(navigator_request_t* req, const value_t* resul
  * 事件源。
  */
 #define NAVIGATOR_ARG_EVENT_SOURCE "event_source"
+
+/**
+ * @const NAVIGATOR_ARG_LANGUAGE
+ * 语言。
+ */
+#define NAVIGATOR_ARG_LANGUAGE "language"
+
+/**
+ * @const NAVIGATOR_ARG_COUNTRY
+ * 国家或地区。
+ */
+#define NAVIGATOR_ARG_COUNTRY "country"
+
+/**
+ * @const NAVIGATOR_ARG_THEME
+ * 主题。
+ */
+#define NAVIGATOR_ARG_THEME "theme"
 
 END_C_DECLS
 

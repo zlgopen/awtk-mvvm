@@ -503,6 +503,82 @@ ret_t navigator_notify_view_items_changed(object_t* items, const char* target) {
   return ret;
 }
 
+object_t* navigator_get_locale(const char* target) {
+  object_t* obj = NULL;
+  navigator_request_t* req = NULL;
+  return_value_if_fail(navigator() != NULL, NULL);
+
+  req = navigator_request_create(NULL, NULL);
+  return_value_if_fail(req != NULL, 0);
+
+  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_GET_LOCALE);
+  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_TARGET, target);
+
+  if (navigator_handle_request(navigator(), req) == RET_OK) {
+    obj = value_object(&(req->result));
+    object_ref(obj);
+  }
+  object_unref(OBJECT(req));
+
+  return obj;
+}
+
+ret_t navigator_set_locale(const char* language, const char* country, const char* target) {
+  ret_t ret = RET_OK;
+  navigator_request_t* req = NULL;
+  return_value_if_fail(navigator() != NULL, RET_FAIL);
+
+  req = navigator_request_create(NULL, NULL);
+  return_value_if_fail(req != NULL, 0);
+
+  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_SET_LOCALE);
+  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_LANGUAGE, language);
+  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_COUNTRY, country);
+  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_TARGET, target);
+
+  ret = navigator_handle_request(navigator(), req);
+  object_unref(OBJECT(req));
+
+  return ret;
+}
+
+const char* navigator_get_theme(const char* target) {
+  const char* theme = NULL;
+  navigator_request_t* req = NULL;
+  return_value_if_fail(navigator() != NULL, NULL);
+
+  req = navigator_request_create(NULL, NULL);
+  return_value_if_fail(req != NULL, 0);
+
+  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_GET_THEME);
+  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_TARGET, target);
+
+  if (navigator_handle_request(navigator(), req) == RET_OK) {
+    theme = value_str(&(req->result));
+  }
+  object_unref(OBJECT(req));
+
+  return theme;
+}
+
+ret_t navigator_set_theme(const char* theme, const char* target) {
+  ret_t ret = RET_OK;
+  navigator_request_t* req = NULL;
+  return_value_if_fail(navigator() != NULL, RET_FAIL);
+
+  req = navigator_request_create(NULL, NULL);
+  return_value_if_fail(req != NULL, 0);
+
+  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_SET_THEME);
+  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_THEME, theme);
+  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_TARGET, target);
+
+  ret = navigator_handle_request(navigator(), req);
+  object_unref(OBJECT(req));
+
+  return ret;
+}
+
 ret_t navigator_to_ex(navigator_request_t* req) {
   return navigator_handle_request(navigator(), req);
 }

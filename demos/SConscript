@@ -46,6 +46,7 @@ env.Program(os.path.join(BIN_DIR, 'demo36'), Glob('demo36/*.c'),LIBS=LIBS)
 env.Program(os.path.join(BIN_DIR, 'demo37'), Glob('demo37/*.c'),LIBS=LIBS)
 env.Program(os.path.join(BIN_DIR, 'demo38'), Glob('demo38/*.c'),LIBS=LIBS)
 env.Program(os.path.join(BIN_DIR, 'demo39'), Glob('demo39/*.c'),LIBS=LIBS)
+env.Program(os.path.join(BIN_DIR, 'demo40'), Glob('demo40/*.c'),LIBS=LIBS)
 
 if 'WITH_JS' in os.environ:
   env.Program(os.path.join(BIN_DIR, 'jsdemo1'), Glob('jsdemo1/*.c'),LIBS=LIBS)
@@ -68,6 +69,7 @@ if 'WITH_JS' in os.environ:
   env.Program(os.path.join(BIN_DIR, 'jsdemo18'), Glob('jsdemo18/*.c'),LIBS=LIBS)
   env.Program(os.path.join(BIN_DIR, 'jsdemo19'), Glob('jsdemo19/*.c'), LIBS=LIBS)
   env.Program(os.path.join(BIN_DIR, 'jsdemo35'), Glob('jsdemo35/*.c'),LIBS=LIBS)
+  env.Program(os.path.join(BIN_DIR, 'jsdemo40'), Glob('jsdemo40/*.c'),LIBS=LIBS)
 
 env.Program(os.path.join(BIN_DIR, 'cppdemo1'), Glob('cppdemo1/*.cpp'),LIBS=LIBS)
 env.Program(os.path.join(BIN_DIR, 'cppdemo2'), Glob('cppdemo2/*.cpp'),LIBS=LIBS)
@@ -84,4 +86,3 @@ env.Program(os.path.join(BIN_DIR, 'cppdemo11'), Glob('cppdemo11/*.cpp'),LIBS=LIB
 env.Program(os.path.join(BIN_DIR, 'cppdemo12'), Glob('cppdemo12/*.cpp'),LIBS=LIBS)
 env.Program(os.path.join(BIN_DIR, 'cppdemo13'), Glob('cppdemo13/*.cpp'),LIBS=LIBS)
 env.Program(os.path.join(BIN_DIR, 'cppdemo39'), Glob('cppdemo39/*.cpp'),LIBS=LIBS)
-

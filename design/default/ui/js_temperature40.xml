@@ -1,0 +1,9 @@
+<window  v-model="temperature_ex" theme="temperature40">
+  <label tr_text="centigrade" x="0" y="middle:-80" w="40%" h="40"/>
+  <label tr_text="fahrenheit" x="right" y="middle:-80" w="40%" h="40"/>
+  <label x="0" y="middle:-40" w="40%" h="40" v-data:text="{value}"/>
+  <label x="right" y="middle:-40" w="40%" h="40" v-data:text="{value, converter=fahrenheit}"/>
+  <slider x="center" y="middle" w="80%" h="20" v-data:value="{value}"/>
+  <button tr_text="translate" x="10" y="middle:60" w="40%" h="40" v-on:click="{changeLocale}"/>
+  <button tr_text="switch_theme" x="right:10" y="middle:60" w="40%" h="40" v-on:click="{changeTheme}"/>
+</window>

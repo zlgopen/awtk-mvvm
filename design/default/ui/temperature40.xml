@@ -1,0 +1,26 @@
+<window  v-model="temperature_ex">
+  <label tr_text="centigrade" x="0" y="middle:-80" w="40%" h="40"/>
+  <label tr_text="fahrenheit" x="right" y="middle:-80" w="40%" h="40"/>
+  <label x="0" y="middle:-40" w="40%" h="40" v-data:text="{value}"/>
+  <label x="right" y="middle:-40" w="40%" h="40" v-data:text="{value, converter=fahrenheit}"/>
+  <slider x="center" y="middle" w="80%" h="20" v-data:value="{value}"/>
+  <button tr_text="translate" x="10" y="middle:60" w="40%" h="40"
+    v-on:click="{fscript, Args={
+      a = locale_get()
+      b = object_get(a, 'language')
+      if (b == 'en'){
+        locale_set('zh', 'CN')
+      } else {
+        locale_set('en', 'US')
+      }
+    }}"/>
+  <button tr_text="switch_theme" x="right:10" y="middle:60" w="40%" h="40"
+    v-on:click="{fscript, Args={
+      a = theme_get()
+      if (a == 'default') {
+        theme_set('dark')
+      } else {
+        theme_set('default')
+      }
+    }}"/>
+</window>

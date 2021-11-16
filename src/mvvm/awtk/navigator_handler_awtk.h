@@ -55,6 +55,10 @@ navigator_handler_t* navigator_handler_awtk_pick_dir_create(void);
 navigator_handler_t* navigator_handler_awtk_count_view_model_create(void);
 navigator_handler_t* navigator_handler_awtk_get_view_model_create(void);
 navigator_handler_t* navigator_handler_awtk_notify_view_model_create(void);
+navigator_handler_t* navigator_handler_awtk_get_locale_create(void);
+navigator_handler_t* navigator_handler_awtk_set_locale_create(void);
+navigator_handler_t* navigator_handler_awtk_get_theme_create(void);
+navigator_handler_t* navigator_handler_awtk_set_theme_create(void);
 
 #define NAVIGATOR_HANDLER_AWTK(h) ((navigator_handler_awtk_t*)h)
 

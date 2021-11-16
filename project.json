@@ -34,6 +34,18 @@
           "colorDepth": "16bit",
           "colorFormat": "BGR(A)"
         }
+      },
+      "dark": {
+        "activedSystemBar": "system_bar",
+        "activedBottomSystemBar": "system_bar_b",
+        "packaged": true,
+        "fonts": {},
+        "lcd": {
+          "width": "480",
+          "height": "640",
+          "colorDepth": "16bit",
+          "colorFormat": "BGR(A)"
+        }
       }
     }
   },
