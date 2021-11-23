@@ -1,4 +1,5 @@
 ﻿import os
+import re
 import scripts.app_helper as app
 
 APP_3RD_ROOT = os.path.normpath(os.path.join(os.getcwd(), '3rd'))
@@ -63,13 +64,24 @@ else:
 
 def dll_def_processor():
   content = ''
+
+  with open('src/mvvm.def', 'r') as f:
+    content = f.read()
+
+    if not 'WITH_JS' in os.environ or os.environ['WITH_JS'] != 'true':
+      regex = [' +jerry.+\n', ' +.+_jerryscript_.+\n', ' +jsvalue.+\n', ' +js_.+\n', ' +jsobj_.+\n', ' +object_js_.*\n', ' +object_is_object_js_.*\n']
+      for r in regex:
+        reobj = re.compile(r)
+        content, number = reobj.subn('', content)
+
   if helper.awtk.TARGET_ARCH == 'x86':
     with open('src/cpp_x86.def', 'r') as f:
-      content = f.read()
+      content += f.read()
   else:
     with open('src/cpp.def', 'r') as f:
-      content = f.read()
-  with open('src/mvvm.def', 'a') as f:
+      content += f.read()
+
+  with open('src/mvvm.def', 'w') as f:
     f.write(content)
 
 helper = app.Helper(ARGUMENTS);

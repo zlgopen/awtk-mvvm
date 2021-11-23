@@ -48,7 +48,7 @@ env.Program(os.path.join(BIN_DIR, 'demo38'), Glob('demo38/*.c'),LIBS=LIBS)
 env.Program(os.path.join(BIN_DIR, 'demo39'), Glob('demo39/*.c'),LIBS=LIBS)
 env.Program(os.path.join(BIN_DIR, 'demo40'), Glob('demo40/*.c'),LIBS=LIBS)
 
-if 'WITH_JS' in os.environ:
+if 'WITH_JS' in os.environ and os.environ['WITH_JS'] == 'true':
   env.Program(os.path.join(BIN_DIR, 'jsdemo1'), Glob('jsdemo1/*.c'),LIBS=LIBS)
   env.Program(os.path.join(BIN_DIR, 'jsdemo2'), Glob('jsdemo2/*.c'),LIBS=LIBS)
   env.Program(os.path.join(BIN_DIR, 'jsdemo3'), Glob('jsdemo3/*.c'),LIBS=LIBS)

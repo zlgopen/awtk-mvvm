@@ -1,5 +1,9 @@
 # 最新动态
 
+* 2021/11/23
+  * 完善 binding\_context，修正内存泄漏以及在条件渲染控件的子控件中定义v-model时没有正确解绑和触发WILL\_UNMOUNT事件的问题。
+  * 修正 WITH_JS 非 true 时无法正常编译的问题。
+
 * 2021/11/16
   * 增加 navigator\_get\_locale、navigator\_set\_locale，用于获取和设置界面的语言。（感谢雨欣提供补丁）
   * 增加 navigator\_get\_theme、navigator\_set\_theme，用于获取和设置界面的主题。（感谢雨欣提供补丁）
