@@ -187,6 +187,7 @@ ret_t binding_context_set_view_model(binding_context_t* ctx, view_model_t* vm) {
 
     view_model->parent = parent_view_model;
     if (parent_view_model != NULL) {
+      object_ref(OBJECT(parent_view_model));
       emitter_on(EMITTER(parent_view_model), EVT_ITEMS_CHANGED, emitter_forward, view_model);
       emitter_on(EMITTER(parent_view_model), EVT_PROPS_CHANGED, emitter_forward, view_model);
       emitter_on(EMITTER(parent_view_model), EVT_PROP_CHANGED, emitter_forward, view_model);

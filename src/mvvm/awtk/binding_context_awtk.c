@@ -896,12 +896,6 @@ static ret_t binding_context_awtk_update_command_stat_of_widget(binding_context_
   return RET_OK;
 }
 
-static ret_t visit_clear_binding(void* ctx, const void* data) {
-  widget_t* widget = WIDGET(data);
-  binding_context_t* bctx = BINDING_CONTEXT(ctx);
-  return binding_context_clear_bindings_of_widget(ctx, widget);
-}
-
 static ret_t visit_dynamic_binding_update_to_view(void* ctx, const void* data) {
   binding_rule_t* rule = BINDING_RULE(data);
   binding_context_t* bctx = BINDING_RULE_CONTEXT(data);
@@ -917,9 +911,6 @@ static ret_t visit_dynamic_binding_update_to_view(void* ctx, const void* data) {
     new_widget = widget_get_child(parent, index);
     if (new_widget != NULL && new_widget != old_widget) {
       bool_t should_update = (bool_t)(ctx);
-
-      /* 由于控件为异步销毁，无法立即清除绑定规则，故在此处强制清除，避免无效的绑定被执行 */
-      widget_foreach(old_widget, visit_clear_binding, bctx);
 
       if (should_update) {
         binding_context_awtk_update_data_of_widget(bctx, new_widget);
@@ -1031,8 +1022,14 @@ static ret_t binding_context_awtk_unbind_widget(binding_context_t* ctx) {
     widget_foreach(widget, on_reset_emitter, NULL);
 
     if (widget->custom_props != NULL) {
-      asset_info_t* ui =
-          object_get_prop_pointer(widget->custom_props, WIDGET_PROP_MVVM_ASSETS_INFO);
+      object_t* props = widget->custom_props;
+      darray_t* children = (darray_t*)object_get_prop_pointer(props, WIDGET_PROP_V_MODEL_CHILDREN);
+      asset_info_t* ui = object_get_prop_pointer(props, WIDGET_PROP_MVVM_ASSETS_INFO);
+
+      if (children != NULL) {
+        darray_destroy(children);
+      }
+
       if (ui != NULL) {
         assets_manager_unref(assets_manager(), ui);
       }
@@ -1123,6 +1120,8 @@ static ret_t binding_context_awtk_destroy_async(const idle_info_t* info) {
 
 static ret_t binding_context_awtk_on_widget_destroy(void* ctx, event_t* e) {
   binding_context_t* bctx = BINDING_CONTEXT(ctx);
+
+  binding_context_set_bound(bctx, FALSE);
 
   binding_context_awtk_unbind_widget(bctx);
 

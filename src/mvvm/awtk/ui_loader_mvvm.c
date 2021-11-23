@@ -519,6 +519,12 @@ error:
   return NULL;
 }
 
+static ret_t visit_clear_binding(void* ctx, const void* data) {
+  widget_t* widget = WIDGET(data);
+  binding_context_t* bctx = BINDING_CONTEXT(ctx);
+  return binding_context_clear_bindings_of_widget(ctx, widget);
+}
+
 static ret_t ui_loader_mvvm_build_condition_widget(ui_loader_mvvm_t* loader, rbuffer_t* rbuffer,
                                                    ui_builder_t* builder, binding_rule_t* rule) {
   bool_t is_ok = FALSE;
@@ -568,6 +574,10 @@ static ret_t ui_loader_mvvm_build_condition_widget(ui_loader_mvvm_t* loader, rbu
         if (binding->current_expr != NULL) {
           widget = widget_get_child(parent, index);
           ENSURE(widget != NULL);
+
+          /* 由于控件为异步销毁，无法立即清除绑定规则，故在此处强制清除，避免无效的绑定被执行 */
+          widget_foreach(widget, visit_clear_binding, ctx);
+
           widget_destroy(widget);
         }
 
@@ -599,6 +609,10 @@ static ret_t ui_loader_mvvm_build_condition_widget(ui_loader_mvvm_t* loader, rbu
     uint32_t index = binding_context_calc_widget_index_of_rule(ctx, rule);
     widget_t* widget = widget_get_child(parent, index);
     ENSURE(widget != NULL);
+
+    /* 由于控件为异步销毁，无法立即清除绑定规则，故在此处强制清除，避免无效的绑定被执行 */
+    widget_foreach(widget, visit_clear_binding, ctx);
+
     widget_destroy(widget);
   }
 
