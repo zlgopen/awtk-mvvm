@@ -1129,7 +1129,6 @@ static ret_t binding_context_awtk_on_widget_destroy(void* ctx, event_t* e) {
     binding_context_set_parent(bctx, NULL);
   }
 
-  binding_context_set_view_model(bctx, NULL);
   idle_add(binding_context_awtk_destroy_async, ctx);
   (void)e;
   return RET_REMOVE;

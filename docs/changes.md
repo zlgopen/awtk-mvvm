@@ -1,5 +1,8 @@
 # 最新动态
 
+* 2021/11/24
+  * 完善 binding\_context，修正子控件绑定view model时由于时序有误导致父的view model没有销毁的问题。
+
 * 2021/11/23
   * 完善 binding\_context，修正内存泄漏以及在条件渲染控件的子控件中定义v-model时没有正确解绑和触发WILL\_UNMOUNT事件的问题。
   * 修正 WITH_JS 非 true 时无法正常编译的问题。
