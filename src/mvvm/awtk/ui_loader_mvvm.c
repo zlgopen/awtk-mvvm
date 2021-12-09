@@ -310,7 +310,7 @@ static binding_rule_t* ui_loader_mvvm_bind_data(ui_loader_mvvm_t* loader, widget
     }
   }
 
-  object_unref(OBJECT(rule));
+  tk_object_unref(TK_OBJECT(rule));
   return NULL;
 }
 
@@ -330,7 +330,7 @@ static binding_rule_t* ui_loader_mvvm_bind_command(ui_loader_mvvm_t* loader, wid
     }
   }
 
-  object_unref(OBJECT(rule));
+  tk_object_unref(TK_OBJECT(rule));
   return NULL;
 }
 
@@ -353,7 +353,7 @@ static binding_rule_t* ui_loader_mvvm_bind_items(ui_loader_mvvm_t* loader, widge
     }
   }
 
-  object_unref(OBJECT(rule));
+  tk_object_unref(TK_OBJECT(rule));
   return NULL;
 }
 
@@ -370,7 +370,7 @@ static binding_rule_t* ui_loader_mvvm_bind_condition(ui_loader_mvvm_t* loader, w
   binding->widget_data_size = data_size;
 
   if (binding_context_bind_condition(loader->binding_context, rule) != RET_OK) {
-    object_unref(OBJECT(rule));
+    tk_object_unref(TK_OBJECT(rule));
     rule = NULL;
   }
 
@@ -381,7 +381,7 @@ static ret_t widget_get_custom_prop(widget_t* widget, const char* name, value_t*
   return_value_if_fail(widget != NULL && name != NULL && v != NULL, RET_BAD_PARAMS);
 
   if (widget->custom_props != NULL) {
-    return object_get_prop(widget->custom_props, name, v);
+    return tk_object_get_prop(widget->custom_props, name, v);
   } else {
     return RET_NOT_FOUND;
   }
@@ -391,7 +391,7 @@ static ret_t widget_set_custom_prop(widget_t* widget, const char* name, const va
   return_value_if_fail(widget != NULL && name != NULL && v != NULL, RET_BAD_PARAMS);
 
   if (widget->custom_props != NULL) {
-    return object_set_prop(widget->custom_props, name, v);
+    return tk_object_set_prop(widget->custom_props, name, v);
   } else {
     return widget_set_prop(widget, name, v);
   }
@@ -555,7 +555,7 @@ static ret_t ui_loader_mvvm_build_condition_widget(ui_loader_mvvm_t* loader, rbu
       str_init(&str, 0);
       str_set_with_len(&str, l_str, len);
       value_set_bool(&v, FALSE);
-      if (fscript_eval(OBJECT(rule), str.str, &v) == RET_OK && value_bool(&v)) {
+      if (fscript_eval(TK_OBJECT(rule), str.str, &v) == RET_OK && value_bool(&v)) {
         is_ok = TRUE;
       }
       str_reset(&str);
@@ -653,7 +653,7 @@ widget_t* widget_lookup_by_id(widget_t* widget, const value_t* id, int32_t begin
 }
 
 static ret_t ui_loader_mvvm_get_widget_id(binding_context_t* ctx, binding_rule_t* rule,
-                                          object_t* obj, const char* id_name, value_t* v) {
+                                          tk_object_t* obj, const char* id_name, value_t* v) {
   bool_t is_cursor = FALSE;
   const char* id = binding_context_resolve_path_by_rule(ctx, rule, id_name, &is_cursor);
 
@@ -661,7 +661,7 @@ static ret_t ui_loader_mvvm_get_widget_id(binding_context_t* ctx, binding_rule_t
     value_set_str(v, id);
     return RET_OK;
   } else {
-    return object_get_prop(obj, id, v);
+    return tk_object_get_prop(obj, id, v);
   }
 }
 
@@ -701,15 +701,15 @@ static ret_t ui_loader_mvvm_build_items_widget(ui_loader_mvvm_t* loader, rbuffer
     }
   } else {
     value_t v;
-    object_t* obj = NULL;
+    tk_object_t* obj = NULL;
     const char* items_name = binding->items_name;
-    const char* items_length_name = OBJECT_PROP_SIZE;
+    const char* items_length_name = TK_OBJECT_PROP_SIZE;
 
     if (binding_context_get_prop_by_rule(ctx, rule, items_name, &v) == RET_OK) {
       obj = value_object(&v);
     }
 
-    if (obj == OBJECT(view_model) && object_is_collection(obj)) {
+    if (obj == TK_OBJECT(view_model) && tk_object_is_collection(obj)) {
       items_length_name = VIEW_MODEL_PROP_ITEMS;
     }
 
@@ -735,7 +735,7 @@ static ret_t ui_loader_mvvm_build_items_widget(ui_loader_mvvm_t* loader, rbuffer
       uint32_t i = 0;
       widget_t* widget = NULL;
       uint32_t first_index = binding_context_calc_widget_index_of_rule(ctx, rule);
-      uint32_t new_count = object_get_prop_uint32(obj, items_length_name, 0);
+      uint32_t new_count = tk_object_get_prop_uint32(obj, items_length_name, 0);
       uint32_t old_count = binding->items_count;
       const char* id_name = binding->id_name;
       value_t* pid = NULL;
@@ -754,7 +754,7 @@ static ret_t ui_loader_mvvm_build_items_widget(ui_loader_mvvm_t* loader, rbuffer
           pid = NULL;
           binding->cursor = i;
           if (id_name != NULL) {
-            if (ui_loader_mvvm_get_widget_id(ctx, rule, OBJECT(view_model), id_name, &id) ==
+            if (ui_loader_mvvm_get_widget_id(ctx, rule, TK_OBJECT(view_model), id_name, &id) ==
                 RET_OK) {
               pid = &id;
             }
@@ -777,7 +777,8 @@ static ret_t ui_loader_mvvm_build_items_widget(ui_loader_mvvm_t* loader, rbuffer
         while (new_begin < new_end && old_begin < old_end) {
           pid = NULL;
           binding->cursor = new_begin;
-          if (ui_loader_mvvm_get_widget_id(ctx, rule, OBJECT(view_model), id_name, &id) == RET_OK) {
+          if (ui_loader_mvvm_get_widget_id(ctx, rule, TK_OBJECT(view_model), id_name, &id) ==
+              RET_OK) {
             pid = &id;
             widget = widget_lookup_by_id(parent, pid, old_begin, old_end, &i);
           }
@@ -803,7 +804,8 @@ static ret_t ui_loader_mvvm_build_items_widget(ui_loader_mvvm_t* loader, rbuffer
 
           pid = NULL;
           binding->cursor = new_end;
-          if (ui_loader_mvvm_get_widget_id(ctx, rule, OBJECT(view_model), id_name, &id) == RET_OK) {
+          if (ui_loader_mvvm_get_widget_id(ctx, rule, TK_OBJECT(view_model), id_name, &id) ==
+              RET_OK) {
             pid = &id;
             widget = widget_lookup_by_id(parent, pid, old_end, old_begin, &i);
           }
@@ -838,7 +840,8 @@ static ret_t ui_loader_mvvm_build_items_widget(ui_loader_mvvm_t* loader, rbuffer
         for (i = new_begin; i <= new_end; i++) {
           pid = NULL;
           binding->cursor = i;
-          if (ui_loader_mvvm_get_widget_id(ctx, rule, OBJECT(view_model), id_name, &id) == RET_OK) {
+          if (ui_loader_mvvm_get_widget_id(ctx, rule, TK_OBJECT(view_model), id_name, &id) ==
+              RET_OK) {
             pid = &id;
           }
 
@@ -892,7 +895,7 @@ static ret_t ui_loader_mvvm_load_a_snippet(ui_loader_mvvm_t* loader, rbuffer_t* 
       if (key == NULL) {
         if (widget->custom_props != NULL && widget_count_children(widget) == 0 &&
             ui_loader_mvvm_count_bindings(&(ctx->dynamic_bindings), widget) == 0 &&
-            object_get_prop_bool(widget->custom_props, WIDGET_PROP_V_FOR_ITEMS, FALSE)) {
+            tk_object_get_prop_bool(widget->custom_props, WIDGET_PROP_V_FOR_ITEMS, FALSE)) {
           key = BINDING_RULE_ITEMS;
           val = "";
         }
@@ -1012,7 +1015,7 @@ widget_t* ui_loader_mvvm_load_widget(navigator_request_t* req) {
   widget_t* root = NULL;
   return_value_if_fail(req != NULL, NULL);
 
-  target = object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_TARGET);
+  target = tk_object_get_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_TARGET);
   return_value_if_fail(target != NULL, NULL);
 
   ui = assets_manager_ref(assets_manager(), ASSET_TYPE_UI, target);

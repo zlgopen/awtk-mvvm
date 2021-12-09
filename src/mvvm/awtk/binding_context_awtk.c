@@ -84,7 +84,7 @@ static view_model_t* binding_context_awtk_create_view_model(view_model_t* parent
         if (vm != NULL) {
           if (view_model_compositor_add(compositor, vm) != RET_OK) {
             log_warn("view_model_compositor_add failed\n");
-            OBJECT_UNREF(vm);
+            TK_OBJECT_UNREF(vm);
           }
         } else {
           log_warn("create \"%s\" view_model failed\n", type1);
@@ -454,7 +454,8 @@ static ret_t binding_context_awtk_find_binding_rule(slist_t* slist, tk_compare_t
   return RET_OK;
 }
 
-static int32_t binding_context_awtk_compare_items_object(binding_rule_t* rule, object_t* target) {
+static int32_t binding_context_awtk_compare_items_object(binding_rule_t* rule,
+                                                         tk_object_t* target) {
   if (binding_rule_is_items_binding(rule)) {
     items_binding_t* items_binding = ITEMS_BINDING(rule);
     binding_context_t* ctx = BINDING_RULE_CONTEXT(rule);
@@ -465,10 +466,10 @@ static int32_t binding_context_awtk_compare_items_object(binding_rule_t* rule, o
 
     path = binding_context_resolve_path_by_rule(ctx, parent, path, NULL);
     if (path == NULL) {
-      return OBJECT(view_model) - target;
+      return TK_OBJECT(view_model) - target;
     } else {
       if (view_model_get_prop(view_model, path, &v) == RET_OK) {
-        object_t* obj = value_object(&v);
+        tk_object_t* obj = value_object(&v);
         return obj - target;
       }
     }
@@ -513,7 +514,7 @@ static ret_t visit_items_binding_rebind_sync(void* ctx, const void* data) {
   return RET_OK;
 }
 
-static ret_t binding_context_awtk_notify_items_changed(binding_context_t* ctx, object_t* items,
+static ret_t binding_context_awtk_notify_items_changed(binding_context_t* ctx, tk_object_t* items,
                                                        bool_t sync) {
   darray_t matched;
   tk_compare_t compare = (tk_compare_t)binding_context_awtk_compare_items_object;
@@ -553,7 +554,8 @@ uint32_t binding_context_awtk_calc_widget_index_of_rule(binding_context_t* ctx,
     widget_t* widget = WIDGET(BINDING_RULE_WIDGET(rule));
     return_value_if_fail(widget != NULL, 0);
 
-    if (widget->custom_props != NULL && object_get_prop(widget->custom_props, name, &v) == RET_OK) {
+    if (widget->custom_props != NULL &&
+        tk_object_get_prop(widget->custom_props, name, &v) == RET_OK) {
       index = value_uint32(&v);
     } else {
       index = widget_count_children(widget);
@@ -612,7 +614,7 @@ uint32_t binding_context_awtk_get_items_cursor_of_rule(binding_context_t* ctx,
       }
       return_value_if_fail(widget != NULL, 0);
 
-      cursor = object_get_prop_uint32(widget->custom_props, WIDGET_PROP_MVVM_DATA_CURSOR, 0);
+      cursor = tk_object_get_prop_uint32(widget->custom_props, WIDGET_PROP_MVVM_DATA_CURSOR, 0);
       cursor += binding->start_item_index;
       return cursor;
     }
@@ -656,7 +658,7 @@ const char* binding_context_awtk_resolve_path_by_rule(binding_context_t* ctx, bi
           }
           return_value_if_fail(widget != NULL, NULL);
           binding->cursor =
-              object_get_prop_uint32(widget->custom_props, WIDGET_PROP_MVVM_DATA_CURSOR, 0);
+              tk_object_get_prop_uint32(widget->custom_props, WIDGET_PROP_MVVM_DATA_CURSOR, 0);
         }
 
         cursor = binding->cursor + binding->start_item_index;
@@ -1022,9 +1024,10 @@ static ret_t binding_context_awtk_unbind_widget(binding_context_t* ctx) {
     widget_foreach(widget, on_reset_emitter, NULL);
 
     if (widget->custom_props != NULL) {
-      object_t* props = widget->custom_props;
-      darray_t* children = (darray_t*)object_get_prop_pointer(props, WIDGET_PROP_V_MODEL_CHILDREN);
-      asset_info_t* ui = object_get_prop_pointer(props, WIDGET_PROP_MVVM_ASSETS_INFO);
+      tk_object_t* props = widget->custom_props;
+      darray_t* children =
+          (darray_t*)tk_object_get_prop_pointer(props, WIDGET_PROP_V_MODEL_CHILDREN);
+      asset_info_t* ui = tk_object_get_prop_pointer(props, WIDGET_PROP_MVVM_ASSETS_INFO);
 
       if (children != NULL) {
         darray_destroy(children);
@@ -1062,11 +1065,11 @@ static const binding_context_vtable_t s_binding_context_vtable = {
 
 static darray_t* binding_context_awtk_get_children(binding_context_t* ctx) {
   widget_t* widget = WIDGET(ctx->widget);
-  object_t* props = widget->custom_props;
+  tk_object_t* props = widget->custom_props;
   darray_t* children = NULL;
 
-  if (props != NULL && object_has_prop(props, WIDGET_PROP_V_MODEL_CHILDREN)) {
-    children = (darray_t*)object_get_prop_pointer(props, WIDGET_PROP_V_MODEL_CHILDREN);
+  if (props != NULL && tk_object_has_prop(props, WIDGET_PROP_V_MODEL_CHILDREN)) {
+    children = (darray_t*)tk_object_get_prop_pointer(props, WIDGET_PROP_V_MODEL_CHILDREN);
   }
 
   return children;
@@ -1172,7 +1175,7 @@ binding_context_t* binding_context_awtk_create(binding_context_t* parent, const 
     }
   }
 
-  object_unref(OBJECT(view_model));
+  tk_object_unref(TK_OBJECT(view_model));
 
   return ctx;
 }

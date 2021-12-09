@@ -26,41 +26,41 @@ namespace vm {
 /****************************object*****************************/
 
 typedef struct _object_adapter_t {
-  object_t obj;
+  tk_object_t obj;
 
   Object* cpp;
   bool_t auto_destroy_cpp;
 } object_adapter_t;
 
-static ret_t object_adapter_set_prop(object_t* obj, const char* name, const value_t* v) {
+static ret_t object_adapter_set_prop(tk_object_t* obj, const char* name, const value_t* v) {
   object_adapter_t* adapter = (object_adapter_t*)(obj);
   return_value_if_fail(adapter->cpp != NULL, RET_BAD_PARAMS);
 
   return adapter->cpp->SetProp(name, v);
 }
 
-static ret_t object_adapter_get_prop(object_t* obj, const char* name, value_t* v) {
+static ret_t object_adapter_get_prop(tk_object_t* obj, const char* name, value_t* v) {
   object_adapter_t* adapter = (object_adapter_t*)(obj);
   return_value_if_fail(adapter->cpp != NULL, RET_BAD_PARAMS);
 
   return adapter->cpp->GetProp(name, v);
 }
 
-static bool_t object_adapter_can_exec(object_t* obj, const char* name, const char* args) {
+static bool_t object_adapter_can_exec(tk_object_t* obj, const char* name, const char* args) {
   object_adapter_t* adapter = (object_adapter_t*)(obj);
   return_value_if_fail(adapter->cpp != NULL, RET_BAD_PARAMS);
 
   return adapter->cpp->CanExec(name, args);
 }
 
-static ret_t object_adapter_exec(object_t* obj, const char* name, const char* args) {
+static ret_t object_adapter_exec(tk_object_t* obj, const char* name, const char* args) {
   object_adapter_t* adapter = (object_adapter_t*)(obj);
   return_value_if_fail(adapter->cpp != NULL, RET_BAD_PARAMS);
 
   return adapter->cpp->Exec(name, args);
 }
 
-static ret_t object_adapter_on_destroy(object_t* obj) {
+static ret_t object_adapter_on_destroy(tk_object_t* obj) {
   object_adapter_t* adapter = (object_adapter_t*)(obj);
   return_value_if_fail(adapter != NULL, RET_BAD_PARAMS);
 
@@ -102,20 +102,20 @@ static ret_t object_adapter_init_vtable(object_vtable_t* vt) {
   return RET_OK;
 }
 
-object_t* object_cpp_create(Object* cpp, bool_t auto_destroy_cpp) {
-  object_t* obj = NULL;
+static tk_object_t* object_cpp_create(Object* cpp, bool_t auto_destroy_cpp) {
+  tk_object_t* obj = NULL;
   object_adapter_t* adapter = NULL;
   return_value_if_fail(cpp != NULL, NULL);
 
   if (cpp->adapter != NULL) {
-    return OBJECT_REF(cpp->adapter);
+    return TK_OBJECT_REF(cpp->adapter);
   }
 
   if (s_object_adapter_vtable.type == NULL) {
     object_adapter_init_vtable(&s_object_adapter_vtable);
   }
 
-  obj = object_create(&s_object_adapter_vtable);
+  obj = tk_object_create(&s_object_adapter_vtable);
   return_value_if_fail(obj != NULL, NULL);
 
   adapter = (object_adapter_t*)(obj);
@@ -125,7 +125,7 @@ object_t* object_cpp_create(Object* cpp, bool_t auto_destroy_cpp) {
   cpp->On(EVT_PROP_CHANGED, object_adapter_on_cpp_props_changed, obj);
   cpp->On(EVT_PROPS_CHANGED, object_adapter_on_cpp_props_changed, obj);
   cpp->On(EVT_ITEMS_CHANGED, object_adapter_on_cpp_items_changed, obj);
-  cpp->adapter = OBJECT(adapter);
+  cpp->adapter = TK_OBJECT(adapter);
 
   return obj;
 }
@@ -163,7 +163,7 @@ static ret_t view_model_adapter_on_unmount(view_model_t* view_model) {
   return adapter->cpp->OnUnmount();
 }
 
-static ret_t view_model_adapter_on_destroy(object_t* obj) {
+static ret_t view_model_adapter_on_destroy(tk_object_t* obj) {
   view_model_adapter_t* adapter = (view_model_adapter_t*)(obj);
   return_value_if_fail(adapter != NULL, RET_BAD_PARAMS);
 
@@ -201,14 +201,14 @@ static ret_t view_model_adapter_init_vtable(view_model_vtable_t* vt) {
   return RET_OK;
 }
 
-view_model_t* view_model_cpp_create(ViewModel* cpp, bool_t auto_destroy_cpp) {
-  object_t* obj = NULL;
+static view_model_t* view_model_cpp_create(ViewModel* cpp, bool_t auto_destroy_cpp) {
+  tk_object_t* obj = NULL;
   view_model_t* view_model = NULL;
   view_model_adapter_t* adapter = NULL;
   return_value_if_fail(cpp != NULL, NULL);
 
   if (cpp->adapter != NULL) {
-    return VIEW_MODEL(OBJECT_REF(cpp->adapter));
+    return VIEW_MODEL(TK_OBJECT_REF(cpp->adapter));
   }
 
   if (s_view_model_adapter_object_vtable.type == NULL) {
@@ -216,7 +216,7 @@ view_model_t* view_model_cpp_create(ViewModel* cpp, bool_t auto_destroy_cpp) {
     view_model_adapter_init_object_vtable(&s_view_model_adapter_object_vtable);
   }
 
-  obj = object_create(&s_view_model_adapter_object_vtable);
+  obj = tk_object_create(&s_view_model_adapter_object_vtable);
   view_model = view_model_init(VIEW_MODEL(obj));
   return_value_if_fail(view_model != NULL, NULL);
 
@@ -229,7 +229,7 @@ view_model_t* view_model_cpp_create(ViewModel* cpp, bool_t auto_destroy_cpp) {
   cpp->On(EVT_PROP_CHANGED, object_adapter_on_cpp_props_changed, view_model);
   cpp->On(EVT_PROPS_CHANGED, object_adapter_on_cpp_props_changed, view_model);
   cpp->On(EVT_ITEMS_CHANGED, object_adapter_on_cpp_items_changed, view_model);
-  cpp->adapter = OBJECT(adapter);
+  cpp->adapter = TK_OBJECT(adapter);
 
   return view_model;
 }
@@ -243,21 +243,22 @@ typedef struct _view_model_array_adapter_t {
   bool_t auto_destroy_cpp;
 } view_model_array_adapter_t;
 
-uint32_t view_model_array_adapter_size(view_model_t* view_model) {
+static uint32_t view_model_array_adapter_size(view_model_t* view_model) {
   view_model_array_adapter_t* adapter = (view_model_array_adapter_t*)(view_model);
   return_value_if_fail(adapter != NULL, 0);
 
   return adapter->cpp->GetSize();
 }
 
-ret_t view_model_array_adapter_clear(view_model_t* view_model) {
+static ret_t view_model_array_adapter_clear(view_model_t* view_model) {
   view_model_array_adapter_t* adapter = (view_model_array_adapter_t*)(view_model);
   return_value_if_fail(adapter != NULL, RET_BAD_PARAMS);
 
   return adapter->cpp->Clear();
 }
 
-static ret_t view_model_array_adapter_set_prop(object_t* obj, const char* name, const value_t* v) {
+static ret_t view_model_array_adapter_set_prop(tk_object_t* obj, const char* name,
+                                               const value_t* v) {
   uint32_t index = 0;
   const char* subname = NULL;
   view_model_t* view_model = VIEW_MODEL(obj);
@@ -275,7 +276,7 @@ static ret_t view_model_array_adapter_set_prop(object_t* obj, const char* name, 
   return adapter->cpp->SetProp(index, subname, v);
 }
 
-static ret_t view_model_array_adapter_get_prop(object_t* obj, const char* name, value_t* v) {
+static ret_t view_model_array_adapter_get_prop(tk_object_t* obj, const char* name, value_t* v) {
   uint32_t index = 0;
   const char* subname = NULL;
   view_model_t* view_model = VIEW_MODEL(obj);
@@ -295,7 +296,8 @@ static ret_t view_model_array_adapter_get_prop(object_t* obj, const char* name, 
   return adapter->cpp->GetProp(index, subname, v);
 }
 
-static bool_t view_model_array_adapter_can_exec(object_t* obj, const char* name, const char* args) {
+static bool_t view_model_array_adapter_can_exec(tk_object_t* obj, const char* name,
+                                                const char* args) {
   uint32_t index = tk_atoi(args);
   view_model_t* view_model = VIEW_MODEL(obj);
   view_model_array_adapter_t* adapter = (view_model_array_adapter_t*)(view_model);
@@ -309,7 +311,7 @@ static bool_t view_model_array_adapter_can_exec(object_t* obj, const char* name,
   return adapter->cpp->CanExec(index, name);
 }
 
-static ret_t view_model_array_adapter_exec(object_t* obj, const char* name, const char* args) {
+static ret_t view_model_array_adapter_exec(tk_object_t* obj, const char* name, const char* args) {
   uint32_t index = tk_atoi(args);
   view_model_t* view_model = VIEW_MODEL(obj);
   view_model_array_adapter_t* adapter = (view_model_array_adapter_t*)(view_model);
@@ -327,7 +329,7 @@ static ret_t view_model_array_adapter_exec(object_t* obj, const char* name, cons
   return adapter->cpp->Exec(index, name);
 }
 
-static ret_t view_model_array_adapter_on_destroy(object_t* obj) {
+static ret_t view_model_array_adapter_on_destroy(tk_object_t* obj) {
   view_model_t* view_model = VIEW_MODEL(obj);
   view_model_array_adapter_t* adapter = (view_model_array_adapter_t*)(view_model);
 
@@ -366,14 +368,14 @@ static ret_t view_model_array_adapter_init_vtable(view_model_vtable_t* vt) {
   return RET_OK;
 }
 
-view_model_t* view_model_array_cpp_create(ViewModelArray* cpp, bool_t auto_destroy_cpp) {
-  object_t* obj = NULL;
+static view_model_t* view_model_array_cpp_create(ViewModelArray* cpp, bool_t auto_destroy_cpp) {
+  tk_object_t* obj = NULL;
   view_model_t* view_model = NULL;
   view_model_array_adapter_t* adapter = NULL;
   return_value_if_fail(cpp != NULL, NULL);
 
   if (cpp->adapter != NULL) {
-    return VIEW_MODEL(OBJECT_REF(cpp->adapter));
+    return VIEW_MODEL(TK_OBJECT_REF(cpp->adapter));
   }
 
   if (s_view_model_array_adapter_object_vtable.type == NULL) {
@@ -381,7 +383,7 @@ view_model_t* view_model_array_cpp_create(ViewModelArray* cpp, bool_t auto_destr
     view_model_array_adapter_init_object_vtable(&s_view_model_array_adapter_object_vtable);
   }
 
-  obj = object_create(&s_view_model_array_adapter_object_vtable);
+  obj = tk_object_create(&s_view_model_array_adapter_object_vtable);
   view_model = view_model_array_init(VIEW_MODEL(obj));
   return_value_if_fail(view_model != NULL, NULL);
 
@@ -394,7 +396,7 @@ view_model_t* view_model_array_cpp_create(ViewModelArray* cpp, bool_t auto_destr
   cpp->On(EVT_PROP_CHANGED, object_adapter_on_cpp_props_changed, view_model);
   cpp->On(EVT_PROPS_CHANGED, object_adapter_on_cpp_props_changed, view_model);
   cpp->On(EVT_ITEMS_CHANGED, object_adapter_on_cpp_items_changed, view_model);
-  cpp->adapter = OBJECT(adapter);
+  cpp->adapter = TK_OBJECT(adapter);
 
   return view_model;
 }
@@ -410,7 +412,7 @@ typedef struct _value_converter_adapter_t {
   bool_t auto_destroy_cpp;
 } value_converter_adapter_t;
 
-static ret_t value_converter_adapter_on_destroy(object_t* obj) {
+static ret_t value_converter_adapter_on_destroy(tk_object_t* obj) {
   value_converter_adapter_t* adapter = (value_converter_adapter_t*)(obj);
   return_value_if_fail(adapter != NULL, RET_BAD_PARAMS);
 
@@ -449,21 +451,21 @@ static ret_t value_converter_adapter_to_model(value_converter_t* c, const value_
   return value_convert_adapter->cpp->ToModel(from, to);
 }
 
-value_converter_t* value_converter_cpp_create(ValueConverter* cpp, bool_t auto_destroy_cpp) {
-  object_t* obj = NULL;
+static value_converter_t* value_converter_cpp_create(ValueConverter* cpp, bool_t auto_destroy_cpp) {
+  tk_object_t* obj = NULL;
   value_converter_t* value_convert = NULL;
   value_converter_adapter_t* adapter = NULL;
   return_value_if_fail(cpp != NULL, NULL);
 
   if (cpp->adapter != NULL) {
-    return VALUE_CONVERTER(OBJECT_REF(cpp->adapter));
+    return VALUE_CONVERTER(TK_OBJECT_REF(cpp->adapter));
   }
 
   if (s_value_converter_adapter_vtable.type == NULL) {
     value_converter_adapter_init_vtable(&s_value_converter_adapter_vtable);
   }
 
-  obj = object_create(&s_value_converter_adapter_vtable);
+  obj = tk_object_create(&s_value_converter_adapter_vtable);
   return_value_if_fail(obj != NULL, NULL);
 
   value_convert = VALUE_CONVERTER(obj);
@@ -474,7 +476,7 @@ value_converter_t* value_converter_cpp_create(ValueConverter* cpp, bool_t auto_d
   adapter->cpp = cpp;
   adapter->auto_destroy_cpp = auto_destroy_cpp;
 
-  cpp->adapter = OBJECT(adapter);
+  cpp->adapter = TK_OBJECT(adapter);
 
   return value_convert;
 }
@@ -490,7 +492,7 @@ typedef struct _value_validator_adapter_t {
   bool_t auto_destroy_cpp;
 } value_validator_adapter_t;
 
-static ret_t value_validator_adapter_on_destroy(object_t* obj) {
+static ret_t value_validator_adapter_on_destroy(tk_object_t* obj) {
   value_validator_adapter_t* adapter = (value_validator_adapter_t*)(obj);
   return_value_if_fail(adapter != NULL, RET_BAD_PARAMS);
 
@@ -528,21 +530,21 @@ static ret_t value_validator_adapter_fix(value_validator_t* c, value_t* value) {
   return value_convert_adapter->cpp->Fix(value);
 }
 
-value_validator_t* value_validator_cpp_create(ValueValidator* cpp, bool_t auto_destroy_cpp) {
-  object_t* obj = NULL;
+static value_validator_t* value_validator_cpp_create(ValueValidator* cpp, bool_t auto_destroy_cpp) {
+  tk_object_t* obj = NULL;
   value_validator_t* value_convert = NULL;
   return_value_if_fail(cpp != NULL, NULL);
   value_validator_adapter_t* adapter = NULL;
 
   if (cpp->adapter != NULL) {
-    return VALUE_VALIDATOR(OBJECT_REF(cpp->adapter));
+    return VALUE_VALIDATOR(TK_OBJECT_REF(cpp->adapter));
   }
 
   if (s_value_validator_adapter_vtable.type == NULL) {
     value_validator_adapter_init_vtable(&s_value_validator_adapter_vtable);
   }
 
-  obj = object_create(&s_value_validator_adapter_vtable);
+  obj = tk_object_create(&s_value_validator_adapter_vtable);
   return_value_if_fail(obj != NULL, NULL);
 
   value_convert = VALUE_VALIDATOR(obj);
@@ -553,12 +555,12 @@ value_validator_t* value_validator_cpp_create(ValueValidator* cpp, bool_t auto_d
   adapter->cpp = cpp;
   adapter->auto_destroy_cpp = auto_destroy_cpp;
 
-  cpp->adapter = OBJECT(adapter);
+  cpp->adapter = TK_OBJECT(adapter);
 
   return value_convert;
 }
 
-object_t* To(Object* cpp, bool_t auto_destroy_cpp) {
+tk_object_t* To(Object* cpp, bool_t auto_destroy_cpp) {
   return object_cpp_create(cpp, auto_destroy_cpp);
 }
 

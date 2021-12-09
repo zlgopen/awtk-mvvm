@@ -43,12 +43,12 @@ static ret_t value_converter_delegate_to_model(value_converter_t* c, const value
 
 value_converter_t* value_converter_delegate_create(value_convert_t to_model,
                                                    value_convert_t to_view) {
-  object_t* obj = NULL;
+  tk_object_t* obj = NULL;
   value_converter_t* value_convert = NULL;
   value_converter_delegate_t* value_convert_delegate = NULL;
   return_value_if_fail(to_model != NULL && to_view != NULL, NULL);
 
-  obj = object_create(&s_value_converter_delegate_vtable);
+  obj = tk_object_create(&s_value_converter_delegate_vtable);
   return_value_if_fail(obj != NULL, NULL);
 
   value_convert = VALUE_CONVERTER(obj);

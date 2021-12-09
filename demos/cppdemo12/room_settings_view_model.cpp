@@ -6,7 +6,8 @@
 #include "mvvm/base/utils.h"
 #include "room_settings_view_model.h"
 
-static ret_t room_settings_view_model_set_prop(object_t* obj, const char* name, const value_t* v) {
+static ret_t room_settings_view_model_set_prop(tk_object_t* obj, const char* name,
+                                               const value_t* v) {
   RoomSettings* aRoomSettings = ((room_settings_view_model_t*)(obj))->aRoomSettings;
 
   if (tk_str_ieq("temp", name)) {
@@ -26,7 +27,7 @@ static ret_t room_settings_view_model_set_prop(object_t* obj, const char* name, 
   return RET_NOT_FOUND;
 }
 
-static ret_t room_settings_view_model_get_prop(object_t* obj, const char* name, value_t* v) {
+static ret_t room_settings_view_model_get_prop(tk_object_t* obj, const char* name, value_t* v) {
   RoomSettings* aRoomSettings = ((room_settings_view_model_t*)(obj))->aRoomSettings;
 
   if (tk_str_ieq("temp", name)) {
@@ -43,7 +44,8 @@ static ret_t room_settings_view_model_get_prop(object_t* obj, const char* name, 
   return RET_NOT_FOUND;
 }
 
-static bool_t room_settings_view_model_can_exec(object_t* obj, const char* name, const char* args) {
+static bool_t room_settings_view_model_can_exec(tk_object_t* obj, const char* name,
+                                                const char* args) {
   room_settings_view_model_t* vm = (room_settings_view_model_t*)(obj);
   RoomSettings* aRoomSettings = vm->aRoomSettings;
   if (tk_str_ieq("Return", name)) {
@@ -52,7 +54,7 @@ static bool_t room_settings_view_model_can_exec(object_t* obj, const char* name,
   return FALSE;
 }
 
-static ret_t room_settings_view_model_exec(object_t* obj, const char* name, const char* args) {
+static ret_t room_settings_view_model_exec(tk_object_t* obj, const char* name, const char* args) {
   room_settings_view_model_t* vm = (room_settings_view_model_t*)(obj);
   RoomSettings* aRoomSettings = vm->aRoomSettings;
   if (tk_str_ieq("Return", name)) {
@@ -61,7 +63,7 @@ static ret_t room_settings_view_model_exec(object_t* obj, const char* name, cons
   return RET_NOT_FOUND;
 }
 
-static ret_t room_settings_view_model_on_destroy(object_t* obj) {
+static ret_t room_settings_view_model_on_destroy(tk_object_t* obj) {
   room_settings_view_model_t* vm = (room_settings_view_model_t*)(obj);
   return_value_if_fail(vm != NULL, RET_BAD_PARAMS);
 
@@ -85,7 +87,7 @@ static const object_vtable_t s_room_settings_view_model_vtable = {
     room_settings_view_model_exec};
 
 view_model_t* room_settings_view_model_create_with(RoomSettings* aRoomSettings) {
-  object_t* obj = object_create(&s_room_settings_view_model_vtable);
+  tk_object_t* obj = tk_object_create(&s_room_settings_view_model_vtable);
   view_model_t* vm = view_model_init(VIEW_MODEL(obj));
   room_settings_view_model_t* room_settings_view_model = (room_settings_view_model_t*)(vm);
 

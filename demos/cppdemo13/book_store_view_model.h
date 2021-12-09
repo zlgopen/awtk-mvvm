@@ -35,7 +35,7 @@ typedef struct _book_store_view_model_t {
   view_model_t view_model;
 
   /*model object*/
-  object_t* abook_store;
+  tk_object_t* abook_store;
 } book_store_view_model_t;
 
 /**

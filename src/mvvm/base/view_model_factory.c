@@ -48,13 +48,13 @@ ret_t view_model_factory_init(void) {
 bool_t view_model_factory_exist(const char* type) {
   return_value_if_fail(s_model_factory != NULL && type != NULL, FALSE);
 
-  return object_has_prop((s_model_factory->creators), type);
+  return tk_object_has_prop((s_model_factory->creators), type);
 }
 
 ret_t view_model_factory_unregister(const char* type) {
   return_value_if_fail(s_model_factory != NULL && type != NULL, RET_BAD_PARAMS);
 
-  return object_remove_prop((s_model_factory->creators), type);
+  return tk_object_remove_prop((s_model_factory->creators), type);
 }
 
 ret_t view_model_factory_register_generic(view_model_generic_create_t create) {
@@ -66,7 +66,7 @@ ret_t view_model_factory_register_generic(view_model_generic_create_t create) {
 ret_t view_model_factory_register(const char* type, view_model_create_t create) {
   return_value_if_fail(s_model_factory != NULL && type != NULL && create != NULL, RET_BAD_PARAMS);
 
-  return object_set_prop_pointer(s_model_factory->creators, type, create);
+  return tk_object_set_prop_pointer(s_model_factory->creators, type, create);
 }
 
 static view_model_t* view_model_generic_create(const char* type, navigator_request_t* req) {
@@ -86,7 +86,7 @@ static view_model_t* view_model_generic_create(const char* type, navigator_reque
 view_model_t* view_model_factory_create_model_one(const char* type, navigator_request_t* req) {
   view_model_create_t create = NULL;
   return_value_if_fail(s_model_factory != NULL && type != NULL, NULL);
-  create = (view_model_create_t)object_get_prop_pointer(s_model_factory->creators, type);
+  create = (view_model_create_t)tk_object_get_prop_pointer(s_model_factory->creators, type);
   if (create != NULL) {
     return create(req);
   } else {
@@ -103,7 +103,7 @@ ret_t view_model_factory_deinit(void) {
   return_value_if_fail(s_model_factory != NULL && s_model_factory->creators != NULL,
                        RET_BAD_PARAMS);
 
-  object_unref(s_model_factory->creators);
+  tk_object_unref(s_model_factory->creators);
   slist_deinit(&(s_model_factory->generic_creators));
   TKMEM_FREE(s_model_factory);
 

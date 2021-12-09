@@ -11,19 +11,19 @@ TEST(ModelJerryScript, get_prop) {
          data: {a:1, b:true, name:'awtk'}\
        });";
   view_model_t* view_model;
-  object_t* obj;
+  tk_object_t* obj;
 
   jerry_script_eval_buff(code, strlen(code), "test", TRUE);
   view_model = view_model_factory_create_model("test", NULL);
-  obj = OBJECT(view_model);
-  ASSERT_NE(obj, OBJECT(NULL));
+  obj = TK_OBJECT(view_model);
+  ASSERT_NE(obj, TK_OBJECT(NULL));
 
-  ASSERT_EQ(object_get_prop_int(obj, "a", 0), 1);
-  ASSERT_EQ(object_get_prop_int(obj, "b", 0), 1);
-  ASSERT_EQ(object_get_prop_int(obj, "c", 0), 0);
-  ASSERT_EQ(string(object_get_prop_str(obj, "name")), string("awtk"));
+  ASSERT_EQ(tk_object_get_prop_int(obj, "a", 0), 1);
+  ASSERT_EQ(tk_object_get_prop_int(obj, "b", 0), 1);
+  ASSERT_EQ(tk_object_get_prop_int(obj, "c", 0), 0);
+  ASSERT_EQ(string(tk_object_get_prop_str(obj, "name")), string("awtk"));
 
-  object_unref(OBJECT(view_model));
+  tk_object_unref(TK_OBJECT(view_model));
 }
 
 TEST(ModelJerryScript, array) {
@@ -32,27 +32,27 @@ TEST(ModelJerryScript, array) {
          data: {items: [{'name':'a', 'stock':1}, {'name':'b', 'stock':2}, {'name':'c', 'stock':3}]}\
        });";
   view_model_t* view_model;
-  object_t* obj;
+  tk_object_t* obj;
 
   jerry_script_eval_buff(code, strlen(code), "test_array", TRUE);
   view_model = view_model_factory_create_model("test_array", NULL);
-  obj = OBJECT(view_model);
-  ASSERT_NE(obj, OBJECT(NULL));
+  obj = TK_OBJECT(view_model);
+  ASSERT_NE(obj, TK_OBJECT(NULL));
 
-  ASSERT_EQ(object_get_prop_int_by_path(obj, "items.length", 0), 3);
-  ASSERT_EQ(object_get_prop_int_by_path(obj, "items.[0].stock", 0), 1);
-  ASSERT_EQ(object_get_prop_int_by_path(obj, "items.[1].stock", 0), 2);
-  ASSERT_EQ(object_get_prop_int_by_path(obj, "items.[2].stock", 0), 3);
+  ASSERT_EQ(tk_object_get_prop_int_by_path(obj, "items.length", 0), 3);
+  ASSERT_EQ(tk_object_get_prop_int_by_path(obj, "items.[0].stock", 0), 1);
+  ASSERT_EQ(tk_object_get_prop_int_by_path(obj, "items.[1].stock", 0), 2);
+  ASSERT_EQ(tk_object_get_prop_int_by_path(obj, "items.[2].stock", 0), 3);
 
-  ASSERT_EQ(object_set_prop_int_by_path(obj, "items.[0].stock", 4), RET_OK);
-  ASSERT_EQ(object_set_prop_int_by_path(obj, "items.[1].stock", 5), RET_OK);
-  ASSERT_EQ(object_set_prop_int_by_path(obj, "items.[2].stock", 6), RET_OK);
+  ASSERT_EQ(tk_object_set_prop_int_by_path(obj, "items.[0].stock", 4), RET_OK);
+  ASSERT_EQ(tk_object_set_prop_int_by_path(obj, "items.[1].stock", 5), RET_OK);
+  ASSERT_EQ(tk_object_set_prop_int_by_path(obj, "items.[2].stock", 6), RET_OK);
 
-  ASSERT_EQ(object_get_prop_int_by_path(obj, "items.[0].stock", 0), 4);
-  ASSERT_EQ(object_get_prop_int_by_path(obj, "items.[1].stock", 0), 5);
-  ASSERT_EQ(object_get_prop_int_by_path(obj, "items.[2].stock", 0), 6);
+  ASSERT_EQ(tk_object_get_prop_int_by_path(obj, "items.[0].stock", 0), 4);
+  ASSERT_EQ(tk_object_get_prop_int_by_path(obj, "items.[1].stock", 0), 5);
+  ASSERT_EQ(tk_object_get_prop_int_by_path(obj, "items.[2].stock", 0), 6);
 
-  object_unref(OBJECT(view_model));
+  tk_object_unref(TK_OBJECT(view_model));
 }
 
 TEST(ModelJerryScript, set_prop) {
@@ -61,26 +61,26 @@ TEST(ModelJerryScript, set_prop) {
          data: {a:1, b:true, name:'awtk'}\
        });";
   view_model_t* view_model;
-  object_t* obj;
+  tk_object_t* obj;
 
   jerry_script_eval_buff(code, strlen(code), "test", TRUE);
   view_model = view_model_factory_create_model("test", NULL);
-  obj = OBJECT(view_model);
-  ASSERT_NE(obj, OBJECT(NULL));
+  obj = TK_OBJECT(view_model);
+  ASSERT_NE(obj, TK_OBJECT(NULL));
 
-  ASSERT_EQ(object_set_prop_int(obj, "a", 11), RET_OK);
-  ASSERT_EQ(object_set_prop_int(obj, "b", 22), RET_OK);
-  ASSERT_EQ(object_set_prop_int(obj, "c", 33), RET_OK);
-  ASSERT_EQ(object_set_prop_int(obj, "age", 88), RET_OK);
-  ASSERT_EQ(object_set_prop_str(obj, "name", "zlg"), RET_OK);
+  ASSERT_EQ(tk_object_set_prop_int(obj, "a", 11), RET_OK);
+  ASSERT_EQ(tk_object_set_prop_int(obj, "b", 22), RET_OK);
+  ASSERT_EQ(tk_object_set_prop_int(obj, "c", 33), RET_OK);
+  ASSERT_EQ(tk_object_set_prop_int(obj, "age", 88), RET_OK);
+  ASSERT_EQ(tk_object_set_prop_str(obj, "name", "zlg"), RET_OK);
 
-  ASSERT_EQ(object_get_prop_int(obj, "a", 0), 11);
-  ASSERT_EQ(object_get_prop_int(obj, "b", 0), 22);
-  ASSERT_EQ(object_get_prop_int(obj, "c", 0), 33);
-  ASSERT_EQ(object_get_prop_int(obj, "age", 0), 88);
-  ASSERT_EQ(string(object_get_prop_str(obj, "name")), string("zlg"));
+  ASSERT_EQ(tk_object_get_prop_int(obj, "a", 0), 11);
+  ASSERT_EQ(tk_object_get_prop_int(obj, "b", 0), 22);
+  ASSERT_EQ(tk_object_get_prop_int(obj, "c", 0), 33);
+  ASSERT_EQ(tk_object_get_prop_int(obj, "age", 0), 88);
+  ASSERT_EQ(string(tk_object_get_prop_str(obj, "name")), string("zlg"));
 
-  object_unref(OBJECT(view_model));
+  tk_object_unref(TK_OBJECT(view_model));
 }
 
 TEST(ModelJerryScript, exec) {
@@ -89,20 +89,20 @@ TEST(ModelJerryScript, exec) {
          methods: {save: function(args) {print(args); return 0;}, canSave: function(args) {print(args); return true;}}\
        });";
   view_model_t* view_model;
-  object_t* obj;
+  tk_object_t* obj;
 
   jerry_script_eval_buff(code, strlen(code), "test", TRUE);
   view_model = view_model_factory_create_model("test", NULL);
-  obj = OBJECT(view_model);
-  ASSERT_NE(obj, OBJECT(NULL));
+  obj = TK_OBJECT(view_model);
+  ASSERT_NE(obj, TK_OBJECT(NULL));
 
-  ASSERT_EQ(object_can_exec(obj, "save", "awtk\n"), TRUE);
-  ASSERT_EQ(object_exec(obj, "save", "awtk\n"), RET_OK);
+  ASSERT_EQ(tk_object_can_exec(obj, "save", "awtk\n"), TRUE);
+  ASSERT_EQ(tk_object_exec(obj, "save", "awtk\n"), RET_OK);
 
-  ASSERT_EQ(object_can_exec(obj, "load", "awtk\n"), FALSE);
-  ASSERT_NE(object_exec(obj, "load", "awtk\n"), RET_OK);
+  ASSERT_EQ(tk_object_can_exec(obj, "load", "awtk\n"), FALSE);
+  ASSERT_NE(tk_object_exec(obj, "load", "awtk\n"), RET_OK);
 
-  object_unref(OBJECT(view_model));
+  tk_object_unref(TK_OBJECT(view_model));
 }
 
 TEST(ModelJerryScript, exec1) {
@@ -111,17 +111,17 @@ TEST(ModelJerryScript, exec1) {
          methods: {save1: function(args) {return 10;}, canSave1: function(args) {print(args); return true;}}\
        });";
   view_model_t* view_model;
-  object_t* obj;
+  tk_object_t* obj;
 
   jerry_script_eval_buff(code, strlen(code), "test", TRUE);
   view_model = view_model_factory_create_model("test", NULL);
-  obj = OBJECT(view_model);
-  ASSERT_NE(obj, OBJECT(NULL));
+  obj = TK_OBJECT(view_model);
+  ASSERT_NE(obj, TK_OBJECT(NULL));
 
-  ASSERT_EQ(object_can_exec(obj, "save1", "awtk\n"), TRUE);
-  ASSERT_EQ(object_exec(obj, "save1", "awtk\n"), 10);
+  ASSERT_EQ(tk_object_can_exec(obj, "save1", "awtk\n"), TRUE);
+  ASSERT_EQ(tk_object_exec(obj, "save1", "awtk\n"), 10);
 
-  object_unref(OBJECT(view_model));
+  tk_object_unref(TK_OBJECT(view_model));
 }
 
 TEST(ModelJerryScript, exec2) {
@@ -130,17 +130,17 @@ TEST(ModelJerryScript, exec2) {
          methods: {save2: function(args) {return 0;}, canSave2: function(args) {print(args); return true;}}\
        });";
   view_model_t* view_model;
-  object_t* obj;
+  tk_object_t* obj;
 
   jerry_script_eval_buff(code, strlen(code), "test", TRUE);
   view_model = view_model_factory_create_model("test", NULL);
-  obj = OBJECT(view_model);
-  ASSERT_NE(obj, OBJECT(NULL));
+  obj = TK_OBJECT(view_model);
+  ASSERT_NE(obj, TK_OBJECT(NULL));
 
-  ASSERT_EQ(object_can_exec(obj, "save2", "awtk\n"), TRUE);
-  ASSERT_EQ(object_exec(obj, "save2", "awtk\n"), 0);
+  ASSERT_EQ(tk_object_can_exec(obj, "save2", "awtk\n"), TRUE);
+  ASSERT_EQ(tk_object_exec(obj, "save2", "awtk\n"), 0);
 
-  object_unref(OBJECT(view_model));
+  tk_object_unref(TK_OBJECT(view_model));
 }
 
 static ret_t on_view_model_changed(void* ctx, event_t* e) {
@@ -162,25 +162,25 @@ TEST(ModelJerryScript, notifyPropsChanged) {
          }\
        });";
   view_model_t* view_model;
-  object_t* obj;
+  tk_object_t* obj;
 
   jerry_script_eval_buff(code, strlen(code), "test", TRUE);
   view_model = view_model_factory_create_model("test", NULL);
-  obj = OBJECT(view_model);
-  ASSERT_NE(obj, OBJECT(NULL));
+  obj = TK_OBJECT(view_model);
+  ASSERT_NE(obj, TK_OBJECT(NULL));
 
   emitter_on(EMITTER(obj), EVT_PROPS_CHANGED, on_view_model_changed, &n);
 
-  ASSERT_EQ(object_can_exec(obj, "save", "awtk\n"), TRUE);
-  ASSERT_EQ(object_exec(obj, "save", "awtk\n"), RET_OK);
-  ASSERT_EQ(object_get_prop_int(obj, "count", 0), 1);
+  ASSERT_EQ(tk_object_can_exec(obj, "save", "awtk\n"), TRUE);
+  ASSERT_EQ(tk_object_exec(obj, "save", "awtk\n"), RET_OK);
+  ASSERT_EQ(tk_object_get_prop_int(obj, "count", 0), 1);
   ASSERT_EQ(n, 1);
 
-  ASSERT_EQ(object_exec(obj, "save", "awtk\n"), RET_OK);
-  ASSERT_EQ(object_get_prop_int(obj, "count", 0), 2);
+  ASSERT_EQ(tk_object_exec(obj, "save", "awtk\n"), RET_OK);
+  ASSERT_EQ(tk_object_get_prop_int(obj, "count", 0), 2);
   ASSERT_EQ(n, 2);
 
-  object_unref(OBJECT(view_model));
+  tk_object_unref(TK_OBJECT(view_model));
 }
 
 TEST(ModelJerryScript, onWillmount) {
@@ -196,23 +196,23 @@ TEST(ModelJerryScript, onWillmount) {
          }\
        });";
   view_model_t* view_model;
-  object_t* obj;
+  tk_object_t* obj;
 
   navigator_request_t* req = navigator_request_create("test", NULL);
-  object_set_prop_int(OBJECT(req), "count", 100);
-  object_set_prop_str(OBJECT(req), "name", "abc");
+  tk_object_set_prop_int(TK_OBJECT(req), "count", 100);
+  tk_object_set_prop_str(TK_OBJECT(req), "name", "abc");
 
   jerry_script_eval_buff(code, strlen(code), "test", TRUE);
   view_model = view_model_factory_create_model("test", req);
-  obj = OBJECT(view_model);
-  ASSERT_NE(obj, OBJECT(NULL));
+  obj = TK_OBJECT(view_model);
+  ASSERT_NE(obj, TK_OBJECT(NULL));
 
   ASSERT_EQ(view_model_on_will_mount(view_model, req), RET_OK);
-  ASSERT_EQ(object_get_prop_int(obj, "count", 0), 100);
-  ASSERT_EQ(string(object_get_prop_str(obj, "name")), "abc");
+  ASSERT_EQ(tk_object_get_prop_int(obj, "count", 0), 100);
+  ASSERT_EQ(string(tk_object_get_prop_str(obj, "name")), "abc");
 
-  object_unref(OBJECT(req));
-  object_unref(OBJECT(view_model));
+  tk_object_unref(TK_OBJECT(req));
+  tk_object_unref(TK_OBJECT(view_model));
 }
 
 TEST(ModelJerryScript, onMount) {
@@ -222,20 +222,20 @@ TEST(ModelJerryScript, onMount) {
          onMount: function() {print('onMount js'); this.count++; this.notifyPropsChanged(); return 0;}\
        });";
   view_model_t* view_model;
-  object_t* obj;
+  tk_object_t* obj;
 
   jerry_script_eval_buff(code, strlen(code), "test", TRUE);
   view_model = view_model_factory_create_model("test", NULL);
-  obj = OBJECT(view_model);
-  ASSERT_NE(obj, OBJECT(NULL));
+  obj = TK_OBJECT(view_model);
+  ASSERT_NE(obj, TK_OBJECT(NULL));
 
   ASSERT_EQ(view_model_on_mount(view_model), RET_OK);
-  ASSERT_EQ(object_get_prop_int(obj, "count", 0), 1);
+  ASSERT_EQ(tk_object_get_prop_int(obj, "count", 0), 1);
 
   ASSERT_EQ(view_model_on_mount(view_model), RET_OK);
-  ASSERT_EQ(object_get_prop_int(obj, "count", 0), 2);
+  ASSERT_EQ(tk_object_get_prop_int(obj, "count", 0), 2);
 
-  object_unref(OBJECT(view_model));
+  tk_object_unref(TK_OBJECT(view_model));
 }
 
 TEST(ModelJerryScript, onWillUnmount) {
@@ -245,20 +245,20 @@ TEST(ModelJerryScript, onWillUnmount) {
          onWillUnmount: function() {print('onWillUnmount js'); this.count++; this.notifyPropsChanged(); return 0;}\
        });";
   view_model_t* view_model;
-  object_t* obj;
+  tk_object_t* obj;
 
   jerry_script_eval_buff(code, strlen(code), "test", TRUE);
   view_model = view_model_factory_create_model("test", NULL);
-  obj = OBJECT(view_model);
-  ASSERT_NE(obj, OBJECT(NULL));
+  obj = TK_OBJECT(view_model);
+  ASSERT_NE(obj, TK_OBJECT(NULL));
 
   ASSERT_EQ(view_model_on_will_unmount(view_model), RET_OK);
-  ASSERT_EQ(object_get_prop_int(obj, "count", 0), 1);
+  ASSERT_EQ(tk_object_get_prop_int(obj, "count", 0), 1);
 
   ASSERT_EQ(view_model_on_will_unmount(view_model), RET_OK);
-  ASSERT_EQ(object_get_prop_int(obj, "count", 0), 2);
+  ASSERT_EQ(tk_object_get_prop_int(obj, "count", 0), 2);
 
-  object_unref(OBJECT(view_model));
+  tk_object_unref(TK_OBJECT(view_model));
 }
 
 TEST(ModelJerryScript, onUnmount) {
@@ -268,24 +268,24 @@ TEST(ModelJerryScript, onUnmount) {
          onUnmount: function() {print('onUnmount js'); this.count++; this.notifyPropsChanged(); return 0;}\
        });";
   view_model_t* view_model;
-  object_t* obj;
+  tk_object_t* obj;
 
   jerry_script_eval_buff(code, strlen(code), "test", TRUE);
   view_model = view_model_factory_create_model("test", NULL);
-  obj = OBJECT(view_model);
-  ASSERT_NE(obj, OBJECT(NULL));
+  obj = TK_OBJECT(view_model);
+  ASSERT_NE(obj, TK_OBJECT(NULL));
 
   ASSERT_EQ(view_model_on_unmount(view_model), RET_OK);
-  ASSERT_EQ(object_get_prop_int(obj, "count", 0), 1);
+  ASSERT_EQ(tk_object_get_prop_int(obj, "count", 0), 1);
 
   ASSERT_EQ(view_model_on_unmount(view_model), RET_OK);
-  ASSERT_EQ(object_get_prop_int(obj, "count", 0), 2);
+  ASSERT_EQ(tk_object_get_prop_int(obj, "count", 0), 2);
 
-  object_unref(OBJECT(view_model));
+  tk_object_unref(TK_OBJECT(view_model));
 }
 
 TEST(ModelJerryScript, invalid) {
   view_model_t* view_model = view_model_factory_create_model("notexist", NULL);
-  object_t* obj = OBJECT(view_model);
-  ASSERT_EQ(obj, OBJECT(NULL));
+  tk_object_t* obj = TK_OBJECT(view_model);
+  ASSERT_EQ(obj, TK_OBJECT(NULL));
 }

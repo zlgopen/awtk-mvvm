@@ -24,7 +24,7 @@
 #include "book.h"
 #include "mvvm/cpp/adapter.hpp"
 
-object_t* Book::Create(void) {
+tk_object_t* Book::Create(void) {
   return vm::To(new Book());
 }
 

@@ -49,7 +49,7 @@
 namespace vm {
 
 /*将C++的Object适配成C的Object*/
-MVVM_API object_t* To(Object* cpp, bool_t auto_destroy_cpp = TRUE);
+MVVM_API tk_object_t* To(Object* cpp, bool_t auto_destroy_cpp = TRUE);
 
 /*将C++的ViewModel适配成C的ViewModel*/
 MVVM_API view_model_t* To(ViewModel* cpp, bool_t auto_destroy_cpp = TRUE);

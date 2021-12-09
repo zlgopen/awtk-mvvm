@@ -6,7 +6,7 @@
 #include "mvvm/base/utils.h"
 #include "humidity_view_model.h"
 
-static ret_t humidity_view_model_set_prop(object_t* obj, const char* name, const value_t* v) {
+static ret_t humidity_view_model_set_prop(tk_object_t* obj, const char* name, const value_t* v) {
   humidity_t* ahumidity = ((humidity_view_model_t*)(obj))->ahumidity;
 
   if (tk_str_ieq("humi", name)) {
@@ -18,7 +18,7 @@ static ret_t humidity_view_model_set_prop(object_t* obj, const char* name, const
   return RET_NOT_FOUND;
 }
 
-static ret_t humidity_view_model_get_prop(object_t* obj, const char* name, value_t* v) {
+static ret_t humidity_view_model_get_prop(tk_object_t* obj, const char* name, value_t* v) {
   humidity_t* ahumidity = ((humidity_view_model_t*)(obj))->ahumidity;
 
   if (tk_str_ieq("humi", name)) {
@@ -29,15 +29,15 @@ static ret_t humidity_view_model_get_prop(object_t* obj, const char* name, value
   return RET_NOT_FOUND;
 }
 
-static bool_t humidity_view_model_can_exec(object_t* obj, const char* name, const char* args) {
+static bool_t humidity_view_model_can_exec(tk_object_t* obj, const char* name, const char* args) {
   return FALSE;
 }
 
-static ret_t humidity_view_model_exec(object_t* obj, const char* name, const char* args) {
+static ret_t humidity_view_model_exec(tk_object_t* obj, const char* name, const char* args) {
   return RET_NOT_FOUND;
 }
 
-static ret_t humidity_view_model_on_destroy(object_t* obj) {
+static ret_t humidity_view_model_on_destroy(tk_object_t* obj) {
   humidity_view_model_t* vm = (humidity_view_model_t*)(obj);
   return_value_if_fail(vm != NULL, RET_BAD_PARAMS);
 
@@ -60,7 +60,7 @@ static const object_vtable_t s_humidity_view_model_vtable = {"humidity_view_mode
                                                              humidity_view_model_exec};
 
 view_model_t* humidity_view_model_create_with(humidity_t* ahumidity) {
-  object_t* obj = object_create(&s_humidity_view_model_vtable);
+  tk_object_t* obj = tk_object_create(&s_humidity_view_model_vtable);
   view_model_t* vm = view_model_init(VIEW_MODEL(obj));
   humidity_view_model_t* humidity_view_model = (humidity_view_model_t*)(vm);
 

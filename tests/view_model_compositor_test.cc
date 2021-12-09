@@ -20,7 +20,7 @@ static view_model_t* test_view_model_compositor_create(const char* vmodel,
     if (vm != NULL) {
       if (view_model_compositor_add(compositor, vm) != RET_OK) {
         log_warn("view_model_compositor_add failed\n");
-        OBJECT_UNREF(vm);
+        TK_OBJECT_UNREF(vm);
       }
     } else {
       log_warn("create %s view_model failed\n", type1);
@@ -59,5 +59,5 @@ TEST(ViewModelCompositor, basic) {
   ASSERT_EQ(view_model_can_exec(vm, "not_exist", NULL), FALSE);
   ASSERT_NE(view_model_exec(vm, "not_exist", NULL), RET_OK);
 
-  OBJECT_UNREF(vm);
+  TK_OBJECT_UNREF(vm);
 }

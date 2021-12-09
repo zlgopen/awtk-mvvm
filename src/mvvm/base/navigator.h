@@ -37,16 +37,16 @@ typedef ret_t (*navigator_on_result_t)(navigator_t* nav, const value_t* result);
 
 /**
  * @class navigator_t
- * @parent object_t
+ * @parent tk_object_t
  *
  * 导航器。负责窗口导航。
  *
  */
 struct _navigator_t {
-  object_t object;
+  tk_object_t object;
 
   /*private*/
-  object_t* handlers;
+  tk_object_t* handlers;
 };
 
 /**
@@ -150,7 +150,7 @@ ret_t navigator_to(const char* args);
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
-ret_t navigator_to_by_object(object_t* args);
+ret_t navigator_to_by_object(tk_object_t* args);
 
 /**
  * @method navigator_to_with_key_value
@@ -395,12 +395,12 @@ ret_t navigator_notify_view_props_changed(const char* target);
  *
  * @annotation ["static"]
  *
- * @param {object_t*} items 发生变化的items对象。
+ * @param {tk_object_t*} items 发生变化的items对象。
  * @param {const char*} target 与ViewModel实例绑定的控件的路径。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
-ret_t navigator_notify_view_items_changed(object_t* items, const char* target);
+ret_t navigator_notify_view_items_changed(tk_object_t* items, const char* target);
 
 /**
  * @method navigator_get_locale
@@ -416,9 +416,10 @@ ret_t navigator_notify_view_items_changed(object_t* items, const char* target);
  *
  * @param {const char*} target 控件的路径。
  *
- * @return {object_t*} 返回本地化信息对象，其中属性"language"表示语言，属性"country"表示国家或地区。
+ * @return {tk_object_t*}
+ * 返回本地化信息对象，其中属性"language"表示语言，属性"country"表示国家或地区。
  */
-object_t* navigator_get_locale(const char* target);
+tk_object_t* navigator_get_locale(const char* target);
 
 /**
  * @method navigator_get_locale

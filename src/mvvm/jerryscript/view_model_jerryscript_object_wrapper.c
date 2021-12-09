@@ -49,7 +49,7 @@ static ret_t view_model_jerryscript_on_destroy(view_model_t* view_model) {
   view_model_jerryscript_object_wrapper_t* vm = VIEW_MODEL_JERRYSCRIPT_OBJECT_WRAPPER(view_model);
   return_value_if_fail(vm != NULL, RET_BAD_PARAMS);
 
-  return object_exec(vm->obj, "onDestroy", NULL);
+  return tk_object_exec(vm->obj, "onDestroy", NULL);
 }
 
 static ret_t view_model_jerryscript_on_will_mount(view_model_t* view_model,
@@ -77,21 +77,21 @@ static ret_t view_model_jerryscript_on_mount(view_model_t* view_model) {
   view_model_jerryscript_object_wrapper_t* vm = VIEW_MODEL_JERRYSCRIPT_OBJECT_WRAPPER(view_model);
   return_value_if_fail(vm != NULL, RET_BAD_PARAMS);
 
-  return object_exec(vm->obj, "onMount", NULL);
+  return tk_object_exec(vm->obj, "onMount", NULL);
 }
 
 static ret_t view_model_jerryscript_on_will_unmount(view_model_t* view_model) {
   view_model_jerryscript_object_wrapper_t* vm = VIEW_MODEL_JERRYSCRIPT_OBJECT_WRAPPER(view_model);
   return_value_if_fail(vm != NULL, RET_BAD_PARAMS);
 
-  return object_exec(vm->obj, "onWillUnmount", NULL);
+  return tk_object_exec(vm->obj, "onWillUnmount", NULL);
 }
 
 static ret_t view_model_jerryscript_on_unmount(view_model_t* view_model) {
   view_model_jerryscript_object_wrapper_t* vm = VIEW_MODEL_JERRYSCRIPT_OBJECT_WRAPPER(view_model);
   return_value_if_fail(vm != NULL, RET_BAD_PARAMS);
 
-  return object_exec(vm->obj, "onUnmount", NULL);
+  return tk_object_exec(vm->obj, "onUnmount", NULL);
 }
 
 const static view_model_vtable_t s_view_model_jerryscript_vtable = {
@@ -100,7 +100,7 @@ const static view_model_vtable_t s_view_model_jerryscript_vtable = {
     .on_will_unmount = view_model_jerryscript_on_will_unmount,
     .on_unmount = view_model_jerryscript_on_unmount};
 
-static ret_t view_model_jerryscript_object_wrapper_on_destroy(object_t* obj) {
+static ret_t view_model_jerryscript_object_wrapper_on_destroy(tk_object_t* obj) {
   view_model_t* view_model = VIEW_MODEL(obj);
   view_model_jerryscript_object_wrapper_t* vm = VIEW_MODEL_JERRYSCRIPT_OBJECT_WRAPPER(obj);
   return_value_if_fail(vm != NULL, RET_BAD_PARAMS);
@@ -113,59 +113,59 @@ static ret_t view_model_jerryscript_object_wrapper_on_destroy(object_t* obj) {
     jsvalue_unref(jsobj);
   }
 
-  OBJECT_UNREF(vm->obj);
+  TK_OBJECT_UNREF(vm->obj);
 
   return view_model_deinit(view_model);
 }
 
-static int32_t view_model_jerryscript_object_wrapper_compare(object_t* obj, object_t* other) {
-  return object_compare(obj, other);
+static int32_t view_model_jerryscript_object_wrapper_compare(tk_object_t* obj, tk_object_t* other) {
+  return tk_object_compare(obj, other);
 }
 
-static ret_t view_model_jerryscript_object_wrapper_set_prop(object_t* obj, const char* name,
+static ret_t view_model_jerryscript_object_wrapper_set_prop(tk_object_t* obj, const char* name,
                                                             const value_t* v) {
   view_model_jerryscript_object_wrapper_t* vm = VIEW_MODEL_JERRYSCRIPT_OBJECT_WRAPPER(obj);
   return_value_if_fail(vm != NULL, RET_BAD_PARAMS);
 
-  return object_set_prop(vm->obj, name, v);
+  return tk_object_set_prop(vm->obj, name, v);
 }
 
-static ret_t view_model_jerryscript_object_wrapper_get_prop(object_t* obj, const char* name,
+static ret_t view_model_jerryscript_object_wrapper_get_prop(tk_object_t* obj, const char* name,
                                                             value_t* v) {
   view_model_jerryscript_object_wrapper_t* vm = VIEW_MODEL_JERRYSCRIPT_OBJECT_WRAPPER(obj);
   return_value_if_fail(vm != NULL, RET_BAD_PARAMS);
 
-  return object_get_prop(vm->obj, name, v);
+  return tk_object_get_prop(vm->obj, name, v);
 }
 
-static ret_t view_model_jerryscript_object_wrapper_remove_prop(object_t* obj, const char* name) {
+static ret_t view_model_jerryscript_object_wrapper_remove_prop(tk_object_t* obj, const char* name) {
   view_model_jerryscript_object_wrapper_t* vm = VIEW_MODEL_JERRYSCRIPT_OBJECT_WRAPPER(obj);
   return_value_if_fail(vm != NULL, RET_BAD_PARAMS);
 
-  return object_remove_prop(vm->obj, name);
+  return tk_object_remove_prop(vm->obj, name);
 }
 
-static ret_t view_model_jerryscript_object_wrapper_foreach_prop(object_t* obj, tk_visit_t on_prop,
-                                                                void* ctx) {
+static ret_t view_model_jerryscript_object_wrapper_foreach_prop(tk_object_t* obj,
+                                                                tk_visit_t on_prop, void* ctx) {
   view_model_jerryscript_object_wrapper_t* vm = VIEW_MODEL_JERRYSCRIPT_OBJECT_WRAPPER(obj);
   return_value_if_fail(vm != NULL, RET_BAD_PARAMS);
 
-  return object_foreach_prop(vm->obj, on_prop, ctx);
+  return tk_object_foreach_prop(vm->obj, on_prop, ctx);
 }
 
-static bool_t view_model_jerryscript_object_wrapper_can_exec(object_t* obj, const char* name,
+static bool_t view_model_jerryscript_object_wrapper_can_exec(tk_object_t* obj, const char* name,
                                                              const char* args) {
   view_model_jerryscript_object_wrapper_t* vm = VIEW_MODEL_JERRYSCRIPT_OBJECT_WRAPPER(obj);
   return_value_if_fail(vm != NULL, RET_BAD_PARAMS);
-  return object_can_exec(vm->obj, name, args);
+  return tk_object_can_exec(vm->obj, name, args);
 }
 
-static ret_t view_model_jerryscript_object_wrapper_exec(object_t* obj, const char* name,
+static ret_t view_model_jerryscript_object_wrapper_exec(tk_object_t* obj, const char* name,
                                                         const char* args) {
   view_model_jerryscript_object_wrapper_t* vm = VIEW_MODEL_JERRYSCRIPT_OBJECT_WRAPPER(obj);
   return_value_if_fail(vm != NULL, RET_BAD_PARAMS);
 
-  return object_exec(vm->obj, name, args);
+  return tk_object_exec(vm->obj, name, args);
 }
 
 static JSFUNC_DECL(wrap_notify_props_changed) {
@@ -181,7 +181,7 @@ static JSFUNC_DECL(wrap_notify_items_changed) {
     view_model_t* view_model = VIEW_MODEL(js_view_model_get_native_ptr(call_info_p->this_value));
 
     if (view_model != NULL) {
-      object_t* target = jsvalue_to_obj(args_p[0]);
+      tk_object_t* target = jsvalue_to_obj(args_p[0]);
       ret = view_model_notify_items_changed(view_model, target);
     }
   }
@@ -208,10 +208,10 @@ view_model_t* view_model_jerryscript_object_wrapper_create(jsvalue_t jsobj,
   view_model_t* view_model;
   view_model_jerryscript_object_wrapper_t* vm;
   object_js_factory_t* factory = object_js_factory();
-  object_t* obj = object_js_factory_create_object(factory, jsvalue_ref(jsobj), TRUE);
+  tk_object_t* obj = object_js_factory_create_object(factory, jsvalue_ref(jsobj), TRUE);
   return_value_if_fail(obj != NULL, NULL);
 
-  view_model = VIEW_MODEL(object_create(&s_obj_view_model_jerryscript_object_wrapper_vtable));
+  view_model = VIEW_MODEL(tk_object_create(&s_obj_view_model_jerryscript_object_wrapper_vtable));
   vm = VIEW_MODEL_JERRYSCRIPT_OBJECT_WRAPPER(view_model);
   return_value_if_fail(vm != NULL, NULL);
 
@@ -221,8 +221,8 @@ view_model_t* view_model_jerryscript_object_wrapper_create(jsvalue_t jsobj,
 
   view_model_jerryscript_on_create(view_model, req);
 
-  if (!object_js_base_is_listener_registered(obj, OBJECT(view_model))) {
-    object_js_base_register_listener(obj, OBJECT(view_model));
+  if (!object_js_base_is_listener_registered(obj, TK_OBJECT(view_model))) {
+    object_js_base_register_listener(obj, TK_OBJECT(view_model));
   }
 
   jsobj_set_prop_func(jsobj, "notifyPropsChanged", wrap_notify_props_changed);
@@ -234,6 +234,6 @@ view_model_t* view_model_jerryscript_object_wrapper_create(jsvalue_t jsobj,
 }
 
 bool_t view_model_is_jerryscript_object_wrapper(view_model_t* view_model) {
-  object_t* obj = OBJECT(view_model);
+  tk_object_t* obj = TK_OBJECT(view_model);
   return obj != NULL && obj->vt == &s_obj_view_model_jerryscript_object_wrapper_vtable;
 }

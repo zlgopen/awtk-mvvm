@@ -29,13 +29,13 @@ BEGIN_C_DECLS
 
 /**
  * @class temperature_t
- * @parent object_t
+ * @parent tk_object_t
  * @annotation ["model"]
  * 温度控制器。
  *
  */
 typedef struct _temperature_t {
-  object_t object;
+  tk_object_t object;
 
   /**
    * @property {double} temp
@@ -53,9 +53,9 @@ typedef struct _temperature_t {
  * 创建temperature对象。
  *
  * @annotation ["constructor"]
- * @return {object_t*} 返回temperature对象。
+ * @return {tk_object_t*} 返回temperature对象。
  */
-object_t* temperature_create(void);
+tk_object_t* temperature_create(void);
 
 END_C_DECLS
 

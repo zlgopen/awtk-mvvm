@@ -36,7 +36,7 @@ typedef ret_t (*binding_context_exec_t)(binding_context_t* ctx, const char* cmd,
 typedef bool_t (*binding_context_can_exec_t)(binding_context_t* ctx, const char* cmd,
                                              const char* args);
 typedef ret_t (*binding_context_bind_rule_t)(binding_context_t* ctx, binding_rule_t* rule);
-typedef ret_t (*binding_context_notify_items_changed_t)(binding_context_t* ctx, object_t* items,
+typedef ret_t (*binding_context_notify_items_changed_t)(binding_context_t* ctx, tk_object_t* items,
                                                         bool_t sync);
 typedef uint32_t (*binding_context_get_items_cursor_of_rule_t)(binding_context_t* ctx,
                                                                binding_rule_t* rule);
@@ -324,22 +324,22 @@ ret_t binding_context_bind_items(binding_context_t* ctx, binding_rule_t* rule);
  * 触发items改变事件。
  *
  * @param {binding_context_t*} ctx binding_context对象。
- * @param {object_t*} items items对象。
+ * @param {tk_object_t*} items items对象。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
-ret_t binding_context_notify_items_changed(binding_context_t* ctx, object_t* items);
+ret_t binding_context_notify_items_changed(binding_context_t* ctx, tk_object_t* items);
 
 /**
  * @method binding_context_notify_items_changed_sync
  * 触发items改变事件，并同步更新数据到视图。
  *
  * @param {binding_context_t*} ctx binding_context对象。
- * @param {object_t*} items items对象。
+ * @param {tk_object_t*} items items对象。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
-ret_t binding_context_notify_items_changed_sync(binding_context_t* ctx, object_t* items);
+ret_t binding_context_notify_items_changed_sync(binding_context_t* ctx, tk_object_t* items);
 
 /**
  * @method binding_context_get_items_cursor_of_rule

@@ -17,10 +17,10 @@ typedef struct _temperature_humidity_view_model_t {
   view_model_t view_model;
 
   /*model object*/
-  object_t* outside_humidity;
-  object_t* outside_temperature;
-  object_t* inside_humidities;
-  object_t* inside_temperatures;
+  tk_object_t* outside_humidity;
+  tk_object_t* outside_temperature;
+  tk_object_t* inside_humidities;
+  tk_object_t* inside_temperatures;
 } temperature_humidity_view_model_t;
 
 /**

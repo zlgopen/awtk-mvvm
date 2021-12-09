@@ -34,7 +34,7 @@ TEST(ValueValidatorJerryScript, basic) {
   ASSERT_EQ(value_validator_is_valid(c, &value, &str), FALSE);
 
   str_reset(&str);
-  object_unref(OBJECT(c));
+  tk_object_unref(TK_OBJECT(c));
 }
 
 TEST(ValueValidatorJerryScript, fix) {
@@ -61,7 +61,7 @@ TEST(ValueValidatorJerryScript, fix) {
   ASSERT_EQ(value_validator_fix(c, &value), RET_OK);
   ASSERT_EQ(value_int(&value), 10);
 
-  object_unref(OBJECT(c));
+  tk_object_unref(TK_OBJECT(c));
 }
 
 TEST(ValueValidatorJerryScript, message) {
@@ -97,7 +97,7 @@ TEST(ValueValidatorJerryScript, message) {
   ASSERT_EQ(string(str.str), string("too large"));
 
   str_reset(&str);
-  object_unref(OBJECT(c));
+  tk_object_unref(TK_OBJECT(c));
 }
 
 TEST(ValueValidatorJerryScript, not_exist) {
@@ -115,5 +115,5 @@ TEST(ValueValidatorJerryScript, no_isValid) {
   ASSERT_EQ(value_validator_is_valid(c, &value, &str), FALSE);
 
   str_reset(&str);
-  object_unref(OBJECT(c));
+  tk_object_unref(TK_OBJECT(c));
 }

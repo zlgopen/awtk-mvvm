@@ -29,13 +29,13 @@ BEGIN_C_DECLS
 
 /**
  * @class humidity_t
- * @parent object_t
+ * @parent tk_object_t
  * @annotation ["model"]
  * 湿度控制器。
  *
  */
 typedef struct _humidity_t {
-  object_t object;
+  tk_object_t object;
 
   /**
    * @property {double} humi
@@ -53,9 +53,9 @@ typedef struct _humidity_t {
  * 创建humidity对象。
  *
  * @annotation ["constructor"]
- * @return {object_t*} 返回humidity对象。
+ * @return {tk_object_t*} 返回humidity对象。
  */
-object_t* humidity_create(void);
+tk_object_t* humidity_create(void);
 
 END_C_DECLS
 

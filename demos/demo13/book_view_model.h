@@ -38,11 +38,11 @@ BEGIN_C_DECLS
  * 创建book view model对象。
  *
  * @annotation ["constructor"]
- * @param {object_t*} book book的obj对象。
+ * @param {tk_object_t*} book book的obj对象。
  *
  * @return {view_model_t} 返回view_model_t对象。
  */
-view_model_t* book_view_model_create(object_t* book);
+view_model_t* book_view_model_create(tk_object_t* book);
 
 END_C_DECLS
 

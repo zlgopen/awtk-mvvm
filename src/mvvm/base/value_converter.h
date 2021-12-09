@@ -37,7 +37,7 @@ typedef ret_t (*value_converter_to_view_t)(value_converter_t* converter, const v
 
 /**
  * @class value_converter_t
- * @parent object_t
+ * @parent tk_object_t
  *
  * 值转换器。
  *
@@ -45,7 +45,7 @@ typedef ret_t (*value_converter_to_view_t)(value_converter_t* converter, const v
  *
  */
 struct _value_converter_t {
-  object_t object;
+  tk_object_t object;
 
   /*private*/
   value_converter_to_model_t to_model;

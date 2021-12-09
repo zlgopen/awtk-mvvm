@@ -44,8 +44,8 @@ ret_t value_validator_fix(value_validator_t* validator, value_t* value) {
 }
 
 typedef struct _value_validator_factory_t {
-  object_t* cache;
-  object_t* creators;
+  tk_object_t* cache;
+  tk_object_t* creators;
   slist_t generic_creators;
 } value_validator_factory_t;
 
@@ -65,8 +65,8 @@ static value_validator_factory_t* value_validator_factory_create(void) {
 static ret_t value_validator_factory_destroy(value_validator_factory_t* factory) {
   return_value_if_fail(factory != NULL, RET_BAD_PARAMS);
 
-  object_unref(factory->cache);
-  object_unref(factory->creators);
+  tk_object_unref(factory->cache);
+  tk_object_unref(factory->creators);
   slist_deinit(&(factory->generic_creators));
   TKMEM_FREE(factory);
 
@@ -91,7 +91,7 @@ value_validator_t* value_validator_do_create(const char* name) {
   tk_create_t create = NULL;
   return_value_if_fail(name != NULL && s_validator_factory != NULL, NULL);
 
-  create = (tk_create_t)object_get_prop_pointer(s_validator_factory->creators, name);
+  create = (tk_create_t)tk_object_get_prop_pointer(s_validator_factory->creators, name);
   if (create != NULL) {
     return (value_validator_t*)create();
   } else {
@@ -100,10 +100,10 @@ value_validator_t* value_validator_do_create(const char* name) {
 }
 
 static value_validator_t* value_validator_get(const char* name) {
-  object_t* obj = object_get_prop_object(s_validator_factory->cache, name);
+  tk_object_t* obj = tk_object_get_prop_object(s_validator_factory->cache, name);
 
   if (obj != NULL) {
-    object_ref(obj);
+    tk_object_ref(obj);
   }
 
   return VALUE_VALIDATOR(obj);
@@ -112,7 +112,7 @@ static value_validator_t* value_validator_get(const char* name) {
 static ret_t value_validator_put(const char* name, value_validator_t* c) {
   return_value_if_fail(name != NULL && c != NULL, RET_BAD_PARAMS);
 
-  return object_set_prop_object(s_validator_factory->cache, name, OBJECT(c));
+  return tk_object_set_prop_object(s_validator_factory->cache, name, TK_OBJECT(c));
 }
 
 value_validator_t* value_validator_create(const char* name) {
@@ -132,16 +132,16 @@ value_validator_t* value_validator_create(const char* name) {
   return c;
 }
 
-ret_t value_validator_set_context(value_validator_t* validator, object_t* context) {
+ret_t value_validator_set_context(value_validator_t* validator, tk_object_t* context) {
   return_value_if_fail(validator != NULL, RET_BAD_PARAMS);
   if (validator->context != NULL) {
-    object_unref(validator->context);
+    tk_object_unref(validator->context);
     validator->context = NULL;
   }
 
   if (context != NULL) {
     validator->context = context;
-    object_ref(validator->context);
+    tk_object_ref(validator->context);
   }
 
   return RET_OK;
@@ -151,7 +151,7 @@ ret_t value_validator_register(const char* name, tk_create_t create) {
   return_value_if_fail(name != NULL, RET_BAD_PARAMS);
   return_value_if_fail(create != NULL && s_validator_factory != NULL, RET_BAD_PARAMS);
 
-  return object_set_prop_pointer(s_validator_factory->creators, name, create);
+  return tk_object_set_prop_pointer(s_validator_factory->creators, name, create);
 }
 
 ret_t value_validator_register_generic(value_validator_create_t create) {

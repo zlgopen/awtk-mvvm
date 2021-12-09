@@ -24,7 +24,7 @@
 #include "mvvm/base/utils.h"
 #include "mvvm/base/view_model_array_dummy.h"
 
-static ret_t view_model_array_dummy_on_destroy(object_t* obj) {
+static ret_t view_model_array_dummy_on_destroy(tk_object_t* obj) {
   view_model_array_dummy_t* dummy = VIEW_MODEL_ARRAY_DUMMY(obj);
 
   darray_deinit(&(dummy->array));
@@ -33,11 +33,11 @@ static ret_t view_model_array_dummy_on_destroy(object_t* obj) {
   return RET_OK;
 }
 
-static int32_t view_model_array_dummy_compare(object_t* obj, object_t* other) {
+static int32_t view_model_array_dummy_compare(tk_object_t* obj, tk_object_t* other) {
   return tk_str_cmp(obj->name, other->name);
 }
 
-static ret_t view_model_array_dummy_set_prop(object_t* obj, const char* name, const value_t* v) {
+static ret_t view_model_array_dummy_set_prop(tk_object_t* obj, const char* name, const value_t* v) {
   uint32_t index = 0;
   const char* subname = NULL;
   view_model_t* submodel = NULL;
@@ -55,10 +55,10 @@ static ret_t view_model_array_dummy_set_prop(object_t* obj, const char* name, co
   return_value_if_fail(index < dummy->array.size, RET_BAD_PARAMS);
   submodel = VIEW_MODEL(dummy->array.elms[index]);
 
-  return object_set_prop(OBJECT(submodel), subname, v);
+  return tk_object_set_prop(TK_OBJECT(submodel), subname, v);
 }
 
-static ret_t view_model_array_dummy_get_prop(object_t* obj, const char* name, value_t* v) {
+static ret_t view_model_array_dummy_get_prop(tk_object_t* obj, const char* name, value_t* v) {
   uint32_t index = 0;
   const char* subname = NULL;
   view_model_t* submodel = NULL;
@@ -80,16 +80,17 @@ static ret_t view_model_array_dummy_get_prop(object_t* obj, const char* name, va
   return_value_if_fail(index < dummy->array.size, RET_BAD_PARAMS);
   submodel = VIEW_MODEL(dummy->array.elms[index]);
 
-  return object_get_prop(OBJECT(submodel), subname, v);
+  return tk_object_get_prop(TK_OBJECT(submodel), subname, v);
 }
 
-static bool_t view_model_array_dummy_can_exec(object_t* obj, const char* name, const char* args) {
+static bool_t view_model_array_dummy_can_exec(tk_object_t* obj, const char* name,
+                                              const char* args) {
   return_value_if_fail(obj != NULL && name != NULL, FALSE);
 
   return FALSE;
 }
 
-static ret_t view_model_array_dummy_exec(object_t* obj, const char* name, const char* args) {
+static ret_t view_model_array_dummy_exec(tk_object_t* obj, const char* name, const char* args) {
   return_value_if_fail(obj != NULL && name != NULL, RET_BAD_PARAMS);
 
   return RET_NOT_IMPL;
@@ -110,12 +111,12 @@ static const object_vtable_t s_model_array_vtable = {
     .exec = view_model_array_dummy_exec};
 
 view_model_t* view_model_array_dummy_create(navigator_request_t* req) {
-  object_t* obj = object_create(&s_model_array_vtable);
+  tk_object_t* obj = tk_object_create(&s_model_array_vtable);
   view_model_array_dummy_t* dummy = VIEW_MODEL_ARRAY_DUMMY(obj);
   return_value_if_fail(dummy != NULL, NULL);
 
   view_model_array_init(VIEW_MODEL(obj));
-  darray_init(&(dummy->array), 10, (tk_destroy_t)(object_unref), NULL);
+  darray_init(&(dummy->array), 10, (tk_destroy_t)(tk_object_unref), NULL);
 
   return VIEW_MODEL(obj);
 }
@@ -131,7 +132,7 @@ ret_t view_model_array_dummy_add(view_model_t* view_model, view_model_t* submode
   view_model_array_dummy_t* dummy = VIEW_MODEL_ARRAY_DUMMY(view_model);
   return_value_if_fail(dummy != NULL && submodel != NULL, RET_BAD_PARAMS);
 
-  object_ref(OBJECT(submodel));
+  tk_object_ref(TK_OBJECT(submodel));
   return darray_push(&(dummy->array), submodel);
 }
 

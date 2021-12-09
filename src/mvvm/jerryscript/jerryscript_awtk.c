@@ -172,7 +172,7 @@ static JSFUNC_DECL(wrap_navigate_to) {
       navigator_request_t* req = jsvalue_to_navigator_request(jsreq);
       if (req != NULL) {
         ret = navigator_to_ex(req);
-        object_unref(OBJECT(req));
+        tk_object_unref(TK_OBJECT(req));
       }
     } else if (jerry_value_is_string(jsreq)) {
       str_t str;
@@ -227,7 +227,7 @@ static JSFUNC_DECL(wrap_get_view_models) {
     if (navigator_get_view_models(target, temp) == RET_OK) {
       uint32_t i = 0;
       for (i = 0; i < temp->size; i++) {
-        jsvalue_t vm = jsvalue_from_obj(OBJECT(temp->elms[i]));
+        jsvalue_t vm = jsvalue_from_obj(TK_OBJECT(temp->elms[i]));
         jsobj_set_prop_value_by_index(ret, i, vm);
       }
     }
@@ -262,7 +262,7 @@ static JSFUNC_DECL(wrap_notify_props_changed_to_view_models) {
 static JSFUNC_DECL(wrap_notify_items_changed_to_view_models) {
   ret_t ret = RET_FAIL;
   const char* target = NULL;
-  object_t* items = NULL;
+  tk_object_t* items = NULL;
   str_t str;
   str_init(&str, 0);
 
@@ -288,7 +288,7 @@ static JSFUNC_DECL(wrap_notify_items_changed_to_view_models) {
 
 static JSFUNC_DECL(wrap_get_locale) {
   jsvalue_t res;
-  object_t* obj = NULL;
+  tk_object_t* obj = NULL;
   const char* target = NULL;
   str_t str;
   str_init(&str, 0);
@@ -303,7 +303,7 @@ static JSFUNC_DECL(wrap_get_locale) {
 
   obj = navigator_get_locale(target);
   res = jsvalue_from_obj_copy(obj);
-  object_unref(obj);
+  tk_object_unref(obj);
   str_reset(&str);
 
   return res;

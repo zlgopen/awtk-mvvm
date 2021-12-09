@@ -217,7 +217,7 @@ static ret_t js_navigater_request_on_destroy(void* ctx, event_t* e) {
 
 static ret_t js_navigater_request_on_result(navigator_request_t* req, const value_t* result) {
   ret_t ret = RET_OK;
-  jsvalue_t func = (jsvalue_t)object_get_prop_int(OBJECT(req), JSOBJ_PROP_ON_RESULT, 0);
+  jsvalue_t func = (jsvalue_t)tk_object_get_prop_int(TK_OBJECT(req), JSOBJ_PROP_ON_RESULT, 0);
 
   if (jsvalue_is_function(func)) {
     str_t str;
@@ -244,10 +244,10 @@ navigator_request_t* jsvalue_to_navigator_request(jsvalue_t obj) {
   navigator_request_t* req = NAVIGATOR_REQUEST(js_navigater_request_get_native_ptr(obj));
 
   if (req != NULL) {
-    object_ref(OBJECT(req));
+    tk_object_ref(TK_OBJECT(req));
   } else {
     object_js_factory_t* factory = object_js_factory();
-    object_t* args = object_js_factory_create_object(factory, jsvalue_ref(obj), TRUE);
+    tk_object_t* args = object_js_factory_create_object(factory, jsvalue_ref(obj), TRUE);
 
     if (args != NULL) {
       req = navigator_request_create("", js_navigater_request_on_result);
@@ -259,7 +259,7 @@ navigator_request_t* jsvalue_to_navigator_request(jsvalue_t obj) {
         navigator_request_set_args(req, args);
       }
 
-      object_unref(args);
+      tk_object_unref(args);
     }
   }
 
@@ -267,7 +267,7 @@ navigator_request_t* jsvalue_to_navigator_request(jsvalue_t obj) {
 }
 
 jsvalue_t jsvalue_from_navigator_request(navigator_request_t* req) {
-  return jsvalue_from_obj_copy(OBJECT(req));
+  return jsvalue_from_obj_copy(TK_OBJECT(req));
 }
 
 jsvalue_t jsvalue_get_application(void) {

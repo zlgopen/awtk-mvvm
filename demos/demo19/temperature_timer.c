@@ -27,10 +27,10 @@
 #define PROP_TEMP "value"
 
 static ret_t on_timer(const timer_info_t* info) {
-  object_t* view_model = OBJECT(info->ctx);
+  tk_object_t* view_model = TK_OBJECT(info->ctx);
 
-  int32_t temp = object_get_prop_int(view_model, PROP_TEMP, 0) + 1;
-  object_set_prop_int(view_model, PROP_TEMP, temp);
+  int32_t temp = tk_object_get_prop_int(view_model, PROP_TEMP, 0) + 1;
+  tk_object_set_prop_int(view_model, PROP_TEMP, temp);
 
   return temp < 10 ? RET_REPEAT : RET_REMOVE;
 }

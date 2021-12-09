@@ -50,7 +50,7 @@ const char* tk_destruct_array_prop_name(const char* name, uint32_t* index);
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
-ret_t tk_command_arguments_to_object(const char* args, object_t* obj);
+ret_t tk_command_arguments_to_object(const char* args, tk_object_t* obj);
 
 /**
  * @method tk_command_arguments_from_object
@@ -61,7 +61,7 @@ ret_t tk_command_arguments_to_object(const char* args, object_t* obj);
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
-ret_t tk_command_arguments_from_object(object_t* args, str_t* temp);
+ret_t tk_command_arguments_from_object(tk_object_t* args, str_t* temp);
 
 /**
  * @method tk_command_arguments_fscript
@@ -72,7 +72,7 @@ ret_t tk_command_arguments_from_object(object_t* args, str_t* temp);
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
-ret_t tk_command_arguments_fscript(object_t* args, object_t* ctx);
+ret_t tk_command_arguments_fscript(tk_object_t* args, tk_object_t* ctx);
 
 /**
  * @method str_random

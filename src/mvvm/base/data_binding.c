@@ -35,7 +35,7 @@
 
 #define equal tk_str_ieq
 
-static ret_t data_binding_on_destroy(object_t* obj) {
+static ret_t data_binding_on_destroy(tk_object_t* obj) {
   data_binding_t* rule = data_binding_cast(obj);
   return_value_if_fail(rule != NULL, RET_BAD_PARAMS);
 
@@ -51,7 +51,7 @@ static ret_t data_binding_on_destroy(object_t* obj) {
     fscript_destroy(rule->to_model_expr);
   }
   if (rule->props != NULL) {
-    object_unref(rule->props);
+    tk_object_unref(rule->props);
   }
   TKMEM_FREE(rule->to_view);
   TKMEM_FREE(rule->to_model);
@@ -59,7 +59,7 @@ static ret_t data_binding_on_destroy(object_t* obj) {
   return RET_OK;
 }
 
-static ret_t data_binding_object_set_prop(object_t* obj, const char* name, const value_t* v) {
+static ret_t data_binding_object_set_prop(tk_object_t* obj, const char* name, const value_t* v) {
   ret_t ret = RET_OK;
   const char* value;
   data_binding_t* rule = DATA_BINDING(obj);
@@ -72,7 +72,7 @@ static ret_t data_binding_object_set_prop(object_t* obj, const char* name, const
       if (rule->props == NULL) {
         rule->props = object_default_create();
       }
-      return object_set_prop(rule->props, name, v);
+      return tk_object_set_prop(rule->props, name, v);
     }
     return ret;
   }
@@ -139,13 +139,13 @@ static ret_t data_binding_object_set_prop(object_t* obj, const char* name, const
     if (rule->props == NULL) {
       rule->props = object_default_create();
     }
-    ret = object_set_prop(rule->props, name, v);
+    ret = tk_object_set_prop(rule->props, name, v);
   }
 
   return ret;
 }
 
-static ret_t data_binding_object_get_prop(object_t* obj, const char* name, value_t* v) {
+static ret_t data_binding_object_get_prop(tk_object_t* obj, const char* name, value_t* v) {
   ret_t ret = RET_OK;
   data_binding_t* rule = DATA_BINDING(obj);
   return_value_if_fail(rule != NULL, RET_BAD_PARAMS);
@@ -161,7 +161,7 @@ static ret_t data_binding_object_get_prop(object_t* obj, const char* name, value
       binding_context_t* ctx = BINDING_RULE_CONTEXT(rule);
       ret = binding_context_get_prop_by_rule(ctx, BINDING_RULE(rule), name, v);
       if (ret == RET_NOT_FOUND && rule->props != NULL) {
-        return object_get_prop(rule->props, name, v);
+        return tk_object_get_prop(rule->props, name, v);
       }
       return ret;
     }
@@ -185,14 +185,14 @@ static ret_t data_binding_object_get_prop(object_t* obj, const char* name, value
     value_set_str(v, rule->validator);
   } else {
     if (rule->props != NULL) {
-      ret = object_get_prop(rule->props, name, v);
+      ret = tk_object_get_prop(rule->props, name, v);
     }
   }
 
   return ret;
 }
 
-static ret_t data_binding_object_exec(object_t* obj, const char* name, const char* args) {
+static ret_t data_binding_object_exec(tk_object_t* obj, const char* name, const char* args) {
   data_binding_t* rule = (data_binding_t*)(obj);
   binding_context_t* context = BINDING_RULE_CONTEXT(rule);
   view_model_t* view_model = BINDING_RULE_VIEW_MODEL(rule);
@@ -202,7 +202,7 @@ static ret_t data_binding_object_exec(object_t* obj, const char* name, const cha
     return RET_OK;
   }
 
-  if (object_is_collection(OBJECT(view_model))) {
+  if (tk_object_is_collection(TK_OBJECT(view_model))) {
     uint32_t cursor = binding_context_get_items_cursor_of_rule(context, BINDING_RULE(rule));
     view_model_array_set_cursor(view_model, cursor);
   }
@@ -220,7 +220,7 @@ static const object_vtable_t s_data_binding_vtable = {.type = "data_binding",
                                                       .set_prop = data_binding_object_set_prop};
 
 data_binding_t* data_binding_create(void) {
-  object_t* obj = object_create(&s_data_binding_vtable);
+  tk_object_t* obj = tk_object_create(&s_data_binding_vtable);
   data_binding_t* rule = DATA_BINDING(obj);
   return_value_if_fail(obj != NULL, NULL);
 
@@ -236,7 +236,7 @@ data_binding_t* data_binding_cast(void* rule) {
 }
 
 bool_t binding_rule_is_data_binding(binding_rule_t* rule) {
-  object_t* obj = OBJECT(rule);
+  tk_object_t* obj = TK_OBJECT(rule);
   return obj != NULL && obj->vt == &s_data_binding_vtable;
 }
 
@@ -245,11 +245,11 @@ static ret_t value_to_model(const char* name, const value_t* from, value_t* to) 
     value_converter_t* c = value_converter_create(name);
     if (c != NULL) {
       if (value_converter_to_model(c, from, to) == RET_OK) {
-        object_unref(OBJECT(c));
+        tk_object_unref(TK_OBJECT(c));
         return RET_OK;
       } else {
         log_debug("value_converter_to_model %s failed\n", name);
-        object_unref(OBJECT(c));
+        tk_object_unref(TK_OBJECT(c));
         return RET_FAIL;
       }
     } else {
@@ -268,11 +268,11 @@ static ret_t value_to_view(const char* name, value_t* from, value_t* to) {
     if (c != NULL) {
       if (value_converter_to_view(c, from, to) == RET_OK) {
         value_reset(from);
-        object_unref(OBJECT(c));
+        tk_object_unref(TK_OBJECT(c));
         return RET_OK;
       } else {
         log_debug("value_converter_to_model %s failed\n", name);
-        object_unref(OBJECT(c));
+        tk_object_unref(TK_OBJECT(c));
         return RET_FAIL;
       }
     } else {
@@ -285,7 +285,7 @@ static ret_t value_to_view(const char* name, value_t* from, value_t* to) {
   }
 }
 
-static bool_t value_is_valid(object_t* ctx, const char* name, const value_t* value, str_t* msg) {
+static bool_t value_is_valid(tk_object_t* ctx, const char* name, const value_t* value, str_t* msg) {
   bool_t ret = FALSE;
   value_validator_t* validator = NULL;
 
@@ -298,7 +298,7 @@ static bool_t value_is_valid(object_t* ctx, const char* name, const value_t* val
     value_validator_set_context(validator, ctx);
     ret = value_validator_is_valid(validator, value, msg);
     value_validator_set_context(validator, NULL);
-    object_unref(OBJECT(validator));
+    tk_object_unref(TK_OBJECT(validator));
   } else {
     log_debug("not found validator\n");
   }
@@ -306,7 +306,7 @@ static bool_t value_is_valid(object_t* ctx, const char* name, const value_t* val
   return ret;
 }
 
-static ret_t value_fix(object_t* ctx, const char* name, value_t* value) {
+static ret_t value_fix(tk_object_t* ctx, const char* name, value_t* value) {
   ret_t ret = RET_OK;
   value_validator_t* validator = NULL;
 
@@ -319,7 +319,7 @@ static ret_t value_fix(object_t* ctx, const char* name, value_t* value) {
     value_validator_set_context(validator, ctx);
     ret = value_validator_fix(validator, value);
     value_validator_set_context(validator, NULL);
-    object_unref(OBJECT(validator));
+    tk_object_unref(TK_OBJECT(validator));
   } else {
     log_debug("not found validator\n");
   }
@@ -335,7 +335,7 @@ ret_t data_binding_get_prop(data_binding_t* rule, value_t* v) {
   view_model = BINDING_RULE_VIEW_MODEL(rule);
   return_value_if_fail(view_model != NULL, RET_BAD_PARAMS);
 
-  if (object_is_collection(OBJECT(view_model))) {
+  if (tk_object_is_collection(TK_OBJECT(view_model))) {
     binding_context_t* context = BINDING_RULE_CONTEXT(rule);
     uint32_t cursor = binding_context_get_items_cursor_of_rule(context, BINDING_RULE(rule));
     view_model_array_set_cursor(view_model, cursor);
@@ -365,7 +365,7 @@ ret_t data_binding_get_prop(data_binding_t* rule, value_t* v) {
 
 ret_t data_binding_set_prop(data_binding_t* rule, const value_t* raw) {
   ret_t ret = RET_OK;
-  object_t* obj = OBJECT(rule);
+  tk_object_t* obj = TK_OBJECT(rule);
   view_model_t* view_model = NULL;
   return_value_if_fail(rule != NULL && raw != NULL, RET_BAD_PARAMS);
 
@@ -374,7 +374,7 @@ ret_t data_binding_set_prop(data_binding_t* rule, const value_t* raw) {
 
   str_clear(&(view_model->last_error));
 
-  if (object_is_collection(OBJECT(view_model))) {
+  if (tk_object_is_collection(TK_OBJECT(view_model))) {
     binding_context_t* context = BINDING_RULE_CONTEXT(rule);
     uint32_t cursor = binding_context_get_items_cursor_of_rule(context, BINDING_RULE(rule));
     view_model_array_set_cursor(view_model, cursor);
@@ -385,7 +385,7 @@ ret_t data_binding_set_prop(data_binding_t* rule, const value_t* raw) {
     rule->value = raw;
     fscript_exec(rule->to_model_expr, &v);
     rule->value = NULL;
-    ret = object_set_prop(obj, rule->path, &v);
+    ret = tk_object_set_prop(obj, rule->path, &v);
   } else {
     const value_t* temp = raw;
     value_t fix_value;
@@ -405,7 +405,7 @@ ret_t data_binding_set_prop(data_binding_t* rule, const value_t* raw) {
     }
 
     if (ret == RET_OK) {
-      ret = object_set_prop(obj, rule->path, temp);
+      ret = tk_object_set_prop(obj, rule->path, temp);
     }
 
     value_reset(&fix_value);

@@ -32,7 +32,7 @@ typedef struct _temperature_sensor_random_t temperature_sensor_random_t;
 
 /**
  * @class temperature_sensor_random_t
- * @parent object_t
+ * @parent tk_object_t
  *
  * 模拟的温度传感器，随机生成0-100之间的温度。
  *
@@ -45,9 +45,9 @@ struct _temperature_sensor_random_t {
  * @method temperature_sensor_random_create
  * 创建temperature_sensor对象。
  *
- * @return {object_t*} 返回object对象。
+ * @return {tk_object_t*} 返回object对象。
  */
-object_t* temperature_sensor_random_create(const char* args);
+tk_object_t* temperature_sensor_random_create(const char* args);
 
 #define TEMPERATURE_SENSOR_RANDOM(object) ((temperature_sensor_random_t*)(object))
 

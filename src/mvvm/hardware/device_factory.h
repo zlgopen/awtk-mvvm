@@ -33,7 +33,7 @@ BEGIN_C_DECLS
  *
  */
 
-typedef object_t* (*device_object_create_t)(const char* args);
+typedef tk_object_t* (*device_object_create_t)(const char* args);
 
 /**
  * @method device_factory_init
@@ -71,7 +71,7 @@ ret_t device_factory_unregister(const char* type);
  *
  * @return {object_t} 返回object对象。
  */
-object_t* device_factory_create_device(const char* type, const char* args);
+tk_object_t* device_factory_create_device(const char* type, const char* args);
 
 /**
  * @method device_factory_register

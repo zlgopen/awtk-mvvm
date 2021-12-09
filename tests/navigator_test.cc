@@ -28,7 +28,7 @@ TEST(Navigator, regist) {
   ASSERT_EQ(navigator_unregister_handler(nav, "dummy"), RET_OK);
   ASSERT_EQ(navigator_has_handler(nav, "dummy"), FALSE);
 
-  object_unref(OBJECT(nav));
+  tk_object_unref(TK_OBJECT(nav));
 }
 
 TEST(Navigator, no_handler) {
@@ -37,7 +37,7 @@ TEST(Navigator, no_handler) {
 
   ASSERT_EQ(navigator_handle_request(nav, req), RET_NOT_FOUND);
 
-  object_unref(OBJECT(nav));
+  tk_object_unref(TK_OBJECT(nav));
 }
 
 TEST(Navigator, handler_request) {
@@ -49,7 +49,7 @@ TEST(Navigator, handler_request) {
   ASSERT_EQ(navigator_handle_request(nav, req), RET_OK);
   ASSERT_EQ(value_int(&(req->result)), 123);
 
-  object_unref(OBJECT(nav));
+  tk_object_unref(TK_OBJECT(nav));
 }
 
 TEST(Navigator, default_handler) {
@@ -62,12 +62,13 @@ TEST(Navigator, default_handler) {
   ASSERT_EQ(navigator_handle_request(nav, req), RET_OK);
   ASSERT_EQ(value_int(&(req->result)), 456);
 
-  object_unref(OBJECT(nav));
+  tk_object_unref(TK_OBJECT(nav));
 }
 
 static string s_log;
 static ret_t toast_on_request(navigator_handler_t* handler, navigator_request_t* req) {
-  s_log = string("toast:") + string(object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_CONTENT));
+  s_log =
+      string("toast:") + string(tk_object_get_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_CONTENT));
 
   return RET_OK;
 }
@@ -81,13 +82,13 @@ TEST(Navigator, toast) {
   ASSERT_EQ(navigator_toast("hello", 1000), RET_OK);
   ASSERT_EQ(s_log, string("toast:hello"));
 
-  object_unref(OBJECT(nav));
+  tk_object_unref(TK_OBJECT(nav));
   navigator_set(old);
 }
 
 static ret_t info_on_request(navigator_handler_t* handler, navigator_request_t* req) {
-  s_log = string("info:") + string(object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_TITLE)) +
-          string(object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_CONTENT));
+  s_log = string("info:") + string(tk_object_get_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_TITLE)) +
+          string(tk_object_get_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_CONTENT));
 
   return RET_OK;
 }
@@ -101,13 +102,14 @@ TEST(Navigator, info) {
   ASSERT_EQ(navigator_info("hello", " awtk"), RET_OK);
   ASSERT_EQ(s_log, string("info:hello awtk"));
 
-  object_unref(OBJECT(nav));
+  tk_object_unref(TK_OBJECT(nav));
   navigator_set(old);
 }
 
 static ret_t confirm_on_request(navigator_handler_t* handler, navigator_request_t* req) {
-  s_log = string("confirm:") + string(object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_TITLE)) +
-          string(object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_CONTENT));
+  s_log = string("confirm:") +
+          string(tk_object_get_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_TITLE)) +
+          string(tk_object_get_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_CONTENT));
 
   value_set_int(&(req->result), RET_FAIL);
 
@@ -126,13 +128,13 @@ TEST(Navigator, confirm) {
   ASSERT_EQ(navigator_confirm("hello", " awtk"), RET_FAIL);
   ASSERT_EQ(s_log, string("confirm:hello awtk"));
 
-  object_unref(OBJECT(nav));
+  tk_object_unref(TK_OBJECT(nav));
   navigator_set(old);
 }
 
 static ret_t warn_on_request(navigator_handler_t* handler, navigator_request_t* req) {
-  s_log = string("warn:") + string(object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_TITLE)) +
-          string(object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_CONTENT));
+  s_log = string("warn:") + string(tk_object_get_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_TITLE)) +
+          string(tk_object_get_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_CONTENT));
 
   return RET_OK;
 }
@@ -146,15 +148,16 @@ TEST(Navigator, warn) {
   ASSERT_EQ(navigator_warn("hello", " awtk"), RET_OK);
   ASSERT_EQ(s_log, string("warn:hello awtk"));
 
-  object_unref(OBJECT(nav));
+  tk_object_unref(TK_OBJECT(nav));
   navigator_set(old);
 }
 
 static ret_t pick_dir_on_request(navigator_handler_t* handler, navigator_request_t* req) {
   value_t v;
 
-  s_log = string("pick_dir:") + string(object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_TITLE)) +
-          string(object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_DEFAULT));
+  s_log = string("pick_dir:") +
+          string(tk_object_get_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_TITLE)) +
+          string(tk_object_get_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_DEFAULT));
   value_set_str(&v, "dir");
 
   navigator_request_on_result(req, &v);
@@ -176,14 +179,15 @@ TEST(Navigator, pick_dir) {
   ASSERT_EQ(s_log, string("pick_dir:hello awtk"));
   ASSERT_EQ(string(str.str), string("dir"));
 
-  object_unref(OBJECT(nav));
+  tk_object_unref(TK_OBJECT(nav));
   navigator_set(old);
 }
 
 static ret_t pick_color_on_request(navigator_handler_t* handler, navigator_request_t* req) {
   value_t v;
-  s_log = string("pick_color:") + string(object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_TITLE)) +
-          string(object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_DEFAULT));
+  s_log = string("pick_color:") +
+          string(tk_object_get_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_TITLE)) +
+          string(tk_object_get_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_DEFAULT));
   value_set_str(&v, "color");
   navigator_request_on_result(req, &v);
 
@@ -204,16 +208,17 @@ TEST(Navigator, pick_color) {
   ASSERT_EQ(s_log, string("pick_color:hello awtk"));
   ASSERT_EQ(string(str.str), string("color"));
 
-  object_unref(OBJECT(nav));
+  tk_object_unref(TK_OBJECT(nav));
   navigator_set(old);
 }
 
 static ret_t pick_file_on_request(navigator_handler_t* handler, navigator_request_t* req) {
   value_t v;
 
-  s_log = string("pick_file:") + string(object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_TITLE)) +
-          string(object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_FILTER)) +
-          string(object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_DEFAULT));
+  s_log = string("pick_file:") +
+          string(tk_object_get_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_TITLE)) +
+          string(tk_object_get_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_FILTER)) +
+          string(tk_object_get_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_DEFAULT));
   value_set_str(&v, "file");
 
   navigator_request_on_result(req, &v);
@@ -235,15 +240,16 @@ TEST(Navigator, pick_file) {
   ASSERT_EQ(s_log, string("pick_file:helloimage/png awtk"));
   ASSERT_EQ(string(str.str), string("file"));
 
-  object_unref(OBJECT(nav));
+  tk_object_unref(TK_OBJECT(nav));
   navigator_set(old);
 }
 
 static ret_t navigator_on_close(navigator_handler_t* handler, navigator_request_t* req) {
   value_t v;
-  s_log = string("close:") + string(object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_TARGET));
+  s_log =
+      string("close:") + string(tk_object_get_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_TARGET));
 
-  if (object_get_prop_bool(OBJECT(req), NAVIGATOR_ARG_FORCE, FALSE)) {
+  if (tk_object_get_prop_bool(TK_OBJECT(req), NAVIGATOR_ARG_FORCE, FALSE)) {
     s_log += " force=true";
   } else {
     s_log += " force=false";
@@ -268,7 +274,7 @@ TEST(Navigator, close) {
   ASSERT_EQ(navigator_close("hello"), RET_OK);
   ASSERT_EQ(s_log, string("close:hello force=true"));
 
-  object_unref(OBJECT(nav));
+  tk_object_unref(TK_OBJECT(nav));
   navigator_set(old);
 }
 
@@ -285,6 +291,6 @@ TEST(Navigator, request_close) {
   ASSERT_EQ(navigator_request_close("hello"), RET_OK);
   ASSERT_EQ(s_log, string("close:hello force=false"));
 
-  object_unref(OBJECT(nav));
+  tk_object_unref(TK_OBJECT(nav));
   navigator_set(old);
 }

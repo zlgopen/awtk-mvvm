@@ -32,7 +32,7 @@ static const object_vtable_t s_value_validator_jerryscript_vtable = {
 static bool_t value_validator_jerryscript_is_valid(value_validator_t* c, const value_t* v,
                                                    str_t* msg) {
   bool_t ret = FALSE;
-  jsvalue_t validator = jsvalue_get_value_validator(OBJECT(c)->name);
+  jsvalue_t validator = jsvalue_get_value_validator(TK_OBJECT(c)->name);
 
   ret = js_value_validator_is_valid(validator, v, msg);
   jsvalue_unref(validator);
@@ -42,7 +42,7 @@ static bool_t value_validator_jerryscript_is_valid(value_validator_t* c, const v
 
 static ret_t value_validator_jerryscript_fix(value_validator_t* c, value_t* v) {
   ret_t ret = RET_OK;
-  jsvalue_t validator = jsvalue_get_value_validator(OBJECT(c)->name);
+  jsvalue_t validator = jsvalue_get_value_validator(TK_OBJECT(c)->name);
 
   ret = js_value_validator_fix(validator, v);
   jsvalue_unref(validator);
@@ -51,19 +51,19 @@ static ret_t value_validator_jerryscript_fix(value_validator_t* c, value_t* v) {
 }
 
 static value_validator_t* value_validator_jerryscript_create(const char* name) {
-  object_t* obj = NULL;
+  tk_object_t* obj = NULL;
   jsvalue_t jsobj = jsvalue_get_value_validator(name);
   return_value_if_fail(jsvalue_check(jsobj) == RET_OK, NULL);
 
   if (jsvalue_is_object(jsobj)) {
-    obj = object_create(&s_value_validator_jerryscript_vtable);
+    obj = tk_object_create(&s_value_validator_jerryscript_vtable);
     if (obj != NULL) {
       value_validator_t* validator = VALUE_VALIDATOR(obj);
       value_validator_jerryscript_t* jsvalidator = VALUE_VALIDATOR_JERRYSCRIPT(obj);
 
       validator->is_valid = value_validator_jerryscript_is_valid;
       validator->fix = value_validator_jerryscript_fix;
-      object_set_name(obj, name);
+      tk_object_set_name(obj, name);
     }
   }
   jsvalue_unref(jsobj);

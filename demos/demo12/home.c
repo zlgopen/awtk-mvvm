@@ -47,11 +47,11 @@ ret_t home_destroy(home_t* home) {
 }
 
 static ret_t home_on_room_result(navigator_request_t* req, const value_t* result) {
-  object_t* res = value_object(result);
-  home_t* h = (home_t*)(object_get_prop_pointer(OBJECT(req), STR_HOME));
-  const char* room_name = object_get_prop_str(OBJECT(req), ROOM_SETTINGS_REQ_ARG_ROOM);
-  double temp = object_get_prop_float(res, ROOM_SETTINGS_RESULT_TEMP, 0);
-  double humidity = object_get_prop_float(res, ROOM_SETTINGS_RESULT_HUMIDITY, 0);
+  tk_object_t* res = value_object(result);
+  home_t* h = (home_t*)(tk_object_get_prop_pointer(TK_OBJECT(req), STR_HOME));
+  const char* room_name = tk_object_get_prop_str(TK_OBJECT(req), ROOM_SETTINGS_REQ_ARG_ROOM);
+  double temp = tk_object_get_prop_float(res, ROOM_SETTINGS_RESULT_TEMP, 0);
+  double humidity = tk_object_get_prop_float(res, ROOM_SETTINGS_RESULT_HUMIDITY, 0);
 
   if (tk_str_eq(room_name, h->bed_room->name)) {
     h->bed_room->temp = temp;
@@ -69,14 +69,14 @@ static ret_t home_on_room_result(navigator_request_t* req, const value_t* result
 static ret_t adjust_room_params(home_t* h, room_info_t* info) {
   navigator_request_t* req = navigator_request_create("room_settings", home_on_room_result);
 
-  object_set_prop_pointer(OBJECT(req), STR_HOME, h);
-  object_set_prop_str(OBJECT(req), ROOM_SETTINGS_REQ_ARG_ROOM, info->name);
-  object_set_prop_float(OBJECT(req), ROOM_SETTINGS_REQ_ARG_TEMP, info->temp);
-  object_set_prop_float(OBJECT(req), ROOM_SETTINGS_REQ_ARG_HUMIDITY, info->humidity);
+  tk_object_set_prop_pointer(TK_OBJECT(req), STR_HOME, h);
+  tk_object_set_prop_str(TK_OBJECT(req), ROOM_SETTINGS_REQ_ARG_ROOM, info->name);
+  tk_object_set_prop_float(TK_OBJECT(req), ROOM_SETTINGS_REQ_ARG_TEMP, info->temp);
+  tk_object_set_prop_float(TK_OBJECT(req), ROOM_SETTINGS_REQ_ARG_HUMIDITY, info->humidity);
 
   navigator_to_ex(req);
 
-  object_unref(OBJECT(req));
+  tk_object_unref(TK_OBJECT(req));
 
   return RET_OK;
 }

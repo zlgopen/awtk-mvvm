@@ -34,13 +34,13 @@ typedef ret_t (*navigator_handler_on_request_t)(navigator_handler_t* handler,
 
 /**
  * @class navigator_handler_t
- * @parent object_t
+ * @parent tk_object_t
  *
  * 处理导航请求。
  *
  */
 struct _navigator_handler_t {
-  object_t object;
+  tk_object_t object;
 
   /*private*/
   navigator_handler_on_request_t on_request;

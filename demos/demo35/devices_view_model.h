@@ -14,7 +14,7 @@ typedef struct _devices_view_model_t {
   view_model_t view_model;
 
   /*model object*/
-  object_t* devices;
+  tk_object_t* devices;
   bool_t unlocked;
   int32_t current_index;
 } devices_view_model_t;

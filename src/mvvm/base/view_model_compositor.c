@@ -23,7 +23,7 @@
 #include "tkc/object_default.h"
 #include "mvvm/base/view_model_compositor.h"
 
-static ret_t view_model_compositor_on_destroy(object_t* obj) {
+static ret_t view_model_compositor_on_destroy(tk_object_t* obj) {
   view_model_compositor_t* compositor = VIEW_MODEL_COMPOSITOR(obj);
   view_model_t** all = (view_model_t**)(compositor->view_models.elms);
   uint32_t nr = compositor->view_models.size;
@@ -32,18 +32,18 @@ static ret_t view_model_compositor_on_destroy(object_t* obj) {
   for (i = 0; i < nr; i++) {
     view_model_t* iter = all[i];
     emitter_off_by_ctx(EMITTER(iter), compositor);
-    OBJECT_UNREF(iter);
+    TK_OBJECT_UNREF(iter);
   }
   darray_deinit(&(compositor->view_models));
 
   return RET_OK;
 }
 
-static int32_t view_model_compositor_compare(object_t* obj, object_t* other) {
+static int32_t view_model_compositor_compare(tk_object_t* obj, tk_object_t* other) {
   return tk_str_cmp(obj->name, other->name);
 }
 
-static ret_t view_model_compositor_set_prop(object_t* obj, const char* name, const value_t* v) {
+static ret_t view_model_compositor_set_prop(tk_object_t* obj, const char* name, const value_t* v) {
   view_model_compositor_t* compositor = VIEW_MODEL_COMPOSITOR(obj);
   view_model_t** all = (view_model_t**)(compositor->view_models.elms);
   uint32_t nr = compositor->view_models.size;
@@ -59,7 +59,7 @@ static ret_t view_model_compositor_set_prop(object_t* obj, const char* name, con
   return RET_NOT_FOUND;
 }
 
-static ret_t view_model_compositor_get_prop(object_t* obj, const char* name, value_t* v) {
+static ret_t view_model_compositor_get_prop(tk_object_t* obj, const char* name, value_t* v) {
   view_model_compositor_t* compositor = VIEW_MODEL_COMPOSITOR(obj);
   view_model_t** all = (view_model_t**)(compositor->view_models.elms);
   uint32_t nr = compositor->view_models.size;
@@ -75,7 +75,7 @@ static ret_t view_model_compositor_get_prop(object_t* obj, const char* name, val
   return RET_NOT_FOUND;
 }
 
-static bool_t view_model_compositor_can_exec(object_t* obj, const char* name, const char* args) {
+static bool_t view_model_compositor_can_exec(tk_object_t* obj, const char* name, const char* args) {
   view_model_compositor_t* compositor = VIEW_MODEL_COMPOSITOR(obj);
   view_model_t** all = (view_model_t**)(compositor->view_models.elms);
   uint32_t nr = compositor->view_models.size;
@@ -91,7 +91,7 @@ static bool_t view_model_compositor_can_exec(object_t* obj, const char* name, co
   return FALSE;
 }
 
-static ret_t view_model_compositor_exec(object_t* obj, const char* name, const char* args) {
+static ret_t view_model_compositor_exec(tk_object_t* obj, const char* name, const char* args) {
   view_model_compositor_t* compositor = VIEW_MODEL_COMPOSITOR(obj);
   view_model_t** all = (view_model_t**)(compositor->view_models.elms);
   uint32_t nr = compositor->view_models.size;
@@ -222,7 +222,7 @@ static const view_model_vtable_t s_view_model_vtable_compositor = {
     .create_sub_view_model_array = view_model_compositor_create_sub_view_model_array};
 
 view_model_t* view_model_compositor_create(navigator_request_t* req) {
-  object_t* obj = object_create(&s_object_vtable_compositor);
+  tk_object_t* obj = tk_object_create(&s_object_vtable_compositor);
   view_model_compositor_t* compositor = VIEW_MODEL_COMPOSITOR(obj);
   view_model_t* view_model = VIEW_MODEL(obj);
   return_value_if_fail(compositor != NULL, NULL);

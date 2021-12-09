@@ -102,7 +102,7 @@ END_C_DECLS
 #include "mvvm/base/utils.h"
 #include "${vmClsName}.h"
 
-static ret_t ${vmClsName}_set_prop(object_t* obj, const char* name, const value_t* v) {
+static ret_t ${vmClsName}_set_prop(tk_object_t* obj, const char* name, const value_t* v) {
   ${clsType}* ${objName} = ((${vmClsType}*)(obj))->${objName};
 
 ${setPropsDispatch}
@@ -111,7 +111,7 @@ ${setPropsDispatch}
 }
 
 
-static ret_t ${vmClsName}_get_prop(object_t* obj, const char* name, value_t* v) {
+static ret_t ${vmClsName}_get_prop(tk_object_t* obj, const char* name, value_t* v) {
   ${clsType}* ${objName} = ((${vmClsType}*)(obj))->${objName};
 
 ${getPropsDispatch}
@@ -120,17 +120,17 @@ ${getPropsDispatch}
 }
 
 
-static bool_t ${vmClsName}_can_exec(object_t* obj, const char* name, const char* args) {
+static bool_t ${vmClsName}_can_exec(tk_object_t* obj, const char* name, const char* args) {
 ${canExecDispatch}
   return FALSE;
 }
 
-static ret_t ${vmClsName}_exec(object_t* obj, const char* name, const char* args) {
+static ret_t ${vmClsName}_exec(tk_object_t* obj, const char* name, const char* args) {
 ${execDispatch}
   return RET_NOT_FOUND;
 }
 
-static ret_t ${vmClsName}_on_destroy(object_t* obj) {
+static ret_t ${vmClsName}_on_destroy(tk_object_t* obj) {
   ${vmClsType}* vm = (${vmClsType}*)(obj);
   return_value_if_fail(vm != NULL, RET_BAD_PARAMS);
 
@@ -156,7 +156,7 @@ static const object_vtable_t s_${vmClsName}_vtable = {
 };
 
 view_model_t* ${vmClsName}_create_with(${clsType}* ${objName}) {
-  object_t* obj = object_create(&s_${vmClsName}_vtable);
+  tk_object_t* obj = tk_object_create(&s_${vmClsName}_vtable);
   view_model_t* vm = view_model_init(VIEW_MODEL(obj));
   ${vmClsType}* ${vmClsName} = (${vmClsType}*)(vm);
 

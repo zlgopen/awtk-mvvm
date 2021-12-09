@@ -30,13 +30,13 @@ BEGIN_C_DECLS
 
 /**
  * @class object_js_base_t
- * @parent object_t
+ * @parent tk_object_t
  *
  * 将object_js相关的公共行为进行抽象，以便重用。
  *
  */
 typedef struct _object_js_base_t {
-  object_t object;
+  tk_object_t object;
 
   /**
    * @property {jsvalue_t} jsobj
@@ -51,18 +51,18 @@ typedef struct _object_js_base_t {
   bool_t free_handle;
 } object_js_base_t;
 
-ret_t object_js_base_init(object_t* obj, jsvalue_t jsobj, bool_t free_handle);
-ret_t object_js_base_deinit(object_t* obj);
-int32_t object_js_base_compare(object_t* obj, object_t* other);
-ret_t object_js_base_set_prop(object_t* obj, const char* name, const value_t* v);
-ret_t object_js_base_get_prop(object_t* obj, const char* name, value_t* v);
-ret_t object_js_base_remove_prop(object_t* obj, const char* name);
-ret_t object_js_base_foreach_prop(object_t* obj, tk_visit_t on_prop, void* ctx);
-bool_t object_js_base_can_exec(object_t* obj, const char* name, const char* args);
-ret_t object_js_base_exec(object_t* obj, const char* name, const char* args);
-bool_t object_js_base_is_listener_registered(object_t* obj, object_t* listener);
-ret_t object_js_base_register_listener(object_t* obj, object_t* listener);
-bool_t object_is_object_js(object_t* obj);
+ret_t object_js_base_init(tk_object_t* obj, jsvalue_t jsobj, bool_t free_handle);
+ret_t object_js_base_deinit(tk_object_t* obj);
+int32_t object_js_base_compare(tk_object_t* obj, tk_object_t* other);
+ret_t object_js_base_set_prop(tk_object_t* obj, const char* name, const value_t* v);
+ret_t object_js_base_get_prop(tk_object_t* obj, const char* name, value_t* v);
+ret_t object_js_base_remove_prop(tk_object_t* obj, const char* name);
+ret_t object_js_base_foreach_prop(tk_object_t* obj, tk_visit_t on_prop, void* ctx);
+bool_t object_js_base_can_exec(tk_object_t* obj, const char* name, const char* args);
+ret_t object_js_base_exec(tk_object_t* obj, const char* name, const char* args);
+bool_t object_js_base_is_listener_registered(tk_object_t* obj, tk_object_t* listener);
+ret_t object_js_base_register_listener(tk_object_t* obj, tk_object_t* listener);
+bool_t object_is_object_js(tk_object_t* obj);
 
 #define OBJECT_JS_BASE(obj) (object_js_base_t*)(obj)
 

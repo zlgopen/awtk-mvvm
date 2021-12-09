@@ -58,13 +58,13 @@ void Home::Sync() {
 }
 
 ret_t Home::OnResult(navigator_request_t* req, const value_t* result) {
-  object_t* res = value_object(result);
-  Home* h = (Home*)(object_get_prop_pointer(OBJECT(req), STR_HOME));
-  const char* room_name = object_get_prop_str(OBJECT(req), ROOM_SETTINGS_REQ_ARG_ROOM);
+  tk_object_t* res = value_object(result);
+  Home* h = (Home*)(tk_object_get_prop_pointer(TK_OBJECT(req), STR_HOME));
+  const char* room_name = tk_object_get_prop_str(TK_OBJECT(req), ROOM_SETTINGS_REQ_ARG_ROOM);
   RoomInfo* info = tk_str_eq(room_name, STR_BED_ROOM) ? &(h->bed_room) : &(h->living_room);
 
-  info->temp = object_get_prop_float(res, ROOM_SETTINGS_RESULT_TEMP, info->temp);
-  info->humidity = object_get_prop_float(res, ROOM_SETTINGS_RESULT_HUMIDITY, info->humidity);
+  info->temp = tk_object_get_prop_float(res, ROOM_SETTINGS_RESULT_TEMP, info->temp);
+  info->humidity = tk_object_get_prop_float(res, ROOM_SETTINGS_RESULT_HUMIDITY, info->humidity);
 
   h->NotifyPropsChanged();
 
@@ -79,14 +79,14 @@ void Home::NotifyPropsChanged(void) {
 ret_t Home::AdjustRoomSettings(const char* room_name, RoomInfo* info) {
   navigator_request_t* req = navigator_request_create("room_settings", Home::OnResult);
 
-  object_set_prop_pointer(OBJECT(req), STR_HOME, this);
-  object_set_prop_str(OBJECT(req), ROOM_SETTINGS_REQ_ARG_ROOM, room_name);
-  object_set_prop_float(OBJECT(req), ROOM_SETTINGS_REQ_ARG_TEMP, info->temp);
-  object_set_prop_float(OBJECT(req), ROOM_SETTINGS_REQ_ARG_HUMIDITY, info->humidity);
+  tk_object_set_prop_pointer(TK_OBJECT(req), STR_HOME, this);
+  tk_object_set_prop_str(TK_OBJECT(req), ROOM_SETTINGS_REQ_ARG_ROOM, room_name);
+  tk_object_set_prop_float(TK_OBJECT(req), ROOM_SETTINGS_REQ_ARG_TEMP, info->temp);
+  tk_object_set_prop_float(TK_OBJECT(req), ROOM_SETTINGS_REQ_ARG_HUMIDITY, info->humidity);
 
   navigator_to_ex(req);
 
-  object_unref(OBJECT(req));
+  tk_object_unref(TK_OBJECT(req));
 
   return RET_OK;
 }

@@ -92,7 +92,7 @@ ret_t view_model_array_deinit(view_model_t* view_model) {
 }
 
 ret_t view_model_array_notify_items_changed(view_model_t* view_model) {
-  return view_model_notify_items_changed(view_model, OBJECT(view_model));
+  return view_model_notify_items_changed(view_model, TK_OBJECT(view_model));
 }
 
 ret_t view_model_array_default_set_prop(view_model_t* view_model, const char* name,

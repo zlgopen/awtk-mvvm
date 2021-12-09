@@ -33,5 +33,5 @@ TEST(ViewModelParentChild, basic) {
 
   ASSERT_EQ(view_model_can_exec(vm, "not_exist", NULL), FALSE);
   ASSERT_NE(view_model_exec(vm, "not_exist", NULL), RET_OK);
-  OBJECT_UNREF(vm);
+  TK_OBJECT_UNREF(vm);
 }

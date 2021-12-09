@@ -42,7 +42,7 @@ static ret_t humidity_reset(humidity_t* humidity) {
   return RET_OBJECT_CHANGED;
 }
 
-static ret_t humidity_get_prop(object_t* obj, const char* name, value_t* v) {
+static ret_t humidity_get_prop(tk_object_t* obj, const char* name, value_t* v) {
   humidity_t* humidity = (humidity_t*)obj;
 
   if (tk_str_ieq("humi", name)) {
@@ -52,7 +52,7 @@ static ret_t humidity_get_prop(object_t* obj, const char* name, value_t* v) {
 
   return RET_NOT_FOUND;
 }
-static ret_t humidity_set_prop(object_t* obj, const char* name, const value_t* v) {
+static ret_t humidity_set_prop(tk_object_t* obj, const char* name, const value_t* v) {
   humidity_t* humidity = (humidity_t*)obj;
 
   if (tk_str_ieq("humi", name)) {
@@ -63,7 +63,7 @@ static ret_t humidity_set_prop(object_t* obj, const char* name, const value_t* v
   return RET_NOT_FOUND;
 }
 
-static bool_t humidity_can_exec(object_t* obj, const char* name, const char* args) {
+static bool_t humidity_can_exec(tk_object_t* obj, const char* name, const char* args) {
   humidity_t* humidity = (humidity_t*)obj;
 
   if (tk_str_ieq("apply", name)) {
@@ -75,7 +75,7 @@ static bool_t humidity_can_exec(object_t* obj, const char* name, const char* arg
   return FALSE;
 }
 
-static ret_t humidity_exec(object_t* obj, const char* name, const char* args) {
+static ret_t humidity_exec(tk_object_t* obj, const char* name, const char* args) {
   humidity_t* humidity = (humidity_t*)obj;
 
   if (tk_str_ieq("apply", name)) {
@@ -95,8 +95,8 @@ static const object_vtable_t s_humidity_vtable = {.type = "humidity",
                                                   .can_exec = humidity_can_exec,
                                                   .exec = humidity_exec};
 
-object_t* humidity_create(void) {
-  object_t* obj = object_create(&s_humidity_vtable);
+tk_object_t* humidity_create(void) {
+  tk_object_t* obj = tk_object_create(&s_humidity_vtable);
 
   return obj;
 }

@@ -39,7 +39,7 @@ typedef struct _model_dummy_t view_model_dummy_t;
 struct _model_dummy_t {
   view_model_t view_model;
 
-  object_t* props;
+  tk_object_t* props;
 };
 
 /**

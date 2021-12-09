@@ -67,10 +67,11 @@ static widget_t* navigator_handler_awtk_lookup_widget_by_path(widget_t* widget, 
 }
 
 static view_model_t* navigator_handler_awtk_get_view_model(widget_t* widget) {
-  object_t* props = widget->custom_props;
+  tk_object_t* props = widget->custom_props;
 
   if (props != NULL) {
-    binding_context_t* bctx = BINDING_CONTEXT(object_get_prop_pointer(props, WIDGET_PROP_V_MODEL));
+    binding_context_t* bctx =
+        BINDING_CONTEXT(tk_object_get_prop_pointer(props, WIDGET_PROP_V_MODEL));
     if (bctx != NULL) {
       return bctx->view_model;
     }
@@ -82,11 +83,13 @@ static view_model_t* navigator_handler_awtk_get_view_model(widget_t* widget) {
 static ret_t navigator_handler_awtk_foreach_binding_context(widget_t* widget, tk_visit_t visit,
                                                             void* ctx) {
   ret_t ret = RET_OK;
-  object_t* props = widget->custom_props;
+  tk_object_t* props = widget->custom_props;
 
   if (props != NULL) {
-    darray_t* children = (darray_t*)(object_get_prop_pointer(props, WIDGET_PROP_V_MODEL_CHILDREN));
-    binding_context_t* bctx = BINDING_CONTEXT(object_get_prop_pointer(props, WIDGET_PROP_V_MODEL));
+    darray_t* children =
+        (darray_t*)(tk_object_get_prop_pointer(props, WIDGET_PROP_V_MODEL_CHILDREN));
+    binding_context_t* bctx =
+        BINDING_CONTEXT(tk_object_get_prop_pointer(props, WIDGET_PROP_V_MODEL));
 
     if (bctx != NULL) {
       ret = visit(ctx, bctx);
@@ -163,7 +166,7 @@ static ret_t navigator_handler_awtk_notify_view_models_props_changed(widget_t* w
 
 static ret_t visit_notify_view_models_items_changed(void* ctx, const void* data) {
   binding_context_t* bctx = BINDING_CONTEXT(data);
-  object_t* items = OBJECT(ctx);
+  tk_object_t* items = TK_OBJECT(ctx);
 
   if (bctx->view_model != NULL) {
     return view_model_notify_items_changed(bctx->view_model, items);
@@ -173,7 +176,7 @@ static ret_t visit_notify_view_models_items_changed(void* ctx, const void* data)
 }
 
 static ret_t navigator_handler_awtk_notify_view_models_items_changed(widget_t* widget,
-                                                                     object_t* items) {
+                                                                     tk_object_t* items) {
   return navigator_handler_awtk_foreach_binding_context(
       widget, visit_notify_view_models_items_changed, items);
 }
@@ -198,7 +201,7 @@ static widget_t* navigator_handler_awtk_window_open_and_close(navigator_request_
                                                               widget_t* to_close) {
   widget_t* wm = NULL;
   widget_t* win = NULL;
-  const char* target = object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_TARGET);
+  const char* target = tk_object_get_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_TARGET);
   return_value_if_fail(target != NULL, NULL);
 
   wm = window_manager();
@@ -237,7 +240,8 @@ static ret_t navigator_handler_awtk_window_dump(widget_t* win) {
 static ret_t navigator_handler_awtk_window_open(navigator_request_t* req) {
   widget_t* win = NULL;
   widget_t* current = NULL;
-  bool_t close_current = object_get_prop_bool(OBJECT(req), NAVIGATOR_ARG_CLOSE_CURRENT, FALSE);
+  bool_t close_current =
+      tk_object_get_prop_bool(TK_OBJECT(req), NAVIGATOR_ARG_CLOSE_CURRENT, FALSE);
 
   if (close_current) {
     current = window_manager_get_top_main_window(window_manager());
@@ -263,15 +267,15 @@ static const object_vtable_t s_navigator_handler_awtk_vtable = {
 
 static ret_t navigator_handler_awtk_on_request(navigator_handler_t* handler,
                                                navigator_request_t* req) {
-  object_t* obj = OBJECT(req);
-  const char* request_type = object_get_prop_str(obj, NAVIGATOR_ARG_REQ);
+  tk_object_t* obj = TK_OBJECT(req);
+  const char* request_type = tk_object_get_prop_str(obj, NAVIGATOR_ARG_REQ);
 
   if (tk_str_ieq(request_type, NAVIGATOR_REQ_CLOSE)) {
-    const char* target = object_get_prop_str(obj, NAVIGATOR_ARG_TARGET);
+    const char* target = tk_object_get_prop_str(obj, NAVIGATOR_ARG_TARGET);
     if (target != NULL) {
       widget_t* win = widget_child(window_manager(), target);
       if (win != NULL) {
-        if (object_get_prop_bool(obj, NAVIGATOR_ARG_FORCE, FALSE)) {
+        if (tk_object_get_prop_bool(obj, NAVIGATOR_ARG_FORCE, FALSE)) {
           return window_manager_close_window_force(window_manager(), win);
         } else {
           return widget_dispatch_simple_event(win, EVT_REQUEST_CLOSE_WINDOW);
@@ -290,16 +294,16 @@ static ret_t navigator_handler_awtk_on_request(navigator_handler_t* handler,
     return window_manager_back_to_home(window_manager());
   }
 
-  if (!object_get_prop_bool(obj, NAVIGATOR_ARG_OPEN_NEW, TRUE)) {
+  if (!tk_object_get_prop_bool(obj, NAVIGATOR_ARG_OPEN_NEW, TRUE)) {
     widget_t* wm = window_manager();
-    const char* target = object_get_prop_str(obj, NAVIGATOR_ARG_TARGET);
+    const char* target = tk_object_get_prop_str(obj, NAVIGATOR_ARG_TARGET);
 
     if (target != NULL) {
       widget_t* target_win = widget_child(wm, target);
 
       if (target_win != NULL) {
         widget_t* curr_win = window_manager_get_top_window(wm);
-        bool_t close_current = object_get_prop_bool(obj, NAVIGATOR_ARG_CLOSE_CURRENT, FALSE);
+        bool_t close_current = tk_object_get_prop_bool(obj, NAVIGATOR_ARG_CLOSE_CURRENT, FALSE);
         if (target_win != curr_win) {
           return window_manager_switch_to(wm, curr_win, target_win, close_current);
         } else {
@@ -317,10 +321,10 @@ static ret_t navigator_handler_awtk_on_request(navigator_handler_t* handler,
 }
 
 navigator_handler_t* navigator_handler_awtk_create(void) {
-  object_t* obj = NULL;
+  tk_object_t* obj = NULL;
   navigator_handler_t* handler = NULL;
 
-  obj = object_create(&s_navigator_handler_awtk_vtable);
+  obj = tk_object_create(&s_navigator_handler_awtk_vtable);
   handler = NAVIGATOR_HANDLER(obj);
   return_value_if_fail(handler != NULL, NULL);
 
@@ -331,17 +335,17 @@ navigator_handler_t* navigator_handler_awtk_create(void) {
 
 static ret_t navigator_handler_awtk_on_toast(navigator_handler_t* handler,
                                              navigator_request_t* req) {
-  const char* content = object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_CONTENT);
-  int duration = object_get_prop_int(OBJECT(req), NAVIGATOR_ARG_DURATION, 3000);
+  const char* content = tk_object_get_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_CONTENT);
+  int duration = tk_object_get_prop_int(TK_OBJECT(req), NAVIGATOR_ARG_DURATION, 3000);
 
   return dialog_toast(content, duration);
 }
 
 navigator_handler_t* navigator_handler_awtk_toast_create(void) {
-  object_t* obj = NULL;
+  tk_object_t* obj = NULL;
   navigator_handler_t* handler = NULL;
 
-  obj = object_create(&s_navigator_handler_awtk_vtable);
+  obj = tk_object_create(&s_navigator_handler_awtk_vtable);
   handler = NAVIGATOR_HANDLER(obj);
   return_value_if_fail(handler != NULL, NULL);
 
@@ -352,17 +356,17 @@ navigator_handler_t* navigator_handler_awtk_toast_create(void) {
 
 static ret_t navigator_handler_awtk_on_info(navigator_handler_t* handler,
                                             navigator_request_t* req) {
-  const char* title = object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_TITLE);
-  const char* content = object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_CONTENT);
+  const char* title = tk_object_get_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_TITLE);
+  const char* content = tk_object_get_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_CONTENT);
 
   return dialog_info(title, content);
 }
 
 navigator_handler_t* navigator_handler_awtk_info_create(void) {
-  object_t* obj = NULL;
+  tk_object_t* obj = NULL;
   navigator_handler_t* handler = NULL;
 
-  obj = object_create(&s_navigator_handler_awtk_vtable);
+  obj = tk_object_create(&s_navigator_handler_awtk_vtable);
   handler = NAVIGATOR_HANDLER(obj);
   return_value_if_fail(handler != NULL, NULL);
 
@@ -373,17 +377,17 @@ navigator_handler_t* navigator_handler_awtk_info_create(void) {
 
 static ret_t navigator_handler_awtk_on_warn(navigator_handler_t* handler,
                                             navigator_request_t* req) {
-  const char* title = object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_TITLE);
-  const char* content = object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_CONTENT);
+  const char* title = tk_object_get_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_TITLE);
+  const char* content = tk_object_get_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_CONTENT);
 
   return dialog_warn(title, content);
 }
 
 navigator_handler_t* navigator_handler_awtk_warn_create(void) {
-  object_t* obj = NULL;
+  tk_object_t* obj = NULL;
   navigator_handler_t* handler = NULL;
 
-  obj = object_create(&s_navigator_handler_awtk_vtable);
+  obj = tk_object_create(&s_navigator_handler_awtk_vtable);
   handler = NAVIGATOR_HANDLER(obj);
   return_value_if_fail(handler != NULL, NULL);
 
@@ -394,17 +398,17 @@ navigator_handler_t* navigator_handler_awtk_warn_create(void) {
 
 static ret_t navigator_handler_awtk_on_confirm(navigator_handler_t* handler,
                                                navigator_request_t* req) {
-  const char* title = object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_TITLE);
-  const char* content = object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_CONTENT);
+  const char* title = tk_object_get_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_TITLE);
+  const char* content = tk_object_get_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_CONTENT);
 
   return dialog_confirm(title, content);
 }
 
 navigator_handler_t* navigator_handler_awtk_confirm_create(void) {
-  object_t* obj = NULL;
+  tk_object_t* obj = NULL;
   navigator_handler_t* handler = NULL;
 
-  obj = object_create(&s_navigator_handler_awtk_vtable);
+  obj = tk_object_create(&s_navigator_handler_awtk_vtable);
   handler = NAVIGATOR_HANDLER(obj);
   return_value_if_fail(handler != NULL, NULL);
 
@@ -438,9 +442,9 @@ static ret_t tk_on_choose_file_result(void* ctx, event_t* e) {
 
 static ret_t navigator_handler_awtk_on_pick_file(navigator_handler_t* handler,
                                                  navigator_request_t* req) {
-  const char* defpath = object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_DEFAULT);
-  const char* mimetype = object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_FILTER);
-  bool_t for_save = object_get_prop_bool(OBJECT(req), NAVIGATOR_ARG_FOR_SAVE, FALSE);
+  const char* defpath = tk_object_get_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_DEFAULT);
+  const char* mimetype = tk_object_get_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_FILTER);
+  bool_t for_save = tk_object_get_prop_bool(TK_OBJECT(req), NAVIGATOR_ARG_FOR_SAVE, FALSE);
   file_chooser_t* chooser = file_chooser_create();
 
   file_chooser_set_init_dir(chooser, defpath);
@@ -455,10 +459,10 @@ static ret_t navigator_handler_awtk_on_pick_file(navigator_handler_t* handler,
 }
 
 navigator_handler_t* navigator_handler_awtk_pick_file_create(void) {
-  object_t* obj = NULL;
+  tk_object_t* obj = NULL;
   navigator_handler_t* handler = NULL;
 
-  obj = object_create(&s_navigator_handler_awtk_vtable);
+  obj = tk_object_create(&s_navigator_handler_awtk_vtable);
   handler = NAVIGATOR_HANDLER(obj);
   return_value_if_fail(handler != NULL, NULL);
 
@@ -469,7 +473,7 @@ navigator_handler_t* navigator_handler_awtk_pick_file_create(void) {
 
 static ret_t navigator_handler_awtk_on_pick_dir(navigator_handler_t* handler,
                                                 navigator_request_t* req) {
-  const char* defpath = object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_DEFAULT);
+  const char* defpath = tk_object_get_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_DEFAULT);
   file_chooser_t* chooser = file_chooser_create();
   file_chooser_set_init_dir(chooser, defpath);
   emitter_on(EMITTER(chooser), EVT_DONE, tk_on_choose_file_result, req);
@@ -478,10 +482,10 @@ static ret_t navigator_handler_awtk_on_pick_dir(navigator_handler_t* handler,
 }
 
 navigator_handler_t* navigator_handler_awtk_pick_dir_create(void) {
-  object_t* obj = NULL;
+  tk_object_t* obj = NULL;
   navigator_handler_t* handler = NULL;
 
-  obj = object_create(&s_navigator_handler_awtk_vtable);
+  obj = tk_object_create(&s_navigator_handler_awtk_vtable);
   handler = NAVIGATOR_HANDLER(obj);
   return_value_if_fail(handler != NULL, NULL);
 
@@ -494,7 +498,7 @@ static ret_t navigator_handler_awtk_on_count_view_model(navigator_handler_t* han
                                                         navigator_request_t* req) {
   ret_t ret = RET_FAIL;
   int32_t cnt = 0;
-  const char* target = object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_TARGET);
+  const char* target = tk_object_get_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_TARGET);
   widget_t* wm = window_manager();
   return_value_if_fail(wm != NULL, RET_FAIL);
 
@@ -525,10 +529,10 @@ static ret_t navigator_handler_awtk_on_count_view_model(navigator_handler_t* han
 }
 
 navigator_handler_t* navigator_handler_awtk_count_view_model_create(void) {
-  object_t* obj = NULL;
+  tk_object_t* obj = NULL;
   navigator_handler_t* handler = NULL;
 
-  obj = object_create(&s_navigator_handler_awtk_vtable);
+  obj = tk_object_create(&s_navigator_handler_awtk_vtable);
   handler = NAVIGATOR_HANDLER(obj);
   return_value_if_fail(handler != NULL, NULL);
 
@@ -539,7 +543,7 @@ navigator_handler_t* navigator_handler_awtk_count_view_model_create(void) {
 
 static ret_t navigator_handler_awtk_on_get_view_model(navigator_handler_t* handler,
                                                       navigator_request_t* req) {
-  const char* target = object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_TARGET);
+  const char* target = tk_object_get_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_TARGET);
   widget_t* wm = window_manager();
   darray_t* result = (darray_t*)(req->user_data);
   return_value_if_fail(wm != NULL, RET_FAIL);
@@ -568,10 +572,10 @@ static ret_t navigator_handler_awtk_on_get_view_model(navigator_handler_t* handl
 }
 
 navigator_handler_t* navigator_handler_awtk_get_view_model_create(void) {
-  object_t* obj = NULL;
+  tk_object_t* obj = NULL;
   navigator_handler_t* handler = NULL;
 
-  obj = object_create(&s_navigator_handler_awtk_vtable);
+  obj = tk_object_create(&s_navigator_handler_awtk_vtable);
   handler = NAVIGATOR_HANDLER(obj);
   return_value_if_fail(handler != NULL, NULL);
 
@@ -582,9 +586,11 @@ navigator_handler_t* navigator_handler_awtk_get_view_model_create(void) {
 
 static ret_t navigator_handler_awtk_on_notify_view_model(navigator_handler_t* handler,
                                                          navigator_request_t* req) {
-  const char* target = object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_TARGET);
-  bool_t is_props_changed = object_get_prop_bool(OBJECT(req), NAVIGATOR_ARG_PROPS_CHANGED, FALSE);
-  bool_t is_items_changed = object_get_prop_bool(OBJECT(req), NAVIGATOR_ARG_ITEMS_CHANGED, FALSE);
+  const char* target = tk_object_get_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_TARGET);
+  bool_t is_props_changed =
+      tk_object_get_prop_bool(TK_OBJECT(req), NAVIGATOR_ARG_PROPS_CHANGED, FALSE);
+  bool_t is_items_changed =
+      tk_object_get_prop_bool(TK_OBJECT(req), NAVIGATOR_ARG_ITEMS_CHANGED, FALSE);
   widget_t* wm = window_manager();
   return_value_if_fail(wm != NULL, RET_FAIL);
 
@@ -610,7 +616,7 @@ static ret_t navigator_handler_awtk_on_notify_view_model(navigator_handler_t* ha
   }
 
   if (is_items_changed) {
-    object_t* items = object_get_prop_object(OBJECT(req), NAVIGATOR_ARG_EVENT_SOURCE);
+    tk_object_t* items = tk_object_get_prop_object(TK_OBJECT(req), NAVIGATOR_ARG_EVENT_SOURCE);
 
     if (target == NULL) {
       WIDGET_FOR_EACH_CHILD_BEGIN(wm, iter, i)
@@ -637,11 +643,11 @@ static ret_t navigator_handler_awtk_on_notify_view_model(navigator_handler_t* ha
 
 static ret_t navigator_handler_awtk_on_get_locale(navigator_handler_t* handler,
                                                   navigator_request_t* req) {
-  object_t* obj = NULL;
+  tk_object_t* obj = NULL;
   widget_t* widget = NULL;
   locale_info_t* info = NULL;
   widget_t* wm = window_manager();
-  const char* target = object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_TARGET);
+  const char* target = tk_object_get_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_TARGET);
   return_value_if_fail(wm != NULL, RET_FAIL);
 
   if (target == NULL) {
@@ -657,8 +663,8 @@ static ret_t navigator_handler_awtk_on_get_locale(navigator_handler_t* handler,
   }
   if (info != NULL) {
     obj = object_default_create();
-    object_set_prop_str(obj, "language", info->language);
-    object_set_prop_str(obj, "country", info->country);
+    tk_object_set_prop_str(obj, "language", info->language);
+    tk_object_set_prop_str(obj, "country", info->country);
   }
 
   value_set_object(&(req->result), obj);
@@ -673,9 +679,9 @@ static ret_t navigator_handler_awtk_on_set_locale(navigator_handler_t* handler,
   widget_t* widget = NULL;
   locale_info_t* info = NULL;
   widget_t* wm = window_manager();
-  const char* target = object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_TARGET);
-  const char* language = object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_LANGUAGE);
-  const char* country = object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_COUNTRY);
+  const char* target = tk_object_get_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_TARGET);
+  const char* language = tk_object_get_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_LANGUAGE);
+  const char* country = tk_object_get_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_COUNTRY);
   return_value_if_fail(wm != NULL && language != NULL && country != NULL, RET_FAIL);
 
   if (target == NULL) {
@@ -701,7 +707,7 @@ static ret_t navigator_handler_awtk_on_get_theme(navigator_handler_t* handler,
   widget_t* widget = NULL;
   assets_manager_t* am = NULL;
   widget_t* wm = window_manager();
-  const char* target = object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_TARGET);
+  const char* target = tk_object_get_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_TARGET);
   return_value_if_fail(wm != NULL, RET_FAIL);
 
   if (target == NULL) {
@@ -727,8 +733,8 @@ static ret_t navigator_handler_awtk_on_set_theme(navigator_handler_t* handler,
   ret_t ret = RET_OK;
   widget_t* widget = NULL;
   widget_t* wm = window_manager();
-  const char* target = object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_TARGET);
-  const char* theme = object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_THEME);
+  const char* target = tk_object_get_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_TARGET);
+  const char* theme = tk_object_get_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_THEME);
   return_value_if_fail(wm != NULL && theme != NULL, RET_FAIL);
 
   if (target == NULL) {
@@ -747,10 +753,10 @@ static ret_t navigator_handler_awtk_on_set_theme(navigator_handler_t* handler,
 }
 
 navigator_handler_t* navigator_handler_awtk_notify_view_model_create(void) {
-  object_t* obj = NULL;
+  tk_object_t* obj = NULL;
   navigator_handler_t* handler = NULL;
 
-  obj = object_create(&s_navigator_handler_awtk_vtable);
+  obj = tk_object_create(&s_navigator_handler_awtk_vtable);
   handler = NAVIGATOR_HANDLER(obj);
   return_value_if_fail(handler != NULL, NULL);
 
@@ -760,10 +766,10 @@ navigator_handler_t* navigator_handler_awtk_notify_view_model_create(void) {
 }
 
 navigator_handler_t* navigator_handler_awtk_get_locale_create(void) {
-  object_t* obj = NULL;
+  tk_object_t* obj = NULL;
   navigator_handler_t* handler = NULL;
 
-  obj = object_create(&s_navigator_handler_awtk_vtable);
+  obj = tk_object_create(&s_navigator_handler_awtk_vtable);
   handler = NAVIGATOR_HANDLER(obj);
   return_value_if_fail(handler != NULL, NULL);
 
@@ -773,10 +779,10 @@ navigator_handler_t* navigator_handler_awtk_get_locale_create(void) {
 }
 
 navigator_handler_t* navigator_handler_awtk_set_locale_create(void) {
-  object_t* obj = NULL;
+  tk_object_t* obj = NULL;
   navigator_handler_t* handler = NULL;
 
-  obj = object_create(&s_navigator_handler_awtk_vtable);
+  obj = tk_object_create(&s_navigator_handler_awtk_vtable);
   handler = NAVIGATOR_HANDLER(obj);
   return_value_if_fail(handler != NULL, NULL);
 
@@ -786,10 +792,10 @@ navigator_handler_t* navigator_handler_awtk_set_locale_create(void) {
 }
 
 navigator_handler_t* navigator_handler_awtk_get_theme_create(void) {
-  object_t* obj = NULL;
+  tk_object_t* obj = NULL;
   navigator_handler_t* handler = NULL;
 
-  obj = object_create(&s_navigator_handler_awtk_vtable);
+  obj = tk_object_create(&s_navigator_handler_awtk_vtable);
   handler = NAVIGATOR_HANDLER(obj);
   return_value_if_fail(handler != NULL, NULL);
 
@@ -799,10 +805,10 @@ navigator_handler_t* navigator_handler_awtk_get_theme_create(void) {
 }
 
 navigator_handler_t* navigator_handler_awtk_set_theme_create(void) {
-  object_t* obj = NULL;
+  tk_object_t* obj = NULL;
   navigator_handler_t* handler = NULL;
 
-  obj = object_create(&s_navigator_handler_awtk_vtable);
+  obj = tk_object_create(&s_navigator_handler_awtk_vtable);
   handler = NAVIGATOR_HANDLER(obj);
   return_value_if_fail(handler != NULL, NULL);
 

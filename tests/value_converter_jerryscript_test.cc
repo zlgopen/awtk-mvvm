@@ -29,7 +29,7 @@ TEST(ValueConverterJerryScript, basic) {
   ASSERT_EQ(value_converter_to_model(c, &from, &to), RET_OK);
   ASSERT_EQ(value_int(&from) - 1, value_int(&to));
 
-  object_unref(OBJECT(c));
+  tk_object_unref(TK_OBJECT(c));
 }
 
 TEST(ValueConverterJerryScript, not_exist) {

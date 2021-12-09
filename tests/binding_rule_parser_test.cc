@@ -15,7 +15,7 @@ TEST(CommandBindingParser, close_window) {
   ASSERT_EQ(string(cmd->command), string("Save"));
   ASSERT_EQ(string(cmd->event), string("click"));
 
-  object_unref(OBJECT(rule));
+  tk_object_unref(TK_OBJECT(rule));
 }
 
 TEST(CommandBindingParser, auto_disable) {
@@ -26,7 +26,7 @@ TEST(CommandBindingParser, auto_disable) {
   ASSERT_EQ(string(cmd->command), string("Save"));
   ASSERT_EQ(string(cmd->event), string("click"));
 
-  object_unref(OBJECT(rule));
+  tk_object_unref(TK_OBJECT(rule));
 }
 
 TEST(CommandBindingParser, args) {
@@ -36,7 +36,7 @@ TEST(CommandBindingParser, args) {
   ASSERT_EQ(string(cmd->command), string("add_char"));
   ASSERT_EQ(string(cmd->args), string("1"));
 
-  object_unref(OBJECT(rule));
+  tk_object_unref(TK_OBJECT(rule));
 }
 
 TEST(CommandBindingParser, args_expr) {
@@ -47,7 +47,7 @@ TEST(CommandBindingParser, args_expr) {
   ASSERT_EQ(string(cmd->command), string("fscript"));
   ASSERT_EQ(string(cmd->args), string("set(a, 123);set(b, \"abc\");set(c, a+b)"));
 
-  object_unref(OBJECT(rule));
+  tk_object_unref(TK_OBJECT(rule));
 }
 
 TEST(CommandBindingParser, args1) {
@@ -57,7 +57,7 @@ TEST(CommandBindingParser, args1) {
   ASSERT_EQ(string(cmd->command), string("add_char"));
   ASSERT_EQ(string(cmd->args), string("="));
 
-  object_unref(OBJECT(rule));
+  tk_object_unref(TK_OBJECT(rule));
 }
 
 TEST(CommandBindingParser, args3) {
@@ -67,7 +67,7 @@ TEST(CommandBindingParser, args3) {
   ASSERT_EQ(string(cmd->command), string("add_char"));
   ASSERT_EQ(string(cmd->args), string("=+-*/=="));
 
-  object_unref(OBJECT(rule));
+  tk_object_unref(TK_OBJECT(rule));
 }
 
 TEST(CommandBindingParser, close_window_true) {
@@ -77,7 +77,7 @@ TEST(CommandBindingParser, close_window_true) {
   ASSERT_EQ(cmd->close_window, TRUE);
   ASSERT_EQ(string(cmd->event), string("click"));
 
-  object_unref(OBJECT(rule));
+  tk_object_unref(TK_OBJECT(rule));
 }
 
 TEST(CommandBindingParser, close_window_false) {
@@ -87,7 +87,7 @@ TEST(CommandBindingParser, close_window_false) {
   ASSERT_EQ(cmd->close_window, FALSE);
   ASSERT_EQ(string(cmd->event), string("click"));
 
-  object_unref(OBJECT(rule));
+  tk_object_unref(TK_OBJECT(rule));
 }
 
 TEST(CommandBindingParser, update_model) {
@@ -97,7 +97,7 @@ TEST(CommandBindingParser, update_model) {
   ASSERT_EQ(cmd->update_model, TRUE);
   ASSERT_EQ(string(cmd->event), string("click"));
 
-  object_unref(OBJECT(rule));
+  tk_object_unref(TK_OBJECT(rule));
 }
 
 TEST(CommandBindingParser, update_model_true) {
@@ -107,7 +107,7 @@ TEST(CommandBindingParser, update_model_true) {
   ASSERT_EQ(cmd->update_model, TRUE);
   ASSERT_EQ(string(cmd->event), string("click"));
 
-  object_unref(OBJECT(rule));
+  tk_object_unref(TK_OBJECT(rule));
 }
 
 TEST(CommandBindingParser, update_model_false) {
@@ -117,7 +117,7 @@ TEST(CommandBindingParser, update_model_false) {
   ASSERT_EQ(cmd->update_model, FALSE);
   ASSERT_EQ(string(cmd->event), string("click"));
 
-  object_unref(OBJECT(rule));
+  tk_object_unref(TK_OBJECT(rule));
 }
 
 TEST(CommandBindingParser, key_filter) {
@@ -129,7 +129,7 @@ TEST(CommandBindingParser, key_filter) {
   ASSERT_EQ(string(cmd->event), string("keydown"));
   ASSERT_EQ(string(cmd->key_filter), string("ctrl_a"));
 
-  object_unref(OBJECT(rule));
+  tk_object_unref(TK_OBJECT(rule));
 }
 
 TEST(CommandBindingParser, ikey_filter) {
@@ -141,7 +141,7 @@ TEST(CommandBindingParser, ikey_filter) {
   ASSERT_EQ(string(cmd->event), string("keydown"));
   ASSERT_EQ(string(cmd->key_filter), string("ctrl_a"));
 
-  object_unref(OBJECT(rule));
+  tk_object_unref(TK_OBJECT(rule));
 }
 
 TEST(DataBindingParser, basic) {
@@ -151,7 +151,7 @@ TEST(DataBindingParser, basic) {
   ASSERT_EQ(string(data->path), string("Name"));
   ASSERT_EQ(string(data->prop), string("text"));
 
-  object_unref(OBJECT(rule));
+  tk_object_unref(TK_OBJECT(rule));
 }
 
 TEST(DataBindingParser, mode) {
@@ -162,7 +162,7 @@ TEST(DataBindingParser, mode) {
   ASSERT_EQ(string(data->prop), string("text"));
   ASSERT_EQ(data->mode, BINDING_TWO_WAY);
 
-  object_unref(OBJECT(rule));
+  tk_object_unref(TK_OBJECT(rule));
 }
 
 TEST(DataBindingParser, imode) {
@@ -171,7 +171,7 @@ TEST(DataBindingParser, imode) {
 
   ASSERT_EQ(data->mode, BINDING_TWO_WAY);
 
-  object_unref(OBJECT(rule));
+  tk_object_unref(TK_OBJECT(rule));
 }
 
 TEST(DataBindingParser, trigger) {
@@ -182,7 +182,7 @@ TEST(DataBindingParser, trigger) {
   ASSERT_EQ(string(data->prop), string("text"));
   ASSERT_EQ(data->trigger, UPDATE_WHEN_EXPLICIT);
 
-  object_unref(OBJECT(rule));
+  tk_object_unref(TK_OBJECT(rule));
 }
 
 TEST(DataBindingParser, itrigger) {
@@ -191,7 +191,7 @@ TEST(DataBindingParser, itrigger) {
 
   ASSERT_EQ(data->trigger, UPDATE_WHEN_EXPLICIT);
 
-  object_unref(OBJECT(rule));
+  tk_object_unref(TK_OBJECT(rule));
 }
 
 TEST(DataBindingParser, converter) {
@@ -202,7 +202,7 @@ TEST(DataBindingParser, converter) {
   ASSERT_EQ(string(data->prop), string("text"));
   ASSERT_EQ(string(data->converter), string("converter"));
 
-  object_unref(OBJECT(rule));
+  tk_object_unref(TK_OBJECT(rule));
 }
 
 TEST(DataBindingParser, iconverter) {
@@ -211,7 +211,7 @@ TEST(DataBindingParser, iconverter) {
 
   ASSERT_EQ(string(data->converter), string("converter"));
 
-  object_unref(OBJECT(rule));
+  tk_object_unref(TK_OBJECT(rule));
 }
 
 TEST(DataBindingParser, validator) {
@@ -222,7 +222,7 @@ TEST(DataBindingParser, validator) {
   ASSERT_EQ(string(data->prop), string("text"));
   ASSERT_EQ(string(data->validator), string("validator"));
 
-  object_unref(OBJECT(rule));
+  tk_object_unref(TK_OBJECT(rule));
 }
 
 TEST(DataBindingParser, ivalidator) {
@@ -231,7 +231,7 @@ TEST(DataBindingParser, ivalidator) {
 
   ASSERT_EQ(string(data->validator), string("validator"));
 
-  object_unref(OBJECT(rule));
+  tk_object_unref(TK_OBJECT(rule));
 }
 
 TEST(DataBindingParser, expr) {
@@ -240,7 +240,7 @@ TEST(DataBindingParser, expr) {
 
   ASSERT_EQ(string(data->path), string("$type==1"));
 
-  object_unref(OBJECT(rule));
+  tk_object_unref(TK_OBJECT(rule));
 }
 
 TEST(DataBindingParser, style) {
@@ -249,5 +249,5 @@ TEST(DataBindingParser, style) {
 
   ASSERT_STREQ((data->prop), ("style:normal:text_color"));
 
-  object_unref(OBJECT(rule));
+  tk_object_unref(TK_OBJECT(rule));
 }

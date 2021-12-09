@@ -31,7 +31,7 @@ static ret_t on_app_conf_events(void* ctx, event_t* e) {
     log_debug("font: %s\n", app_conf_get_str("font.name", NULL));
   } else if (e->type == EVT_CMD_EXECED) {
     cmd_exec_event_t* evt = cmd_exec_event_cast(e);
-    if (tk_str_eq(evt->name, OBJECT_CMD_SAVE)) {
+    if (tk_str_eq(evt->name, TK_OBJECT_CMD_SAVE)) {
       log_debug("app conf saved\n");
     }
   }

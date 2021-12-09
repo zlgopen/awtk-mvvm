@@ -30,9 +30,9 @@ room_settings_t* room_settings_create(navigator_request_t* req) {
   return_value_if_fail(room_settings != NULL, NULL);
 
   room_settings->req = req;
-  room_settings->temp = object_get_prop_int(OBJECT(req), "temp", 0);
-  room_settings->room = tk_strdup(object_get_prop_str(OBJECT(req), "room"));
-  room_settings->humidity = object_get_prop_int(OBJECT(req), "humidity", 0);
+  room_settings->temp = tk_object_get_prop_int(TK_OBJECT(req), "temp", 0);
+  room_settings->room = tk_strdup(tk_object_get_prop_str(TK_OBJECT(req), "room"));
+  room_settings->humidity = tk_object_get_prop_int(TK_OBJECT(req), "humidity", 0);
 
   return room_settings;
 }
@@ -40,16 +40,16 @@ room_settings_t* room_settings_create(navigator_request_t* req) {
 ret_t room_settings_return(room_settings_t* room_settings) {
   value_t v;
   ret_t ret = RET_OK;
-  object_t* result = object_default_create();
+  tk_object_t* result = object_default_create();
   return_value_if_fail(room_settings != NULL, RET_BAD_PARAMS);
 
-  object_set_prop_int(result, "temp", room_settings->temp);
-  object_set_prop_int(result, "humidity", room_settings->humidity);
+  tk_object_set_prop_int(result, "temp", room_settings->temp);
+  tk_object_set_prop_int(result, "humidity", room_settings->humidity);
 
   value_set_object(&v, result);
   ret = navigator_request_on_result(room_settings->req, &v);
   value_reset(&v);
-  OBJECT_UNREF(result);
+  TK_OBJECT_UNREF(result);
 
   return ret;
 }

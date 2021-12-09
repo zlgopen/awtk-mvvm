@@ -26,42 +26,42 @@
 
 #include "book.h"
 
-static ret_t book_sale(object_t* obj) {
+static ret_t book_sale(tk_object_t* obj) {
   book_t* book = BOOK(obj);
   book->stock--;
   return RET_OBJECT_CHANGED;
 }
 
-static bool_t book_can_sale(object_t* obj) {
+static bool_t book_can_sale(tk_object_t* obj) {
   book_t* book = BOOK(obj);
   return book->stock > 0;
 }
 
-static ret_t book_get_name(object_t* obj, value_t* v) {
+static ret_t book_get_name(tk_object_t* obj, value_t* v) {
   book_t* book = BOOK(obj);
   value_set_str(v, book->name.str);
   return RET_OK;
 }
 
-static ret_t book_get_stock(object_t* obj, value_t* v) {
+static ret_t book_get_stock(tk_object_t* obj, value_t* v) {
   book_t* book = BOOK(obj);
   value_set_uint32(v, book->stock);
   return RET_OK;
 }
 
-static ret_t book_set_name(object_t* obj, const value_t* v) {
+static ret_t book_set_name(tk_object_t* obj, const value_t* v) {
   book_t* book = BOOK(obj);
   str_set(&(book->name), value_str(v));
   return RET_OK;
 }
 
-static ret_t book_set_stock(object_t* obj, const value_t* v) {
+static ret_t book_set_stock(tk_object_t* obj, const value_t* v) {
   book_t* book = BOOK(obj);
   book->stock = value_uint32(v);
   return RET_OK;
 }
 
-static ret_t book_destroy(object_t* obj) {
+static ret_t book_destroy(tk_object_t* obj) {
   return_value_if_fail(obj != NULL, RET_BAD_PARAMS);
 
   book_t* book = BOOK(obj);
@@ -70,14 +70,14 @@ static ret_t book_destroy(object_t* obj) {
   return RET_OK;
 }
 
-static int32_t book_compare(object_t* obj, object_t* other) {
+static int32_t book_compare(tk_object_t* obj, tk_object_t* other) {
   return_value_if_fail(obj != NULL && other != NULL, -1);
   book_t* a = BOOK(obj);
   book_t* b = BOOK(other);
   return strcmp(a->name.str, b->name.str);
 }
 
-static ret_t book_get_prop(object_t* obj, const char* name, value_t* v) {
+static ret_t book_get_prop(tk_object_t* obj, const char* name, value_t* v) {
   book_t* book = BOOK(obj);
   return_value_if_fail(book != NULL, RET_BAD_PARAMS);
 
@@ -90,7 +90,7 @@ static ret_t book_get_prop(object_t* obj, const char* name, value_t* v) {
   return RET_NOT_FOUND;
 }
 
-static ret_t book_set_prop(object_t* obj, const char* name, const value_t* v) {
+static ret_t book_set_prop(tk_object_t* obj, const char* name, const value_t* v) {
   book_t* book = BOOK(obj);
   return_value_if_fail(book != NULL, RET_BAD_PARAMS);
 
@@ -103,7 +103,7 @@ static ret_t book_set_prop(object_t* obj, const char* name, const value_t* v) {
   return RET_NOT_FOUND;
 }
 
-static bool_t book_can_exec(object_t* obj, const char* name, const char* args) {
+static bool_t book_can_exec(tk_object_t* obj, const char* name, const char* args) {
   book_t* book = BOOK(obj);
   return_value_if_fail(book != NULL, FALSE);
 
@@ -114,7 +114,7 @@ static bool_t book_can_exec(object_t* obj, const char* name, const char* args) {
   return FALSE;
 }
 
-static ret_t book_exec(object_t* obj, const char* name, const char* args) {
+static ret_t book_exec(tk_object_t* obj, const char* name, const char* args) {
   book_t* book = BOOK(obj);
   return_value_if_fail(book != NULL, RET_BAD_PARAMS);
 
@@ -139,8 +139,8 @@ static const object_vtable_t s_book_vtable = {.type = "book",
                                               .exec = book_exec,
                                               .clone = NULL};
 
-object_t* book_create(void) {
-  object_t* obj = object_create(&s_book_vtable);
+tk_object_t* book_create(void) {
+  tk_object_t* obj = tk_object_create(&s_book_vtable);
   return_value_if_fail(obj != NULL, NULL);
 
   book_t* book = BOOK(obj);
@@ -150,7 +150,7 @@ object_t* book_create(void) {
   return obj;
 }
 
-book_t* book_cast(object_t* obj) {
+book_t* book_cast(tk_object_t* obj) {
   return_value_if_fail(obj != NULL && obj->vt == &s_book_vtable, NULL);
   return (book_t*)(obj);
 }

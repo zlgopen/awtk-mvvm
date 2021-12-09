@@ -22,7 +22,7 @@
 #include "book_view_model.h"
 #include "mvvm/base/view_model_object_wrapper.h"
 
-view_model_t* book_view_model_create(object_t* book) {
+view_model_t* book_view_model_create(tk_object_t* book) {
   return_value_if_fail(book != NULL, NULL);
 
   return view_model_object_wrapper_create(book);

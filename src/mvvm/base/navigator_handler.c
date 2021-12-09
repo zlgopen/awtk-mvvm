@@ -32,11 +32,11 @@ static const object_vtable_t s_navigator_handler_vtable = {
 };
 
 navigator_handler_t* navigator_handler_create(navigator_handler_on_request_t on_request) {
-  object_t* obj = NULL;
+  tk_object_t* obj = NULL;
   navigator_handler_t* handler = NULL;
   return_value_if_fail(on_request != NULL, NULL);
 
-  obj = object_create(&s_navigator_handler_vtable);
+  obj = tk_object_create(&s_navigator_handler_vtable);
   handler = NAVIGATOR_HANDLER(obj);
 
   handler->on_request = on_request;

@@ -119,20 +119,20 @@ const char* view_model_preprocess_prop(view_model_t* view_model, const char* pro
 }
 
 bool_t view_model_has_prop(view_model_t* view_model, const char* name) {
-  object_t* obj = OBJECT(view_model);
+  tk_object_t* obj = TK_OBJECT(view_model);
   return_value_if_fail(view_model != NULL && name != NULL, FALSE);
   name = view_model_preprocess_prop(view_model, name);
 
-  return object_has_prop(obj, name);
+  return tk_object_has_prop(obj, name);
 }
 
 ret_t view_model_get_prop(view_model_t* view_model, const char* name, value_t* value) {
   ret_t ret = RET_OK;
-  object_t* obj = OBJECT(view_model);
+  tk_object_t* obj = TK_OBJECT(view_model);
   return_value_if_fail(view_model != NULL && name != NULL && value != NULL, RET_BAD_PARAMS);
   name = view_model_preprocess_prop(view_model, name);
 
-  ret = object_get_prop(obj, name, value);
+  ret = tk_object_get_prop(obj, name, value);
 
   if (ret == RET_NOT_FOUND) {
     if (view_model->parent != NULL) {
@@ -146,9 +146,9 @@ ret_t view_model_get_prop(view_model_t* view_model, const char* name, value_t* v
 static ret_t view_model_set_prop_recursive(view_model_t* view_model, const char* name,
                                            const value_t* v) {
   ret_t ret = RET_OK;
-  object_t* obj = OBJECT(view_model);
+  tk_object_t* obj = TK_OBJECT(view_model);
 
-  ret = object_set_prop(obj, name, v);
+  ret = tk_object_set_prop(obj, name, v);
 
   if (ret == RET_NOT_FOUND) {
     if (view_model->parent != NULL) {
@@ -195,21 +195,21 @@ ret_t view_model_set_prop(view_model_t* view_model, const char* name, const valu
 
 bool_t view_model_can_exec(view_model_t* view_model, const char* name, const char* args) {
   bool_t ret = TRUE;
-  object_t* obj = OBJECT(view_model);
+  tk_object_t* obj = TK_OBJECT(view_model);
   return_value_if_fail(view_model != NULL && name != NULL, FALSE);
 
-  if (object_is_collection(obj)) {
+  if (tk_object_is_collection(obj)) {
     if (args != NULL) {
-      ret = object_can_exec(obj, name, args);
+      ret = tk_object_can_exec(obj, name, args);
     } else {
       char cursor[TK_NUM_MAX_LEN + 1];
-      int32_t index = object_get_prop_int(obj, VIEW_MODEL_PROP_CURSOR, 0);
+      int32_t index = tk_object_get_prop_int(obj, VIEW_MODEL_PROP_CURSOR, 0);
 
       tk_itoa(cursor, TK_NUM_MAX_LEN, index);
-      ret = object_can_exec(obj, name, cursor);
+      ret = tk_object_can_exec(obj, name, cursor);
     }
   } else {
-    ret = object_can_exec(obj, name, args);
+    ret = tk_object_can_exec(obj, name, args);
   }
 
   if (!ret) {
@@ -223,21 +223,21 @@ bool_t view_model_can_exec(view_model_t* view_model, const char* name, const cha
 
 ret_t view_model_exec(view_model_t* view_model, const char* name, const char* args) {
   ret_t ret = RET_OK;
-  object_t* obj = OBJECT(view_model);
+  tk_object_t* obj = TK_OBJECT(view_model);
   return_value_if_fail(view_model != NULL && name != NULL, RET_BAD_PARAMS);
 
-  if (object_is_collection(obj)) {
+  if (tk_object_is_collection(obj)) {
     if (args != NULL) {
-      ret = object_exec(obj, name, args);
+      ret = tk_object_exec(obj, name, args);
     } else {
       char cursor[TK_NUM_MAX_LEN + 1];
-      int32_t index = object_get_prop_int(obj, VIEW_MODEL_PROP_CURSOR, 0);
+      int32_t index = tk_object_get_prop_int(obj, VIEW_MODEL_PROP_CURSOR, 0);
 
       tk_itoa(cursor, TK_NUM_MAX_LEN, index);
-      ret = object_exec(obj, name, cursor);
+      ret = tk_object_exec(obj, name, cursor);
     }
   } else {
-    ret = object_exec(obj, name, args);
+    ret = tk_object_exec(obj, name, args);
   }
 
   if (ret == RET_NOT_FOUND || ret == RET_NOT_IMPL) {
@@ -250,7 +250,7 @@ ret_t view_model_exec(view_model_t* view_model, const char* name, const char* ar
   if (ret == RET_OBJECT_CHANGED) {
     emitter_dispatch_simple_event(EMITTER(view_model), EVT_PROP_CHANGED);
   } else if (ret == RET_ITEMS_CHANGED) {
-    view_model_notify_items_changed(view_model, OBJECT(view_model));
+    view_model_notify_items_changed(view_model, TK_OBJECT(view_model));
   }
 
   return ret;
@@ -260,9 +260,9 @@ ret_t view_model_notify_props_changed(view_model_t* view_model) {
   return emitter_dispatch_simple_event(EMITTER(view_model), EVT_PROPS_CHANGED);
 }
 
-ret_t view_model_notify_items_changed(view_model_t* view_model, object_t* target) {
+ret_t view_model_notify_items_changed(view_model_t* view_model, tk_object_t* target) {
   emitter_t* emitter = EMITTER(view_model);
-  event_t e = event_init(EVT_ITEMS_CHANGED, target != NULL ? target : OBJECT(view_model));
+  event_t e = event_init(EVT_ITEMS_CHANGED, target != NULL ? target : TK_OBJECT(view_model));
 
   return emitter_dispatch(emitter, &e);
 }

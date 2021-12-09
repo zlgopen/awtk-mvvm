@@ -38,7 +38,7 @@ typedef struct _view_model_jerryscript_object_wrapper_t {
   view_model_t view_model;
 
   /*private*/
-  object_t* obj;
+  tk_object_t* obj;
 } view_model_jerryscript_object_wrapper_t;
 
 /**

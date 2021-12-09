@@ -83,4 +83,3 @@ ret_t temperature_destroy(temperature_t* temperature);
 END_C_DECLS
 
 #endif /*TK_TEMPERATURE_H*/
-

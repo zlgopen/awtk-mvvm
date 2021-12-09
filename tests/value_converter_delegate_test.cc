@@ -36,7 +36,7 @@ TEST(ValueConverterDelegate, basic) {
   value_reset(&v_view);
   value_reset(&v_model);
 
-  object_unref(OBJECT(c));
+  tk_object_unref(TK_OBJECT(c));
 }
 
 static void* create_dummy_value_converter(void) {
@@ -62,5 +62,5 @@ TEST(ValueConverterDelegate, factory) {
   value_reset(&v_view);
   value_reset(&v_model);
 
-  object_unref(OBJECT(c));
+  tk_object_unref(TK_OBJECT(c));
 }

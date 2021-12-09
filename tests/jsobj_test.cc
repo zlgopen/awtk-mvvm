@@ -7,18 +7,18 @@ using std::string;
 
 TEST(JsValue, native_ptr) {
   jsvalue_t jsobj = JS_EMPTY_OBJ;
-  object_t* p = (object_t*)0x12345678;
-  object_t* obj = jsobj_get_native_ptr(jsobj);
+  tk_object_t* p = (tk_object_t*)0x12345678;
+  tk_object_t* obj = jsobj_get_native_ptr(jsobj);
 
-  ASSERT_EQ(obj, (object_t*)NULL);
+  ASSERT_EQ(obj, (tk_object_t*)NULL);
   ASSERT_EQ(jsobj_set_native_ptr(jsobj, p), RET_OK);
 
   obj = jsobj_get_native_ptr(jsobj);
-  ASSERT_EQ(obj, (object_t*)0x12345678);
+  ASSERT_EQ(obj, (tk_object_t*)0x12345678);
 
   jsobj_delete_native_ptr(jsobj);
   obj = jsobj_get_native_ptr(jsobj);
-  ASSERT_EQ(obj, (object_t*)NULL);
+  ASSERT_EQ(obj, (tk_object_t*)NULL);
 
   jsvalue_unref(jsobj);
 }
@@ -108,16 +108,17 @@ TEST(JsValue, request) {
   jsobj_set_prop_int(jsreq, NAVIGATOR_ARG_CLOSE_CURRENT, TRUE);
 
   navigator_request_t* req = jsvalue_to_navigator_request(jsreq);
-  ASSERT_EQ(object_get_prop_int(OBJECT(req), "int", 0), 100);
-  ASSERT_EQ(string(object_get_prop_str(OBJECT(req), "str")), string("str"));
-  ASSERT_EQ(string(object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_TARGET)), string("main"));
-  ASSERT_EQ(object_get_prop_bool(OBJECT(req), NAVIGATOR_ARG_OPEN_NEW, FALSE), TRUE);
-  ASSERT_EQ(object_get_prop_bool(OBJECT(req), NAVIGATOR_ARG_CLOSE_CURRENT, FALSE), TRUE);
+  ASSERT_EQ(tk_object_get_prop_int(TK_OBJECT(req), "int", 0), 100);
+  ASSERT_EQ(string(tk_object_get_prop_str(TK_OBJECT(req), "str")), string("str"));
+  ASSERT_EQ(string(tk_object_get_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_TARGET)),
+            string("main"));
+  ASSERT_EQ(tk_object_get_prop_bool(TK_OBJECT(req), NAVIGATOR_ARG_OPEN_NEW, FALSE), TRUE);
+  ASSERT_EQ(tk_object_get_prop_bool(TK_OBJECT(req), NAVIGATOR_ARG_CLOSE_CURRENT, FALSE), TRUE);
 
   jsvalue_t jsreq1 = jsvalue_from_navigator_request(req);
   ASSERT_EQ(jsreq, jsreq1);
 
   jsvalue_unref(jsreq1);
   jsvalue_unref(jsreq);
-  object_unref(OBJECT(req));
+  tk_object_unref(TK_OBJECT(req));
 }

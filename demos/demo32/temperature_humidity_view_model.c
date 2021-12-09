@@ -12,7 +12,7 @@
 static ret_t temperature_humidity_view_model_on_create(view_model_t* view_model,
                                                        navigator_request_t* req) {
   value_t v;
-  object_t* obj;
+  tk_object_t* obj;
   temperature_humidity_view_model_t* vm = (temperature_humidity_view_model_t*)(view_model);
   return_value_if_fail(vm != NULL, RET_BAD_PARAMS);
 
@@ -30,13 +30,13 @@ static ret_t temperature_humidity_view_model_on_create(view_model_t* view_model,
   value_set_object(&v, obj);
   object_array_push(vm->inside_temperatures, &v);
   emitter_on(EMITTER(obj), EVT_PROP_CHANGED, emitter_forward, vm);
-  OBJECT_UNREF(obj);
+  TK_OBJECT_UNREF(obj);
 
   obj = temperature_create();
   value_set_object(&v, obj);
   object_array_push(vm->inside_temperatures, &v);
   emitter_on(EMITTER(obj), EVT_PROP_CHANGED, emitter_forward, vm);
-  OBJECT_UNREF(obj);
+  TK_OBJECT_UNREF(obj);
 
   vm->inside_humidities = object_array_create();
 
@@ -44,53 +44,54 @@ static ret_t temperature_humidity_view_model_on_create(view_model_t* view_model,
   value_set_object(&v, obj);
   object_array_push(vm->inside_humidities, &v);
   emitter_on(EMITTER(obj), EVT_PROP_CHANGED, emitter_forward, vm);
-  OBJECT_UNREF(obj);
+  TK_OBJECT_UNREF(obj);
 
   obj = humidity_create();
   value_set_object(&v, obj);
   object_array_push(vm->inside_humidities, &v);
   emitter_on(EMITTER(obj), EVT_PROP_CHANGED, emitter_forward, vm);
-  OBJECT_UNREF(obj);
+  TK_OBJECT_UNREF(obj);
 
   return RET_OK;
 }
 
-static ret_t temperature_humidity_view_model_on_destroy(object_t* obj) {
+static ret_t temperature_humidity_view_model_on_destroy(tk_object_t* obj) {
   temperature_humidity_view_model_t* vm = (temperature_humidity_view_model_t*)(obj);
   return_value_if_fail(vm != NULL, RET_BAD_PARAMS);
 
-  OBJECT_UNREF(vm->outside_humidity);
-  OBJECT_UNREF(vm->outside_temperature);
-  OBJECT_UNREF(vm->inside_humidities);
-  OBJECT_UNREF(vm->inside_temperatures);
+  TK_OBJECT_UNREF(vm->outside_humidity);
+  TK_OBJECT_UNREF(vm->outside_temperature);
+  TK_OBJECT_UNREF(vm->inside_humidities);
+  TK_OBJECT_UNREF(vm->inside_temperatures);
 
   return view_model_deinit(VIEW_MODEL(obj));
 }
 
-static ret_t temperature_humidity_view_model_set_prop(object_t* obj, const char* name,
+static ret_t temperature_humidity_view_model_set_prop(tk_object_t* obj, const char* name,
                                                       const value_t* v) {
   temperature_humidity_view_model_t* vm = ((temperature_humidity_view_model_t*)(obj));
 
-  object_t* sub = object_get_child_object(obj, name, &name);
+  tk_object_t* sub = tk_object_get_child_object(obj, name, &name);
   if (sub != NULL) {
-    return object_set_prop(sub, name, v);
+    return tk_object_set_prop(sub, name, v);
   }
 
   if (tk_str_ieq("outside_temp", name)) {
-    return object_set_prop(vm->outside_temperature, "temp", v);
+    return tk_object_set_prop(vm->outside_temperature, "temp", v);
   } else if (tk_str_ieq("outside_humi", name)) {
-    return object_set_prop(vm->outside_humidity, "humi", v);
+    return tk_object_set_prop(vm->outside_humidity, "humi", v);
   }
 
   return RET_NOT_FOUND;
 }
 
-static ret_t temperature_humidity_view_model_get_prop(object_t* obj, const char* name, value_t* v) {
+static ret_t temperature_humidity_view_model_get_prop(tk_object_t* obj, const char* name,
+                                                      value_t* v) {
   temperature_humidity_view_model_t* vm = ((temperature_humidity_view_model_t*)(obj));
 
-  object_t* sub = object_get_child_object(obj, name, &name);
+  tk_object_t* sub = tk_object_get_child_object(obj, name, &name);
   if (sub != NULL) {
-    return object_get_prop(sub, name, v);
+    return tk_object_get_prop(sub, name, v);
   }
 
   if (tk_str_ieq("outside_temperature", name)) {
@@ -106,46 +107,46 @@ static ret_t temperature_humidity_view_model_get_prop(object_t* obj, const char*
     value_set_object(v, vm->inside_humidities);
     return RET_OK;
   } else if (tk_str_ieq("outside_temp", name)) {
-    return object_get_prop(vm->outside_temperature, "temp", v);
+    return tk_object_get_prop(vm->outside_temperature, "temp", v);
   } else if (tk_str_ieq("outside_humi", name)) {
-    return object_get_prop(vm->outside_humidity, "humi", v);
+    return tk_object_get_prop(vm->outside_humidity, "humi", v);
   }
 
   return RET_NOT_FOUND;
 }
 
-static bool_t temperature_humidity_view_model_can_exec(object_t* obj, const char* name,
+static bool_t temperature_humidity_view_model_can_exec(tk_object_t* obj, const char* name,
                                                        const char* args) {
   temperature_humidity_view_model_t* vm = (temperature_humidity_view_model_t*)(obj);
   return_value_if_fail(vm != NULL, FALSE);
 
-  object_t* sub = object_get_child_object(obj, name, &name);
+  tk_object_t* sub = tk_object_get_child_object(obj, name, &name);
   if (sub != NULL) {
-    return object_can_exec(sub, name, args);
+    return tk_object_can_exec(sub, name, args);
   }
 
   if (tk_str_ieq("outside_temp_reset", name)) {
-    return object_can_exec(vm->outside_temperature, "reset", args);
+    return tk_object_can_exec(vm->outside_temperature, "reset", args);
   } else if (tk_str_ieq("outside_humi_apply", name)) {
-    return object_can_exec(vm->outside_humidity, "apply", args);
+    return tk_object_can_exec(vm->outside_humidity, "apply", args);
   }
   return FALSE;
 }
 
-static ret_t temperature_humidity_view_model_exec(object_t* obj, const char* name,
+static ret_t temperature_humidity_view_model_exec(tk_object_t* obj, const char* name,
                                                   const char* args) {
   temperature_humidity_view_model_t* vm = (temperature_humidity_view_model_t*)(obj);
   return_value_if_fail(vm != NULL, RET_BAD_PARAMS);
 
-  object_t* sub = object_get_child_object(obj, name, &name);
+  tk_object_t* sub = tk_object_get_child_object(obj, name, &name);
   if (sub != NULL) {
-    return object_exec(sub, name, args);
+    return tk_object_exec(sub, name, args);
   }
 
   if (tk_str_ieq("outside_temp_reset", name)) {
-    return object_exec(vm->outside_temperature, "reset", args);
+    return tk_object_exec(vm->outside_temperature, "reset", args);
   } else if (tk_str_ieq("outside_humi_apply", name)) {
-    return object_exec(vm->outside_humidity, "apply", args);
+    return tk_object_exec(vm->outside_humidity, "apply", args);
   }
   return RET_NOT_FOUND;
 }
@@ -165,7 +166,7 @@ static const object_vtable_t s_humidity_view_model_vtable = {
     temperature_humidity_view_model_exec};
 
 view_model_t* temperature_humidity_view_model_create(navigator_request_t* req) {
-  object_t* obj = object_create(&s_humidity_view_model_vtable);
+  tk_object_t* obj = tk_object_create(&s_humidity_view_model_vtable);
   view_model_t* view_model = view_model_init(VIEW_MODEL(obj));
   return_value_if_fail(view_model != NULL, NULL);
 

@@ -37,7 +37,7 @@ BEGIN_C_DECLS
  */
 typedef struct _items_binding_t {
   binding_rule_t binding_rule;
-  object_t* props;
+  tk_object_t* props;
 
   /**
    * @property {char*} items_name

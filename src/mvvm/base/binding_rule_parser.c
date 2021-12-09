@@ -38,7 +38,7 @@ static ret_t data_binding_init(data_binding_t* rule, tokenizer_t* t) {
   if (tokenizer_has_more(t)) {
     const char* prop = t->str + t->cursor;
 
-    return object_set_prop_str(OBJECT(rule), DATA_BINDING_PROP, prop);
+    return tk_object_set_prop_str(TK_OBJECT(rule), DATA_BINDING_PROP, prop);
   }
 
   return RET_FAIL;
@@ -47,12 +47,12 @@ static ret_t data_binding_init(data_binding_t* rule, tokenizer_t* t) {
 static ret_t command_binding_init(command_binding_t* rule, tokenizer_t* t) {
   if (tokenizer_has_more(t)) {
     const char* event = tokenizer_next(t);
-    return_value_if_fail(object_set_prop_str(OBJECT(rule), COMMAND_BINDING_EVENT, event) == RET_OK,
-                         RET_FAIL);
+    return_value_if_fail(
+        tk_object_set_prop_str(TK_OBJECT(rule), COMMAND_BINDING_EVENT, event) == RET_OK, RET_FAIL);
 
     if (tokenizer_has_more(t)) {
       const char* event_filter = tokenizer_next(t);
-      return object_set_prop_str(OBJECT(rule), COMMAND_BINDING_KEY_FILTER, event_filter);
+      return tk_object_set_prop_str(TK_OBJECT(rule), COMMAND_BINDING_KEY_FILTER, event_filter);
     } else {
       return RET_OK;
     }
@@ -74,17 +74,17 @@ static binding_rule_t* binding_rule_create(const char* name, bool_t inputable) {
       rule = BINDING_RULE(data_binding_create());
       if (rule != NULL) {
         if (data_binding_init((data_binding_t*)rule, &t) != RET_OK) {
-          object_unref((object_t*)rule);
+          tk_object_unref((tk_object_t*)rule);
           rule = NULL;
         }
-        object_set_prop_str(OBJECT(rule), DATA_BINDING_MODE,
-                            inputable ? BINDING_STR_TWO_WAY : BINDING_STR_ONE_WAY);
+        tk_object_set_prop_str(TK_OBJECT(rule), DATA_BINDING_MODE,
+                               inputable ? BINDING_STR_TWO_WAY : BINDING_STR_ONE_WAY);
       }
     } else if (tk_str_ieq(type, BINDING_RULE_COMMAND_PREFIX)) {
       rule = BINDING_RULE(command_binding_create());
       if (rule != NULL) {
         if (command_binding_init((command_binding_t*)rule, &t) != RET_OK) {
-          object_unref((object_t*)rule);
+          tk_object_unref((tk_object_t*)rule);
           rule = NULL;
         }
       }
@@ -112,13 +112,13 @@ binding_rule_t* binding_rule_parse(const char* name, const char* value, bool_t i
   return_value_if_fail(rule != NULL, NULL);
 
   if (tokenizer_init_ex(&t, value, strlen(value), " \r\n{}", "=,") == NULL) {
-    object_unref(OBJECT(rule));
+    tk_object_unref(TK_OBJECT(rule));
     return NULL;
   }
 
   k = tokenizer_next_expr_until(&t, ",}");
   if (k != NULL) {
-    ENSURE(object_set_prop_str(OBJECT(rule), k, NULL) == RET_OK);
+    ENSURE(tk_object_set_prop_str(TK_OBJECT(rule), k, NULL) == RET_OK);
     while (tokenizer_has_more(&t)) {
       k = tokenizer_next(&t);
       while (k && *k == ',' && tokenizer_has_more(&t)) {
@@ -132,11 +132,11 @@ binding_rule_t* binding_rule_parse(const char* name, const char* value, bool_t i
         v += 1;
       }
 
-      ENSURE(object_set_prop_str(OBJECT(rule), key, v) == RET_OK);
+      ENSURE(tk_object_set_prop_str(TK_OBJECT(rule), key, v) == RET_OK);
     }
   }
 
-  object_set_prop_str(OBJECT(rule), BINDING_RULE_PROP_INITED, "TRUE");
+  tk_object_set_prop_str(TK_OBJECT(rule), BINDING_RULE_PROP_INITED, "TRUE");
 
   tokenizer_deinit(&t);
 

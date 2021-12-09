@@ -6,12 +6,12 @@
 #include "mvvm/base/utils.h"
 #include "address_view_model.h"
 
-static ret_t address_view_model_get_provinces(object_t* obj, value_t* v) {
+static ret_t address_view_model_get_provinces(tk_object_t* obj, value_t* v) {
   value_set_str(v, "Beijing;Shanghai;Guangdong");
   return RET_OK;
 }
 
-static ret_t address_view_model_get_cities(object_t* obj, value_t* v) {
+static ret_t address_view_model_get_cities(tk_object_t* obj, value_t* v) {
   address_view_model_t* vm = (address_view_model_t*)(obj);
 
   if (tk_str_eq(vm->province, "Beijing")) {
@@ -27,7 +27,7 @@ static ret_t address_view_model_get_cities(object_t* obj, value_t* v) {
   return RET_NOT_FOUND;
 }
 
-static ret_t address_view_model_get_contories(object_t* obj, value_t* v) {
+static ret_t address_view_model_get_contories(tk_object_t* obj, value_t* v) {
   address_view_model_t* vm = (address_view_model_t*)(obj);
 
   if (tk_str_eq(vm->city, "Beijing")) {
@@ -46,7 +46,7 @@ static ret_t address_view_model_get_contories(object_t* obj, value_t* v) {
   return RET_NOT_FOUND;
 }
 
-static ret_t address_view_model_get_address(object_t* obj, value_t* v) {
+static ret_t address_view_model_get_address(tk_object_t* obj, value_t* v) {
   address_view_model_t* vm = (address_view_model_t*)(obj);
   str_t* temp = &(vm->temp);
 
@@ -63,7 +63,7 @@ static ret_t address_view_model_get_address(object_t* obj, value_t* v) {
   return RET_NOT_FOUND;
 }
 
-static ret_t address_view_model_set_prop(object_t* obj, const char* name, const value_t* v) {
+static ret_t address_view_model_set_prop(tk_object_t* obj, const char* name, const value_t* v) {
   address_view_model_t* vm = (address_view_model_t*)(obj);
 
   if (tk_str_ieq("province", name)) {
@@ -110,7 +110,7 @@ static ret_t address_view_model_set_prop(object_t* obj, const char* name, const 
   return RET_NOT_FOUND;
 }
 
-static ret_t address_view_model_get_prop(object_t* obj, const char* name, value_t* v) {
+static ret_t address_view_model_get_prop(tk_object_t* obj, const char* name, value_t* v) {
   address_view_model_t* vm = (address_view_model_t*)(obj);
 
   if (tk_str_ieq("province", name)) {
@@ -142,15 +142,15 @@ static ret_t address_view_model_get_prop(object_t* obj, const char* name, value_
   return RET_NOT_FOUND;
 }
 
-static bool_t address_view_model_can_exec(object_t* obj, const char* name, const char* args) {
+static bool_t address_view_model_can_exec(tk_object_t* obj, const char* name, const char* args) {
   return FALSE;
 }
 
-static ret_t address_view_model_exec(object_t* obj, const char* name, const char* args) {
+static ret_t address_view_model_exec(tk_object_t* obj, const char* name, const char* args) {
   return RET_NOT_FOUND;
 }
 
-static ret_t address_view_model_on_destroy(object_t* obj) {
+static ret_t address_view_model_on_destroy(tk_object_t* obj) {
   address_view_model_t* vm = (address_view_model_t*)(obj);
   return_value_if_fail(vm != NULL, RET_BAD_PARAMS);
 
@@ -180,7 +180,7 @@ static const object_vtable_t s_address_view_model_vtable = {"address_view_model_
                                                             address_view_model_exec};
 
 view_model_t* address_view_model_create(navigator_request_t* req) {
-  object_t* obj = object_create(&s_address_view_model_vtable);
+  tk_object_t* obj = tk_object_create(&s_address_view_model_vtable);
   view_model_t* view_model = view_model_init(VIEW_MODEL(obj));
   address_view_model_t* vm = (address_view_model_t*)(view_model);
   return_value_if_fail(vm != NULL, NULL);

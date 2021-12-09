@@ -28,7 +28,7 @@ BEGIN_C_DECLS
 
 /**
  * @class object_js_array_t
- * @parent object_t
+ * @parent tk_object_t
  *
  * 将jerry script array object包装成tkc形式的object。
  *
@@ -45,9 +45,9 @@ typedef struct _object_js_array_t {
  * @param {jsvalue_t} jsobj jerryscript对象。
  * @param {bool_t} free_handle object销毁的同时释放jerryscript对象。
  *
- * @return {object_t*} 返回object对象。
+ * @return {tk_object_t*} 返回object对象。
  */
-object_t* object_js_array_create(jsvalue_t jsobj, bool_t free_handle);
+tk_object_t* object_js_array_create(jsvalue_t jsobj, bool_t free_handle);
 
 /**
  * @method object_is_object_js_array
@@ -57,9 +57,9 @@ object_t* object_js_array_create(jsvalue_t jsobj, bool_t free_handle);
  *
  * @return {bool_t} 返回TRUE表示是jerry script array object，否则不是。
  */
-bool_t object_is_object_js_array(object_t* obj);
+bool_t object_is_object_js_array(tk_object_t* obj);
 
-object_js_array_t* object_js_array_cast(object_t* obj);
+object_js_array_t* object_js_array_cast(tk_object_t* obj);
 #define OBJECT_JS_ARRAY(obj) object_js_array_cast(obj)
 
 END_C_DECLS

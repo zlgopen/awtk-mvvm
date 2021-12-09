@@ -24,10 +24,10 @@
 #include "tkc/object_default.h"
 #include "mvvm/base/navigator.h"
 
-static ret_t navigator_on_destroy(object_t* obj) {
+static ret_t navigator_on_destroy(tk_object_t* obj) {
   navigator_t* nav = NAVIGATOR(obj);
 
-  object_unref(OBJECT(nav->handlers));
+  tk_object_unref(TK_OBJECT(nav->handlers));
 
   return RET_OK;
 }
@@ -39,16 +39,16 @@ static const object_vtable_t s_navigator_vtable = {.type = "navigator",
                                                    .on_destroy = navigator_on_destroy};
 
 navigator_t* navigator_create(void) {
-  object_t* obj = NULL;
+  tk_object_t* obj = NULL;
   navigator_t* nav = NULL;
 
-  obj = object_create(&s_navigator_vtable);
+  obj = tk_object_create(&s_navigator_vtable);
   nav = NAVIGATOR(obj);
   return_value_if_fail(obj != NULL, NULL);
 
   nav->handlers = object_default_create();
   if (nav->handlers == NULL) {
-    object_unref(obj);
+    tk_object_unref(obj);
     obj = NULL;
   }
 
@@ -58,10 +58,10 @@ navigator_t* navigator_create(void) {
 static navigator_handler_t* navigator_find_handler(navigator_t* nav, const char* target) {
   navigator_handler_t* handler = NULL;
   return_value_if_fail(nav != NULL && target != NULL, NULL);
-  handler = (navigator_handler_t*)object_get_prop_object(nav->handlers, target);
+  handler = (navigator_handler_t*)tk_object_get_prop_object(nav->handlers, target);
   if (handler == NULL) {
     handler =
-        (navigator_handler_t*)object_get_prop_object(nav->handlers, NAVIGATOR_DEFAULT_HANDLER);
+        (navigator_handler_t*)tk_object_get_prop_object(nav->handlers, NAVIGATOR_DEFAULT_HANDLER);
   }
 
   return handler;
@@ -72,7 +72,7 @@ ret_t navigator_handle_request(navigator_t* nav, navigator_request_t* req) {
   const char* request_type = NULL;
   return_value_if_fail(nav != NULL && req != NULL, RET_BAD_PARAMS);
 
-  request_type = object_get_prop_str(OBJECT(req), NAVIGATOR_ARG_REQ);
+  request_type = tk_object_get_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_REQ);
   if (request_type != NULL) {
     handler = navigator_find_handler(nav, request_type);
   }
@@ -93,9 +93,9 @@ ret_t navigator_register_handler(navigator_t* nav, const char* name, navigator_h
   ret_t ret = RET_OK;
   return_value_if_fail(nav != NULL && name != NULL && handler != NULL, RET_BAD_PARAMS);
 
-  ret = object_set_prop_object(nav->handlers, name, OBJECT(handler));
-  assert(OBJECT(handler)->ref_count > 1);
-  object_unref(OBJECT(handler));
+  ret = tk_object_set_prop_object(nav->handlers, name, TK_OBJECT(handler));
+  assert(TK_OBJECT(handler)->ref_count > 1);
+  tk_object_unref(TK_OBJECT(handler));
 
   log_debug("navigator_register_handler ret=%d : %s\n", ret, name);
 
@@ -105,13 +105,13 @@ ret_t navigator_register_handler(navigator_t* nav, const char* name, navigator_h
 bool_t navigator_has_handler(navigator_t* nav, const char* name) {
   return_value_if_fail(nav != NULL && name != NULL, RET_BAD_PARAMS);
 
-  return object_get_prop_object(nav->handlers, name) != NULL;
+  return tk_object_get_prop_object(nav->handlers, name) != NULL;
 }
 
 ret_t navigator_unregister_handler(navigator_t* nav, const char* name) {
   return_value_if_fail(nav != NULL && name != NULL, RET_BAD_PARAMS);
 
-  object_remove_prop(OBJECT(nav->handlers), name);
+  tk_object_remove_prop(TK_OBJECT(nav->handlers), name);
 
   return RET_OK;
 }
@@ -136,12 +136,12 @@ ret_t navigator_to(const char* args) {
   return_value_if_fail(req != NULL, RET_OOM);
 
   ret = navigator_handle_request(navigator(), req);
-  object_unref(OBJECT(req));
+  tk_object_unref(TK_OBJECT(req));
 
   return ret;
 }
 
-ret_t navigator_to_by_object(object_t* args) {
+ret_t navigator_to_by_object(tk_object_t* args) {
   ret_t ret = RET_OK;
   const char* target = NULL;
   navigator_request_t* req = NULL;
@@ -153,7 +153,7 @@ ret_t navigator_to_by_object(object_t* args) {
   navigator_request_set_args(req, args);
 
   ret = navigator_handle_request(navigator(), req);
-  object_unref(OBJECT(req));
+  tk_object_unref(TK_OBJECT(req));
 
   return ret;
 }
@@ -166,11 +166,11 @@ ret_t navigator_to_with_key_value(const char* target, const char* key, const cha
   req = navigator_request_create(NULL, NULL);
   return_value_if_fail(req != NULL, RET_OOM);
 
-  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_TARGET, target);
-  object_set_prop_str(OBJECT(req), key, value);
+  tk_object_set_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_TARGET, target);
+  tk_object_set_prop_str(TK_OBJECT(req), key, value);
 
   ret = navigator_handle_request(navigator(), req);
-  object_unref(OBJECT(req));
+  tk_object_unref(TK_OBJECT(req));
 
   return ret;
 }
@@ -183,11 +183,11 @@ ret_t navigator_replace(const char* target) {
   req = navigator_request_create(NULL, NULL);
   return_value_if_fail(req != NULL, RET_OOM);
 
-  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_TARGET, target);
-  object_set_prop_bool(OBJECT(req), NAVIGATOR_ARG_CLOSE_CURRENT, TRUE);
+  tk_object_set_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_TARGET, target);
+  tk_object_set_prop_bool(TK_OBJECT(req), NAVIGATOR_ARG_CLOSE_CURRENT, TRUE);
 
   ret = navigator_handle_request(navigator(), req);
-  object_unref(OBJECT(req));
+  tk_object_unref(TK_OBJECT(req));
 
   return ret;
 }
@@ -200,12 +200,12 @@ ret_t navigator_switch_to(const char* target, bool_t close_current) {
   req = navigator_request_create(NULL, NULL);
   return_value_if_fail(req != NULL, RET_OOM);
 
-  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_TARGET, target);
-  object_set_prop_bool(OBJECT(req), NAVIGATOR_ARG_CLOSE_CURRENT, close_current);
-  object_set_prop_bool(OBJECT(req), NAVIGATOR_ARG_OPEN_NEW, FALSE);
+  tk_object_set_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_TARGET, target);
+  tk_object_set_prop_bool(TK_OBJECT(req), NAVIGATOR_ARG_CLOSE_CURRENT, close_current);
+  tk_object_set_prop_bool(TK_OBJECT(req), NAVIGATOR_ARG_OPEN_NEW, FALSE);
 
   ret = navigator_handle_request(navigator(), req);
-  object_unref(OBJECT(req));
+  tk_object_unref(TK_OBJECT(req));
 
   return ret;
 }
@@ -218,10 +218,10 @@ ret_t navigator_back_to_home(void) {
   req = navigator_request_create(NULL, NULL);
   return_value_if_fail(req != NULL, RET_OOM);
 
-  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_HOME);
+  tk_object_set_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_HOME);
 
   ret = navigator_handle_request(navigator(), req);
-  object_unref(OBJECT(req));
+  tk_object_unref(TK_OBJECT(req));
 
   return ret;
 }
@@ -234,10 +234,10 @@ ret_t navigator_back(void) {
   req = navigator_request_create(NULL, NULL);
   return_value_if_fail(req != NULL, RET_OOM);
 
-  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_BACK);
+  tk_object_set_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_BACK);
 
   ret = navigator_handle_request(navigator(), req);
-  object_unref(OBJECT(req));
+  tk_object_unref(TK_OBJECT(req));
 
   return ret;
 }
@@ -251,12 +251,12 @@ ret_t navigator_toast(const char* content, uint32_t timeout) {
   req = navigator_request_create(NULL, NULL);
   return_value_if_fail(req != NULL, RET_OOM);
 
-  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_TOAST);
-  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_CONTENT, content);
-  object_set_prop_int(OBJECT(req), NAVIGATOR_ARG_DURATION, timeout);
+  tk_object_set_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_TOAST);
+  tk_object_set_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_CONTENT, content);
+  tk_object_set_prop_int(TK_OBJECT(req), NAVIGATOR_ARG_DURATION, timeout);
 
   ret = navigator_handle_request(navigator(), req);
-  object_unref(OBJECT(req));
+  tk_object_unref(TK_OBJECT(req));
 
   return ret;
 }
@@ -270,12 +270,12 @@ ret_t navigator_info(const char* title, const char* content) {
   req = navigator_request_create(NULL, NULL);
   return_value_if_fail(req != NULL, RET_OOM);
 
-  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_INFO);
-  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_TITLE, title);
-  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_CONTENT, content);
+  tk_object_set_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_INFO);
+  tk_object_set_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_TITLE, title);
+  tk_object_set_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_CONTENT, content);
 
   ret = navigator_handle_request(navigator(), req);
-  object_unref(OBJECT(req));
+  tk_object_unref(TK_OBJECT(req));
 
   return ret;
 }
@@ -289,12 +289,12 @@ ret_t navigator_warn(const char* title, const char* content) {
   req = navigator_request_create(NULL, NULL);
   return_value_if_fail(req != NULL, RET_OOM);
 
-  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_WARN);
-  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_TITLE, title);
-  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_CONTENT, content);
+  tk_object_set_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_WARN);
+  tk_object_set_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_TITLE, title);
+  tk_object_set_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_CONTENT, content);
 
   ret = navigator_handle_request(navigator(), req);
-  object_unref(OBJECT(req));
+  tk_object_unref(TK_OBJECT(req));
 
   return ret;
 }
@@ -308,16 +308,16 @@ ret_t navigator_confirm(const char* title, const char* content) {
   req = navigator_request_create(NULL, NULL);
   return_value_if_fail(req != NULL, RET_OOM);
 
-  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_CONFIRM);
-  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_TITLE, title);
-  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_CONTENT, content);
+  tk_object_set_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_CONFIRM);
+  tk_object_set_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_TITLE, title);
+  tk_object_set_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_CONTENT, content);
 
   ret = navigator_handle_request(navigator(), req);
   if (ret == RET_OK) {
     ret = (ret_t)value_int(&(req->result));
   }
 
-  object_unref(OBJECT(req));
+  tk_object_unref(TK_OBJECT(req));
 
   return ret;
 }
@@ -339,12 +339,12 @@ ret_t navigator_pick_dir(const char* title, str_t* result) {
   return_value_if_fail(req != NULL, RET_OOM);
 
   req->user_data = result;
-  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_PICK_DIR);
-  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_TITLE, title);
-  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_DEFAULT, result->str);
+  tk_object_set_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_PICK_DIR);
+  tk_object_set_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_TITLE, title);
+  tk_object_set_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_DEFAULT, result->str);
 
   ret = navigator_handle_request(navigator(), req);
-  object_unref(OBJECT(req));
+  tk_object_unref(TK_OBJECT(req));
 
   return ret;
 }
@@ -359,14 +359,14 @@ ret_t navigator_pick_file(const char* title, const char* filter, bool_t for_save
   return_value_if_fail(req != NULL, RET_OOM);
 
   req->user_data = result;
-  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_PICK_FILE);
-  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_TITLE, title);
-  object_set_prop_bool(OBJECT(req), NAVIGATOR_ARG_FOR_SAVE, for_save);
-  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_DEFAULT, result->str);
-  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_FILTER, filter);
+  tk_object_set_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_PICK_FILE);
+  tk_object_set_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_TITLE, title);
+  tk_object_set_prop_bool(TK_OBJECT(req), NAVIGATOR_ARG_FOR_SAVE, for_save);
+  tk_object_set_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_DEFAULT, result->str);
+  tk_object_set_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_FILTER, filter);
 
   ret = navigator_handle_request(navigator(), req);
-  object_unref(OBJECT(req));
+  tk_object_unref(TK_OBJECT(req));
 
   return ret;
 }
@@ -381,12 +381,12 @@ ret_t navigator_pick_color(const char* title, str_t* result) {
   return_value_if_fail(req != NULL, RET_OOM);
 
   req->user_data = result;
-  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_PICK_COLOR);
-  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_TITLE, title);
-  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_DEFAULT, result->str);
+  tk_object_set_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_PICK_COLOR);
+  tk_object_set_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_TITLE, title);
+  tk_object_set_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_DEFAULT, result->str);
 
   ret = navigator_handle_request(navigator(), req);
-  object_unref(OBJECT(req));
+  tk_object_unref(TK_OBJECT(req));
 
   return ret;
 }
@@ -400,12 +400,12 @@ ret_t navigator_close(const char* target) {
   req = navigator_request_create(NULL, on_str_result);
   return_value_if_fail(req != NULL, RET_OOM);
 
-  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_CLOSE);
-  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_TARGET, target);
-  object_set_prop_bool(OBJECT(req), NAVIGATOR_ARG_FORCE, TRUE);
+  tk_object_set_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_CLOSE);
+  tk_object_set_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_TARGET, target);
+  tk_object_set_prop_bool(TK_OBJECT(req), NAVIGATOR_ARG_FORCE, TRUE);
 
   ret = navigator_handle_request(navigator(), req);
-  object_unref(OBJECT(req));
+  tk_object_unref(TK_OBJECT(req));
 
   return ret;
 }
@@ -419,11 +419,11 @@ ret_t navigator_request_close(const char* target) {
   req = navigator_request_create(NULL, on_str_result);
   return_value_if_fail(req != NULL, RET_OOM);
 
-  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_CLOSE);
-  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_TARGET, target);
+  tk_object_set_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_CLOSE);
+  tk_object_set_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_TARGET, target);
 
   ret = navigator_handle_request(navigator(), req);
-  object_unref(OBJECT(req));
+  tk_object_unref(TK_OBJECT(req));
 
   return ret;
 }
@@ -437,13 +437,13 @@ int32_t navigator_count_view_models(const char* target) {
   return_value_if_fail(req != NULL, 0);
 
   req->user_data = &cnt;
-  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_COUNT_VIEW_MODEL);
-  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_TARGET, target);
+  tk_object_set_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_COUNT_VIEW_MODEL);
+  tk_object_set_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_TARGET, target);
 
   if (navigator_handle_request(navigator(), req) == RET_OK) {
     cnt = value_int(&(req->result));
   }
-  object_unref(OBJECT(req));
+  tk_object_unref(TK_OBJECT(req));
 
   return cnt;
 }
@@ -457,11 +457,11 @@ ret_t navigator_get_view_models(const char* target, darray_t* result) {
   return_value_if_fail(req != NULL, 0);
 
   req->user_data = result;
-  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_GET_VIEW_MODEL);
-  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_TARGET, target);
+  tk_object_set_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_GET_VIEW_MODEL);
+  tk_object_set_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_TARGET, target);
 
   ret = navigator_handle_request(navigator(), req);
-  object_unref(OBJECT(req));
+  tk_object_unref(TK_OBJECT(req));
 
   return ret;
 }
@@ -474,17 +474,17 @@ ret_t navigator_notify_view_props_changed(const char* target) {
   req = navigator_request_create(NULL, NULL);
   return_value_if_fail(req != NULL, 0);
 
-  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_NOTIFY_VIEW_MODEL);
-  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_TARGET, target);
-  object_set_prop_bool(OBJECT(req), NAVIGATOR_ARG_PROPS_CHANGED, TRUE);
+  tk_object_set_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_NOTIFY_VIEW_MODEL);
+  tk_object_set_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_TARGET, target);
+  tk_object_set_prop_bool(TK_OBJECT(req), NAVIGATOR_ARG_PROPS_CHANGED, TRUE);
 
   ret = navigator_handle_request(navigator(), req);
-  object_unref(OBJECT(req));
+  tk_object_unref(TK_OBJECT(req));
 
   return ret;
 }
 
-ret_t navigator_notify_view_items_changed(object_t* items, const char* target) {
+ret_t navigator_notify_view_items_changed(tk_object_t* items, const char* target) {
   ret_t ret = RET_OK;
   navigator_request_t* req = NULL;
   return_value_if_fail(navigator() != NULL, 0);
@@ -492,33 +492,33 @@ ret_t navigator_notify_view_items_changed(object_t* items, const char* target) {
   req = navigator_request_create(NULL, NULL);
   return_value_if_fail(req != NULL, 0);
 
-  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_NOTIFY_VIEW_MODEL);
-  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_TARGET, target);
-  object_set_prop_bool(OBJECT(req), NAVIGATOR_ARG_ITEMS_CHANGED, TRUE);
-  object_set_prop_object(OBJECT(req), NAVIGATOR_ARG_EVENT_SOURCE, items);
+  tk_object_set_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_NOTIFY_VIEW_MODEL);
+  tk_object_set_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_TARGET, target);
+  tk_object_set_prop_bool(TK_OBJECT(req), NAVIGATOR_ARG_ITEMS_CHANGED, TRUE);
+  tk_object_set_prop_object(TK_OBJECT(req), NAVIGATOR_ARG_EVENT_SOURCE, items);
 
   ret = navigator_handle_request(navigator(), req);
-  object_unref(OBJECT(req));
+  tk_object_unref(TK_OBJECT(req));
 
   return ret;
 }
 
-object_t* navigator_get_locale(const char* target) {
-  object_t* obj = NULL;
+tk_object_t* navigator_get_locale(const char* target) {
+  tk_object_t* obj = NULL;
   navigator_request_t* req = NULL;
   return_value_if_fail(navigator() != NULL, NULL);
 
   req = navigator_request_create(NULL, NULL);
   return_value_if_fail(req != NULL, 0);
 
-  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_GET_LOCALE);
-  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_TARGET, target);
+  tk_object_set_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_GET_LOCALE);
+  tk_object_set_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_TARGET, target);
 
   if (navigator_handle_request(navigator(), req) == RET_OK) {
     obj = value_object(&(req->result));
-    object_ref(obj);
+    tk_object_ref(obj);
   }
-  object_unref(OBJECT(req));
+  tk_object_unref(TK_OBJECT(req));
 
   return obj;
 }
@@ -531,13 +531,13 @@ ret_t navigator_set_locale(const char* language, const char* country, const char
   req = navigator_request_create(NULL, NULL);
   return_value_if_fail(req != NULL, 0);
 
-  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_SET_LOCALE);
-  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_LANGUAGE, language);
-  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_COUNTRY, country);
-  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_TARGET, target);
+  tk_object_set_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_SET_LOCALE);
+  tk_object_set_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_LANGUAGE, language);
+  tk_object_set_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_COUNTRY, country);
+  tk_object_set_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_TARGET, target);
 
   ret = navigator_handle_request(navigator(), req);
-  object_unref(OBJECT(req));
+  tk_object_unref(TK_OBJECT(req));
 
   return ret;
 }
@@ -550,13 +550,13 @@ const char* navigator_get_theme(const char* target) {
   req = navigator_request_create(NULL, NULL);
   return_value_if_fail(req != NULL, 0);
 
-  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_GET_THEME);
-  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_TARGET, target);
+  tk_object_set_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_GET_THEME);
+  tk_object_set_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_TARGET, target);
 
   if (navigator_handle_request(navigator(), req) == RET_OK) {
     theme = value_str(&(req->result));
   }
-  object_unref(OBJECT(req));
+  tk_object_unref(TK_OBJECT(req));
 
   return theme;
 }
@@ -569,12 +569,12 @@ ret_t navigator_set_theme(const char* theme, const char* target) {
   req = navigator_request_create(NULL, NULL);
   return_value_if_fail(req != NULL, 0);
 
-  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_SET_THEME);
-  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_THEME, theme);
-  object_set_prop_str(OBJECT(req), NAVIGATOR_ARG_TARGET, target);
+  tk_object_set_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_SET_THEME);
+  tk_object_set_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_THEME, theme);
+  tk_object_set_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_TARGET, target);
 
   ret = navigator_handle_request(navigator(), req);
-  object_unref(OBJECT(req));
+  tk_object_unref(TK_OBJECT(req));
 
   return ret;
 }

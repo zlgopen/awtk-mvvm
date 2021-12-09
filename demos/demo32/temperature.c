@@ -43,7 +43,7 @@ static ret_t temperature_reset(temperature_t* temperature) {
   return RET_OBJECT_CHANGED;
 }
 
-static ret_t temperature_get_prop(object_t* obj, const char* name, value_t* v) {
+static ret_t temperature_get_prop(tk_object_t* obj, const char* name, value_t* v) {
   temperature_t* temperature = (temperature_t*)obj;
 
   if (tk_str_ieq("temp", name)) {
@@ -53,7 +53,7 @@ static ret_t temperature_get_prop(object_t* obj, const char* name, value_t* v) {
 
   return RET_NOT_FOUND;
 }
-static ret_t temperature_set_prop(object_t* obj, const char* name, const value_t* v) {
+static ret_t temperature_set_prop(tk_object_t* obj, const char* name, const value_t* v) {
   temperature_t* temperature = (temperature_t*)obj;
 
   if (tk_str_ieq("temp", name)) {
@@ -64,7 +64,7 @@ static ret_t temperature_set_prop(object_t* obj, const char* name, const value_t
   return RET_NOT_FOUND;
 }
 
-static bool_t temperature_can_exec(object_t* obj, const char* name, const char* args) {
+static bool_t temperature_can_exec(tk_object_t* obj, const char* name, const char* args) {
   temperature_t* temperature = (temperature_t*)obj;
 
   if (tk_str_ieq("apply", name)) {
@@ -76,7 +76,7 @@ static bool_t temperature_can_exec(object_t* obj, const char* name, const char* 
   return FALSE;
 }
 
-static ret_t temperature_exec(object_t* obj, const char* name, const char* args) {
+static ret_t temperature_exec(tk_object_t* obj, const char* name, const char* args) {
   temperature_t* temperature = (temperature_t*)obj;
 
   if (tk_str_ieq("apply", name)) {
@@ -96,8 +96,8 @@ static const object_vtable_t s_temperature_vtable = {.type = "temperature",
                                                      .can_exec = temperature_can_exec,
                                                      .exec = temperature_exec};
 
-object_t* temperature_create(void) {
-  object_t* obj = object_create(&s_temperature_vtable);
+tk_object_t* temperature_create(void) {
+  tk_object_t* obj = tk_object_create(&s_temperature_vtable);
 
   return obj;
 }

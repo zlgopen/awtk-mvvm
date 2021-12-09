@@ -30,13 +30,13 @@ BEGIN_C_DECLS
 
 /**
  * @class book_t
- * @parent object_t
+ * @parent tk_object_t
  * @annotation ["model"]
  * 图书信息。
  *
  */
 typedef struct _book_t {
-  object_t obj;
+  tk_object_t obj;
   /**
    * @property {str_t} name
    * @annotation ["readable", "writable"]
@@ -56,20 +56,20 @@ typedef struct _book_t {
  * 创建book的obj对象。
  *
  * @annotation ["constructor"]
- * @return {object_t*} 返回book的obj对象。
+ * @return {tk_object_t*} 返回book的obj对象。
  */
-object_t* book_create(void);
+tk_object_t* book_create(void);
 
 /**
  * @method book_cast
  * 转换为book对象。
- * 
+ *
  * @annotation ["cast"]
- * @param {object_t*} obj object。
- * 
+ * @param {tk_object_t*} obj object。
+ *
  * @return {book_t*} 返回book对象。
  */
-book_t* book_cast(object_t* obj);
+book_t* book_cast(tk_object_t* obj);
 
 #define BOOK(obj) book_cast(obj)
 

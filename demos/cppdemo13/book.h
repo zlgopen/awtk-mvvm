@@ -40,9 +40,9 @@ class Book : public vm::Object {
    * Book obj对象的Create函数。
    *
    * @annotation ["constructor"]
-   * @return {object_t*} 返回Book的obj对象。
+   * @return {tk_object_t*} 返回Book的obj对象。
    */
-  static object_t* Create();
+  static tk_object_t* Create();
 
   /**
    * @method Book
@@ -66,8 +66,8 @@ class Book : public vm::Object {
  * 创建book的obj对象。
  *
  * @annotation ["constructor"]
- * @return {object_t*} 返回book的obj对象。
+ * @return {tk_object_t*} 返回book的obj对象。
  */
-object_t* book_create(void);
+tk_object_t* book_create(void);
 
 #endif /*TK_BOOK_H*/

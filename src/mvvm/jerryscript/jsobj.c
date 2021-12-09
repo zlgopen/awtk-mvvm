@@ -79,7 +79,7 @@ static JSFUNC_DECL(wrap_object_t_get_prop) {
   jsvalue_t ret;
 
   if (args_count >= 1) {
-    object_t* obj = jsobj_get_native_ptr(call_info_p->this_value);
+    tk_object_t* obj = jsobj_get_native_ptr(call_info_p->this_value);
     if (obj != NULL) {
       const char* name = NULL;
       str_t temp;
@@ -87,7 +87,7 @@ static JSFUNC_DECL(wrap_object_t_get_prop) {
 
       str_init(&temp, 0);
       name = jsvalue_to_utf8(args_p[0], &temp);
-      if (object_get_prop(obj, name, &v) == RET_OK) {
+      if (tk_object_get_prop(obj, name, &v) == RET_OK) {
         ret = jsvalue_from_value(&v, &temp);
       } else {
         ret = JS_UNDEFINED;
@@ -105,7 +105,7 @@ static JSFUNC_DECL(wrap_object_t_set_prop) {
   ret_t ret = RET_BAD_PARAMS;
 
   if (args_count >= 2) {
-    object_t* obj = jsobj_get_native_ptr(call_info_p->this_value);
+    tk_object_t* obj = jsobj_get_native_ptr(call_info_p->this_value);
     if (obj != NULL) {
       const char* name = NULL;
       str_t temp_key;
@@ -117,7 +117,7 @@ static JSFUNC_DECL(wrap_object_t_set_prop) {
 
       name = jsvalue_to_utf8(args_p[0], &temp_key);
       if (jsvalue_to_value(args_p[1], &v, &temp_val) == RET_OK) {
-        ret = object_set_prop(obj, name, &v);
+        ret = tk_object_set_prop(obj, name, &v);
       }
 
       str_reset(&temp_key);
@@ -132,7 +132,7 @@ static JSFUNC_DECL(wrap_object_t_can_exec) {
   bool_t ret = TRUE;
 
   if (args_count >= 1) {
-    object_t* obj = jsobj_get_native_ptr(call_info_p->this_value);
+    tk_object_t* obj = jsobj_get_native_ptr(call_info_p->this_value);
     if (obj != NULL) {
       const char* name = NULL;
       const char* args = NULL;
@@ -147,7 +147,7 @@ static JSFUNC_DECL(wrap_object_t_can_exec) {
         args = jsvalue_to_utf8(args_p[1], &temp_args);
       }
 
-      ret = object_can_exec(obj, name, args);
+      ret = tk_object_can_exec(obj, name, args);
 
       str_reset(&temp_name);
       str_reset(&temp_args);
@@ -161,7 +161,7 @@ static JSFUNC_DECL(wrap_object_t_exec) {
   ret_t ret = RET_BAD_PARAMS;
 
   if (args_count >= 1) {
-    object_t* obj = jsobj_get_native_ptr(call_info_p->this_value);
+    tk_object_t* obj = jsobj_get_native_ptr(call_info_p->this_value);
     if (obj != NULL) {
       const char* name = NULL;
       const char* args = NULL;
@@ -176,7 +176,7 @@ static JSFUNC_DECL(wrap_object_t_exec) {
         args = jsvalue_to_utf8(args_p[1], &temp_args);
       }
 
-      ret = object_exec(obj, name, args);
+      ret = tk_object_exec(obj, name, args);
 
       str_reset(&temp_name);
       str_reset(&temp_args);
@@ -186,16 +186,16 @@ static JSFUNC_DECL(wrap_object_t_exec) {
   return jsvalue_from_number(ret);
 }
 
-jsvalue_t jsvalue_from_obj(object_t* obj) {
+jsvalue_t jsvalue_from_obj(tk_object_t* obj) {
   value_t v;
   return_value_if_fail(obj != NULL, JS_UNDEFINED);
 
-  if (object_get_prop(obj, JSOBJ_PROP_NATIVE_OBJ, &v) == RET_OK) {
+  if (tk_object_get_prop(obj, JSOBJ_PROP_NATIVE_OBJ, &v) == RET_OK) {
     return jsvalue_ref(value_uint32(&v));
   } else {
     jsvalue_t jsobj = jerry_create_object();
 
-    jsobj_set_native_ptr(jsobj, object_ref(obj));
+    jsobj_set_native_ptr(jsobj, tk_object_ref(obj));
     jsobj_set_prop_func(jsobj, "getProp", wrap_object_t_get_prop);
     jsobj_set_prop_func(jsobj, "setProp", wrap_object_t_set_prop);
     jsobj_set_prop_func(jsobj, "canExec", wrap_object_t_can_exec);
@@ -218,11 +218,11 @@ static ret_t visit_object_prop(void* ctx, const void* data) {
   return RET_OK;
 }
 
-jsvalue_t jsvalue_from_obj_copy(object_t* obj) {
+jsvalue_t jsvalue_from_obj_copy(tk_object_t* obj) {
   value_t v;
   return_value_if_fail(obj != NULL, JS_UNDEFINED);
 
-  if (object_get_prop(obj, JSOBJ_PROP_NATIVE_OBJ, &v) == RET_OK) {
+  if (tk_object_get_prop(obj, JSOBJ_PROP_NATIVE_OBJ, &v) == RET_OK) {
     return jsvalue_ref(value_uint32(&v));
   } else {
     str_t str;
@@ -232,15 +232,15 @@ jsvalue_t jsvalue_from_obj_copy(object_t* obj) {
     info.str = &str;
     info.value = jsobj;
     str_init(&str, 0);
-    object_foreach_prop(obj, visit_object_prop, &info);
+    tk_object_foreach_prop(obj, visit_object_prop, &info);
     str_reset(&str);
 
     return jsobj;
   }
 }
 
-object_t* jsvalue_to_obj(jsvalue_t value) {
-  object_t* obj = jsobj_get_native_ptr(value);
+tk_object_t* jsvalue_to_obj(jsvalue_t value) {
+  tk_object_t* obj = jsobj_get_native_ptr(value);
 
   if (obj == NULL) {
     void* p = NULL;
@@ -312,7 +312,7 @@ ret_t jsvalue_to_value(jsvalue_t value, value_t* v, str_t* temp) {
     value_set_bool(v, raw_value);
     ret = RET_OK;
   } else if (jsvalue_is_object(value)) {
-    object_t* obj = jsvalue_to_obj(value);
+    tk_object_t* obj = jsvalue_to_obj(value);
     if (obj != NULL) {
       value_set_object(v, obj);
       ret = RET_OK;
@@ -356,7 +356,7 @@ ret_t jsvalue_to_value(jsvalue_t value, value_t* v, str_t* temp) {
   return ret;
 }
 
-ret_t jsobj_register_global(const char* name, object_t* obj) {
+ret_t jsobj_register_global(const char* name, tk_object_t* obj) {
   jsvalue_t global_obj;
   jsvalue_t jsobj;
   return_value_if_fail(name != NULL && obj != NULL, RET_BAD_PARAMS);
@@ -384,23 +384,23 @@ ret_t jsobj_unregister_global(const char* name) {
 }
 
 static void tkc_object_free_callback(void* native_p) {
-  object_t* obj = OBJECT(native_p);
-  object_unref(obj);
+  tk_object_t* obj = TK_OBJECT(native_p);
+  tk_object_unref(obj);
 }
 
 static const jerry_object_native_info_t s_tkc_object_info = {.free_cb = tkc_object_free_callback};
 
-ret_t jsobj_set_native_ptr(jsvalue_t obj, object_t* ptr) {
+ret_t jsobj_set_native_ptr(jsvalue_t obj, tk_object_t* ptr) {
   return_value_if_fail(ptr != NULL, RET_BAD_PARAMS);
 
   jerry_set_object_native_pointer(obj, (void*)ptr, &s_tkc_object_info);
   return RET_OK;
 }
 
-object_t* jsobj_get_native_ptr(jsvalue_t obj) {
+tk_object_t* jsobj_get_native_ptr(jsvalue_t obj) {
   void* p = NULL;
   if (jerry_get_object_native_pointer(obj, &p, &s_tkc_object_info)) {
-    return OBJECT(p);
+    return TK_OBJECT(p);
   }
   return NULL;
 }

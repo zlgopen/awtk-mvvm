@@ -34,12 +34,12 @@ typedef struct _binding_rule_t binding_rule_t;
 
 /**
  * @class binding_rule_t
- * @parent object_t
+ * @parent tk_object_t
  *
  * 绑定规则基类。
  */
 struct _binding_rule_t {
-  object_t object;
+  tk_object_t object;
   /**
    * @property {void*} widget
    * @annotation ["readable"]

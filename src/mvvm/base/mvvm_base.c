@@ -36,7 +36,7 @@ ret_t mvvm_base_deinit(void) {
   view_model_factory_deinit();
   value_converter_deinit();
   value_validator_deinit();
-  object_unref(OBJECT(navigator()));
+  tk_object_unref(TK_OBJECT(navigator()));
   navigator_set(NULL);
 
   return RET_OK;

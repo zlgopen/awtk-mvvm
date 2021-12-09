@@ -6,75 +6,67 @@
 #include "mvvm/base/utils.h"
 #include "controller_view_model.h"
 
-static ret_t controller_view_model_set_prop(object_t* obj, const char* name, const value_t* v) {
+static ret_t controller_view_model_set_prop(tk_object_t* obj, const char* name, const value_t* v) {
   controller_t* acontroller = ((controller_view_model_t*)(obj))->acontroller;
 
   if (tk_str_ieq("close_current", name)) {
-     acontroller->close_current = value_bool(v);
+    acontroller->close_current = value_bool(v);
 
-     return RET_OK;
-  }
-  
-  return RET_NOT_FOUND;
-}
-
-
-static ret_t controller_view_model_get_prop(object_t* obj, const char* name, value_t* v) {
-  controller_t* acontroller = ((controller_view_model_t*)(obj))->acontroller;
-
-  if (tk_str_ieq("close_current", name)) {
-     value_set_bool(v, acontroller->close_current);
-     return RET_OK;
+    return RET_OK;
   }
 
   return RET_NOT_FOUND;
 }
 
+static ret_t controller_view_model_get_prop(tk_object_t* obj, const char* name, value_t* v) {
+  controller_t* acontroller = ((controller_view_model_t*)(obj))->acontroller;
 
-static bool_t controller_view_model_can_exec(object_t* obj, const char* name, const char* args) {
+  if (tk_str_ieq("close_current", name)) {
+    value_set_bool(v, acontroller->close_current);
+    return RET_OK;
+  }
 
+  return RET_NOT_FOUND;
+}
+
+static bool_t controller_view_model_can_exec(tk_object_t* obj, const char* name, const char* args) {
   return FALSE;
 }
 
-static ret_t controller_view_model_exec(object_t* obj, const char* name, const char* args) {
-
+static ret_t controller_view_model_exec(tk_object_t* obj, const char* name, const char* args) {
   return RET_NOT_FOUND;
 }
 
-static ret_t controller_view_model_on_destroy(object_t* obj) {
+static ret_t controller_view_model_on_destroy(tk_object_t* obj) {
   controller_view_model_t* vm = (controller_view_model_t*)(obj);
   return_value_if_fail(vm != NULL, RET_BAD_PARAMS);
 
-  
   TKMEM_FREE(vm->acontroller);
 
   return view_model_deinit(VIEW_MODEL(obj));
 }
 
-static const object_vtable_t s_controller_view_model_vtable = {
-  "controller_view_model_t",
-  "controller_view_model_t",
-  sizeof(controller_view_model_t),
-  FALSE,
-  controller_view_model_on_destroy,
-  NULL,
-  controller_view_model_get_prop,
-  controller_view_model_set_prop,
-  NULL,
-  NULL,
-  controller_view_model_can_exec,
-  controller_view_model_exec
-};
+static const object_vtable_t s_controller_view_model_vtable = {"controller_view_model_t",
+                                                               "controller_view_model_t",
+                                                               sizeof(controller_view_model_t),
+                                                               FALSE,
+                                                               controller_view_model_on_destroy,
+                                                               NULL,
+                                                               controller_view_model_get_prop,
+                                                               controller_view_model_set_prop,
+                                                               NULL,
+                                                               NULL,
+                                                               controller_view_model_can_exec,
+                                                               controller_view_model_exec};
 
 view_model_t* controller_view_model_create_with(controller_t* acontroller) {
-  object_t* obj = object_create(&s_controller_view_model_vtable);
+  tk_object_t* obj = tk_object_create(&s_controller_view_model_vtable);
   view_model_t* vm = view_model_init(VIEW_MODEL(obj));
   controller_view_model_t* controller_view_model = (controller_view_model_t*)(vm);
 
   return_value_if_fail(vm != NULL, NULL);
 
   controller_view_model->acontroller = acontroller;
-  
 
   return vm;
 }

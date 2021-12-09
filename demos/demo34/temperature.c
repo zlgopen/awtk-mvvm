@@ -56,5 +56,3 @@ ret_t temperature_destroy(temperature_t* temperature) {
 
   return RET_OK;
 }
-
-

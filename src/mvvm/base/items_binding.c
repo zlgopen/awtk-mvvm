@@ -29,7 +29,7 @@
 
 #define equal tk_str_ieq
 
-static ret_t items_binding_on_destroy(object_t* obj) {
+static ret_t items_binding_on_destroy(tk_object_t* obj) {
   items_binding_t* rule = ITEMS_BINDING(obj);
   return_value_if_fail(rule != NULL, RET_BAD_PARAMS);
 
@@ -39,13 +39,13 @@ static ret_t items_binding_on_destroy(object_t* obj) {
   TKMEM_FREE(rule->id_name);
 
   if (rule->props != NULL) {
-    object_unref(rule->props);
+    tk_object_unref(rule->props);
   }
 
   return RET_OK;
 }
 
-static ret_t items_binding_object_set_prop(object_t* obj, const char* name, const value_t* v) {
+static ret_t items_binding_object_set_prop(tk_object_t* obj, const char* name, const value_t* v) {
   ret_t ret = RET_OK;
   const char* value = value_str(v);
   items_binding_t* rule = ITEMS_BINDING(obj);
@@ -69,13 +69,13 @@ static ret_t items_binding_object_set_prop(object_t* obj, const char* name, cons
     if (rule->props == NULL) {
       rule->props = object_default_create();
     }
-    ret = object_set_prop(rule->props, name, v);
+    ret = tk_object_set_prop(rule->props, name, v);
   }
 
   return ret;
 }
 
-static ret_t items_binding_object_get_prop(object_t* obj, const char* name, value_t* v) {
+static ret_t items_binding_object_get_prop(tk_object_t* obj, const char* name, value_t* v) {
   ret_t ret = RET_OK;
   items_binding_t* rule = items_binding_cast(obj);
   return_value_if_fail(rule != NULL, RET_BAD_PARAMS);
@@ -91,13 +91,13 @@ static ret_t items_binding_object_get_prop(object_t* obj, const char* name, valu
   } else if (tk_str_eq(name, STR_PROP_SELF)) {
     value_set_pointer(v, BINDING_RULE_WIDGET(rule));
   } else {
-    ret = object_get_prop(rule->props, name, v);
+    ret = tk_object_get_prop(rule->props, name, v);
   }
 
   return ret;
 }
 
-static ret_t items_binding_object_exec(object_t* obj, const char* name, const char* args) {
+static ret_t items_binding_object_exec(tk_object_t* obj, const char* name, const char* args) {
   items_binding_t* rule = (items_binding_t*)(obj);
   binding_context_t* context = BINDING_RULE_CONTEXT(rule);
   view_model_t* view_model = BINDING_RULE_VIEW_MODEL(rule);
@@ -107,7 +107,7 @@ static ret_t items_binding_object_exec(object_t* obj, const char* name, const ch
     return RET_OK;
   }
 
-  if (object_is_collection(OBJECT(view_model))) {
+  if (tk_object_is_collection(TK_OBJECT(view_model))) {
     uint32_t cursor = binding_context_get_items_cursor_of_rule(context, BINDING_RULE(rule));
     view_model_array_set_cursor(view_model, cursor);
   }
@@ -125,7 +125,7 @@ static const object_vtable_t s_items_binding_vtable = {.type = "items_binding",
                                                        .set_prop = items_binding_object_set_prop};
 
 items_binding_t* items_binding_create(void) {
-  object_t* obj = object_create(&s_items_binding_vtable);
+  tk_object_t* obj = tk_object_create(&s_items_binding_vtable);
   items_binding_t* rule = ITEMS_BINDING(obj);
   return_value_if_fail(obj != NULL, NULL);
 
@@ -141,6 +141,6 @@ items_binding_t* items_binding_cast(void* rule) {
 }
 
 bool_t binding_rule_is_items_binding(binding_rule_t* rule) {
-  object_t* obj = OBJECT(rule);
+  tk_object_t* obj = TK_OBJECT(rule);
   return obj != NULL && obj->vt == &s_items_binding_vtable;
 }

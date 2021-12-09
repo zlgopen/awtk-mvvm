@@ -297,7 +297,6 @@ static ret_t assets_init(void) {
   return RET_OK;
 }
 
-
 static ret_t global_init(void) {
   mvvm_app_init();
   mvvm_app_run_default_scripts();

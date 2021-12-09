@@ -6,7 +6,7 @@
 #include "mvvm/base/utils.h"
 #include "shape_view_model.h"
 
-static ret_t shape_view_model_set_prop(object_t* obj, const char* name, const value_t* v) {
+static ret_t shape_view_model_set_prop(tk_object_t* obj, const char* name, const value_t* v) {
   shape_t* ashape = ((shape_view_model_t*)(obj))->ashape;
 
   if (tk_str_ieq("type", name)) {
@@ -50,7 +50,7 @@ static ret_t shape_view_model_set_prop(object_t* obj, const char* name, const va
   return RET_NOT_FOUND;
 }
 
-static ret_t shape_view_model_get_prop(object_t* obj, const char* name, value_t* v) {
+static ret_t shape_view_model_get_prop(tk_object_t* obj, const char* name, value_t* v) {
   shape_t* ashape = ((shape_view_model_t*)(obj))->ashape;
 
   if (tk_str_ieq("type", name)) {
@@ -85,7 +85,7 @@ static ret_t shape_view_model_get_prop(object_t* obj, const char* name, value_t*
   return RET_NOT_FOUND;
 }
 
-static bool_t shape_view_model_can_exec(object_t* obj, const char* name, const char* args) {
+static bool_t shape_view_model_can_exec(tk_object_t* obj, const char* name, const char* args) {
   shape_view_model_t* vm = (shape_view_model_t*)(obj);
   shape_t* ashape = vm->ashape;
   if (tk_str_ieq("changeType", name)) {
@@ -97,7 +97,7 @@ static bool_t shape_view_model_can_exec(object_t* obj, const char* name, const c
   return FALSE;
 }
 
-static ret_t shape_view_model_exec(object_t* obj, const char* name, const char* args) {
+static ret_t shape_view_model_exec(tk_object_t* obj, const char* name, const char* args) {
   shape_view_model_t* vm = (shape_view_model_t*)(obj);
   shape_t* ashape = vm->ashape;
   if (tk_str_ieq("changeType", name)) {
@@ -109,7 +109,7 @@ static ret_t shape_view_model_exec(object_t* obj, const char* name, const char* 
   return RET_NOT_FOUND;
 }
 
-static ret_t shape_view_model_on_destroy(object_t* obj) {
+static ret_t shape_view_model_on_destroy(tk_object_t* obj) {
   shape_view_model_t* vm = (shape_view_model_t*)(obj);
   return_value_if_fail(vm != NULL, RET_BAD_PARAMS);
 
@@ -132,7 +132,7 @@ static const object_vtable_t s_shape_view_model_vtable = {"shape_view_model_t",
                                                           shape_view_model_exec};
 
 view_model_t* shape_view_model_create_with(shape_t* ashape) {
-  object_t* obj = object_create(&s_shape_view_model_vtable);
+  tk_object_t* obj = tk_object_create(&s_shape_view_model_vtable);
   view_model_t* vm = view_model_init(VIEW_MODEL(obj));
   shape_view_model_t* shape_view_model = (shape_view_model_t*)(vm);
 

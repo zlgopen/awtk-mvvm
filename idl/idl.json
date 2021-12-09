@@ -39,7 +39,7 @@
     "desc": "将js对象转换为object对象。",
     "name": "jsvalue_to_obj",
     "return": {
-      "type": "object_t*",
+      "type": "tk_object_t*",
       "desc": "返回object对象。"
     },
     "type": "method",
@@ -1118,7 +1118,7 @@
   {
     "params": [
       {
-        "type": "object_t*",
+        "type": "tk_object_t*",
         "name": "obj",
         "desc": "obj对象。"
       }
@@ -1139,7 +1139,7 @@
   {
     "params": [
       {
-        "type": "object_t*",
+        "type": "tk_object_t*",
         "name": "obj",
         "desc": "obj对象。"
       }
@@ -1504,7 +1504,7 @@
             "desc": "binding_context对象。"
           },
           {
-            "type": "object_t*",
+            "type": "tk_object_t*",
             "name": "items",
             "desc": "items对象。"
           }
@@ -1525,7 +1525,7 @@
             "desc": "binding_context对象。"
           },
           {
-            "type": "object_t*",
+            "type": "tk_object_t*",
             "name": "items",
             "desc": "items对象。"
           }
@@ -1815,9 +1815,9 @@
         "desc": "全局js对象的名称。"
       },
       {
-        "type": "object_t*",
-        "name": "obj",
-        "desc": "object_t对象。"
+        "type": "tk_object_t*",
+        "name": "",
+        "desc": "。"
       }
     ],
     "annotation": {
@@ -1862,7 +1862,7 @@
         "desc": "js对象。"
       },
       {
-        "type": "object_t*",
+        "type": "tk_object_t*",
         "name": "ptr",
         "desc": "原生obj。"
       }
@@ -1894,7 +1894,7 @@
     "desc": "获取js对象的原生obj。",
     "name": "jsobj_get_native_ptr",
     "return": {
-      "type": "object_t*",
+      "type": "tk_object_t*",
       "desc": "原生obj。"
     },
     "type": "method",
@@ -2673,7 +2673,7 @@
     "header": "base/binding_rule.h",
     "desc": "绑定规则基类。",
     "name": "binding_rule_t",
-    "parent": "object_t",
+    "parent": "tk_object_t",
     "level": 2
   },
   {
@@ -2702,7 +2702,7 @@
         "desc": "创建buzzer对象。",
         "name": "buzzer_log_create",
         "return": {
-          "type": "object_t*",
+          "type": "tk_object_t*",
           "desc": "返回object对象。"
         }
       }
@@ -2712,7 +2712,7 @@
     "header": "hardware/buzzer_log.h",
     "desc": "",
     "name": "buzzer_log_t",
-    "parent": "object_t",
+    "parent": "tk_object_t",
     "level": 2
   },
   {
@@ -2732,7 +2732,7 @@
     "header": "jerryscript/object_js_base.h",
     "desc": "将object_js相关的公共行为进行抽象，以便重用。",
     "name": "object_js_base_t",
-    "parent": "object_t",
+    "parent": "tk_object_t",
     "level": 2
   },
   {
@@ -2757,7 +2757,7 @@
         "desc": "创建jerry script object对象。",
         "name": "object_js_array_create",
         "return": {
-          "type": "object_t*",
+          "type": "tk_object_t*",
           "desc": "返回object对象。"
         }
       },
@@ -2783,7 +2783,7 @@
     "header": "jerryscript/object_js_array.h",
     "desc": "将jerry script array object包装成tkc形式的object。",
     "name": "object_js_array_t",
-    "parent": "object_t",
+    "parent": "tk_object_t",
     "level": 2
   },
   {
@@ -2794,7 +2794,7 @@
     "header": "hardware/device_object.h",
     "desc": "外设。\n\n> 目前device\\_object并没有做实际的工作，引入device\\_object的目的是保持概念一致性。",
     "name": "device_object_t",
-    "parent": "object_t",
+    "parent": "tk_object_t",
     "level": 2
   },
   {
@@ -2806,7 +2806,7 @@
         "desc": "创建temperature_sensor对象。",
         "name": "temperature_sensor_random_create",
         "return": {
-          "type": "object_t*",
+          "type": "tk_object_t*",
           "desc": "返回object对象。"
         }
       }
@@ -2816,7 +2816,7 @@
     "header": "hardware/temperature_sensor_random.h",
     "desc": "模拟的温度传感器，随机生成0-100之间的温度。",
     "name": "temperature_sensor_random_t",
-    "parent": "object_t",
+    "parent": "tk_object_t",
     "level": 2
   },
   {
@@ -2963,7 +2963,7 @@
     "header": "base/value_converter.h",
     "desc": "值转换器。\n\n如果数据在View上显示的格式和在Model中保存的格式不一样，value_converter负责在两者之间转换。",
     "name": "value_converter_t",
-    "parent": "object_t",
+    "parent": "tk_object_t",
     "level": 2
   },
   {
@@ -3019,7 +3019,7 @@
     "header": "base/navigator_handler.h",
     "desc": "处理导航请求。",
     "name": "navigator_handler_t",
-    "parent": "object_t",
+    "parent": "tk_object_t",
     "level": 2
   },
   {
@@ -3080,7 +3080,7 @@
             "desc": "validator对象。"
           },
           {
-            "type": "object_t*",
+            "type": "tk_object_t*",
             "name": "context",
             "desc": "上下文对象。"
           }
@@ -3182,7 +3182,7 @@
     "header": "base/value_validator.h",
     "desc": "值校验器。\n\n用户在界面上输入的类型可能是无效的，value_validator负责将检查用户输入的有效性。",
     "name": "value_validator_t",
-    "parent": "object_t",
+    "parent": "tk_object_t",
     "level": 2
   },
   {
@@ -3342,7 +3342,7 @@
             "desc": "request对象。"
           },
           {
-            "type": "object_t*",
+            "type": "tk_object_t*",
             "name": "args",
             "desc": "导航请求的参数。"
           }
@@ -3411,7 +3411,7 @@
     "header": "base/navigator_request.h",
     "desc": "导航请求。\n如果需要传递参数或自定义请求时，才需要本类，否则直接使用navigator的API即可。",
     "name": "navigator_request_t",
-    "parent": "object_t",
+    "parent": "tk_object_t",
     "level": 2
   },
   {
@@ -3543,7 +3543,7 @@
         "desc": "创建jerry script object对象。",
         "name": "object_js_default_create",
         "return": {
-          "type": "object_t*",
+          "type": "tk_object_t*",
           "desc": "返回object对象。"
         }
       },
@@ -3569,7 +3569,7 @@
     "header": "jerryscript/object_js_default.h",
     "desc": "将通用的jerry script object包装成tkc形式的object。",
     "name": "object_js_default_t",
-    "parent": "object_t",
+    "parent": "tk_object_t",
     "level": 2
   },
   {
@@ -4102,7 +4102,7 @@
       {
         "params": [
           {
-            "type": "object_t*",
+            "type": "tk_object_t*",
             "name": "items",
             "desc": "发生变化的items对象。"
           },
@@ -4133,11 +4133,11 @@
         "annotation": {
           "static": true
         },
-        "desc": "获取指定的本地化信息（国家和语言）。\n> 路径为NULL时表示窗口管理器；\n> 路径为空字符串时表示最上面的窗口；\n> 其他则为具体的路径，比如：\n> 1.\"window.widget\"：表示name属性值为\"window\"的窗体中name属性值为\"widget\"的子控件。\n> 2.\"window.[0]\"：表示name属性值为\"window\"的窗体的第0个子控件。\n> 注意：使用数字作为界面路径索引时必须用中括号括起来。",
+        "desc": "获取指定的本地化信息（国家和语言）。\n> 路径为NULL时表示窗口管理器；\n> 路径为空字符串时表示最上面的窗口；\n> 其他则为具体的路径，比如：\n> 1.\"window.widget\"：表示name属性值为\"window\"的窗体中name属性值为\"widget\"的子控件。\n> 2.\"window.[0]\"：表示name属性值为\"window\"的窗体的第0个子控件。\n> 注意：使用数字作为界面路径索引时必须用中括号括起来。\n\n\n\n返回本地化信息对象，其中属性\"language\"表示语言，属性\"country\"表示国家或地区。",
         "name": "navigator_get_locale",
         "return": {
-          "type": "object_t*",
-          "desc": "返回本地化信息对象，其中属性\"language\"表示语言，属性\"country\"表示国家或地区。"
+          "type": "tk_object_t*",
+          "desc": ""
         }
       },
       {
@@ -4259,7 +4259,7 @@
     "header": "base/navigator.h",
     "desc": "导航器。负责窗口导航。",
     "name": "navigator_t",
-    "parent": "object_t",
+    "parent": "tk_object_t",
     "level": 2
   },
   {
@@ -4705,7 +4705,7 @@
             "desc": "view_model对象。"
           },
           {
-            "type": "object_t*",
+            "type": "tk_object_t*",
             "name": "target",
             "desc": "发生变化的items对象。"
           }
@@ -4766,7 +4766,7 @@
     "header": "base/view_model.h",
     "desc": "视图模型的基类。",
     "name": "view_model_t",
-    "parent": "object_t",
+    "parent": "tk_object_t",
     "level": 2
   },
   {
@@ -4880,7 +4880,7 @@
       {
         "params": [
           {
-            "type": "object_t*",
+            "type": "tk_object_t*",
             "name": "obj",
             "desc": "待包装的对象。"
           }
@@ -4896,7 +4896,7 @@
       {
         "params": [
           {
-            "type": "object_t*",
+            "type": "tk_object_t*",
             "name": "obj",
             "desc": "待包装的对象。"
           },
@@ -6131,7 +6131,7 @@
       {
         "params": [
           {
-            "type": "object_t*",
+            "type": "tk_object_t*",
             "name": "obj",
             "desc": "待包装的对象。"
           }
@@ -6147,7 +6147,7 @@
       {
         "params": [
           {
-            "type": "object_t*",
+            "type": "tk_object_t*",
             "name": "obj",
             "desc": "待包装的对象。"
           },

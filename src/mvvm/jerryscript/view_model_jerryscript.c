@@ -68,7 +68,7 @@ static view_model_t* view_model_jerryscript_create(const char* type, navigator_r
       } else {
         view_model = view_model_jerryscript_object_wrapper_create(jsobj, req);
         if (view_model != NULL) {
-          object_set_name(OBJECT(view_model), type);
+          tk_object_set_name(TK_OBJECT(view_model), type);
         }
       }
     }

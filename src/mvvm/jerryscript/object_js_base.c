@@ -26,7 +26,7 @@
 #include "mvvm/jerryscript/object_js_base.h"
 #include "mvvm/jerryscript/object_js_default.h"
 
-ret_t object_js_base_init(object_t* obj, jsvalue_t jsobj, bool_t free_handle) {
+ret_t object_js_base_init(tk_object_t* obj, jsvalue_t jsobj, bool_t free_handle) {
   object_js_base_t* o = OBJECT_JS_BASE(obj);
   return_value_if_fail(o != NULL, RET_BAD_PARAMS);
 
@@ -37,7 +37,7 @@ ret_t object_js_base_init(object_t* obj, jsvalue_t jsobj, bool_t free_handle) {
   return RET_OK;
 }
 
-ret_t object_js_base_deinit(object_t* obj) {
+ret_t object_js_base_deinit(tk_object_t* obj) {
   object_js_base_t* o = OBJECT_JS_BASE(obj);
   return_value_if_fail(o != NULL, RET_BAD_PARAMS);
 
@@ -50,12 +50,12 @@ ret_t object_js_base_deinit(object_t* obj) {
   return RET_OK;
 }
 
-int32_t object_js_base_compare(object_t* obj, object_t* other) {
+int32_t object_js_base_compare(tk_object_t* obj, tk_object_t* other) {
   if (obj == other) {
     return 0;
   } else {
-    jsvalue_t jsobj1 = (jsvalue_t)object_get_prop_uint32(obj, JSOBJ_PROP_NATIVE_OBJ, 0);
-    jsvalue_t jsobj2 = (jsvalue_t)object_get_prop_uint32(other, JSOBJ_PROP_NATIVE_OBJ, 0);
+    jsvalue_t jsobj1 = (jsvalue_t)tk_object_get_prop_uint32(obj, JSOBJ_PROP_NATIVE_OBJ, 0);
+    jsvalue_t jsobj2 = (jsvalue_t)tk_object_get_prop_uint32(other, JSOBJ_PROP_NATIVE_OBJ, 0);
     if (jsobj1 && jsobj2) {
       return jsvalue_compare(jsobj1, jsobj2);
     }
@@ -64,16 +64,16 @@ int32_t object_js_base_compare(object_t* obj, object_t* other) {
   }
 }
 
-ret_t object_js_base_set_prop(object_t* obj, const char* name, const value_t* v) {
+ret_t object_js_base_set_prop(tk_object_t* obj, const char* name, const value_t* v) {
   object_js_base_t* o = OBJECT_JS_BASE(obj);
   return_value_if_fail(o != NULL, RET_BAD_PARAMS);
 
   if (tk_str_eq(name, JSOBJ_PROP_NATIVE_OBJ)) {
     return RET_BAD_PARAMS;
   } else {
-    object_t* sub = object_get_child_object(obj, name, &name);
+    tk_object_t* sub = tk_object_get_child_object(obj, name, &name);
     if (sub != NULL) {
-      return object_set_prop(sub, name, v);
+      return tk_object_set_prop(sub, name, v);
     }
 
     return jsobj_set_prop(o->jsobj, name, v, &(o->temp));
@@ -82,7 +82,7 @@ ret_t object_js_base_set_prop(object_t* obj, const char* name, const value_t* v)
   return RET_OK;
 }
 
-ret_t object_js_base_get_prop(object_t* obj, const char* name, value_t* v) {
+ret_t object_js_base_get_prop(tk_object_t* obj, const char* name, value_t* v) {
   ret_t ret = RET_OK;
   object_js_base_t* o = OBJECT_JS_BASE(obj);
   return_value_if_fail(o != NULL, RET_BAD_PARAMS);
@@ -90,14 +90,14 @@ ret_t object_js_base_get_prop(object_t* obj, const char* name, value_t* v) {
   if (tk_str_eq(name, JSOBJ_PROP_NATIVE_OBJ)) {
     value_set_uint32(v, o->jsobj);
   } else {
-    object_t* sub = object_get_child_object(obj, name, &name);
+    tk_object_t* sub = tk_object_get_child_object(obj, name, &name);
     if (sub != NULL) {
-      return object_get_prop(sub, name, v);
+      return tk_object_get_prop(sub, name, v);
     }
 
     ret = jsobj_get_prop(o->jsobj, name, v, &(o->temp));
     if (ret == RET_OK && v->type == VALUE_TYPE_OBJECT) {
-      object_t* val = value_object(v);
+      tk_object_t* val = value_object(v);
       if (!object_js_base_is_listener_registered(val, obj)) {
         object_js_base_register_listener(val, obj);
       }
@@ -107,7 +107,7 @@ ret_t object_js_base_get_prop(object_t* obj, const char* name, value_t* v) {
   return ret;
 }
 
-ret_t object_js_base_remove_prop(object_t* obj, const char* name) {
+ret_t object_js_base_remove_prop(tk_object_t* obj, const char* name) {
   object_js_base_t* o = OBJECT_JS_BASE(obj);
   return_value_if_fail(o != NULL, RET_BAD_PARAMS);
 
@@ -118,7 +118,7 @@ ret_t object_js_base_remove_prop(object_t* obj, const char* name) {
   }
 }
 
-ret_t object_js_base_foreach_prop(object_t* obj, tk_visit_t on_prop, void* ctx) {
+ret_t object_js_base_foreach_prop(tk_object_t* obj, tk_visit_t on_prop, void* ctx) {
   ret_t ret = RET_FAIL;
   str_t str;
   object_js_base_t* o = OBJECT_JS_BASE(obj);
@@ -131,15 +131,15 @@ ret_t object_js_base_foreach_prop(object_t* obj, tk_visit_t on_prop, void* ctx) 
   return ret;
 }
 
-bool_t object_js_base_can_exec(object_t* obj, const char* name, const char* args) {
+bool_t object_js_base_can_exec(tk_object_t* obj, const char* name, const char* args) {
   bool_t ret = FALSE;
   value_t v;
   object_js_base_t* o = OBJECT_JS_BASE(obj);
   return_value_if_fail(o != NULL, FALSE);
 
-  object_t* sub = object_get_child_object(obj, name, &name);
+  tk_object_t* sub = tk_object_get_child_object(obj, name, &name);
   if (sub != NULL) {
-    return object_can_exec(sub, name, args);
+    return tk_object_can_exec(sub, name, args);
   }
 
   if (args == NULL || !tk_str_start_with(args, COMMAND_ARGS_STRING_PREFIX)) {
@@ -147,7 +147,7 @@ bool_t object_js_base_can_exec(object_t* obj, const char* name, const char* args
     ret = jsobj_can_exec(o->jsobj, name, &v, &(o->temp));
   } else {
     jsvalue_t jsargs = JS_EMPTY_OBJ;
-    object_t* a = object_js_default_create(jsargs, TRUE);
+    tk_object_t* a = object_js_default_create(jsargs, TRUE);
 
     if (a != NULL) {
       if (tk_command_arguments_to_object(args, a) == RET_OK) {
@@ -155,22 +155,22 @@ bool_t object_js_base_can_exec(object_t* obj, const char* name, const char* args
         ret = jsobj_can_exec(o->jsobj, name, &v, &(o->temp));
       }
 
-      OBJECT_UNREF(a);
+      TK_OBJECT_UNREF(a);
     }
   }
 
   return ret;
 }
 
-ret_t object_js_base_exec(object_t* obj, const char* name, const char* args) {
+ret_t object_js_base_exec(tk_object_t* obj, const char* name, const char* args) {
   ret_t ret = RET_FAIL;
   value_t v;
   object_js_base_t* o = OBJECT_JS_BASE(obj);
   return_value_if_fail(o != NULL, RET_BAD_PARAMS);
 
-  object_t* sub = object_get_child_object(obj, name, &name);
+  tk_object_t* sub = tk_object_get_child_object(obj, name, &name);
   if (sub != NULL) {
-    return object_exec(sub, name, args);
+    return tk_object_exec(sub, name, args);
   }
 
   if (args == NULL || !tk_str_start_with(args, COMMAND_ARGS_STRING_PREFIX)) {
@@ -178,7 +178,7 @@ ret_t object_js_base_exec(object_t* obj, const char* name, const char* args) {
     ret = jsobj_exec(o->jsobj, name, &v, &(o->temp));
   } else {
     jsvalue_t jsargs = JS_EMPTY_OBJ;
-    object_t* a = object_js_default_create(jsargs, TRUE);
+    tk_object_t* a = object_js_default_create(jsargs, TRUE);
 
     if (a != NULL) {
       if (tk_command_arguments_to_object(args, a) == RET_OK) {
@@ -186,27 +186,27 @@ ret_t object_js_base_exec(object_t* obj, const char* name, const char* args) {
         ret = jsobj_exec(o->jsobj, name, &v, &(o->temp));
       }
 
-      OBJECT_UNREF(a);
+      TK_OBJECT_UNREF(a);
     }
   }
 
   return ret;
 }
 
-bool_t object_js_base_is_listener_registered(object_t* obj, object_t* listener) {
+bool_t object_js_base_is_listener_registered(tk_object_t* obj, tk_object_t* listener) {
   return emitter_exist(EMITTER(obj), EVT_PROP_CHANGED, emitter_forward, listener);
 }
 
 static ret_t object_js_base_on_unregister_listener(void* ctx, event_t* e) {
-  object_t* obj = OBJECT(ctx);
-  object_t* target = OBJECT(e->target);
+  tk_object_t* obj = TK_OBJECT(ctx);
+  tk_object_t* target = TK_OBJECT(e->target);
 
   emitter_off_by_ctx(EMITTER(obj), target);
 
   return RET_OK;
 }
 
-ret_t object_js_base_register_listener(object_t* obj, object_t* listener) {
+ret_t object_js_base_register_listener(tk_object_t* obj, tk_object_t* listener) {
   return_value_if_fail(obj != NULL && listener != NULL, RET_BAD_PARAMS);
 
   emitter_on(EMITTER(listener), EVT_DESTROY, object_js_base_on_unregister_listener, obj);
@@ -218,7 +218,7 @@ ret_t object_js_base_register_listener(object_t* obj, object_t* listener) {
   return RET_OK;
 }
 
-bool_t object_is_object_js(object_t* obj) {
+bool_t object_is_object_js(tk_object_t* obj) {
   return_value_if_fail(obj != NULL && obj->vt != NULL, FALSE);
   return tk_str_start_with(obj->vt->type, "object_js_");
 }

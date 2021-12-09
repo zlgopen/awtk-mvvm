@@ -6,7 +6,7 @@
 #include "mvvm/base/utils.h"
 #include "calculator_view_model.h"
 
-static ret_t calculator_view_model_set_prop(object_t* obj, const char* name, const value_t* v) {
+static ret_t calculator_view_model_set_prop(tk_object_t* obj, const char* name, const value_t* v) {
   Calculator* aCalculator = ((calculator_view_model_t*)(obj))->aCalculator;
 
   if (tk_str_ieq("expr", name)) {
@@ -18,7 +18,7 @@ static ret_t calculator_view_model_set_prop(object_t* obj, const char* name, con
   return RET_NOT_FOUND;
 }
 
-static ret_t calculator_view_model_get_prop(object_t* obj, const char* name, value_t* v) {
+static ret_t calculator_view_model_get_prop(tk_object_t* obj, const char* name, value_t* v) {
   Calculator* aCalculator = ((calculator_view_model_t*)(obj))->aCalculator;
 
   if (tk_str_ieq("expr", name)) {
@@ -29,7 +29,7 @@ static ret_t calculator_view_model_get_prop(object_t* obj, const char* name, val
   return RET_NOT_FOUND;
 }
 
-static bool_t calculator_view_model_can_exec(object_t* obj, const char* name, const char* args) {
+static bool_t calculator_view_model_can_exec(tk_object_t* obj, const char* name, const char* args) {
   calculator_view_model_t* vm = (calculator_view_model_t*)(obj);
   Calculator* aCalculator = vm->aCalculator;
   if (tk_str_ieq("addChar", name)) {
@@ -44,7 +44,7 @@ static bool_t calculator_view_model_can_exec(object_t* obj, const char* name, co
   return FALSE;
 }
 
-static ret_t calculator_view_model_exec(object_t* obj, const char* name, const char* args) {
+static ret_t calculator_view_model_exec(tk_object_t* obj, const char* name, const char* args) {
   calculator_view_model_t* vm = (calculator_view_model_t*)(obj);
   Calculator* aCalculator = vm->aCalculator;
   if (tk_str_ieq("addChar", name)) {
@@ -59,7 +59,7 @@ static ret_t calculator_view_model_exec(object_t* obj, const char* name, const c
   return RET_NOT_FOUND;
 }
 
-static ret_t calculator_view_model_on_destroy(object_t* obj) {
+static ret_t calculator_view_model_on_destroy(tk_object_t* obj) {
   calculator_view_model_t* vm = (calculator_view_model_t*)(obj);
   return_value_if_fail(vm != NULL, RET_BAD_PARAMS);
 
@@ -82,7 +82,7 @@ static const object_vtable_t s_calculator_view_model_vtable = {"calculator_view_
                                                                calculator_view_model_exec};
 
 view_model_t* calculator_view_model_create_with(Calculator* aCalculator) {
-  object_t* obj = object_create(&s_calculator_view_model_vtable);
+  tk_object_t* obj = tk_object_create(&s_calculator_view_model_vtable);
   view_model_t* vm = view_model_init(VIEW_MODEL(obj));
   calculator_view_model_t* calculator_view_model = (calculator_view_model_t*)(vm);
 

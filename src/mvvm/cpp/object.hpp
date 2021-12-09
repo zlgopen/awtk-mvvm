@@ -147,11 +147,11 @@ class Object {
 
  public:
   /**
-   * @property {object_t*} adapter
+   * @property {tk_object_t*} adapter
    * @annotation ["readable", "scriptable"]
    * Object的适配器对象。
    */
-  object_t* adapter;
+  tk_object_t* adapter;
 };
 
 }  // namespace vm

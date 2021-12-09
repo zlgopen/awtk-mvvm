@@ -57,7 +57,7 @@ static ret_t binding_context_push_binding_rule(binding_context_t* ctx, slist_t* 
   }
 
   if (node == NULL) {
-    node = darray_create(4, (tk_destroy_t)object_unref, (tk_compare_t)object_compare);
+    node = darray_create(4, (tk_destroy_t)tk_object_unref, (tk_compare_t)tk_object_compare);
     return_value_if_fail(node != NULL, RET_OOM);
     return_value_if_fail(slist_append(bindings, node) == RET_OK, RET_FAIL);
   }
@@ -96,7 +96,7 @@ ret_t binding_context_init(binding_context_t* ctx, navigator_request_t* req) {
   str_init(&(ctx->temp), 0);
 
   if (req != NULL) {
-    object_ref(OBJECT(req));
+    tk_object_ref(TK_OBJECT(req));
     ctx->navigator_request = req;
   }
 
@@ -115,7 +115,7 @@ ret_t binding_context_destroy(binding_context_t* ctx) {
   binding_context_clear_bindings(ctx);
 
   if (ctx->navigator_request != NULL) {
-    OBJECT_UNREF(ctx->navigator_request);
+    TK_OBJECT_UNREF(ctx->navigator_request);
   }
 
   str_reset(&(ctx->temp));
@@ -146,9 +146,9 @@ static ret_t binding_context_on_prop_changed(void* ctx, event_t* e) {
 
 static ret_t binding_context_on_items_changed(void* c, event_t* e) {
   binding_context_t* bctx = BINDING_CONTEXT(c);
-  object_t* target = OBJECT(e->target);
+  tk_object_t* target = TK_OBJECT(e->target);
   if (target == NULL) {
-    target = OBJECT(bctx->view_model);
+    target = TK_OBJECT(bctx->view_model);
   }
   binding_context_notify_items_changed(bctx, target);
   return RET_OK;
@@ -172,13 +172,13 @@ ret_t binding_context_set_view_model(binding_context_t* ctx, view_model_t* vm) {
     view_model->parent = NULL;
     emitter_off_by_ctx(EMITTER(view_model), ctx);
     view_model_on_unmount(view_model);
-    OBJECT_UNREF(view_model);
+    TK_OBJECT_UNREF(view_model);
   }
 
   view_model = ctx->view_model = vm;
 
   if (view_model != NULL) {
-    object_ref(OBJECT(view_model));
+    tk_object_ref(TK_OBJECT(view_model));
     view_model_on_will_mount(view_model, ctx->navigator_request);
 
     emitter_on(EMITTER(view_model), EVT_ITEMS_CHANGED, binding_context_on_items_changed, ctx);
@@ -187,14 +187,14 @@ ret_t binding_context_set_view_model(binding_context_t* ctx, view_model_t* vm) {
 
     view_model->parent = parent_view_model;
     if (parent_view_model != NULL) {
-      object_ref(OBJECT(parent_view_model));
+      tk_object_ref(TK_OBJECT(parent_view_model));
       emitter_on(EMITTER(parent_view_model), EVT_ITEMS_CHANGED, emitter_forward, view_model);
       emitter_on(EMITTER(parent_view_model), EVT_PROPS_CHANGED, emitter_forward, view_model);
       emitter_on(EMITTER(parent_view_model), EVT_PROP_CHANGED, emitter_forward, view_model);
     }
   } else {
     if (parent_view_model != NULL) {
-      object_ref(OBJECT(parent_view_model));
+      tk_object_ref(TK_OBJECT(parent_view_model));
     }
   }
 
@@ -235,7 +235,7 @@ ret_t binding_context_set_parent(binding_context_t* ctx, binding_context_t* pare
     if (view_model != NULL) {
       if (parent_view_model != NULL) {
         emitter_off_by_ctx(EMITTER(parent_view_model), view_model);
-        OBJECT_UNREF(parent_view_model);
+        TK_OBJECT_UNREF(parent_view_model);
       }
       view_model->parent = NULL;
     }
@@ -250,7 +250,7 @@ ret_t binding_context_set_parent(binding_context_t* ctx, binding_context_t* pare
     if (view_model != NULL) {
       view_model->parent = parent_view_model;
       if (parent_view_model != NULL) {
-        object_ref(OBJECT(parent_view_model));
+        tk_object_ref(TK_OBJECT(parent_view_model));
         emitter_on(EMITTER(parent_view_model), EVT_ITEMS_CHANGED, emitter_forward, view_model);
         emitter_on(EMITTER(parent_view_model), EVT_PROPS_CHANGED, emitter_forward, view_model);
         emitter_on(EMITTER(parent_view_model), EVT_PROP_CHANGED, emitter_forward, view_model);
@@ -396,8 +396,8 @@ ret_t binding_context_bind_items(binding_context_t* ctx, binding_rule_t* rule) {
   return ret;
 }
 
-static ret_t binding_context_notify_items_changed_internal(binding_context_t* ctx, object_t* items,
-                                                           bool_t sync) {
+static ret_t binding_context_notify_items_changed_internal(binding_context_t* ctx,
+                                                           tk_object_t* items, bool_t sync) {
   return_value_if_fail(ctx != NULL && items != NULL, RET_BAD_PARAMS);
   return_value_if_fail(ctx->vt != NULL && ctx->vt->notify_items_changed != NULL, RET_BAD_PARAMS);
 
@@ -407,11 +407,11 @@ static ret_t binding_context_notify_items_changed_internal(binding_context_t* ct
   return RET_OK;
 }
 
-ret_t binding_context_notify_items_changed(binding_context_t* ctx, object_t* items) {
+ret_t binding_context_notify_items_changed(binding_context_t* ctx, tk_object_t* items) {
   return binding_context_notify_items_changed_internal(ctx, items, FALSE);
 }
 
-ret_t binding_context_notify_items_changed_sync(binding_context_t* ctx, object_t* items) {
+ret_t binding_context_notify_items_changed_sync(binding_context_t* ctx, tk_object_t* items) {
   return binding_context_notify_items_changed_internal(ctx, items, TRUE);
 }
 
@@ -446,7 +446,7 @@ ret_t binding_context_get_prop_by_rule(binding_context_t* ctx, binding_rule_t* r
 
   view_model = ctx->view_model;
   if (name == NULL || *name == '\0') {
-    value_set_object(v, OBJECT(view_model));
+    value_set_object(v, TK_OBJECT(view_model));
     return RET_OK;
   }
 

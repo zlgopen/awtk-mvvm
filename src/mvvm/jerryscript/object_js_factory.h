@@ -28,7 +28,7 @@
 
 BEGIN_C_DECLS
 
-typedef object_t* (*object_js_create_t)(jsvalue_t jsobj, bool_t free_handle);
+typedef tk_object_t* (*object_js_create_t)(jsvalue_t jsobj, bool_t free_handle);
 
 /**
  * @class object_js_factory_t
@@ -87,8 +87,8 @@ ret_t object_js_factory_register(object_js_factory_t* factory, jsobj_type_t type
  *
  * @return {object_js_t*} 返回object对象。
  */
-object_t* object_js_factory_create_object(object_js_factory_t* factory, jsvalue_t jsobj,
-                                          bool_t free_handle);
+tk_object_t* object_js_factory_create_object(object_js_factory_t* factory, jsvalue_t jsobj,
+                                             bool_t free_handle);
 
 /**
  * @method object_js_factory_destroy

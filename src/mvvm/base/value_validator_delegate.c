@@ -45,12 +45,12 @@ static ret_t value_validator_fix_default(value_t* value) {
 }
 
 value_validator_t* value_validator_delegate_create(value_is_valid_t is_valid, value_fix_t fix) {
-  object_t* obj = NULL;
+  tk_object_t* obj = NULL;
   value_validator_t* value_convert = NULL;
   return_value_if_fail(is_valid != NULL, NULL);
   value_validator_delegate_t* value_convert_delegate = NULL;
 
-  obj = object_create(&s_value_validator_delegate_vtable);
+  obj = tk_object_create(&s_value_validator_delegate_vtable);
   return_value_if_fail(obj != NULL, NULL);
 
   value_convert = VALUE_VALIDATOR(obj);

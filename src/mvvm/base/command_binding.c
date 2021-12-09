@@ -32,7 +32,7 @@
 
 #define equal tk_str_ieq
 
-static ret_t command_binding_on_destroy(object_t* obj) {
+static ret_t command_binding_on_destroy(tk_object_t* obj) {
   command_binding_t* rule = COMMAND_BINDING(obj);
   return_value_if_fail(rule != NULL, RET_BAD_PARAMS);
 
@@ -42,7 +42,7 @@ static ret_t command_binding_on_destroy(object_t* obj) {
   TKMEM_FREE(rule->key_filter);
 
   if (rule->props != NULL) {
-    object_unref(rule->props);
+    tk_object_unref(rule->props);
   }
 
   str_reset(&(rule->temp));
@@ -50,7 +50,7 @@ static ret_t command_binding_on_destroy(object_t* obj) {
   return RET_OK;
 }
 
-static ret_t command_binding_set_prop(object_t* obj, const char* name, const value_t* v) {
+static ret_t command_binding_set_prop(tk_object_t* obj, const char* name, const value_t* v) {
   ret_t ret = RET_OK;
   const char* value = v->type == VALUE_TYPE_STRING ? value_str(v) : NULL;
   command_binding_t* rule = COMMAND_BINDING(obj);
@@ -63,7 +63,7 @@ static ret_t command_binding_set_prop(object_t* obj, const char* name, const val
       if (rule->props == NULL) {
         rule->props = object_default_create();
       }
-      return object_set_prop(rule->props, name, v);
+      return tk_object_set_prop(rule->props, name, v);
     }
     return ret;
   }
@@ -105,13 +105,13 @@ static ret_t command_binding_set_prop(object_t* obj, const char* name, const val
     if (rule->props == NULL) {
       rule->props = object_default_create();
     }
-    ret = object_set_prop(rule->props, name, v);
+    ret = tk_object_set_prop(rule->props, name, v);
   }
 
   return ret;
 }
 
-static ret_t command_binding_get_prop(object_t* obj, const char* name, value_t* v) {
+static ret_t command_binding_get_prop(tk_object_t* obj, const char* name, value_t* v) {
   ret_t ret = RET_OK;
   command_binding_t* rule = command_binding_cast(obj);
   return_value_if_fail(rule != NULL, RET_BAD_PARAMS);
@@ -124,7 +124,7 @@ static ret_t command_binding_get_prop(object_t* obj, const char* name, value_t* 
       binding_context_t* ctx = BINDING_RULE_CONTEXT(rule);
       ret = binding_context_get_prop_by_rule(ctx, BINDING_RULE(rule), name, v);
       if (ret == RET_NOT_FOUND && rule->props != NULL) {
-        return object_get_prop(rule->props, name, v);
+        return tk_object_get_prop(rule->props, name, v);
       }
       return ret;
     }
@@ -144,18 +144,19 @@ static ret_t command_binding_get_prop(object_t* obj, const char* name, value_t* 
     value_set_bool(v, rule->update_model);
   } else {
     if (rule->props != NULL) {
-      ret = object_get_prop(rule->props, name, v);
+      ret = tk_object_get_prop(rule->props, name, v);
     }
   }
 
   return ret;
 }
 
-static const char* command_binding_resolve_arguments(object_t* obj, const char* args, str_t* temp) {
+static const char* command_binding_resolve_arguments(tk_object_t* obj, const char* args,
+                                                     str_t* temp) {
   const char* ret = args;
 
   if (args != NULL && tk_str_start_with(args, COMMAND_ARGS_FSCRIPT_PREFIX)) {
-    object_t* objargs = object_default_create();
+    tk_object_t* objargs = object_default_create();
     return_value_if_fail(objargs != NULL, args);
 
     str_set(temp, COMMAND_ARGS_STRING_PREFIX);
@@ -166,13 +167,13 @@ static const char* command_binding_resolve_arguments(object_t* obj, const char* 
       ret = temp->str;
     }
 
-    object_unref(objargs);
+    tk_object_unref(objargs);
   }
 
   return ret;
 }
 
-static ret_t command_binding_object_exec(object_t* obj, const char* name, const char* args) {
+static ret_t command_binding_object_exec(tk_object_t* obj, const char* name, const char* args) {
   command_binding_t* rule = (command_binding_t*)(obj);
   binding_context_t* context = BINDING_RULE_CONTEXT(rule);
   view_model_t* view_model = BINDING_RULE_VIEW_MODEL(rule);
@@ -184,7 +185,7 @@ static ret_t command_binding_object_exec(object_t* obj, const char* name, const 
     return RET_OK;
   }
 
-  if (object_is_collection(OBJECT(view_model))) {
+  if (tk_object_is_collection(TK_OBJECT(view_model))) {
     uint32_t cursor = binding_context_get_items_cursor_of_rule(context, BINDING_RULE(rule));
     view_model_array_set_cursor(view_model, cursor);
   }
@@ -202,7 +203,7 @@ static const object_vtable_t s_command_binding_vtable = {.type = "command_bindin
                                                          .set_prop = command_binding_set_prop};
 
 command_binding_t* command_binding_create(void) {
-  command_binding_t* rule = (command_binding_t*)object_create(&s_command_binding_vtable);
+  command_binding_t* rule = (command_binding_t*)tk_object_create(&s_command_binding_vtable);
   return_value_if_fail(rule != NULL, NULL);
 
   rule->auto_disable = TRUE;
@@ -218,7 +219,7 @@ command_binding_t* command_binding_cast(void* rule) {
 }
 
 bool_t binding_rule_is_command_binding(binding_rule_t* rule) {
-  object_t* obj = OBJECT(rule);
+  tk_object_t* obj = TK_OBJECT(rule);
   return obj != NULL && obj->vt == &s_command_binding_vtable;
 }
 
@@ -233,13 +234,13 @@ bool_t command_binding_can_exec(command_binding_t* rule) {
   args = rule->args;
   return_value_if_fail(view_model != NULL, FALSE);
 
-  args = command_binding_resolve_arguments(OBJECT(rule), args, &(rule->temp));
+  args = command_binding_resolve_arguments(TK_OBJECT(rule), args, &(rule->temp));
 
   if (binding_context_can_exec(context, rule->command, args)) {
     return TRUE;
   }
 
-  if (object_is_collection(OBJECT(view_model))) {
+  if (tk_object_is_collection(TK_OBJECT(view_model))) {
     uint32_t cursor = binding_context_get_items_cursor_of_rule(context, BINDING_RULE(rule));
     view_model_array_set_cursor(view_model, cursor);
   }
@@ -258,11 +259,11 @@ ret_t command_binding_exec(command_binding_t* rule) {
   args = rule->args;
   return_value_if_fail(view_model != NULL && context != NULL, RET_BAD_PARAMS);
 
-  args = command_binding_resolve_arguments(OBJECT(rule), args, &(rule->temp));
+  args = command_binding_resolve_arguments(TK_OBJECT(rule), args, &(rule->temp));
 
   if (tk_str_eq(rule->command, COMMAND_BINDING_CMD_FSCRIPT)) {
     value_t v;
-    fscript_eval(OBJECT(rule), rule->args, &v);
+    fscript_eval(TK_OBJECT(rule), rule->args, &v);
     value_reset(&v);
     return RET_OK;
   }
@@ -271,7 +272,7 @@ ret_t command_binding_exec(command_binding_t* rule) {
     return RET_OK;
   }
 
-  if (object_is_collection(OBJECT(view_model))) {
+  if (tk_object_is_collection(TK_OBJECT(view_model))) {
     uint32_t cursor = binding_context_get_items_cursor_of_rule(context, BINDING_RULE(rule));
     view_model_array_set_cursor(view_model, cursor);
   }

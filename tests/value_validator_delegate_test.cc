@@ -43,7 +43,7 @@ TEST(ValueValidatorDelegate, basic) {
   ASSERT_EQ(value_validator_is_valid(c, &v, &str), TRUE);
 
   str_reset(&str);
-  object_unref(OBJECT(c));
+  tk_object_unref(TK_OBJECT(c));
 }
 
 TEST(ValueValidatorDelegate, fix) {
@@ -58,7 +58,7 @@ TEST(ValueValidatorDelegate, fix) {
   ASSERT_EQ(value_validator_fix(c, &v), RET_OK);
   ASSERT_EQ(value_int(&v), 150);
 
-  object_unref(OBJECT(c));
+  tk_object_unref(TK_OBJECT(c));
 }
 
 static void* create_dummy_value_validator(void) {
@@ -81,5 +81,5 @@ TEST(ValueValidatorDelegate, factory) {
   value_set_int(&v, 123);
   ASSERT_EQ(value_validator_is_valid(c, &v, &str), TRUE);
 
-  object_unref(OBJECT(c));
+  tk_object_unref(TK_OBJECT(c));
 }

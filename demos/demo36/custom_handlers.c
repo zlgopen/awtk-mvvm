@@ -66,18 +66,18 @@ static ret_t custom_handlers_open_mywindow(custom_handlers_t* custom_handlers, c
 
 /***************custom_handlers_view_model***************/
 
-static ret_t custom_handlers_view_model_set_prop(object_t* obj, const char* name,
+static ret_t custom_handlers_view_model_set_prop(tk_object_t* obj, const char* name,
                                                  const value_t* v) {
   log_debug("not found %s\n", name);
   return RET_NOT_FOUND;
 }
 
-static ret_t custom_handlers_view_model_get_prop(object_t* obj, const char* name, value_t* v) {
+static ret_t custom_handlers_view_model_get_prop(tk_object_t* obj, const char* name, value_t* v) {
   log_debug("not found %s\n", name);
   return RET_NOT_FOUND;
 }
 
-static bool_t custom_handlers_view_model_can_exec(object_t* obj, const char* name,
+static bool_t custom_handlers_view_model_can_exec(tk_object_t* obj, const char* name,
                                                   const char* args) {
   if (tk_str_eq("show_toast", name)) {
     return TRUE;
@@ -94,7 +94,7 @@ static bool_t custom_handlers_view_model_can_exec(object_t* obj, const char* nam
   }
 }
 
-static ret_t custom_handlers_view_model_exec(object_t* obj, const char* name, const char* args) {
+static ret_t custom_handlers_view_model_exec(tk_object_t* obj, const char* name, const char* args) {
   custom_handlers_view_model_t* vm = (custom_handlers_view_model_t*)(obj);
   custom_handlers_t* custom_handlers = vm->custom_handlers;
 
@@ -114,7 +114,7 @@ static ret_t custom_handlers_view_model_exec(object_t* obj, const char* name, co
   }
 }
 
-static ret_t custom_handlers_view_model_on_destroy(object_t* obj) {
+static ret_t custom_handlers_view_model_on_destroy(tk_object_t* obj) {
   custom_handlers_view_model_t* vm = (custom_handlers_view_model_t*)(obj);
   return_value_if_fail(vm != NULL, RET_BAD_PARAMS);
 
@@ -134,7 +134,7 @@ static const object_vtable_t s_custom_handlers_view_model_vtable = {
     .on_destroy = custom_handlers_view_model_on_destroy};
 
 view_model_t* custom_handlers_view_model_create(navigator_request_t* req) {
-  object_t* obj = object_create(&s_custom_handlers_view_model_vtable);
+  tk_object_t* obj = tk_object_create(&s_custom_handlers_view_model_vtable);
   view_model_t* vm = view_model_init(VIEW_MODEL(obj));
   custom_handlers_view_model_t* custom_handlers_view_model = (custom_handlers_view_model_t*)(vm);
 

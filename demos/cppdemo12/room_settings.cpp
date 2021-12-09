@@ -27,16 +27,16 @@
 RoomSettings::RoomSettings(navigator_request_t* request) {
   this->request = request;
 
-  this->room = object_get_prop_str(OBJECT(request), PROP_ROOM);
-  this->temp = object_get_prop_float(OBJECT(request), PROP_TEMP, 0);
-  this->humidity = object_get_prop_float(OBJECT(request), PROP_HUMIDITY, 0);
+  this->room = tk_object_get_prop_str(TK_OBJECT(request), PROP_ROOM);
+  this->temp = tk_object_get_prop_float(TK_OBJECT(request), PROP_TEMP, 0);
+  this->humidity = tk_object_get_prop_float(TK_OBJECT(request), PROP_HUMIDITY, 0);
 }
 
 ret_t RoomSettings::Return(void) {
   value_t v;
-  value_set_object(&v, OBJECT(this->request));
-  object_set_prop_float(OBJECT(this->request), PROP_TEMP, this->temp);
-  object_set_prop_float(OBJECT(this->request), PROP_HUMIDITY, this->humidity);
+  value_set_object(&v, TK_OBJECT(this->request));
+  tk_object_set_prop_float(TK_OBJECT(this->request), PROP_TEMP, this->temp);
+  tk_object_set_prop_float(TK_OBJECT(this->request), PROP_HUMIDITY, this->humidity);
 
   return navigator_request_on_result(this->request, &v);
 }

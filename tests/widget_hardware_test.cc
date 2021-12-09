@@ -3,7 +3,7 @@
 #include "mvvm/awtk/widget_hardware.h"
 #include "mvvm/hardware/device_factory.h"
 
-static object_t* dummy_device_create(const char* args) {
+static tk_object_t* dummy_device_create(const char* args) {
   return object_default_create();
 }
 

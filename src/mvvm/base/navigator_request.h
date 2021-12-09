@@ -32,12 +32,12 @@ typedef ret_t (*navigator_request_on_result_t)(navigator_request_t* req, const v
 
 /**
  * @class navigator_request_t
- * @parent object_t
+ * @parent tk_object_t
  * 导航请求。
  * 如果需要传递参数或自定义请求时，才需要本类，否则直接使用navigator的API即可。
  */
 struct _navigator_request_t {
-  object_t object;
+  tk_object_t object;
 
   /**
    * @property {value_t} result
@@ -61,7 +61,7 @@ struct _navigator_request_t {
   void* user_data;
 
   /*private*/
-  object_t* args;
+  tk_object_t* args;
 };
 
 /**
@@ -88,11 +88,11 @@ navigator_request_t* navigator_request_create(const char* args,
  * @annotation ["scriptable"]
  *
  * @param {navigator_request_t*} req request对象。
- * @param {object_t*} args 导航请求的参数。
+ * @param {tk_object_t*} args 导航请求的参数。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
-ret_t navigator_request_set_args(navigator_request_t* req, object_t* args);
+ret_t navigator_request_set_args(navigator_request_t* req, tk_object_t* args);
 
 /**
  * @method navigator_request_on_result

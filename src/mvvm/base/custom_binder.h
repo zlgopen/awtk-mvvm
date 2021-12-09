@@ -33,7 +33,7 @@ BEGIN_C_DECLS
  *
  */
 typedef struct _custom_binder_t {
-  object_t* binders;
+  tk_object_t* binders;
 } custom_binder_t;
 
 /**

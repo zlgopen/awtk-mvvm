@@ -28,7 +28,7 @@ BEGIN_C_DECLS
 
 /**
  * @class object_js_default_t
- * @parent object_t
+ * @parent tk_object_t
  *
  * 将通用的jerry script object包装成tkc形式的object。
  *
@@ -45,9 +45,9 @@ typedef struct _object_js_default_t {
  * @param {jsvalue_t} jsobj jerryscript对象。
  * @param {bool_t} free_handle object销毁的同时释放jerryscript对象。
  *
- * @return {object_t*} 返回object对象。
+ * @return {tk_object_t*} 返回object对象。
  */
-object_t* object_js_default_create(jsvalue_t jsobj, bool_t free_handle);
+tk_object_t* object_js_default_create(jsvalue_t jsobj, bool_t free_handle);
 
 /**
  * @method object_is_object_js_default
@@ -57,9 +57,9 @@ object_t* object_js_default_create(jsvalue_t jsobj, bool_t free_handle);
  *
  * @return {bool_t} 返回TRUE表示是jerry script object，否则不是。
  */
-bool_t object_is_object_js_default(object_t* obj);
+bool_t object_is_object_js_default(tk_object_t* obj);
 
-object_js_default_t* object_js_default_cast(object_t* obj);
+object_js_default_t* object_js_default_cast(tk_object_t* obj);
 #define OBJECT_JS_DEFAULT(obj) object_js_default_cast(obj)
 
 END_C_DECLS

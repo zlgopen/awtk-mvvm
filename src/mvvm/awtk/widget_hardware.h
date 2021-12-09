@@ -34,7 +34,7 @@ BEGIN_C_DECLS
 typedef struct _widget_hardware_t {
   widget_t widget;
 
-  object_t* device;
+  tk_object_t* device;
   char* type;
 } widget_hardware_t;
 

@@ -118,22 +118,22 @@ char* jsvalue_to_utf8(jsvalue_t value, str_t* temp);
  * > canExec(name, args)：用于判断obj的命令是否可执行；
  * > exec(name, args)：用于执行obj的命令；
  * @annotation ["global"]
- * @param {object_t*} obj obj对象。
+ * @param {tk_object_t*} obj obj对象。
  *
  * @return {jsvalue_t} 返回js对象（使用完毕需要调用 jsvalue_unref 接口将引用计数减1）。
  */
-jsvalue_t jsvalue_from_obj(object_t* obj);
+jsvalue_t jsvalue_from_obj(tk_object_t* obj);
 
 /**
  * @method jsvalue_from_obj_copy
  * 将object对象转换为js对象。
  * > 如果obj不是object_js_base_t的派生，则拷贝object对象的属性并转换为js对象。
  * @annotation ["global"]
- * @param {object_t*} obj obj对象。
+ * @param {tk_object_t*} obj obj对象。
  *
  * @return {jsvalue_t} 返回js对象（使用完毕需要调用 jsvalue_unref 接口将引用计数减1）。
  */
-jsvalue_t jsvalue_from_obj_copy(object_t* obj);
+jsvalue_t jsvalue_from_obj_copy(tk_object_t* obj);
 
 /**
  * @method jsvalue_to_obj
@@ -141,9 +141,9 @@ jsvalue_t jsvalue_from_obj_copy(object_t* obj);
  * @annotation ["global"]
  * @param {jsvalue_t} value js对象。
  *
- * @return {object_t*} 返回object对象。
+ * @return {tk_object_t*} 返回object对象。
  */
-object_t* jsvalue_to_obj(jsvalue_t value);
+tk_object_t* jsvalue_to_obj(jsvalue_t value);
 
 /**
  * @method jsvalue_from_value
@@ -173,11 +173,11 @@ ret_t jsvalue_to_value(jsvalue_t value, value_t* v, str_t* temp);
  * 将object_t对象注册为指定的全局js对象。
  * @annotation ["global"]
  * @param {const char*} name 全局js对象的名称。
- * @param {object_t*} obj object_t对象。
+ * @param {tk_object_t*} obj tk_object_t对象。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
-ret_t jsobj_register_global(const char* name, object_t* obj);
+ret_t jsobj_register_global(const char* name, tk_object_t* obj);
 
 /**
  * @method jsobj_unregister_global
@@ -194,11 +194,11 @@ ret_t jsobj_unregister_global(const char* name);
  * 设置js对象的原生obj。
  * @annotation ["global"]
  * @param {jsvalue_t} obj js对象。
- * @param {object_t*} ptr 原生obj。
+ * @param {tk_object_t*} ptr 原生obj。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
-ret_t jsobj_set_native_ptr(jsvalue_t obj, object_t* ptr);
+ret_t jsobj_set_native_ptr(jsvalue_t obj, tk_object_t* ptr);
 
 /**
  * @method jsobj_get_native_ptr
@@ -206,9 +206,9 @@ ret_t jsobj_set_native_ptr(jsvalue_t obj, object_t* ptr);
  * @annotation ["global"]
  * @param {jsvalue_t} obj js对象。
  *
- * @return {object_t*} 原生obj。
+ * @return {tk_object_t*} 原生obj。
  */
-object_t* jsobj_get_native_ptr(jsvalue_t obj);
+tk_object_t* jsobj_get_native_ptr(jsvalue_t obj);
 
 /**
  * @method jsobj_delete_native_ptr

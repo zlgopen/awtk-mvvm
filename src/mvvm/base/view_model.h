@@ -54,13 +54,13 @@ typedef struct _model_vtable_t {
 
 /**
  * @class view_model_t
- * @parent object_t
+ * @parent tk_object_t
  *
  * 视图模型的基类。
  *
  */
 struct _view_model_t {
-  object_t object;
+  tk_object_t object;
 
   /*private*/
   str_t temp;
@@ -230,11 +230,11 @@ ret_t view_model_notify_props_changed(view_model_t* view_model);
  * 触发items改变事件。
  *
  * @param {view_model_t*} view_model view_model对象。
- * @param {object_t*} target 发生变化的items对象。
+ * @param {tk_object_t*} target 发生变化的items对象。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
-ret_t view_model_notify_items_changed(view_model_t* view_model, object_t* target);
+ret_t view_model_notify_items_changed(view_model_t* view_model, tk_object_t* target);
 
 /**
  * @method view_model_create_sub_view_model

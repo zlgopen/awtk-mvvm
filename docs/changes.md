@@ -1,5 +1,8 @@
 # 最新动态
 
+* 2021/12/09
+  * 修改object_t为tk_object_t。
+
 * 2021/11/24
   * 完善 binding\_context，修正子控件绑定view model时由于时序有误导致父的view model没有销毁的问题。
 
@@ -58,7 +61,7 @@
   * 新增 view_model_notify_items_changed 函数，用于触发 items 变化事件时可以指定发生变化的数组。
   * 完善 navigator（主要是重构 navigator_request_t，修改 navigator_request_t 的字符串形式的 Args 的格式与 command_binding 的 Args 字段一致，以及新增 ViewModel 相关的请求处理器）。
   * 重构 JS 形式的 ViewModel、ValueValidator、ValueConverter。
-  * 新增注册 object_t 对象为 jerryscript 的全局对象的接口。
+  * 新增注册tk_object_t 对象为 jerryscript 的全局对象的接口。
   * 完善 CPP Adapter。（感谢雨欣提供补丁）
   * 整理 Demo，将功能相同的 C、CPP、JS 的 Demo 改为使用同一个 ui，同时添加新的 Demo。（感谢雨欣提供补丁）
   * 导出 jsobj 的相关函数，以便自定义控件实现 custom_binder 时可以调用。（感谢雨欣提供补丁）

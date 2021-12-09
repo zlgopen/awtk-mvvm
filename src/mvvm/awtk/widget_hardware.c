@@ -36,7 +36,7 @@ static ret_t widget_hardware_get_prop(widget_t* widget, const char* name, value_
     value_set_str(v, widget_hardware->type);
     return RET_OK;
   } else {
-    return object_get_prop(widget_hardware->device, name, v);
+    return tk_object_get_prop(widget_hardware->device, name, v);
   }
 }
 
@@ -47,9 +47,9 @@ static ret_t widget_hardware_set_prop(widget_t* widget, const char* name, const 
   if (tk_str_start_with(name, BINDING_RULE_DATA_PREFIX)) {
     return RET_NOT_FOUND;
   } else if (tk_str_eq(name, WIDGET_PROP_NAME)) {
-    return object_set_name(widget_hardware->device, value_str(v));
+    return tk_object_set_name(widget_hardware->device, value_str(v));
   } else {
-    return object_set_prop(widget_hardware->device, name, v);
+    return tk_object_set_prop(widget_hardware->device, name, v);
   }
 }
 
@@ -59,7 +59,7 @@ static ret_t widget_hardware_on_destroy(widget_t* widget) {
 
   TKMEM_FREE(widget_hardware->type);
   emitter_off_by_ctx(EMITTER(widget_hardware->device), widget);
-  object_unref(widget_hardware->device);
+  tk_object_unref(widget_hardware->device);
 
   return RET_OK;
 }

@@ -32,7 +32,7 @@ typedef struct _buzzer_log_t buzzer_log_t;
 
 /**
  * @class buzzer_log_t
- * @parent object_t
+ * @parent tk_object_t
  *
  */
 struct _buzzer_log_t {
@@ -43,9 +43,9 @@ struct _buzzer_log_t {
  * @method buzzer_log_create
  * 创建buzzer对象。
  *
- * @return {object_t*} 返回object对象。
+ * @return {tk_object_t*} 返回object对象。
  */
-object_t* buzzer_log_create(const char* args);
+tk_object_t* buzzer_log_create(const char* args);
 
 #define BUZZER_LOG(object) ((buzzer_log_t*)(object))
 

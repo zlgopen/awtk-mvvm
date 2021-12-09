@@ -35,7 +35,7 @@ BEGIN_C_DECLS
  */
 typedef struct _command_binding_t {
   binding_rule_t binding_rule;
-  object_t* props;
+  tk_object_t* props;
 
   /**
    * @property {bool_t} close_window

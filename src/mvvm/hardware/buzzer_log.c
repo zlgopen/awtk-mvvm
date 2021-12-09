@@ -23,7 +23,7 @@
 #include "tkc/utils.h"
 #include "buzzer_log.h"
 
-static ret_t buzzer_log_set_prop(object_t* obj, const char* name, const value_t* v) {
+static ret_t buzzer_log_set_prop(tk_object_t* obj, const char* name, const value_t* v) {
   return_value_if_fail(obj != NULL && name != NULL && v != NULL, RET_BAD_PARAMS);
 
   if (v->type == VALUE_TYPE_STRING) {
@@ -40,6 +40,6 @@ static const object_vtable_t s_buzzer_log_vtable = {.type = "buzzer_log",
                                                     .size = sizeof(buzzer_log_t),
                                                     .set_prop = buzzer_log_set_prop};
 
-object_t* buzzer_log_create(const char* args) {
-  return object_create(&s_buzzer_log_vtable);
+tk_object_t* buzzer_log_create(const char* args) {
+  return tk_object_create(&s_buzzer_log_vtable);
 }

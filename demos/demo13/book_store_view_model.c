@@ -36,27 +36,27 @@ static ret_t book_store_view_model_on_create(view_model_t* view_model, navigator
   return RET_OK;
 }
 
-static ret_t book_store_view_model_on_destroy(object_t* obj) {
+static ret_t book_store_view_model_on_destroy(tk_object_t* obj) {
   book_store_view_model_t* vm = (book_store_view_model_t*)(obj);
   return_value_if_fail(vm != NULL, RET_BAD_PARAMS);
 
-  OBJECT_UNREF(vm->abook_store);
+  TK_OBJECT_UNREF(vm->abook_store);
 
   return view_model_deinit(VIEW_MODEL(obj));
 }
 
-static ret_t book_store_view_model_set_prop(object_t* obj, const char* name, const value_t* v) {
+static ret_t book_store_view_model_set_prop(tk_object_t* obj, const char* name, const value_t* v) {
   book_store_view_model_t* vm = ((book_store_view_model_t*)(obj));
 
   return RET_NOT_FOUND;
 }
 
-static ret_t book_store_view_model_get_prop(object_t* obj, const char* name, value_t* v) {
+static ret_t book_store_view_model_get_prop(tk_object_t* obj, const char* name, value_t* v) {
   book_store_view_model_t* vm = ((book_store_view_model_t*)(obj));
 
-  object_t* sub = object_get_child_object(obj, name, &name);
+  tk_object_t* sub = tk_object_get_child_object(obj, name, &name);
   if (sub != NULL) {
-    return object_get_prop(sub, name, v);
+    return tk_object_get_prop(sub, name, v);
   }
 
   if (tk_str_ieq("items", name)) {
@@ -67,21 +67,21 @@ static ret_t book_store_view_model_get_prop(object_t* obj, const char* name, val
   return RET_NOT_FOUND;
 }
 
-static bool_t book_store_view_model_can_exec(object_t* obj, const char* name, const char* args) {
+static bool_t book_store_view_model_can_exec(tk_object_t* obj, const char* name, const char* args) {
   uint32_t index = 0;
   book_store_view_model_t* vm = (book_store_view_model_t*)(obj);
   return_value_if_fail(vm != NULL, FALSE);
 
   if (args != NULL) {
-    object_t* a = object_default_create();
+    tk_object_t* a = object_default_create();
     tk_command_arguments_to_object(args, a);
-    index = object_get_prop_int32(a, "index", -1);
-    OBJECT_UNREF(a);
+    index = tk_object_get_prop_int32(a, "index", -1);
+    TK_OBJECT_UNREF(a);
   }
   if (tk_str_ieq("add", name)) {
     return TRUE;
   } else if (tk_str_ieq("clear", name)) {
-    int32_t len = object_get_prop_int32(vm->abook_store, "length", -1);
+    int32_t len = tk_object_get_prop_int32(vm->abook_store, "length", -1);
     return len > 0;
   } else if (tk_str_ieq("remove", name)) {
     return TRUE;
@@ -92,28 +92,28 @@ static bool_t book_store_view_model_can_exec(object_t* obj, const char* name, co
     return_value_if_fail(book_view_model != NULL, FALSE);
 
     bool_t ret = view_model_can_exec(book_view_model, name, args);
-    OBJECT_UNREF(book_view_model);
+    TK_OBJECT_UNREF(book_view_model);
     return ret;
   }
 
   return FALSE;
 }
 
-static ret_t book_store_view_model_exec(object_t* obj, const char* name, const char* args) {
+static ret_t book_store_view_model_exec(tk_object_t* obj, const char* name, const char* args) {
   uint32_t index = 0;
   view_model_t* view_model = VIEW_MODEL(obj);
   book_store_view_model_t* vm = (book_store_view_model_t*)(obj);
 
   if (args != NULL) {
-    object_t* a = object_default_create();
+    tk_object_t* a = object_default_create();
     tk_command_arguments_to_object(args, a);
-    index = object_get_prop_int32(a, "index", -1);
-    OBJECT_UNREF(a);
+    index = tk_object_get_prop_int32(a, "index", -1);
+    TK_OBJECT_UNREF(a);
   }
 
   if (tk_str_ieq("add", name)) {
     value_t v;
-    object_t* book = book_create();
+    tk_object_t* book = book_create();
     return_value_if_fail(book != NULL, RET_FAIL);
 
     value_set_object(&v, book);
@@ -121,7 +121,7 @@ static ret_t book_store_view_model_exec(object_t* obj, const char* name, const c
     if (object_array_push(vm->abook_store, &v) == RET_OK) {
       view_model_notify_items_changed(VIEW_MODEL(vm), vm->abook_store);
     }
-    OBJECT_UNREF(book);
+    TK_OBJECT_UNREF(book);
     return RET_OK;
   } else if (tk_str_ieq("clear", name)) {
     if (object_array_clear_props(vm->abook_store) == RET_OK) {
@@ -140,7 +140,7 @@ static ret_t book_store_view_model_exec(object_t* obj, const char* name, const c
     return_value_if_fail(book_view_model != NULL, RET_FAIL);
 
     ret_t ret = view_model_exec(book_view_model, name, args);
-    OBJECT_UNREF(book_view_model);
+    TK_OBJECT_UNREF(book_view_model);
     return ret;
   }
 
@@ -161,7 +161,7 @@ static const object_vtable_t s_book_store_view_model_vtable = {"book_store_view_
                                                                book_store_view_model_exec};
 
 view_model_t* book_store_view_model_create(navigator_request_t* req) {
-  object_t* obj = object_create(&s_book_store_view_model_vtable);
+  tk_object_t* obj = tk_object_create(&s_book_store_view_model_vtable);
   view_model_t* view_model = view_model_init(VIEW_MODEL(obj));
   return_value_if_fail(view_model != NULL, NULL);
 

@@ -38,21 +38,21 @@ static ret_t view_model_array_object_wrapper_on_changed(void* ctx, event_t* e) {
   return RET_OK;
 }
 
-static ret_t view_model_array_object_wrapper_on_destroy(object_t* obj) {
+static ret_t view_model_array_object_wrapper_on_destroy(tk_object_t* obj) {
   view_model_array_object_wrapper_t* object_wrapper = VIEW_MODEL_ARRAY_OBJECT_WRAPPPER(obj);
 
   emitter_off_by_ctx(EMITTER(object_wrapper->obj), obj);
   TKMEM_FREE(object_wrapper->prop_prefix);
-  OBJECT_UNREF(object_wrapper->obj);
+  TK_OBJECT_UNREF(object_wrapper->obj);
 
   return view_model_array_deinit(VIEW_MODEL(obj));
 }
 
-static int32_t view_model_array_object_wrapper_compare(object_t* obj, object_t* other) {
+static int32_t view_model_array_object_wrapper_compare(tk_object_t* obj, tk_object_t* other) {
   return tk_str_cmp(obj->name, other->name);
 }
 
-static ret_t view_model_array_object_wrapper_set_prop(object_t* obj, const char* name,
+static ret_t view_model_array_object_wrapper_set_prop(tk_object_t* obj, const char* name,
                                                       const value_t* v) {
   char path[MAX_PATH + 1];
   view_model_t* view_model = VIEW_MODEL(obj);
@@ -68,10 +68,11 @@ static ret_t view_model_array_object_wrapper_set_prop(object_t* obj, const char*
     name = path;
   }
 
-  return object_set_prop(OBJECT(object_wrapper->obj), name, v);
+  return tk_object_set_prop(TK_OBJECT(object_wrapper->obj), name, v);
 }
 
-static ret_t view_model_array_object_wrapper_get_prop(object_t* obj, const char* name, value_t* v) {
+static ret_t view_model_array_object_wrapper_get_prop(tk_object_t* obj, const char* name,
+                                                      value_t* v) {
   char path[MAX_PATH + 1];
   view_model_t* view_model = VIEW_MODEL(obj);
   view_model_array_object_wrapper_t* object_wrapper = VIEW_MODEL_ARRAY_OBJECT_WRAPPPER(obj);
@@ -82,7 +83,7 @@ static ret_t view_model_array_object_wrapper_get_prop(object_t* obj, const char*
   }
 
   if (tk_str_ieq(VIEW_MODEL_PROP_ITEMS, name)) {
-    name = OBJECT_PROP_SIZE;
+    name = TK_OBJECT_PROP_SIZE;
   }
 
   if (object_wrapper->prop_prefix != NULL) {
@@ -90,10 +91,10 @@ static ret_t view_model_array_object_wrapper_get_prop(object_t* obj, const char*
     name = path;
   }
 
-  return object_get_prop(OBJECT(object_wrapper->obj), name, v);
+  return tk_object_get_prop(TK_OBJECT(object_wrapper->obj), name, v);
 }
 
-static bool_t view_model_array_object_wrapper_can_exec(object_t* obj, const char* name,
+static bool_t view_model_array_object_wrapper_can_exec(tk_object_t* obj, const char* name,
                                                        const char* args) {
   char path[MAX_PATH + 1];
   view_model_array_t* vm_array = VIEW_MODEL_ARRAY(obj);
@@ -105,11 +106,11 @@ static bool_t view_model_array_object_wrapper_can_exec(object_t* obj, const char
     return TRUE;
   }
 
-  if (tk_str_eq(name, OBJECT_CMD_EDIT)) {
+  if (tk_str_eq(name, TK_OBJECT_CMD_EDIT)) {
     return TRUE;
   }
 
-  if (tk_str_eq(name, OBJECT_CMD_ADD)) {
+  if (tk_str_eq(name, TK_OBJECT_CMD_ADD)) {
     args = object_wrapper->prop_prefix;
   } else {
     if (object_wrapper->prop_prefix != NULL) {
@@ -121,7 +122,7 @@ static bool_t view_model_array_object_wrapper_can_exec(object_t* obj, const char
     args = path;
   }
 
-  return object_can_exec(OBJECT(object_wrapper->obj), name, args);
+  return tk_object_can_exec(TK_OBJECT(object_wrapper->obj), name, args);
 }
 
 static const char* view_model_array_object_wrapper_get_target(char target[TK_NAME_LEN + 1],
@@ -159,7 +160,7 @@ static ret_t view_model_array_object_wrapper_cmd_edit(const char* prefix, const 
   return navigator_to_with_key_value(target, STR_PATH_PREFIX, path);
 }
 
-static const char* view_model_array_object_wrapper_gen_path(object_t* obj, char* path,
+static const char* view_model_array_object_wrapper_gen_path(tk_object_t* obj, char* path,
                                                             uint32_t index) {
   view_model_array_object_wrapper_t* object_wrapper = VIEW_MODEL_ARRAY_OBJECT_WRAPPPER(obj);
   if (object_wrapper->prop_prefix != NULL) {
@@ -171,7 +172,7 @@ static const char* view_model_array_object_wrapper_gen_path(object_t* obj, char*
   return path;
 }
 
-static ret_t view_model_array_object_wrapper_exec(object_t* obj, const char* name,
+static ret_t view_model_array_object_wrapper_exec(tk_object_t* obj, const char* name,
                                                   const char* args) {
   ret_t ret = RET_OK;
   char path[MAX_PATH + 1];
@@ -184,20 +185,20 @@ static ret_t view_model_array_object_wrapper_exec(object_t* obj, const char* nam
     return ret;
   }
 
-  if (tk_str_eq(name, OBJECT_CMD_CLEAR) || tk_str_eq(name, OBJECT_CMD_ADD)) {
+  if (tk_str_eq(name, TK_OBJECT_CMD_CLEAR) || tk_str_eq(name, TK_OBJECT_CMD_ADD)) {
     args = object_wrapper->prop_prefix;
   } else if (args == NULL || tk_str_eq(VIEW_MODEL_PROP_SELECTED_INDEX, args) ||
-             tk_str_eq(name, OBJECT_CMD_EDIT)) {
+             tk_str_eq(name, TK_OBJECT_CMD_EDIT)) {
     args = view_model_array_object_wrapper_gen_path(obj, path, vm_array->selected_index);
   }
 
-  if (tk_str_eq(name, OBJECT_CMD_ADD) || tk_str_eq(name, OBJECT_CMD_EDIT)) {
-    object_exec(object_wrapper->obj, OBJECT_CMD_SAVE, NULL);
+  if (tk_str_eq(name, TK_OBJECT_CMD_ADD) || tk_str_eq(name, TK_OBJECT_CMD_EDIT)) {
+    tk_object_exec(object_wrapper->obj, TK_OBJECT_CMD_SAVE, NULL);
   }
 
-  ret = object_exec(OBJECT(object_wrapper->obj), name, args);
-  if (tk_str_eq(name, OBJECT_CMD_ADD)) {
-    uint32_t nr = object_get_prop_int(OBJECT(obj), VIEW_MODEL_PROP_ITEMS, 0);
+  ret = tk_object_exec(TK_OBJECT(object_wrapper->obj), name, args);
+  if (tk_str_eq(name, TK_OBJECT_CMD_ADD)) {
+    uint32_t nr = tk_object_get_prop_int(TK_OBJECT(obj), VIEW_MODEL_PROP_ITEMS, 0);
     int32_t last_index = nr - 1;
     return_value_if_fail(ret == RET_OK, RET_FAIL);
     return_value_if_fail(last_index >= 0, RET_FAIL);
@@ -206,28 +207,28 @@ static ret_t view_model_array_object_wrapper_exec(object_t* obj, const char* nam
   }
 
   if (ret == RET_NOT_FOUND || ret == RET_NOT_IMPL) {
-    if (tk_str_eq(name, OBJECT_CMD_EDIT)) {
+    if (tk_str_eq(name, TK_OBJECT_CMD_EDIT)) {
       return view_model_array_object_wrapper_cmd_edit(object_wrapper->prop_prefix, args);
     }
   }
 
-  if (tk_str_eq(name, OBJECT_CMD_MOVE_UP)) {
+  if (tk_str_eq(name, TK_OBJECT_CMD_MOVE_UP)) {
     if (ret == RET_OK) {
       if (vm_array->selected_index > 0) {
         vm_array->selected_index--;
       }
     }
-  } else if (tk_str_eq(name, OBJECT_CMD_MOVE_DOWN)) {
+  } else if (tk_str_eq(name, TK_OBJECT_CMD_MOVE_DOWN)) {
     if (ret == RET_OK) {
-      uint32_t nr = object_get_prop_int(OBJECT(obj), VIEW_MODEL_PROP_ITEMS, 0);
+      uint32_t nr = tk_object_get_prop_int(TK_OBJECT(obj), VIEW_MODEL_PROP_ITEMS, 0);
       if ((vm_array->selected_index + 1) < nr) {
         vm_array->selected_index++;
       }
     }
-  } else if (tk_str_eq(name, OBJECT_CMD_CLEAR)) {
+  } else if (tk_str_eq(name, TK_OBJECT_CMD_CLEAR)) {
     vm_array->selected_index = 0;
-  } else if (tk_str_eq(name, OBJECT_CMD_REMOVE)) {
-    uint32_t nr = object_get_prop_int(OBJECT(obj), VIEW_MODEL_PROP_ITEMS, 0);
+  } else if (tk_str_eq(name, TK_OBJECT_CMD_REMOVE)) {
+    uint32_t nr = tk_object_get_prop_int(TK_OBJECT(obj), VIEW_MODEL_PROP_ITEMS, 0);
 
     if (vm_array->selected_index >= nr) {
       if (nr > 0) {
@@ -241,7 +242,7 @@ static ret_t view_model_array_object_wrapper_exec(object_t* obj, const char* nam
   return ret;
 }
 
-view_model_t* view_model_array_object_wrapper_create_ex(object_t* obj, const char* prop_prefix);
+view_model_t* view_model_array_object_wrapper_create_ex(tk_object_t* obj, const char* prop_prefix);
 
 static view_model_t* view_model_object_create_sub_view_model(view_model_t* view_model,
                                                              const char* name) {
@@ -281,7 +282,7 @@ static view_model_t* view_model_object_create_sub_view_model_array(view_model_t*
 
 static ret_t view_model_array_object_wrapper_on_will_mount(view_model_t* view_model,
                                                            navigator_request_t* req) {
-  const char* prefix = object_get_prop_str(OBJECT(req), STR_PATH_PREFIX);
+  const char* prefix = tk_object_get_prop_str(TK_OBJECT(req), STR_PATH_PREFIX);
   view_model_array_object_wrapper_t* object_wrapper = VIEW_MODEL_ARRAY_OBJECT_WRAPPPER(view_model);
 
   if (prefix != NULL) {
@@ -308,14 +309,14 @@ static const object_vtable_t s_object_vtable = {
     .can_exec = view_model_array_object_wrapper_can_exec,
     .exec = view_model_array_object_wrapper_exec};
 
-view_model_t* view_model_array_object_wrapper_create_ex(object_t* obj, const char* prop_prefix) {
-  object_t* model = object_create(&s_object_vtable);
+view_model_t* view_model_array_object_wrapper_create_ex(tk_object_t* obj, const char* prop_prefix) {
+  tk_object_t* model = tk_object_create(&s_object_vtable);
   view_model_t* view_model = view_model_array_init(VIEW_MODEL(model));
   view_model_array_object_wrapper_t* object_wrapper = VIEW_MODEL_ARRAY_OBJECT_WRAPPPER(model);
   return_value_if_fail(object_wrapper != NULL && obj != NULL, NULL);
 
   view_model->vt = &s_view_model_vtable;
-  object_wrapper->obj = object_ref(obj);
+  object_wrapper->obj = tk_object_ref(obj);
   object_wrapper->prop_prefix = tk_strdup(prop_prefix);
   emitter_on(EMITTER(obj), EVT_ITEMS_CHANGED, emitter_forward, model);
   emitter_on(EMITTER(obj), EVT_PROPS_CHANGED, view_model_array_object_wrapper_on_changed, model);
@@ -324,6 +325,6 @@ view_model_t* view_model_array_object_wrapper_create_ex(object_t* obj, const cha
   return view_model;
 }
 
-view_model_t* view_model_array_object_wrapper_create(object_t* obj) {
+view_model_t* view_model_array_object_wrapper_create(tk_object_t* obj) {
   return view_model_array_object_wrapper_create_ex(obj, NULL);
 }

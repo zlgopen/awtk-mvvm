@@ -25,7 +25,7 @@
 #include "base/events.h"
 #include "temperature_sensor_random.h"
 
-static ret_t temperature_sensor_random_on_destroy(object_t* obj) {
+static ret_t temperature_sensor_random_on_destroy(tk_object_t* obj) {
   temperature_sensor_t* temperature_sensor = TEMPERATURE_SENSOR(obj);
 
   timer_remove(temperature_sensor->timer_id);
@@ -34,7 +34,8 @@ static ret_t temperature_sensor_random_on_destroy(object_t* obj) {
   return RET_OK;
 }
 
-static ret_t temperature_sensor_random_set_prop(object_t* obj, const char* name, const value_t* v) {
+static ret_t temperature_sensor_random_set_prop(tk_object_t* obj, const char* name,
+                                                const value_t* v) {
   temperature_sensor_t* temperature_sensor = TEMPERATURE_SENSOR(obj);
   return_value_if_fail(obj != NULL && name != NULL && v != NULL, RET_BAD_PARAMS);
 
@@ -54,7 +55,7 @@ static ret_t temperature_sensor_random_set_prop(object_t* obj, const char* name,
   return RET_NOT_FOUND;
 }
 
-static ret_t temperature_sensor_sample(object_t* obj) {
+static ret_t temperature_sensor_sample(tk_object_t* obj) {
   event_t e = event_init(EVT_VALUE_CHANGED, obj);
   temperature_sensor_t* temperature_sensor = TEMPERATURE_SENSOR(obj);
 
@@ -68,12 +69,12 @@ static ret_t temperature_sensor_sample(object_t* obj) {
 }
 
 static ret_t temperature_sensor_on_timer(const timer_info_t* info) {
-  temperature_sensor_sample(OBJECT(info->ctx));
+  temperature_sensor_sample(TK_OBJECT(info->ctx));
 
   return RET_REPEAT;
 }
 
-static ret_t temperature_sensor_random_get_prop(object_t* obj, const char* name, value_t* v) {
+static ret_t temperature_sensor_random_get_prop(tk_object_t* obj, const char* name, value_t* v) {
   temperature_sensor_t* temperature_sensor = TEMPERATURE_SENSOR(obj);
   return_value_if_fail(obj != NULL && name != NULL && v != NULL, RET_BAD_PARAMS);
 
@@ -97,8 +98,8 @@ static const object_vtable_t s_temperature_sensor_random_vtable = {
     .get_prop = temperature_sensor_random_get_prop,
     .set_prop = temperature_sensor_random_set_prop};
 
-object_t* temperature_sensor_random_create(const char* args) {
-  object_t* obj = object_create(&s_temperature_sensor_random_vtable);
+tk_object_t* temperature_sensor_random_create(const char* args) {
+  tk_object_t* obj = tk_object_create(&s_temperature_sensor_random_vtable);
   temperature_sensor_t* temperature_sensor = TEMPERATURE_SENSOR(obj);
   return_value_if_fail(temperature_sensor != NULL, NULL);
 

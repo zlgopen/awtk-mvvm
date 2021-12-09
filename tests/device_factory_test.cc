@@ -2,12 +2,12 @@
 #include "tkc/object_default.h"
 #include "mvvm/hardware/device_factory.h"
 
-static object_t* dummy_device_create(const char* args) {
+static tk_object_t* dummy_device_create(const char* args) {
   return object_default_create();
 }
 
 TEST(DeviceFactory, basic) {
-  object_t* device = NULL;
+  tk_object_t* device = NULL;
   device_factory_init();
 
   ASSERT_NE(device_factory_register(NULL, dummy_device_create), RET_OK);
@@ -23,7 +23,7 @@ TEST(DeviceFactory, basic) {
   device = device_factory_create_device("dummy", "default");
   ASSERT_EQ(device != NULL, TRUE);
 
-  object_unref(device);
+  tk_object_unref(device);
 
   device_factory_deinit();
 }

@@ -39,7 +39,7 @@ static ret_t func_navigator_to(fscript_t* fscript, fscript_args_t* args, value_t
   str_args = value_str(args->args);
   if (str_args != NULL && tk_str_start_with(str_args, COMMAND_ARGS_FSCRIPT_PREFIX)) {
     ret_t ret = RET_FAIL;
-    object_t* obj_args = object_default_create();
+    tk_object_t* obj_args = object_default_create();
     return_value_if_fail(obj_args != NULL, RET_OOM);
 
     ret = tk_command_arguments_to_object(str_args, obj_args);
@@ -50,7 +50,7 @@ static ret_t func_navigator_to(fscript_t* fscript, fscript_args_t* args, value_t
       ret = navigator_to_by_object(obj_args);
     }
 
-    OBJECT_UNREF(obj_args);
+    TK_OBJECT_UNREF(obj_args);
     return ret;
   } else {
     return navigator_to(value_str(args->args));
@@ -88,7 +88,7 @@ static ret_t func_get_view_models(fscript_t* fscript, fscript_args_t* args, valu
 
   ret = navigator_get_view_models(target, temp);
   if (ret == RET_OK) {
-    object_t* obj = object_array_create();
+    tk_object_t* obj = object_array_create();
     uint32_t i = 0;
     value_t elm;
 
@@ -96,7 +96,7 @@ static ret_t func_get_view_models(fscript_t* fscript, fscript_args_t* args, valu
     v->free_handle = TRUE;
 
     for (i = 0; i < temp->size; i++) {
-      value_set_object(&elm, OBJECT(temp->elms[i]));
+      value_set_object(&elm, TK_OBJECT(temp->elms[i]));
       if (object_array_push(obj, &elm) != RET_OK) {
         break;
       }
@@ -126,7 +126,7 @@ static ret_t func_notify_items_changed_to_view_models(fscript_t* fscript, fscrip
                                                       value_t* v) {
   ret_t ret = RET_OK;
   const char* target = NULL;
-  object_t* items = NULL;
+  tk_object_t* items = NULL;
 
   if (args->size >= 1) {
     items = value_object(args->args);

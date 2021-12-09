@@ -44,26 +44,26 @@ ret_t custom_binder_init(void) {
 bool_t custom_binder_exist(const char* type) {
   return_value_if_fail(s_custom_binder != NULL && type != NULL, FALSE);
 
-  return object_has_prop((s_custom_binder->binders), type);
+  return tk_object_has_prop((s_custom_binder->binders), type);
 }
 
 ret_t custom_binder_unregister(const char* type) {
   return_value_if_fail(s_custom_binder != NULL && type != NULL, RET_BAD_PARAMS);
 
-  return object_remove_prop((s_custom_binder->binders), type);
+  return tk_object_remove_prop((s_custom_binder->binders), type);
 }
 
 ret_t custom_binder_register(const char* type, binding_context_bind_rule_t bind) {
   return_value_if_fail(s_custom_binder != NULL && type != NULL && bind != NULL, RET_BAD_PARAMS);
 
-  return object_set_prop_pointer(s_custom_binder->binders, type, bind);
+  return tk_object_set_prop_pointer(s_custom_binder->binders, type, bind);
 }
 
 ret_t custom_binder_bind(const char* type, binding_context_t* ctx, binding_rule_t* rule) {
   binding_context_bind_rule_t bind = NULL;
   return_value_if_fail(s_custom_binder != NULL && type != NULL, RET_BAD_PARAMS);
   return_value_if_fail(ctx != NULL && rule != NULL, RET_BAD_PARAMS);
-  bind = (binding_context_bind_rule_t)object_get_prop_pointer(s_custom_binder->binders, type);
+  bind = (binding_context_bind_rule_t)tk_object_get_prop_pointer(s_custom_binder->binders, type);
   if (bind != NULL) {
     return bind(ctx, rule);
   } else {
@@ -74,7 +74,7 @@ ret_t custom_binder_bind(const char* type, binding_context_t* ctx, binding_rule_
 ret_t custom_binder_deinit(void) {
   return_value_if_fail(s_custom_binder != NULL && s_custom_binder->binders != NULL, RET_BAD_PARAMS);
 
-  OBJECT_UNREF(s_custom_binder->binders);
+  TK_OBJECT_UNREF(s_custom_binder->binders);
   TKMEM_FREE(s_custom_binder);
 
   s_custom_binder = NULL;

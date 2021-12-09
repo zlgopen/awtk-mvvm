@@ -6,7 +6,7 @@
 #include "mvvm/base/utils.h"
 #include "book_store_view_model.h"
 
-view_model_t* book_store_view_model_attach(object_t* obj, uint32_t index) {
+view_model_t* book_store_view_model_attach(tk_object_t* obj, uint32_t index) {
   view_model_t* vm = VIEW_MODEL(obj);
   book_store_view_model_t* book_store_view_model = (book_store_view_model_t*)(vm);
   book_t* book = book_store_get(book_store_view_model->abook_store, index);
@@ -17,7 +17,7 @@ view_model_t* book_store_view_model_attach(object_t* obj, uint32_t index) {
   return VIEW_MODEL(book_view_model);
 }
 
-static ret_t book_store_view_model_set_prop(object_t* obj, const char* name, const value_t* v) {
+static ret_t book_store_view_model_set_prop(tk_object_t* obj, const char* name, const value_t* v) {
   uint32_t index = 0;
   view_model_t* view_model = VIEW_MODEL(obj);
   book_store_t* abook_store = ((book_store_view_model_t*)(obj))->abook_store;
@@ -36,7 +36,7 @@ static ret_t book_store_view_model_set_prop(object_t* obj, const char* name, con
   return view_model_set_prop(view_model, name, v);
 }
 
-static ret_t book_store_view_model_get_prop(object_t* obj, const char* name, value_t* v) {
+static ret_t book_store_view_model_get_prop(tk_object_t* obj, const char* name, value_t* v) {
   uint32_t index = 0;
   view_model_t* view_model = VIEW_MODEL(obj);
   book_store_t* abook_store = ((book_store_view_model_t*)(obj))->abook_store;
@@ -56,7 +56,7 @@ static ret_t book_store_view_model_get_prop(object_t* obj, const char* name, val
   return view_model_get_prop(view_model, name, v);
 }
 
-static bool_t book_store_view_model_can_exec(object_t* obj, const char* name, const char* args) {
+static bool_t book_store_view_model_can_exec(tk_object_t* obj, const char* name, const char* args) {
   uint32_t index = tk_atoi(args);
   view_model_t* view_model = VIEW_MODEL(obj);
 
@@ -77,7 +77,7 @@ static bool_t book_store_view_model_can_exec(object_t* obj, const char* name, co
   return view_model_can_exec(view_model, name, NULL);
 }
 
-static ret_t book_store_view_model_exec(object_t* obj, const char* name, const char* args) {
+static ret_t book_store_view_model_exec(tk_object_t* obj, const char* name, const char* args) {
   uint32_t index = tk_atoi(args);
   view_model_t* view_model = VIEW_MODEL(obj);
 
@@ -98,12 +98,12 @@ static ret_t book_store_view_model_exec(object_t* obj, const char* name, const c
   return view_model_exec(view_model, name, NULL);
 }
 
-static ret_t book_store_view_model_on_destroy(object_t* obj) {
+static ret_t book_store_view_model_on_destroy(tk_object_t* obj) {
   book_store_view_model_t* vm = (book_store_view_model_t*)(obj);
   return_value_if_fail(vm != NULL, RET_BAD_PARAMS);
 
   book_view_model_attach(vm->book_view_model, NULL);
-  OBJECT_UNREF(vm->book_view_model);
+  TK_OBJECT_UNREF(vm->book_view_model);
   book_store_destroy(vm->abook_store);
 
   return view_model_array_deinit(VIEW_MODEL(obj));
@@ -123,7 +123,7 @@ static const object_vtable_t s_book_store_view_model_vtable = {"book_store_view_
                                                                book_store_view_model_exec};
 
 view_model_t* book_store_view_model_create_with(book_store_t* abook_store) {
-  object_t* obj = object_create(&s_book_store_view_model_vtable);
+  tk_object_t* obj = tk_object_create(&s_book_store_view_model_vtable);
   view_model_t* vm = view_model_array_init(VIEW_MODEL(obj));
   book_store_view_model_t* book_store_view_model = (book_store_view_model_t*)(vm);
 
