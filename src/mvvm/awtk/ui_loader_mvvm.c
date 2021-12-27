@@ -435,6 +435,28 @@ static ret_t ui_loader_mvvm_on_widget_destroy(void* ctx, event_t* e) {
   return RET_REMOVE;
 }
 
+static ret_t ui_loader_mvvm_build_data_with_widget(ui_loader_mvvm_t* loader,
+                                                   darray_t* bind_data_rbuffer_offsets,
+                                                   rbuffer_t* rbuffer, widget_t* widget) {
+  const char* key = NULL;
+  const char* val = NULL;
+  uint32_t rbuffer_offset = 0;
+  binding_context_t* ctx = loader->binding_context;
+  if (ctx != NULL) {
+    rbuffer_offset = rbuffer->cursor;
+    for (size_t i = 0; i < bind_data_rbuffer_offsets->size; i++) {
+      rbuffer_rewind(rbuffer);
+      rbuffer_skip(rbuffer, tk_pointer_to_int(darray_get(bind_data_rbuffer_offsets, i)));
+      break_if_fail(rbuffer_read_string(rbuffer, &key) == RET_OK);
+      break_if_fail(rbuffer_read_string(rbuffer, &val) == RET_OK);
+      ui_loader_mvvm_bind_data(loader, widget, key, val);
+    }
+    rbuffer_rewind(rbuffer);
+    rbuffer_skip(rbuffer, rbuffer_offset);
+  }
+  return RET_OK;
+}
+
 static widget_t* ui_loader_mvvm_build_widget(ui_loader_mvvm_t* loader, rbuffer_t* rbuffer,
                                              ui_builder_t* builder, uint32_t* cursor,
                                              const value_t* id) {
@@ -443,6 +465,8 @@ static widget_t* ui_loader_mvvm_build_widget(ui_loader_mvvm_t* loader, rbuffer_t
   const char* vmodel = NULL;
   const char* key = NULL;
   const char* val = NULL;
+  uint32_t rbuffer_offset = 0;
+  darray_t bind_data_rbuffer_offsets;
   bool_t should_create_binding_context = FALSE;
   binding_context_t* ctx = loader->binding_context;
   navigator_request_t* req = loader->navigator_request;
@@ -471,11 +495,14 @@ static widget_t* ui_loader_mvvm_build_widget(ui_loader_mvvm_t* loader, rbuffer_t
     widget_set_custom_prop_uint32(widget, WIDGET_PROP_MVVM_DATA_CURSOR, *cursor);
   }
 
+  rbuffer_offset = rbuffer->cursor;
+  darray_init(&bind_data_rbuffer_offsets, 10, NULL, NULL);
   goto_error_if_fail(rbuffer_read_string(rbuffer, &key) == RET_OK);
   while (*key) {
     goto_error_if_fail(rbuffer_read_string(rbuffer, &val) == RET_OK);
     if (tk_str_start_with(key, BINDING_RULE_DATA_PREFIX)) {
-      if (ctx != NULL) ui_loader_mvvm_bind_data(loader, widget, key, val);
+      /* 记录绑定数据的信息，统一在最后绑定数据 */
+      darray_push(&bind_data_rbuffer_offsets, tk_pointer_from_int(rbuffer_offset));
     } else if (tk_str_start_with(key, BINDING_RULE_COMMAND_PREFIX)) {
       if (ctx != NULL) ui_loader_mvvm_bind_command(loader, widget, key, val);
     } else if (tk_str_eq(key, BINDING_RULE_ITEMS)) {
@@ -486,6 +513,7 @@ static widget_t* ui_loader_mvvm_build_widget(ui_loader_mvvm_t* loader, rbuffer_t
     } else {
       ui_builder_on_widget_prop(builder, key, val);
     }
+    rbuffer_offset = rbuffer->cursor;
     goto_error_if_fail(rbuffer_read_string(rbuffer, &key) == RET_OK);
   }
 
@@ -494,6 +522,10 @@ static widget_t* ui_loader_mvvm_build_widget(ui_loader_mvvm_t* loader, rbuffer_t
   }
 
   goto_error_if_fail(ui_builder_on_widget_prop_end(builder) == RET_OK);
+
+  /* 统一绑定数据，用于确保先触发修改属性再触发相关个注册事件 */
+  ui_loader_mvvm_build_data_with_widget(loader, &bind_data_rbuffer_offsets, rbuffer, widget);
+  darray_deinit(&bind_data_rbuffer_offsets);
 
   // 跳过控件的结束标记，直到当前控件等于widget的父控件
   goto_error_if_fail(rbuffer_skip_widget_end_mark(rbuffer, builder, break_if_equal_target_widget,
@@ -515,6 +547,7 @@ static widget_t* ui_loader_mvvm_build_widget(ui_loader_mvvm_t* loader, rbuffer_t
   return widget;
 
 error:
+  darray_deinit(&bind_data_rbuffer_offsets);
   widget_destroy(widget);
   return NULL;
 }
