@@ -19,14 +19,14 @@
  *
  */
 
-#include "tkc/types_def.h"
-#include "mvvm/base/view_model.h"
+#ifndef JERRY_SCRIPT_HELPER_H
+#define JERRY_SCRIPT_HELPER_H
+
 #include "jerryscript.h"
 #include "jerryscript-port.h"
 #include "jerryscript-ext/handler.h"
-
-#ifndef JERRY_SCRIPT_HELPER_H
-#define JERRY_SCRIPT_HELPER_H
+#include "tkc/types_def.h"
+#include "mvvm/base/view_model.h"
 
 BEGIN_C_DECLS
 

@@ -22,8 +22,9 @@
 #ifndef TK_JSOBJ_4_MVVM_H
 #define TK_JSOBJ_4_MVVM_H
 
-#include "mvvm/base/navigator_request.h"
+
 #include "mvvm/jerryscript/jsobj.h"
+#include "mvvm/base/navigator_request.h"
 
 BEGIN_C_DECLS
 

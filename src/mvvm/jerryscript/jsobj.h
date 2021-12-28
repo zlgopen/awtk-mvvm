@@ -22,9 +22,9 @@
 #ifndef TK_JSOBJ_H
 #define TK_JSOBJ_H
 
+#include "mvvm/jerryscript/jerry_script_helper.h"
 #include "tkc/str.h"
 #include "tkc/value.h"
-#include "mvvm/jerryscript/jerry_script_helper.h"
 
 BEGIN_C_DECLS
 
