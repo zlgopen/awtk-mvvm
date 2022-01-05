@@ -19,6 +19,7 @@
  *
  */
 
+#include "awtk.h"
 #include "tkc/utils.h"
 #include "base/idle.h"
 #include "base/timer.h"
@@ -414,5 +415,9 @@ ret_t jerryscript_awtk_init(void) {
 }
 
 ret_t jerryscript_awtk_deinit(void) {
+  /* Close all windows to unref view models, avoid assert while jerryscript clean up. */
+  window_manager_close_all(window_manager());
+  idle_dispatch();
+
   return RET_OK;
 }
