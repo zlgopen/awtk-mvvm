@@ -1,4 +1,4 @@
-﻿/**
+/**
  * File:   ui_loader_mvvm.c
  * Author: AWTK Develop Team
  * Brief:  ui loader for mvvm
@@ -177,17 +177,6 @@ static bool_t rbuffer_find_target_dynamic_binding_prop(rbuffer_t* rbuffer, const
 }
 
 #endif /*MVVM_FAST_UI_LOAD*/
-
-static bool_t rbuffer_find_v_for_items(rbuffer_t* rbuffer) {
-  const char* key = NULL;
-  const char* val = NULL;
-
-  if (rbuffer_find_target_dynamic_binding_prop(rbuffer, WIDGET_PROP_V_FOR_ITEMS, &val)) {
-    return tk_atob(val);
-  }
-
-  return FALSE;
-}
 
 static bool_t break_if_equal_target_widget(void* ctx, ui_builder_t* builder) {
   widget_t* target = WIDGET(ctx);
@@ -404,13 +393,6 @@ static ret_t widget_set_custom_prop_uint32(widget_t* widget, const char* name, u
   return widget_set_custom_prop(widget, name, &v);
 }
 
-static ret_t widget_set_custom_prop_str(widget_t* widget, const char* name, const char* str) {
-  value_t v;
-  value_set_str(&v, str);
-
-  return widget_set_custom_prop(widget, name, &v);
-}
-
 static ret_t widget_set_custom_prop_pointer(widget_t* widget, const char* name, void* val) {
   value_t v;
   value_set_pointer(&v, val);
@@ -436,15 +418,15 @@ static ret_t ui_loader_mvvm_on_widget_destroy(void* ctx, event_t* e) {
 }
 
 static ret_t ui_loader_mvvm_build_data_with_widget(ui_loader_mvvm_t* loader,
-                                                   darray_t* bind_data_rbuffer_offsets,
-                                                   rbuffer_t* rbuffer, widget_t* widget) {
+                                                   darray_t* bind_data_rbuffer_offsets,                                            rbuffer_t* rbuffer, widget_t* widget) {
   const char* key = NULL;
   const char* val = NULL;
   uint32_t rbuffer_offset = 0;
   binding_context_t* ctx = loader->binding_context;
   if (ctx != NULL) {
+		uint32_t i = 0;     
     rbuffer_offset = rbuffer->cursor;
-    for (size_t i = 0; i < bind_data_rbuffer_offsets->size; i++) {
+    for (i = 0; i < bind_data_rbuffer_offsets->size; i++) {
       rbuffer_rewind(rbuffer);
       rbuffer_skip(rbuffer, tk_pointer_to_int(darray_get(bind_data_rbuffer_offsets, i)));
       break_if_fail(rbuffer_read_string(rbuffer, &key) == RET_OK);
@@ -554,7 +536,6 @@ error:
 
 static ret_t visit_clear_binding(void* ctx, const void* data) {
   widget_t* widget = WIDGET(data);
-  binding_context_t* bctx = BINDING_CONTEXT(ctx);
   return binding_context_clear_bindings_of_widget(ctx, widget);
 }
 
@@ -584,7 +565,7 @@ static ret_t ui_loader_mvvm_build_condition_widget(ui_loader_mvvm_t* loader, rbu
       uint32_t len = 0;
       const char* l_str = *expr == '{' ? (expr + 1) : expr;
       const char* r_str = tk_strrstr(l_str, "}");
-      len = r_str != NULL ? r_str - l_str : tk_strlen(l_str);
+      len = r_str != NULL ? (r_str - l_str) : tk_strlen(l_str);
       str_init(&str, 0);
       str_set_with_len(&str, l_str, len);
       value_set_bool(&v, FALSE);
@@ -654,10 +635,9 @@ static ret_t ui_loader_mvvm_build_condition_widget(ui_loader_mvvm_t* loader, rbu
 }
 
 widget_t* widget_lookup_by_id(widget_t* widget, const value_t* id, int32_t begin_index,
-                              int32_t end_index, int32_t* ret_index) {
+                              int32_t end_index, uint32_t* ret_index) {
   int32_t delta = 0;
   int32_t nr = 0;
-  const char* temp = NULL;
   widget_t** children = NULL;
   widget_t* child;
   value_t v;
@@ -700,7 +680,6 @@ static ret_t ui_loader_mvvm_get_widget_id(binding_context_t* ctx, binding_rule_t
 
 static ret_t ui_loader_mvvm_build_items_widget(ui_loader_mvvm_t* loader, rbuffer_t* rbuffer,
                                                ui_builder_t* builder, binding_rule_t* rule) {
-  ret_t ret = RET_FAIL;
   uint32_t offset = 0;
   widget_t* parent;
   binding_context_t* ctx = BINDING_RULE_CONTEXT(rule);
@@ -721,7 +700,7 @@ static ret_t ui_loader_mvvm_build_items_widget(ui_loader_mvvm_t* loader, rbuffer
     int32_t nr = widget_count_children(parent);
 
     if (nr < first_index + binding->fixed_widget_count) {
-      int32_t i;
+      uint32_t i;
       widget_t* widget;
 
       for (i = 0; i < first_index + binding->fixed_widget_count - nr; i++) {
@@ -994,7 +973,6 @@ static ret_t ui_loader_mvvm_load_a_snippet(ui_loader_mvvm_t* loader, rbuffer_t* 
 
 static ret_t ui_loader_mvvm_load(ui_loader_t* l, const uint8_t* data, uint32_t size,
                                  ui_builder_t* b) {
-  ret_t ret = RET_FAIL;
   ui_loader_mvvm_t* loader = UI_LOADER_MVVM(l);
   rbuffer_t rbuffer;
   uint32_t magic = 0;
@@ -1008,20 +986,20 @@ static ret_t ui_loader_mvvm_load(ui_loader_t* l, const uint8_t* data, uint32_t s
   rule = loader->rule;
   if (rule == NULL) {
     ui_builder_on_start(b);
-    ret = ui_loader_mvvm_load_a_snippet(loader, &rbuffer, b, b->widget);
+    ui_loader_mvvm_load_a_snippet(loader, &rbuffer, b, b->widget);
     ui_builder_on_end(b);
   } else {
     widget_t* widget = WIDGET(BINDING_RULE_WIDGET(rule));
 
     if (binding_rule_is_items_binding(rule)) {
       b->widget = widget;
-      ret = ui_loader_mvvm_build_items_widget(loader, &rbuffer, b, rule);
+      ui_loader_mvvm_build_items_widget(loader, &rbuffer, b, rule);
       if (ITEMS_BINDING(rule)->fixed_widget_count <= 0) {
         widget_layout(widget);
       }
     } else if (binding_rule_is_condition_binding(rule)) {
       b->widget = widget;
-      ret = ui_loader_mvvm_build_condition_widget(loader, &rbuffer, b, rule);
+      ui_loader_mvvm_build_condition_widget(loader, &rbuffer, b, rule);
       widget_layout(widget);
     }
   }
