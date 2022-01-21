@@ -47,7 +47,7 @@ typedef struct _command_binding_t {
   /**
    * @property {bool_t} quit_app
    * @annotation ["readable"]
-   * 执行命令之后，是否推出应用程序。
+   * 执行命令之后，是否退出应用程序。
    */
   bool_t quit_app;
 

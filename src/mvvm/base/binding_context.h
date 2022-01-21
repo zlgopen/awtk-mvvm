@@ -107,8 +107,7 @@ struct _binding_context_t {
   /**
    * @property {uint32_t} update_view_idle_id
    * @annotation ["readable"]
-   * 更新view的idle的id
-   *
+   * 更新view的idle的id。
    */
   uint32_t update_view_idle_id;
   /**

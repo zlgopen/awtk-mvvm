@@ -56,7 +56,7 @@ view_model_t* view_model_compositor_create(navigator_request_t* req);
 
 /**
  * @method view_model_compositor_add
- * 像compositor对象中增加一个view model对象。
+ * 向compositor对象中增加一个view model对象。
  *
  * @param {view_model_t*} view_model compositor对象。
  * @param {view_model_t*} vm 待加入的view model对象。

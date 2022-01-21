@@ -68,7 +68,7 @@ typedef struct _ui_loader_mvvm_t {
 
 /**
  * @method ui_loader_mvvm
- * 获取支持MVVM绑定的UI加载器。对象。
+ * 获取支持MVVM绑定的UI加载器对象。
  * @annotation ["constructor"]
  *
  * @return {ui_loader_t*} 返回UI加载器对象。

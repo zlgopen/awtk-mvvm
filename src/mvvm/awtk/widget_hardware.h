@@ -1,5 +1,5 @@
 ﻿/**
- * File:   widget_hardware..h
+ * File:   widget_hardware.h
  * Author: AWTK Develop Team
  * Brief:  wrap hardware device to a widget
  *
