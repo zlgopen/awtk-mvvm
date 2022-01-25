@@ -576,7 +576,9 @@ uint32_t binding_context_awtk_calc_widget_index_of_rule(binding_context_t* ctx,
 
           if (binding_rule_is_condition_binding(r)) {
             condition_binding_t* binding = CONDITION_BINDING(r);
-            index += 1;
+            if (binding->current_expr != NULL) {
+              index += 1;
+            }
             index += binding->static_widget_before_next_dynamic_binding;
           } else if (binding_rule_is_items_binding(r)) {
             items_binding_t* binding = ITEMS_BINDING(r);
