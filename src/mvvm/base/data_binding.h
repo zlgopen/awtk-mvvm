@@ -118,6 +118,13 @@ typedef struct _data_binding_t {
    * 格式转换器的名称。
    */
   char* converter;
+  
+  /**
+   * @property {char*} converter_args
+   * @annotation ["readable"]
+   * 格式转换器的参数。
+   */
+  char* converter_args;
 
   /**
    * @property {char*} to_view
@@ -218,6 +225,7 @@ data_binding_t* data_binding_cast(void* rule);
 #define DATA_BINDING_PROP "Prop"
 #define DATA_BINDING_TRIGGER "Trigger"
 #define DATA_BINDING_CONVERTER "Converter"
+#define DATA_BINDING_CONVERTER_ARGS "ConverterArgs"
 #define DATA_BINDING_VALIDATOR "Validator"
 #define DATA_BINDING_ERROR_OF "error.of."
 #define DATA_BINDING_TO_VIEW "ToView"

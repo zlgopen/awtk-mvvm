@@ -50,6 +50,8 @@ struct _value_converter_t {
   /*private*/
   value_converter_to_model_t to_model;
   value_converter_to_view_t to_view;
+
+  value_t args;
 };
 
 /**
@@ -86,6 +88,18 @@ ret_t value_converter_to_view(value_converter_t* converter, const value_t* from,
  * @return {value_converter_t*} 返回value_converter对象。
  */
 value_converter_t* value_converter_create(const char* name);
+
+/**
+ * @method value_converter_create_with_args
+ * 创建指定名称的值转换器和绑定其参数。
+ *
+ * @annotation ["static"]
+ * @param {const char*} name 名称。
+ * @param {const char*} args 参数。
+ *
+ * @return {value_converter_t*} 返回value_converter对象。
+ */
+value_converter_t* value_converter_create_with_args(const char* name, const char* args);
 
 /**
  * @method value_converter_register
@@ -129,6 +143,9 @@ ret_t value_converter_init(void);
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
 ret_t value_converter_deinit(void);
+
+/* private */
+ret_t value_converter_delegate_unconvert(value_converter_t* converter, const value_t* from, value_t* to);
 
 #define VALUE_CONVERTER(converter) ((value_converter_t*)(converter))
 

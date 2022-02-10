@@ -43,7 +43,10 @@ static ret_t data_binding_on_destroy(tk_object_t* obj) {
   TKMEM_FREE(rule->prop);
   TKMEM_FREE(rule->validator);
   TKMEM_FREE(rule->converter);
-  fscript_destroy(rule->expr);
+  TKMEM_FREE(rule->converter_args);
+  if (rule->expr != NULL) {
+    fscript_destroy(rule->expr);
+  }
   if (rule->to_view_expr != NULL) {
     fscript_destroy(rule->to_view_expr);
   }
@@ -124,6 +127,8 @@ static ret_t data_binding_object_set_prop(tk_object_t* obj, const char* name, co
     rule->prop = tk_str_copy(rule->prop, value);
   } else if (equal(DATA_BINDING_CONVERTER, name)) {
     rule->converter = tk_str_copy(rule->converter, value);
+  } else if (equal(DATA_BINDING_CONVERTER_ARGS, name)) {
+    rule->converter_args = tk_str_copy(rule->converter_args, value);
   } else if (equal(DATA_BINDING_VALIDATOR, name)) {
     rule->validator = tk_str_copy(rule->validator, value);
   } else if (equal(BINDING_RULE_PROP_INITED, name)) {
@@ -181,6 +186,8 @@ static ret_t data_binding_object_get_prop(tk_object_t* obj, const char* name, va
     value_set_str(v, rule->to_model);
   } else if (equal(DATA_BINDING_CONVERTER, name)) {
     value_set_str(v, rule->converter);
+  } else if (equal(DATA_BINDING_CONVERTER_ARGS, name)) {
+    value_set_str(v, rule->converter_args);
   } else if (equal(DATA_BINDING_VALIDATOR, name)) {
     value_set_str(v, rule->validator);
   } else {
@@ -240,9 +247,11 @@ bool_t binding_rule_is_data_binding(binding_rule_t* rule) {
   return obj != NULL && obj->vt == &s_data_binding_vtable;
 }
 
-static ret_t value_to_model(const char* name, const value_t* from, value_t* to) {
+static ret_t value_to_model(data_binding_t* rule, const value_t* from, value_t* to) {
+  const char* name = rule->converter;
+
   if (name != NULL) {
-    value_converter_t* c = value_converter_create(name);
+    value_converter_t* c =value_converter_create_with_args(name, rule->converter_args);
     if (c != NULL) {
       if (value_converter_to_model(c, from, to) == RET_OK) {
         tk_object_unref(TK_OBJECT(c));
@@ -262,9 +271,11 @@ static ret_t value_to_model(const char* name, const value_t* from, value_t* to) 
   }
 }
 
-static ret_t value_to_view(const char* name, value_t* from, value_t* to) {
+static ret_t value_to_view(data_binding_t* rule, value_t* from, value_t* to) {
+  const char* name = rule->converter;
+
   if (name != NULL) {
-    value_converter_t* c = value_converter_create(name);
+    value_converter_t* c = value_converter_create_with_args(name, rule->converter_args);
     if (c != NULL) {
       if (value_converter_to_view(c, from, to) == RET_OK) {
         tk_object_unref(TK_OBJECT(c));
@@ -363,7 +374,7 @@ ret_t data_binding_get_prop(data_binding_t* rule, value_t* v) {
     return RET_FAIL;
   }
 
-  ret = value_to_view(rule->converter, &raw, v);
+  ret = value_to_view(rule, &raw, v);
   value_reset(&raw);
 
   return ret;
@@ -408,7 +419,7 @@ ret_t data_binding_set_prop(data_binding_t* rule, const value_t* raw) {
     }
 
     if (ret == RET_OK && rule->converter != NULL) {
-      ret = value_to_model(rule->converter, temp, &v);
+      ret = value_to_model(rule, temp, &v);
       temp = &v;
     }
 

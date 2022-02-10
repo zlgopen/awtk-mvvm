@@ -46,14 +46,14 @@ value_converter_t* value_converter_delegate_create(value_convert_t to_model,
   tk_object_t* obj = NULL;
   value_converter_t* value_convert = NULL;
   value_converter_delegate_t* value_convert_delegate = NULL;
-  return_value_if_fail(to_model != NULL && to_view != NULL, NULL);
+  return_value_if_fail(to_model != NULL || to_view != NULL, NULL);
 
   obj = tk_object_create(&s_value_converter_delegate_vtable);
   return_value_if_fail(obj != NULL, NULL);
 
   value_convert = VALUE_CONVERTER(obj);
-  value_convert->to_view = value_converter_delegate_to_view;
-  value_convert->to_model = value_converter_delegate_to_model;
+  value_convert->to_view = to_view != NULL ? value_converter_delegate_to_view : value_converter_delegate_unconvert;
+  value_convert->to_model = to_model != NULL ? value_converter_delegate_to_model : value_converter_delegate_unconvert;
 
   value_convert_delegate = VALUE_CONVERTER_DELEGATE(obj);
   value_convert_delegate->to_view = to_view;

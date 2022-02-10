@@ -24,6 +24,10 @@
 #include "tkc/object_default.h"
 #include "mvvm/base/value_converter.h"
 
+ret_t value_converter_delegate_unconvert(value_converter_t* converter, const value_t* from, value_t* to) {
+  return value_deep_copy(to, from);
+}
+
 ret_t value_converter_to_view(value_converter_t* converter, const value_t* from, value_t* to) {
   return_value_if_fail(converter != NULL && converter->object.vt != NULL, RET_BAD_PARAMS);
   return_value_if_fail(converter->to_view != NULL && converter->object.ref_count > 0,
@@ -128,6 +132,17 @@ value_converter_t* value_converter_create(const char* name) {
     value_converter_put(name, c);
   }
 
+  return c;
+}
+
+value_converter_t* value_converter_create_with_args(const char* name, const char* args) {
+  value_converter_t* c = value_converter_create(name);
+  return_value_if_fail(c != NULL, NULL);
+  if (args != NULL) {
+    value_set_str(&c->args, args);
+  } else {
+    value_reset(&c->args);
+  }
   return c;
 }
 

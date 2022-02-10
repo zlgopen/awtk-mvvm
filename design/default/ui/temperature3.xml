@@ -1,7 +1,9 @@
 <window  v-model="temperature_ex">
   <label text="C" x="0" y="middle:-40" w="40%" h="40"/>
+  <label text="F" x="c" y="middle:-40" w="40%" h="40"/>
   <label text="F" x="right" y="middle:-40" w="40%" h="40"/>
   <label x="0" y="middle" w="40%" h="40" v-data:text="{value}"/>
   <label x="right" y="middle" w="40%" h="40" v-data:text="{value, converter=fahrenheit}"/>
-  <slider x="center" y="middle:40" w="80%" h="20" v-data:value="{value}"/>
+  <label x="c" y="middle" w="40%" h="40" v-data:text="{value, converter=fahrenheit_with_args, ConverterArgs=%.1fV}"/>
+  <slider x="center" y="middle:40" w="80%" h="20" step="0.001" min="-100" max="100" v-data:value="{value}"/>
 </window>
