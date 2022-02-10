@@ -267,7 +267,6 @@ static ret_t value_to_view(const char* name, value_t* from, value_t* to) {
     value_converter_t* c = value_converter_create(name);
     if (c != NULL) {
       if (value_converter_to_view(c, from, to) == RET_OK) {
-        value_reset(from);
         tk_object_unref(TK_OBJECT(c));
         return RET_OK;
       } else {
@@ -281,6 +280,7 @@ static ret_t value_to_view(const char* name, value_t* from, value_t* to) {
     }
   } else {
     *to = *from;
+    from->free_handle = FALSE;
     return RET_OK;
   }
 }
@@ -328,12 +328,15 @@ static ret_t value_fix(tk_object_t* ctx, const char* name, value_t* value) {
 }
 
 ret_t data_binding_get_prop(data_binding_t* rule, value_t* v) {
+  ret_t ret = RET_OK;
   value_t raw;
   view_model_t* view_model = NULL;
   return_value_if_fail(rule != NULL && v != NULL, RET_BAD_PARAMS);
 
   view_model = BINDING_RULE_VIEW_MODEL(rule);
   return_value_if_fail(view_model != NULL, RET_BAD_PARAMS);
+
+  memset(&raw, 0x00, sizeof(value_t));
 
   if (tk_object_is_collection(TK_OBJECT(view_model))) {
     binding_context_t* context = BINDING_RULE_CONTEXT(rule);
@@ -360,7 +363,10 @@ ret_t data_binding_get_prop(data_binding_t* rule, value_t* v) {
     return RET_FAIL;
   }
 
-  return value_to_view(rule->converter, &raw, v);
+  ret = value_to_view(rule->converter, &raw, v);
+  value_reset(&raw);
+
+  return ret;
 }
 
 ret_t data_binding_set_prop(data_binding_t* rule, const value_t* raw) {
@@ -382,10 +388,12 @@ ret_t data_binding_set_prop(data_binding_t* rule, const value_t* raw) {
 
   if (rule->to_model_expr != NULL) {
     value_t v;
+    value_set_int(&v, 0);
     rule->value = raw;
     fscript_exec(rule->to_model_expr, &v);
     rule->value = NULL;
     ret = tk_object_set_prop(obj, rule->path, &v);
+    value_reset(&v);
   } else {
     const value_t* temp = raw;
     value_t fix_value;

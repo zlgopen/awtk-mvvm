@@ -263,6 +263,7 @@ ret_t command_binding_exec(command_binding_t* rule) {
 
   if (tk_str_eq(rule->command, COMMAND_BINDING_CMD_FSCRIPT)) {
     value_t v;
+    memset(&v, 0x00, sizeof(value_t));
     fscript_eval(TK_OBJECT(rule), rule->args, &v);
     value_reset(&v);
     return RET_OK;

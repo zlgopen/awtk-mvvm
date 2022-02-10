@@ -1,4 +1,4 @@
-/**
+﻿/**
  * File:   ui_loader_mvvm.c
  * Author: AWTK Develop Team
  * Brief:  ui loader for mvvm
@@ -572,6 +572,7 @@ static ret_t ui_loader_mvvm_build_condition_widget(ui_loader_mvvm_t* loader, rbu
       if (fscript_eval(TK_OBJECT(rule), str.str, &v) == RET_OK && value_bool(&v)) {
         is_ok = TRUE;
       }
+      value_reset(&v);
       str_reset(&str);
     }
 

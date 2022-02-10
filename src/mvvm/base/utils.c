@@ -139,21 +139,23 @@ ret_t tk_command_arguments_from_object(tk_object_t* args, str_t* temp) {
   return tk_object_foreach_prop(args, tk_command_arguments_visit_prop, temp);
 }
 
-static ret_t tk_command_arguments_visit_fscirpt_prop(void* ctx, const void* data) {
+static ret_t tk_command_arguments_visit_fscript_prop(void* ctx, const void* data) {
   named_value_t* nv = (named_value_t*)data;
   tk_object_t* fscript = (tk_object_t*)ctx;
   value_t v;
+  memset(&v, 0x00, sizeof(value_t));
 
   if (fscript_eval(fscript, value_str(&(nv->value)), &v) == RET_OK) {
     named_value_set_value(nv, &v);
   }
+  value_reset(&v);
 
   return RET_OK;
 }
 
 ret_t tk_command_arguments_fscript(tk_object_t* args, tk_object_t* ctx) {
   return_value_if_fail(args != NULL && ctx != NULL, RET_BAD_PARAMS);
-  return tk_object_foreach_prop(args, tk_command_arguments_visit_fscirpt_prop, ctx);
+  return tk_object_foreach_prop(args, tk_command_arguments_visit_fscript_prop, ctx);
 }
 
 ret_t str_random(str_t* str, const char* format, uint32_t max) {
