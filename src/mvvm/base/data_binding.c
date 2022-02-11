@@ -411,6 +411,7 @@ ret_t data_binding_set_prop(data_binding_t* rule, const value_t* raw) {
     value_t v;
 
     value_set_int(&fix_value, 0);
+    value_set_int(&v, 0);
 
     if (!value_is_valid(obj, rule->validator, raw, &(view_model->last_error))) {
       value_deep_copy(&fix_value, raw);
@@ -428,6 +429,7 @@ ret_t data_binding_set_prop(data_binding_t* rule, const value_t* raw) {
     }
 
     value_reset(&fix_value);
+    value_reset(&v);
   }
 
   return ret;
