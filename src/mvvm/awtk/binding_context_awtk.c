@@ -962,7 +962,9 @@ static ret_t binding_context_awtk_update_to_view(binding_context_t* ctx) {
       ctx->update_view_idle_id = idle_add(idle_update_to_view, ctx);
     }
   } else {
-    binding_context_awtk_update_to_view_sync(ctx);
+    if (ctx->widget != NULL) {
+      binding_context_awtk_update_to_view_sync(ctx);
+    }
   }
 
   return RET_OK;
