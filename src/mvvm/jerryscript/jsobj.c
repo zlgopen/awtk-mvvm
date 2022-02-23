@@ -383,7 +383,7 @@ ret_t jsobj_unregister_global(const char* name) {
   return RET_OK;
 }
 
-static void tkc_object_free_callback(void* native_p) {
+static void tkc_object_free_callback(void* native_p, struct jerry_object_native_info_t *info_p) {
   tk_object_t* obj = TK_OBJECT(native_p);
   tk_object_unref(obj);
 }
@@ -658,6 +658,7 @@ ret_t jsobj_exec_ex(jsvalue_t obj, const char* name, jsvalue_t jsargs) {
     jsvalue_t func = jsobj_get_prop_value(obj, name);
     if (jsvalue_is_function(func)) {
       jsvalue_t jsret = jerry_call_function(func, obj, &jsargs, 1);
+      jerry_value_check(jsret);
       ret = (ret_t)jsvalue_to_number(jsret);
       jsvalue_unref(func);
       jsvalue_unref(jsret);

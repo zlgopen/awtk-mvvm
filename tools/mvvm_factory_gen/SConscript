@@ -4,6 +4,12 @@ import sys
 env=DefaultEnvironment().Clone()
 BIN_DIR=os.environ['BIN_DIR'];
 
-env['LIBS'] = ['jerryscript'] + ['common'] + env['LIBS']
+if 'WITH_JS' in os.environ and os.environ['WITH_JS'] == 'true' :
+  if 'WITH_IOTJS' in os.environ and os.environ['WITH_IOTJS'] == 'true':
+    env['LIBS'] += ['jerry-core']
+  else:
+    env['LIBS'] += ['jerryscript']
 
-env.Program(os.path.join(BIN_DIR, 'mvvm_factory_gen'), ["mvvm_factory_gen.c"])
+  env['LIBS'] += ['common'] + env['LIBS']
+
+  env.Program(os.path.join(BIN_DIR, 'mvvm_factory_gen'), ["mvvm_factory_gen.c"])

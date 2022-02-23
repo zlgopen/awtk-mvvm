@@ -70,7 +70,7 @@ jsvalue_t jsvalue_get_view_model(const char* name) {
   return jsvalue_get_model_from_mvvm_factory(name, "createViewModel");
 }
 
-static void view_model_free_callback(void* native_p) {
+static void view_model_free_callback(void* native_p, struct jerry_object_native_info_t *info_p) {
 }
 
 static const jerry_object_native_info_t s_view_model_info = {.free_cb = view_model_free_callback};
@@ -184,7 +184,7 @@ ret_t js_value_validator_fix(jsvalue_t validator, value_t* v) {
   return ret;
 }
 
-static void navigator_request_free_callback(void* native_p) {
+static void navigator_request_free_callback(void* native_p, struct jerry_object_native_info_t *info_p) {
 }
 
 static const jerry_object_native_info_t s_navigater_request_info = {

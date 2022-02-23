@@ -30,6 +30,10 @@
 #include "mvvm/jerryscript/mvvm_jerryscript.h"
 #endif /*WITH_JERRYSCRIPT*/
 
+#ifdef WITH_IOTJS
+#include "mvvm/iotjs/mvvm_iotjs.h"
+#endif /*WITH_IOTJS*/
+
 BEGIN_C_DECLS
 
 /**

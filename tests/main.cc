@@ -44,6 +44,11 @@ GTEST_API_ int main(int argc, char** argv) {
   tk_init_assets();
 
   mvvm_init();
+  
+#ifdef WITH_IOTJS
+  mvvm_iotjs_init();
+#endif /*WITH_IOTJS*/
+
 #ifdef WITH_JERRYSCRIPT
   mvvm_jerryscript_init();
 #endif /*WITH_JERRYSCRIPT*/
@@ -53,6 +58,11 @@ GTEST_API_ int main(int argc, char** argv) {
 #ifdef WITH_JERRYSCRIPT
   mvvm_jerryscript_deinit();
 #endif /*WITH_JERRYSCRIPT*/
+
+#ifdef WITH_IOTJS
+  mvvm_iotjs_deinit();
+#endif /*WITH_IOTJS*/
+
   mvvm_deinit();
 
   tk_deinit_internal();

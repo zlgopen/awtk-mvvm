@@ -31,6 +31,8 @@
 #include "base/assets_manager.h"
 #endif /*SCRIPTS_ROOT_DIR*/
 
+#include "mvvm/iotjs/mvvm_iotjs.h"
+
 #define STR_MODULES "modules"
 
 static ret_t awtk_jerryscript_get_module(const char* name, jerry_value_t* module) {
@@ -88,6 +90,10 @@ jerry_value_t wrap_require(const jerry_call_info_t* call_info_p, const jerry_val
       if (awtk_jerryscript_get_module(filename, &jret) == RET_OK) {
         return jret;
       }
+#ifdef WITH_IOTJS
+    } else if (mvvm_iotjs_get_iotjs_require(filename, &jret) == RET_OK) {
+      return jret;
+#endif /*WITH_IOTJS*/
     } else {
       log_debug("load %s fail\n", filename);
     }
@@ -102,7 +108,9 @@ static ret_t jerry_script_register_builtins(void) {
   jerryx_handler_register_global((const jerry_char_t*)"gc", jerryx_handler_gc);
   jerryx_handler_register_global((const jerry_char_t*)"print", jerryx_handler_print);
   jerryx_handler_register_global((const jerry_char_t*)"require", wrap_require);
+#ifndef WITH_IOTJS
   jerry_script_eval_buff(STR_BOOT_JS, strlen(STR_BOOT_JS), "boot.js", TRUE);
+#endif /*WITH_IOTJS*/
 
   return RET_OK;
 }
@@ -115,13 +123,13 @@ static void* jerry_malloc_context(size_t size, void* cb_data_p) {
   return TKMEM_ALLOC(size);
 }
 
-static void jerry_init_external_context(void) {
+void jerry_init_external_context(void) {
   jerry_context_t* ctx;
   ctx = jerry_create_context(JERRY_GLOBAL_HEAP_SIZE * 1024, jerry_malloc_context, NULL);
   jerry_port_default_set_current_context(ctx);
 }
 
-static void jerry_deinit_external_context(void) {
+void jerry_deinit_external_context(void) {
   jerry_context_t* ctx = jerry_port_get_current_context();
   TKMEM_FREE(ctx);
 }
@@ -131,11 +139,13 @@ static bool_t s_jerryscript_inited = FALSE;
 
 ret_t jerry_script_init(void) {
   if (!s_jerryscript_inited) {
+#ifndef WITH_IOTJS
 #if defined(JERRY_EXTERNAL_CONTEXT) && (JERRY_EXTERNAL_CONTEXT == 1)
     jerry_init_external_context();
 #endif /*JERRY_EXTERNAL_CONTEXT*/
 
     jerry_init(JERRY_INIT_EMPTY);
+#endif /*WITH_IOTJS*/
     jerry_script_register_builtins();
 
     s_jerryscript_inited = TRUE;
@@ -145,12 +155,13 @@ ret_t jerry_script_init(void) {
 }
 
 ret_t jerry_script_deinit(void) {
+#ifndef WITH_IOTJS
   jerry_cleanup();
 
 #if defined(JERRY_EXTERNAL_CONTEXT) && (JERRY_EXTERNAL_CONTEXT == 1)
   jerry_deinit_external_context();
 #endif /*JERRY_EXTERNAL_CONTEXT*/
-
+#endif /*WITH_IOTJS*/
   s_jerryscript_inited = FALSE;
 
   return RET_OK;

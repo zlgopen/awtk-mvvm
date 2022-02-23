@@ -1,0 +1,4 @@
+<window v-model="iotjs_fs_view_model" name="iotjs_fs">
+  <label name="label" x="c" y="m" w="160" h="28" v-data:text="{file_info}"/>
+  <button name="button" x="c" y="m:30" w="100" h="36" v-on:click="{read_file_info}" text="get"/>
+</window>

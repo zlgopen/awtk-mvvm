@@ -34,6 +34,10 @@ static ret_t mvvm_app_run_default_scripts(void) {
 static ret_t mvvm_app_init(void) {
   mvvm_init();
 
+#ifdef WITH_IOTJS
+  mvvm_iotjs_init();
+#endif /*WITH_IOTJS*/
+
 #ifdef WITH_JERRYSCRIPT
   mvvm_jerryscript_init();
 #endif /*WITH_JERRYSCRIPT*/
@@ -45,6 +49,10 @@ static ret_t mvvm_app_deinit(void) {
 #ifdef WITH_JERRYSCRIPT
   mvvm_jerryscript_deinit();
 #endif /*WITH_JERRYSCRIPT*/
+
+#ifdef WITH_IOTJS
+  mvvm_iotjs_deinit();
+#endif /*WITH_IOTJS*/
 
   mvvm_deinit();
 

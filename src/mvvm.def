@@ -221,6 +221,8 @@ EXPORTS
     value_validator_jerryscript_init
     value_validator_jerryscript_deinit
     value_validator_delegate_create
+    mvvm_iotjs_init
+    mvvm_iotjs_deinit
     jerry_script_eval_buff
     jerry_value_check
     jerryscript_awtk_init

@@ -34,6 +34,9 @@ ret_t jerry_script_init(void);
 ret_t jerry_script_deinit(void);
 void jerry_script_print_error(jerry_value_t error_value);
 
+void jerry_init_external_context(void);
+void jerry_deinit_external_context(void);
+
 /**
  * @method jerry_script_eval_buff
  * annotation ["global"]

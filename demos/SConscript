@@ -20,7 +20,6 @@ env.Program(os.path.join(BIN_DIR, 'demo11'), Glob('demo11/*.c'),LIBS=LIBS)
 env.Program(os.path.join(BIN_DIR, 'demo12'), Glob('demo12/*.c'),LIBS=LIBS)
 env.Program(os.path.join(BIN_DIR, 'demo13'), Glob('demo13/*.c'),LIBS=LIBS)
 env.Program(os.path.join(BIN_DIR, 'demo14'), Glob('demo14/*.c'),LIBS=LIBS)
-
 env.Program(os.path.join(BIN_DIR, 'demo15'), Glob('demo15/*.c'),LIBS=LIBS)
 env.Program(os.path.join(BIN_DIR, 'demo16'), Glob('demo16/*.c'),LIBS=LIBS)
 env.Program(os.path.join(BIN_DIR, 'demo17'), Glob('demo17/*.c'),LIBS=LIBS)
@@ -71,6 +70,9 @@ if 'WITH_JS' in os.environ and os.environ['WITH_JS'] == 'true':
   env.Program(os.path.join(BIN_DIR, 'jsdemo35'), Glob('jsdemo35/*.c'),LIBS=LIBS)
   env.Program(os.path.join(BIN_DIR, 'jsdemo40'), Glob('jsdemo40/*.c'),LIBS=LIBS)
 
+if 'WITH_IOTJS' in os.environ and os.environ['WITH_IOTJS'] == 'true':
+  env.Program(os.path.join(BIN_DIR, 'iotjsdemo1'), Glob('iotjsdemo1/*.c'),LIBS=LIBS)
+
 env.Program(os.path.join(BIN_DIR, 'cppdemo1'), Glob('cppdemo1/*.cpp'),LIBS=LIBS)
 env.Program(os.path.join(BIN_DIR, 'cppdemo2'), Glob('cppdemo2/*.cpp'),LIBS=LIBS)
 env.Program(os.path.join(BIN_DIR, 'cppdemo3'), Glob('cppdemo3/*.cpp'),LIBS=LIBS)
@@ -79,7 +81,6 @@ env.Program(os.path.join(BIN_DIR, 'cppdemo5'), Glob('cppdemo5/*.cpp'),LIBS=LIBS)
 env.Program(os.path.join(BIN_DIR, 'cppdemo6'), Glob('cppdemo6/*.cpp'),LIBS=LIBS)
 env.Program(os.path.join(BIN_DIR, 'cppdemo7'), Glob('cppdemo7/*.cpp'),LIBS=LIBS)
 env.Program(os.path.join(BIN_DIR, 'cppdemo8'), Glob('cppdemo8/*.cpp'),LIBS=LIBS)
-
 env.Program(os.path.join(BIN_DIR, 'cppdemo9'), Glob('cppdemo9/*.cpp'),LIBS=LIBS)
 env.Program(os.path.join(BIN_DIR, 'cppdemo10'), Glob('cppdemo10/*.cpp'),LIBS=LIBS)
 env.Program(os.path.join(BIN_DIR, 'cppdemo11'), Glob('cppdemo11/*.cpp'),LIBS=LIBS)

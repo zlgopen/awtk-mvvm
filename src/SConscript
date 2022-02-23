@@ -12,7 +12,9 @@ sources= Glob('mvvm/base/*.c') + \
   Glob('mvvm/*.c')
 
 if 'WITH_JS' in os.environ and os.environ['WITH_JS'] == 'true':
-  sources += Glob('mvvm/jerryscript/*.c') 
+  sources += Glob('mvvm/jerryscript/*.c')
+if 'WITH_IOTJS' in os.environ and os.environ['WITH_IOTJS'] == 'true' :
+  sources += Glob('mvvm/iotjs/*.c')
 
 env=DefaultEnvironment().Clone()
 
