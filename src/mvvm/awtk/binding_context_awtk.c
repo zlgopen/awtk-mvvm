@@ -836,7 +836,6 @@ static ret_t visit_data_binding_update_to_view(void* ctx, const void* data) {
 
 static ret_t widget_visit_data_binding_update_to_view(void* ctx, const void* data) {
   darray_t* node = (darray_t*)data;
-  widget_t* widget = WIDGET(BINDING_RULE_WIDGET(node->elms[0]));
 
   (void)ctx;
   return darray_foreach(node, visit_data_binding_update_to_view, NULL);

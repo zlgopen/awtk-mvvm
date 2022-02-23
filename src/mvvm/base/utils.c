@@ -45,7 +45,6 @@ const char* tk_destruct_array_prop_name(const char* name, uint32_t* index) {
 ret_t tk_command_arguments_to_object(const char* args, tk_object_t* obj) {
   tokenizer_t t;
   const char* params = NULL;
-  const char* a = NULL;
   const char* k = NULL;
   const char* v = NULL;
   char key[MAX_PATH + 1];

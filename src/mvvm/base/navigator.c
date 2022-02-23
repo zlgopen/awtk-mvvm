@@ -143,7 +143,6 @@ ret_t navigator_to(const char* args) {
 
 ret_t navigator_to_by_object(tk_object_t* args) {
   ret_t ret = RET_OK;
-  const char* target = NULL;
   navigator_request_t* req = NULL;
   return_value_if_fail(args != NULL && navigator() != NULL, RET_BAD_PARAMS);
 

@@ -20,7 +20,7 @@
 #define MVVM_APP_GLOBAL_DEINIT()
 #endif /*MVVM_APP_GLOBAL_DEINIT*/
 
-static ret_t mvvm_app_run_default_scripts(void) {
+static inline ret_t mvvm_app_run_default_scripts(void) {
 #ifdef WITH_JERRYSCRIPT
   if (mvvm_jerryscript_run(APP_SCRIPT_MAIN) != RET_OK) {
     mvvm_jerryscript_run(APP_SCRIPT_VALUE_CONVERTER);

@@ -243,20 +243,6 @@ typedef struct _view_model_array_adapter_t {
   bool_t auto_destroy_cpp;
 } view_model_array_adapter_t;
 
-static uint32_t view_model_array_adapter_size(view_model_t* view_model) {
-  view_model_array_adapter_t* adapter = (view_model_array_adapter_t*)(view_model);
-  return_value_if_fail(adapter != NULL, 0);
-
-  return adapter->cpp->GetSize();
-}
-
-static ret_t view_model_array_adapter_clear(view_model_t* view_model) {
-  view_model_array_adapter_t* adapter = (view_model_array_adapter_t*)(view_model);
-  return_value_if_fail(adapter != NULL, RET_BAD_PARAMS);
-
-  return adapter->cpp->Clear();
-}
-
 static ret_t view_model_array_adapter_set_prop(tk_object_t* obj, const char* name,
                                                const value_t* v) {
   uint32_t index = 0;

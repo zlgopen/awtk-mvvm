@@ -49,7 +49,6 @@ static ret_t items_binding_object_set_prop(tk_object_t* obj, const char* name, c
   ret_t ret = RET_OK;
   const char* value = value_str(v);
   items_binding_t* rule = ITEMS_BINDING(obj);
-  binding_rule_t* r = BINDING_RULE(rule);
   return_value_if_fail(rule != NULL, RET_BAD_PARAMS);
 
   if (rule->items_name == NULL && value == NULL) {
