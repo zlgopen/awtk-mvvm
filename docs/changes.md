@@ -1,5 +1,8 @@
 # 最新动态
 
+* 2021/02/23
+  * 导出 tk\_command\_arguments\_to\_object()到 fscript。（感谢雨欣提供补丁）
+
 * 2021/02/14
   * 修复在 idle 销毁 binding\_context 前定时器触发 idle\_update\_to\_view 导致打印告警的问题。（感谢兆坤提供补丁）
 

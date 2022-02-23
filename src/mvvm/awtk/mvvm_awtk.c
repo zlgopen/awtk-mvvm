@@ -141,6 +141,23 @@ static ret_t func_notify_items_changed_to_view_models(fscript_t* fscript, fscrip
   return ret;
 }
 
+static ret_t func_command_args_to_object(fscript_t* fscript, fscript_args_t* args, value_t* v) {
+  ret_t ret = RET_OK;
+  const char* str_args = NULL;
+  tk_object_t* obj = object_default_create();
+
+  if (args->size >= 1) {
+    str_args = value_str(args->args);
+  }
+
+  ret = tk_command_arguments_to_object(str_args, obj);
+
+  value_set_object(v, obj);
+  v->free_handle = TRUE;
+
+  return ret;
+}
+
 static ret_t mvvm_funcs_init(void) {
   fscript_register_func("navigator_to", func_navigator_to);
   fscript_register_func("navigator_replace", func_navigator_replace);
@@ -148,6 +165,7 @@ static ret_t mvvm_funcs_init(void) {
   fscript_register_func("get_view_models", func_get_view_models);
   fscript_register_func("notify_view_props_changed", func_notify_props_changed_to_view_models);
   fscript_register_func("notify_view_items_changed", func_notify_items_changed_to_view_models);
+  fscript_register_func("command_args_to_object", func_command_args_to_object);
 
   return RET_OK;
 }
