@@ -318,7 +318,7 @@ view_model_t* view_model_array_object_wrapper_create_ex(tk_object_t* obj, const 
   view_model->vt = &s_view_model_vtable;
   object_wrapper->obj = tk_object_ref(obj);
   object_wrapper->prop_prefix = tk_strdup(prop_prefix);
-  emitter_on(EMITTER(obj), EVT_ITEMS_CHANGED, emitter_forward, model);
+  emitter_on(EMITTER(obj), EVT_ITEMS_CHANGED, view_model_array_object_wrapper_on_changed, model);
   emitter_on(EMITTER(obj), EVT_PROPS_CHANGED, view_model_array_object_wrapper_on_changed, model);
   emitter_on(EMITTER(obj), EVT_PROP_CHANGED, view_model_array_object_wrapper_on_changed, model);
 

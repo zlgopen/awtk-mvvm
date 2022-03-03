@@ -1,5 +1,8 @@
 # 最新动态
 
+* 2021/03/03
+  * 修复 view\_model\_array\_object\_wrapper 包装的对象的项目数量变化后界面没有同步更新的问题。
+
 * 2021/02/23
   * 导出 tk\_command\_arguments\_to\_object()到 fscript。（感谢雨欣提供补丁）
   * 集成 Iot.js。（感谢智明提供补丁）
