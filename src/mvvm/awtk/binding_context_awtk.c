@@ -157,7 +157,12 @@ static ret_t on_widget_value_change(void* ctx, event_t* e) {
   value_t v;
   widget_t* widget = WIDGET(e->target);
   data_binding_t* rule = DATA_BINDING(ctx);
+  binding_context_t* bctx = BINDING_RULE_CONTEXT(rule);
   return_value_if_fail(widget_get_prop(widget, rule->prop, &v) == RET_OK, RET_OK);
+
+  if (!bctx->updating_view) {
+    bctx->updating_view_by_ui = TRUE;
+  }
 
   data_binding_set_prop(rule, &v);
   binding_context_update_error_of(rule);
@@ -341,7 +346,7 @@ static ret_t on_widget_event(void* c, event_t* e) {
   command_binding_t* rule = COMMAND_BINDING(c);
   binding_context_t* ctx = BINDING_RULE_CONTEXT(rule);
 
-  if (ctx->updating_view) {
+  if (ctx->updating_view && !ctx->updating_view_by_ui) {
     if (e->type == EVT_VALUE_CHANGED) {
       if (tk_str_ieq(rule->event, STR_VALUE_CHANGED_BY_UI)) {
         return RET_OK;
@@ -524,6 +529,7 @@ static ret_t binding_context_awtk_notify_items_changed(binding_context_t* ctx, t
     idle_remove(ctx->update_view_idle_id);
     ctx->update_view_idle_id = TK_INVALID_ID;
     ctx->updating_view = FALSE;
+    ctx->updating_view_by_ui = FALSE;
   }
 
   darray_init(&matched, 1, NULL, NULL);
@@ -937,6 +943,7 @@ static ret_t binding_context_awtk_update_to_view_sync(binding_context_t* ctx) {
   slist_foreach(&(ctx->command_bindings), widget_visit_command_binding_update_to_view, NULL);
   widget_invalidate_force(WIDGET(ctx->widget), NULL);
   ctx->updating_view = FALSE;
+  ctx->updating_view_by_ui = FALSE;
 
   return RET_OK;
 }

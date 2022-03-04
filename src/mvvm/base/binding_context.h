@@ -105,6 +105,12 @@ struct _binding_context_t {
    */
   bool_t updating_view;
   /**
+   * @property {bool_t} updating_view_by_ui
+   * @annotation ["readable"]
+   * 更新视图的事件由ui触发。
+   */
+  bool_t updating_view_by_ui;
+  /**
    * @property {uint32_t} update_view_idle_id
    * @annotation ["readable"]
    * 更新view的idle的id。
