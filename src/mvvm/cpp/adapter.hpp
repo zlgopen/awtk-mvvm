@@ -36,7 +36,7 @@
 #include "mvvm/cpp/value_converter.hpp"
 #include "mvvm/cpp/value_validator.hpp"
 
-#ifdef WIN32
+#if defined(WIN32) && !defined(__GNUC__)
 #ifdef MVVM_DLL_EXPORT
 #define MVVM_API __declspec(dllexport)
 #else

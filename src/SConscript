@@ -19,7 +19,7 @@ if 'WITH_IOTJS' in os.environ and os.environ['WITH_IOTJS'] == 'true' :
 env=DefaultEnvironment().Clone()
 
 EXPORT_DEF=''
-if OS_NAME == 'Windows':
+if OS_NAME == 'Windows' and os.environ['TOOLS_NAME'] == '' :
   EXPORT_DEF = ' /DEF:"src/mvvm.def" '
 	
 print('EXPORT_DEF='+EXPORT_DEF)
