@@ -36,16 +36,6 @@
 #include "mvvm/cpp/value_converter.hpp"
 #include "mvvm/cpp/value_validator.hpp"
 
-#if defined(WIN32) && !defined(__GNUC__)
-#ifdef MVVM_DLL_EXPORT
-#define MVVM_API __declspec(dllexport)
-#else
-#define MVVM_API __declspec(dllimport)
-#endif
-#else
-#define MVVM_API
-#endif
-
 namespace vm {
 
 /*将C++的Object适配成C的Object*/

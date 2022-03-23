@@ -35,7 +35,7 @@ namespace vm {
  * 用户在界面上输入的类型可能是无效的，ValueValidator负责将检查用户输入的有效性。
  *
  */
-class ValueValidator : public Object {
+class MVVM_API ValueValidator : public Object {
  public:
   ValueValidator();
   virtual ~ValueValidator();

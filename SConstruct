@@ -18,13 +18,6 @@ def dll_def_processor():
       reobj = re.compile(r)
       content, number = reobj.subn('', content)
 
-  if helper.awtk.TARGET_ARCH == 'x86':
-    with open('src/cpp_x86.def', 'r') as f:
-      content += f.read()
-  else:
-    with open('src/cpp.def', 'r') as f:
-      content += f.read()
-
   with open('src/mvvm.def', 'w') as f:
     f.write(content)
 

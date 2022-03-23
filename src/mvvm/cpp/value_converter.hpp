@@ -35,7 +35,7 @@ namespace vm {
  * 如果数据在View上显示的格式和在Model中保存的格式不一样，ValueConverter负责在两者之间转换。
  *
  */
-class ValueConverter : public Object {
+class MVVM_API ValueConverter : public Object {
  public:
   ValueConverter();
   virtual ~ValueConverter();

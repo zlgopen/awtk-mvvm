@@ -25,6 +25,18 @@
 #include "tkc/emitter.h"
 #include "tkc/object.h"
 
+#if defined(WIN32) || defined(MINGW)
+#ifndef MVVM_API
+#ifdef MVVM_DLL_EXPORT
+#define MVVM_API __declspec(dllexport) 
+#else
+#define MVVM_API __declspec(dllimport) 
+#endif
+#else
+#define MVVM_API 
+#endif
+#endif
+
 namespace vm {
 
 /**
@@ -33,7 +45,7 @@ namespace vm {
  * C++ Object的基类。
  *
  */
-class Object {
+class MVVM_API Object {
  public:
   Object();
   virtual ~Object();
