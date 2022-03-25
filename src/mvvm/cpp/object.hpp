@@ -25,8 +25,8 @@
 #include "tkc/emitter.h"
 #include "tkc/object.h"
 
-#if defined(WIN32) || defined(MINGW)
 #ifndef MVVM_API
+#if defined(WIN32) || defined(MINGW)
 #ifdef MVVM_DLL_EXPORT
 #define MVVM_API __declspec(dllexport) 
 #else
