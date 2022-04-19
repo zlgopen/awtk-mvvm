@@ -25,6 +25,7 @@
 #include "temperature_view_model.h"
 
 ret_t application_init(void) {
+  tk_socket_init();
   view_model_factory_register("temperature_timer", temperature_view_model_timer_create);
 
   return navigator_to("temperature10");
