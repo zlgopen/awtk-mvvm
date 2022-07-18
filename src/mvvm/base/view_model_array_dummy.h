@@ -41,7 +41,7 @@ struct _model_array_dummy_t {
   view_model_array_t view_model_array;
 
   /*private*/
-  darray_t array;
+  tk_object_t* array;
 };
 
 /**
@@ -110,6 +110,8 @@ view_model_t* view_model_array_dummy_get(view_model_t* view_model, uint32_t inde
 int32_t view_model_array_dummy_size(view_model_t* view_model);
 
 #define VIEW_MODEL_ARRAY_DUMMY(view_model) ((view_model_array_dummy_t*)(view_model))
+
+#define STR_VIEW_MODEL_ARRAY_DUMMY "array_dummy"
 
 END_C_DECLS
 

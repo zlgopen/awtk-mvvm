@@ -46,7 +46,11 @@ static ret_t view_model_dummy_get_prop(tk_object_t* obj, const char* name, value
   view_model_dummy_t* dummy = VIEW_MODEL_DUMMY(obj);
   return_value_if_fail(obj != NULL && name != NULL && v != NULL, RET_BAD_PARAMS);
 
-  return tk_object_get_prop(TK_OBJECT(dummy->props), name, v);
+  if (tk_object_get_prop(TK_OBJECT(dummy->props), name, v) != RET_OK) {
+    value_set_int(v, 0);
+  }
+
+  return RET_OK;
 }
 
 static bool_t view_model_dummy_can_exec(tk_object_t* obj, const char* name, const char* args) {

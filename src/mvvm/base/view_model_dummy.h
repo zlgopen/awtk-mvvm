@@ -55,6 +55,8 @@ view_model_t* view_model_dummy_create(navigator_request_t* req);
 
 #define VIEW_MODEL_DUMMY(view_model) ((view_model_dummy_t*)(view_model))
 
+#define STR_VIEW_MODEL_DUMMY "dummy"
+
 END_C_DECLS
 
 #endif /*TK_VIEW_MODEL_DUMMY_H*/
