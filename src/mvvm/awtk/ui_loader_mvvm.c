@@ -24,6 +24,9 @@
 #include "tkc/str.h"
 #include "tkc/utils.h"
 #include "tkc/fscript.h"
+#include "ui_loader/ui_binary_writer.h"
+#include "ui_loader/ui_loader_xml.h"
+
 #include "ui_loader/ui_builder_default.h"
 #include "mvvm/base/binding_rule_parser.h"
 #include "mvvm/base/data_binding.h"
@@ -418,13 +421,14 @@ static ret_t ui_loader_mvvm_on_widget_destroy(void* ctx, event_t* e) {
 }
 
 static ret_t ui_loader_mvvm_build_data_with_widget(ui_loader_mvvm_t* loader,
-                                                   darray_t* bind_data_rbuffer_offsets,                                            rbuffer_t* rbuffer, widget_t* widget) {
+                                                   darray_t* bind_data_rbuffer_offsets,
+                                                   rbuffer_t* rbuffer, widget_t* widget) {
   const char* key = NULL;
   const char* val = NULL;
   uint32_t rbuffer_offset = 0;
   binding_context_t* ctx = loader->binding_context;
   if (ctx != NULL) {
-		uint32_t i = 0;     
+    uint32_t i = 0;
     rbuffer_offset = rbuffer->cursor;
     for (i = 0; i < bind_data_rbuffer_offsets->size; i++) {
       rbuffer_rewind(rbuffer);
@@ -972,8 +976,8 @@ static ret_t ui_loader_mvvm_load_a_snippet(ui_loader_mvvm_t* loader, rbuffer_t* 
   return RET_OK;
 }
 
-static ret_t ui_loader_mvvm_load(ui_loader_t* l, const uint8_t* data, uint32_t size,
-                                 ui_builder_t* b) {
+static ret_t ui_loader_mvvm_load_bin(ui_loader_t* l, const uint8_t* data, uint32_t size,
+                                     ui_builder_t* b) {
   ui_loader_mvvm_t* loader = UI_LOADER_MVVM(l);
   rbuffer_t rbuffer;
   uint32_t magic = 0;
@@ -1006,6 +1010,32 @@ static ret_t ui_loader_mvvm_load(ui_loader_t* l, const uint8_t* data, uint32_t s
   }
 
   return RET_OK;
+}
+
+static ret_t ui_loader_mvvm_load_xml(ui_loader_t* l, const uint8_t* data, uint32_t size,
+                                     ui_builder_t* b) {
+  wbuffer_t wbuffer;
+  ret_t ret = RET_OK;
+  ui_binary_writer_t ui_binary_writer;
+  ui_loader_t* loader = xml_ui_loader();
+  ui_builder_t* builder =
+      ui_binary_writer_init(&ui_binary_writer, wbuffer_init_extendable(&wbuffer));
+
+  wbuffer_extend_capacity(&wbuffer, size);
+  ui_loader_load(loader, (const uint8_t*)data, size, builder);
+  ret = ui_loader_mvvm_load_bin(l, wbuffer.data, wbuffer.cursor, b);
+  wbuffer_deinit(&wbuffer);
+
+  return ret;
+}
+
+static ret_t ui_loader_mvvm_load(ui_loader_t* l, const uint8_t* data, uint32_t size,
+                                 ui_builder_t* b) {
+  if (*data == '<') {
+    return ui_loader_mvvm_load_xml(l, data, size, b);
+  } else {
+    return ui_loader_mvvm_load_bin(l, data, size, b);
+  }
 }
 
 static ui_loader_mvvm_t s_ui_loader_mvvm;

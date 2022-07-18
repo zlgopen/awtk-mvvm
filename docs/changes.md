@@ -2,6 +2,7 @@
 
 * 2021/07/18
   * 完善view\_model\_dummy/view\_model\_array\_dummy
+  * ui\_loader\_mvvm 支持加载xml文件。
 
 * 2021/04/18
   * 修复 demo20 串口通信异常的问题。（感谢智明提供补丁）
