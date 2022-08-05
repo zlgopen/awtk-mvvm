@@ -186,6 +186,38 @@ static JSFUNC_DECL(wrap_object_t_exec) {
   return jsvalue_from_number(ret);
 }
 
+static JSFUNC_DECL(wrap_object_t_forward_event) {
+  ret_t ret = RET_BAD_PARAMS;
+
+  if (args_count >= 2) {
+    tk_object_t* obj = jsobj_get_native_ptr(call_info_p->this_value);
+    if (obj != NULL) {
+      tk_object_t* listener = jsvalue_to_obj(args_p[0]);
+      uint32_t type = jsvalue_to_number(args_p[1]);
+      emitter_on(EMITTER(obj), type, emitter_forward, listener);
+      ret = RET_OK;
+    }
+  }
+
+  return jsvalue_from_number(ret);
+}
+
+static JSFUNC_DECL(wrap_object_t_unforward_event) {
+  ret_t ret = RET_BAD_PARAMS;
+
+  if (args_count >= 2) {
+    tk_object_t* obj = jsobj_get_native_ptr(call_info_p->this_value);
+    if (obj != NULL) {
+      tk_object_t* listener = jsvalue_to_obj(args_p[0]);
+      uint32_t type = jsvalue_to_number(args_p[1]);
+      emitter_off_by_func(EMITTER(obj), type, emitter_forward, listener);
+      ret = RET_OK;
+    }
+  }
+
+  return jsvalue_from_number(ret);
+}
+
 jsvalue_t jsvalue_from_obj(tk_object_t* obj) {
   value_t v;
   return_value_if_fail(obj != NULL, JS_UNDEFINED);
@@ -200,6 +232,8 @@ jsvalue_t jsvalue_from_obj(tk_object_t* obj) {
     jsobj_set_prop_func(jsobj, "setProp", wrap_object_t_set_prop);
     jsobj_set_prop_func(jsobj, "canExec", wrap_object_t_can_exec);
     jsobj_set_prop_func(jsobj, "exec", wrap_object_t_exec);
+    jsobj_set_prop_func(jsobj, "forwardEvent", wrap_object_t_forward_event);
+    jsobj_set_prop_func(jsobj, "unforwardEvent", wrap_object_t_unforward_event);
 
     return jsobj;
   }

@@ -24,6 +24,7 @@
 #include "base/idle.h"
 #include "base/timer.h"
 #include "base/widget.h"
+#include "base/events.h"
 #include "awtk_global.h"
 #include "mvvm/base/navigator.h"
 #include "mvvm/base/view_model_factory.h"
@@ -49,6 +50,18 @@ static ret_t ret_t_init(void) {
   jsobj_set_prop_int(obj, "RET_BAD_PARAMS", RET_BAD_PARAMS);
   jsobj_set_prop_int(obj, "RET_ITEMS_CHANGED", RET_ITEMS_CHANGED);
   jsobj_set_prop_int(obj, "RET_OBJECT_CHANGED", RET_OBJECT_CHANGED);
+
+  jsvalue_unref(obj);
+
+  return RET_OK;
+}
+
+static ret_t event_type_t_init(void) {
+  jsvalue_t obj = jsvalue_get_global_object();
+
+  jsobj_set_prop_int(obj, "EVT_ITEMS_CHANGED", EVT_ITEMS_CHANGED);
+  jsobj_set_prop_int(obj, "EVT_PROPS_CHANGED", EVT_PROPS_CHANGED);
+  jsobj_set_prop_int(obj, "EVT_PROP_CHANGED", EVT_PROP_CHANGED);
 
   jsvalue_unref(obj);
 
@@ -394,6 +407,7 @@ static JSFUNC_DECL(wrap_set_theme) {
 
 ret_t jerryscript_awtk_init(void) {
   ret_t_init();
+  event_type_t_init();
 
   jsfunc_register_global("exit", wrap_quit);
   jsfunc_register_global("quit", wrap_quit);
