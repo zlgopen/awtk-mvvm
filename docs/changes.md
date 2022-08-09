@@ -1,5 +1,11 @@
 # 最新动态
 
+* 2021/08/09
+  * 修正由于 binding rule 未及时清理导致列表项发生变化时打印过多log的问题
+
+* 2021/08/05
+  * 导出tk_object_t对象的forwardEvent、unforwardEvent到JS
+
 * 2021/07/18
   * 完善view\_model\_dummy/view\_model\_array\_dummy
   * ui\_loader\_mvvm 支持加载xml文件。

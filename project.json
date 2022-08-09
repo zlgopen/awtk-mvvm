@@ -4,7 +4,7 @@
   "date": "2020-07-20",
   "team": "AWTK Develop Team",
   "author": "Li XianJing <xianjimli@hotmail.com>",
-  "desc": "awtk-mvvm",
+  "desc": "AWTK-MVVM 是用 C 语言开发的，支持各种脚本语言的 MVVM 框架，实现了数据绑定、命令绑定和窗口导航等基本功能；使用 AWTK-MVVM 开发应用程序，可以无需学习 AWTK 本身的 API，只需学习绑定规则和 Model 的实现方式即可。",
   "copyright": "Guangzhou ZHIYUAN Electronics Co.,Ltd.",
   "entry": "main",
   "assets": {
