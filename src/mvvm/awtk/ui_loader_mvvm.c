@@ -413,6 +413,29 @@ static ret_t widget_init_count_of_widget_before_1st_dynamic_rule(widget_t* widge
   return RET_OK;
 }
 
+static ret_t visit_clear_binding(void* ctx, const void* data) {
+  widget_t* widget = WIDGET(data);
+  return binding_context_clear_bindings_of_widget(ctx, widget);
+}
+
+static ret_t widget_destroy_children_and_clear_bindings(widget_t* widget, binding_context_t* ctx) {
+  /* 由于控件为异步销毁，无法立即清除绑定规则，故先强制清除，避免无效的绑定被执行 */
+  WIDGET_FOR_EACH_CHILD_BEGIN(widget, iter, i)
+  widget_foreach(iter, visit_clear_binding, ctx);
+  WIDGET_FOR_EACH_CHILD_END()
+
+  widget_destroy_children(widget);
+  return RET_OK;
+}
+
+static ret_t widget_destroy_and_clear_bindings(widget_t* widget, binding_context_t* ctx) {
+  /* 由于控件为异步销毁，无法立即清除绑定规则，故先强制清除，避免无效的绑定被执行 */
+  widget_foreach(widget, visit_clear_binding, ctx);
+
+  widget_destroy(widget);
+  return RET_OK;
+}
+
 static ret_t ui_loader_mvvm_on_widget_destroy(void* ctx, event_t* e) {
   binding_context_t* bctx = BINDING_CONTEXT(ctx);
   binding_context_clear_bindings_of_widget(bctx, e->target);
@@ -538,11 +561,6 @@ error:
   return NULL;
 }
 
-static ret_t visit_clear_binding(void* ctx, const void* data) {
-  widget_t* widget = WIDGET(data);
-  return binding_context_clear_bindings_of_widget(ctx, widget);
-}
-
 static ret_t ui_loader_mvvm_build_condition_widget(ui_loader_mvvm_t* loader, rbuffer_t* rbuffer,
                                                    ui_builder_t* builder, binding_rule_t* rule) {
   bool_t is_ok = FALSE;
@@ -593,11 +611,7 @@ static ret_t ui_loader_mvvm_build_condition_widget(ui_loader_mvvm_t* loader, rbu
         if (binding->current_expr != NULL) {
           widget = widget_get_child(parent, index);
           ENSURE(widget != NULL);
-
-          /* 由于控件为异步销毁，无法立即清除绑定规则，故在此处强制清除，避免无效的绑定被执行 */
-          widget_foreach(widget, visit_clear_binding, ctx);
-
-          widget_destroy(widget);
+          widget_destroy_and_clear_bindings(widget, ctx);
         }
 
         widget = ui_loader_mvvm_build_widget(loader, rbuffer, builder, NULL, NULL);
@@ -628,11 +642,7 @@ static ret_t ui_loader_mvvm_build_condition_widget(ui_loader_mvvm_t* loader, rbu
     uint32_t index = binding_context_calc_widget_index_of_rule(ctx, rule);
     widget_t* widget = widget_get_child(parent, index);
     ENSURE(widget != NULL);
-
-    /* 由于控件为异步销毁，无法立即清除绑定规则，故在此处强制清除，避免无效的绑定被执行 */
-    widget_foreach(widget, visit_clear_binding, ctx);
-
-    widget_destroy(widget);
+    widget_destroy_children_and_clear_bindings(widget, ctx);
   }
 
   binding->current_expr = NULL;
@@ -735,7 +745,7 @@ static ret_t ui_loader_mvvm_build_items_widget(ui_loader_mvvm_t* loader, rbuffer
       uint32_t old_count = binding->items_count;
 
       if (old_count == widget_count_children(parent)) {
-        widget_destroy_children(parent);
+        widget_destroy_children_and_clear_bindings(parent, ctx);
       } else {
         uint32_t i;
         uint32_t first_index = binding_context_calc_widget_index_of_rule(ctx, rule);
@@ -743,7 +753,7 @@ static ret_t ui_loader_mvvm_build_items_widget(ui_loader_mvvm_t* loader, rbuffer
         for (i = 0; i < old_count; i++) {
           widget = widget_get_child(parent, first_index + old_count - i - 1);
           ENSURE(widget != NULL);
-          widget_destroy(widget);
+          widget_destroy_and_clear_bindings(widget, ctx);
         }
       }
 
@@ -759,12 +769,12 @@ static ret_t ui_loader_mvvm_build_items_widget(ui_loader_mvvm_t* loader, rbuffer
       value_t id;
 
       if (new_count == 0 && old_count == widget_count_children(parent)) {
-        widget_destroy_children(parent);
+        widget_destroy_children_and_clear_bindings(parent, ctx);
       } else if (id_name == NULL || old_count == 0) {
         for (i = new_count; i < old_count; i++) {
           widget = widget_get_child(parent, first_index + new_count + old_count - i - 1);
           ENSURE(widget != NULL);
-          widget_destroy(widget);
+          widget_destroy_and_clear_bindings(widget, ctx);
         }
 
         for (i = old_count; i < new_count; i++) {
@@ -848,7 +858,7 @@ static ret_t ui_loader_mvvm_build_items_widget(ui_loader_mvvm_t* loader, rbuffer
         for (i = old_end; i >= old_begin; i--) {
           widget = widget_get_child(parent, i);
           ENSURE(widget != NULL);
-          widget_destroy(widget);
+          widget_destroy_and_clear_bindings(widget, ctx);
           if (i == 0) {
             break;
           }
