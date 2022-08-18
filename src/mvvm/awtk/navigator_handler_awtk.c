@@ -520,6 +520,7 @@ static ret_t navigator_handler_awtk_on_count_view_model(navigator_handler_t* han
       if (view_model != NULL) {
         cnt = 1;
       }
+      ret = RET_OK;
     }
   }
 
