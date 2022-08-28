@@ -170,8 +170,11 @@ static ret_t mvvm_funcs_init(void) {
   return RET_OK;
 }
 
+static bool_t s_mvvm_awtk_quited = FALSE;
+
 ret_t mvvm_awtk_init(void) {
   mvvm_funcs_init();
+  s_mvvm_awtk_quited = FALSE;
   navigator_register_handler(navigator(), NAVIGATOR_DEFAULT_HANDLER,
                              navigator_handler_awtk_create());
 
@@ -204,5 +207,10 @@ ret_t mvvm_awtk_init(void) {
 }
 
 ret_t mvvm_awtk_deinit(void) {
+  s_mvvm_awtk_quited = TRUE;
   return RET_OK;
+}
+
+bool_t mvvm_awtk_is_quited(void) {
+  return s_mvvm_awtk_quited;
 }

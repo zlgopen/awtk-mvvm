@@ -2701,6 +2701,16 @@
           "type": "ret_t",
           "desc": "返回RET_OK表示成功，否则表示失败。"
         }
+      },
+      {
+        "params": [],
+        "annotation": {},
+        "desc": "是否已经退出。",
+        "name": "mvvm_awtk_is_quited",
+        "return": {
+          "type": "bool_t",
+          "desc": "返回TRUE表示已经退出，否则表示没有退出。"
+        }
       }
     ],
     "events": [],

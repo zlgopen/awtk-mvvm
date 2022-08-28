@@ -41,6 +41,7 @@
 #include "mvvm/base/view_model_compositor.h"
 #include "mvvm/base/custom_binder.h"
 #include "mvvm/awtk/ui_loader_mvvm.h"
+#include "mvvm/awtk/mvvm_awtk.h"
 #include "mvvm/awtk/binding_context_awtk.h"
 
 #define STR_SUB_VIEW_MODEL "sub_view_model:"
@@ -952,8 +953,12 @@ static ret_t idle_update_to_view(const idle_info_t* info) {
   binding_context_t* ctx = BINDING_CONTEXT(info->ctx);
   return_value_if_fail(ctx != NULL, RET_BAD_PARAMS);
 
-  ctx->update_view_idle_id = TK_INVALID_ID;
-  binding_context_awtk_update_to_view_sync(ctx);
+  if (!mvvm_awtk_is_quited()) {
+    ctx->update_view_idle_id = TK_INVALID_ID;
+    binding_context_awtk_update_to_view_sync(ctx);
+  } else {
+    log_debug("mvvm_awtk_is_quited\n");
+  }
 
   return RET_REMOVE;
 }

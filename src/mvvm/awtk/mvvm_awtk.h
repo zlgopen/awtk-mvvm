@@ -36,6 +36,7 @@ BEGIN_C_DECLS
  */
 ret_t mvvm_awtk_init(void);
 
+
 /**
  * @method mvvm_awtk_deinit
  * ~初始化MVVM awtk
@@ -43,6 +44,14 @@ ret_t mvvm_awtk_init(void);
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
 ret_t mvvm_awtk_deinit(void);
+
+/**
+ * @method mvvm_awtk_is_quited
+ * 是否已经退出。
+ *
+ * @return {bool_t} 返回TRUE表示已经退出，否则表示没有退出。
+ */
+bool_t mvvm_awtk_is_quited(void);
 
 END_C_DECLS
 

@@ -112,6 +112,7 @@ EXPORTS
     binding_context_awtk_create
     mvvm_awtk_init
     mvvm_awtk_deinit
+    mvvm_awtk_is_quited
     ui_loader_mvvm
     ui_loader_mvvm_load_widget
     ui_loader_mvvm_reload_widget
