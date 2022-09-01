@@ -346,8 +346,9 @@ static ret_t command_binding_exec_command(command_binding_t* rule) {
 static ret_t on_widget_event(void* c, event_t* e) {
   command_binding_t* rule = COMMAND_BINDING(c);
   binding_context_t* ctx = BINDING_RULE_CONTEXT(rule);
+  widget_t* widget = WIDGET(e->target);
 
-  if (ctx->updating_view && !ctx->updating_view_by_ui) {
+  if ((ctx->updating_view && !ctx->updating_view_by_ui) || (widget->loading)) {
     if (e->type == EVT_VALUE_CHANGED) {
       if (tk_str_ieq(rule->event, STR_VALUE_CHANGED_BY_UI)) {
         return RET_OK;
