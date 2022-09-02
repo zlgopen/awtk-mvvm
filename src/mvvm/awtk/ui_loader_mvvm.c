@@ -642,7 +642,7 @@ static ret_t ui_loader_mvvm_build_condition_widget(ui_loader_mvvm_t* loader, rbu
     uint32_t index = binding_context_calc_widget_index_of_rule(ctx, rule);
     widget_t* widget = widget_get_child(parent, index);
     ENSURE(widget != NULL);
-    widget_destroy_children_and_clear_bindings(widget, ctx);
+    widget_destroy_and_clear_bindings(widget, ctx);
   }
 
   binding->current_expr = NULL;
