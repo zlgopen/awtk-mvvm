@@ -422,7 +422,7 @@ ret_t navigator_notify_view_items_changed(tk_object_t* items, const char* target
 tk_object_t* navigator_get_locale(const char* target);
 
 /**
- * @method navigator_get_locale
+ * @method navigator_set_locale
  * 设置指定的本地化信息（国家和语言）。
  * > 路径为NULL时表示窗口管理器；
  * > 路径为空字符串时表示最上面的窗口；
