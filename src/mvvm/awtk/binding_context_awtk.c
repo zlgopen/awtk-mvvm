@@ -954,11 +954,11 @@ static ret_t idle_update_to_view(const idle_info_t* info) {
   binding_context_t* ctx = BINDING_CONTEXT(info->ctx);
   return_value_if_fail(ctx != NULL, RET_BAD_PARAMS);
 
-  if (!mvvm_awtk_is_quited()) {
+  if (ctx->bound && !mvvm_awtk_is_quited()) {
     ctx->update_view_idle_id = TK_INVALID_ID;
     binding_context_awtk_update_to_view_sync(ctx);
   } else {
-    log_debug("mvvm_awtk_is_quited\n");
+    log_debug("binding context is unbound, or mvvm awtk is quited.\n");
   }
 
   return RET_REMOVE;
