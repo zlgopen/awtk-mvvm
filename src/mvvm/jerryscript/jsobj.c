@@ -22,6 +22,7 @@
 #include "tkc/mem.h"
 #include "tkc/utils.h"
 #include "tkc/named_value.h"
+#include "mvvm/base/utils.h"
 #include "mvvm/jerryscript/object_js_factory.h"
 #include "mvvm/jerryscript/jsobj.h"
 
@@ -128,6 +129,24 @@ static JSFUNC_DECL(wrap_object_t_set_prop) {
   return jsvalue_from_number(ret);
 }
 
+static const char* jsvalue_to_args_string(jsvalue_t value, str_t* temp) {
+  const char* args = NULL;
+
+  if (jerry_value_is_object(value)) {
+    tk_object_t* obj = jsvalue_to_obj(value);
+    if (obj != NULL) {
+      str_set(temp, COMMAND_ARGS_STRING_PREFIX);
+      if (tk_command_arguments_from_object(obj, temp) == RET_OK) {
+        args = temp->str;
+      }
+    }
+  } else {
+    args = jsvalue_to_utf8(value, temp);
+  }
+
+  return args;
+}
+
 static JSFUNC_DECL(wrap_object_t_can_exec) {
   bool_t ret = TRUE;
 
@@ -144,7 +163,7 @@ static JSFUNC_DECL(wrap_object_t_can_exec) {
 
       name = jsvalue_to_utf8(args_p[0], &temp_name);
       if (args_count >= 2) {
-        args = jsvalue_to_utf8(args_p[1], &temp_args);
+        args = jsvalue_to_args_string(args_p[1], &temp_args);
       }
 
       ret = tk_object_can_exec(obj, name, args);
@@ -173,7 +192,7 @@ static JSFUNC_DECL(wrap_object_t_exec) {
 
       name = jsvalue_to_utf8(args_p[0], &temp_name);
       if (args_count >= 2) {
-        args = jsvalue_to_utf8(args_p[1], &temp_args);
+        args = jsvalue_to_args_string(args_p[1], &temp_args);
       }
 
       ret = tk_object_exec(obj, name, args);
@@ -417,7 +436,7 @@ ret_t jsobj_unregister_global(const char* name) {
   return RET_OK;
 }
 
-static void tkc_object_free_callback(void* native_p, struct jerry_object_native_info_t *info_p) {
+static void tkc_object_free_callback(void* native_p, struct jerry_object_native_info_t* info_p) {
   tk_object_t* obj = TK_OBJECT(native_p);
   tk_object_unref(obj);
 }

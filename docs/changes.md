@@ -1,5 +1,8 @@
 # 最新动态
 
+* 2021/09/09
+  * 修正 args 为 Object 类型时 JS 层 tk\_object\_t 的 canExec 和 exec 没有正确传参的问题。
+
 * 2021/09/04
   * 修改 binding\_context 解绑后不刷新界面，避免使用无效的 JS 模型数据导致异常。
 
