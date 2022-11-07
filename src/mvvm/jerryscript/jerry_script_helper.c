@@ -409,7 +409,7 @@ ret_t jerry_value_check(jerry_value_t value) {
     jerry_value_t ret;
     ret = jerry_get_value_from_error(value, true);
     jerry_script_print_error(ret);
-
+    jerry_release_value(ret);
     return RET_FAIL;
   } else {
     return RET_OK;

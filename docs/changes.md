@@ -1,5 +1,8 @@
 # 最新动态
 
+* 2022/11/07
+  * 完善 JS 数组的适配，以便在 Fscript 中使用。（感谢雨欣提供补丁）
+
 * 2021/09/09
   * 修正 args 为 Object 类型时 JS 层 tk\_object\_t 的 canExec 和 exec 没有正确传参的问题。
 

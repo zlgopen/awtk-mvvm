@@ -711,14 +711,15 @@ ret_t jsobj_exec_ex(jsvalue_t obj, const char* name, jsvalue_t jsargs) {
     jsvalue_t func = jsobj_get_prop_value(obj, name);
     if (jsvalue_is_function(func)) {
       jsvalue_t jsret = jerry_call_function(func, obj, &jsargs, 1);
-      jerry_value_check(jsret);
-      ret = (ret_t)jsvalue_to_number(jsret);
-      jsvalue_unref(func);
-      jsvalue_unref(jsret);
+      ret = jerry_value_check(jsret);
+      if (ret == RET_OK) {
+        jsvalue_unref(jsret);
+      }
     } else {
       ret = RET_NOT_IMPL;
       log_debug("not function %s\n", name);
     }
+    jsvalue_unref(func);
   } else {
     ret = RET_NOT_FOUND;
   }
@@ -734,6 +735,60 @@ ret_t jsobj_exec(jsvalue_t obj, const char* name, const value_t* args, str_t* te
   return ret;
 }
 
+jsvalue_t jsobj_exec_ex_value(jsvalue_t obj, const char* name, jsvalue_t* jsargs_p,
+                              uint32_t jsargs_c) {
+  jsvalue_t jsret;
+  ret_t ret = RET_FAIL;
+
+  if (jsobj_has_prop(obj, name)) {
+    jsvalue_t func = jsobj_get_prop_value(obj, name);
+    if (jsvalue_is_function(func)) {
+      jsret = jerry_call_function(func, obj, jsargs_p, jsargs_c);
+      ret = jerry_value_check(jsret);
+    }
+    jsvalue_unref(func);
+  }
+
+  if (ret != RET_OK) {
+    jsret = JS_UNDEFINED;
+    log_debug("jsobj_exec_ex_value fail.\n");
+  }
+
+  return jsret;
+}
+
+ret_t jsobj_exec_value(jsvalue_t obj, const char* name, const value_t* args_p, uint32_t args_c,
+                       value_t* v, str_t* temp) {
+  uint32_t i;
+  jsvalue_t jsret;
+  uint32_t jsargs_c = args_p != NULL && args_c > 0 ? args_c : 1;
+  jsvalue_t* jsargs_p = TKMEM_CALLOC(jsargs_c, sizeof(jsvalue_t));
+  return_value_if_fail(jsargs_p != NULL, RET_OOM);
+
+  if (args_p != NULL && jsargs_c > 0) {
+    for (i = 0; i < jsargs_c; i++) {
+      *(jsargs_p + i) = jsvalue_from_value(args_p + i, temp);
+    }
+  } else {
+    *jsargs_p = JS_UNDEFINED;
+  }
+
+  jsret = jsobj_exec_ex_value(obj, name, jsargs_p, jsargs_c);
+  if (!jsvalue_is_undefined(jsret)) {
+    jsvalue_to_value(jsret, v, temp);
+  } else {
+    value_reset(v);
+  }
+
+  for (i = 0; i < jsargs_c; i++) {
+    jsvalue_unref(*(jsargs_p + i));
+  }
+  jsvalue_unref(jsret);
+  TKMEM_FREE(jsargs_p);
+
+  return RET_OK;
+}
+
 bool_t jsobj_can_exec(jsvalue_t obj, const char* name, const value_t* args, str_t* temp) {
   bool_t ret = FALSE;
   return_value_if_fail(name != NULL && name[0] != '\0' && temp != NULL, FALSE);
@@ -744,7 +799,6 @@ bool_t jsobj_can_exec(jsvalue_t obj, const char* name, const value_t* args, str_
 
   if (jsobj_has_prop(obj, temp->str)) {
     jsvalue_t func = jsobj_get_prop_value(obj, temp->str);
-
     if (jsvalue_is_function(func)) {
       jsvalue_t jsargs = jsvalue_from_value(args, temp);
       jsvalue_t jsret = jerry_call_function(func, obj, &jsargs, 1);
@@ -754,7 +808,6 @@ bool_t jsobj_can_exec(jsvalue_t obj, const char* name, const value_t* args, str_
     } else {
       ret = FALSE;
     }
-
     jsvalue_unref(func);
   } else {
     ret = jsobj_has_prop_func(obj, name);

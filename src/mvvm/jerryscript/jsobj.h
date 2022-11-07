@@ -459,6 +459,36 @@ ret_t jsobj_exec_ex(jsvalue_t obj, const char* name, jsvalue_t jsargs);
 ret_t jsobj_exec(jsvalue_t obj, const char* name, const value_t* args, str_t* temp);
 
 /**
+ * @method jsobj_exec_ex_value
+ * 执行js对象中的指定命令并获取返回值。
+ * @annotation ["global"]
+ * @param {jsvalue_t} obj js对象。
+ * @param {const char*} name 命令名称。
+ * @param {jsvalue_t} jsargs_p js对象参数列表。
+ * @param {uint32_t} jsargs_c js对象参数个数。
+ *
+ * @return {jsvalue_t} 返回值的js对象（使用完毕需要调用 jsvalue_unref 接口将引用计数减1）。
+ */
+jsvalue_t jsobj_exec_ex_value(jsvalue_t obj, const char* name, jsvalue_t* jsargs_p,
+                              uint32_t jsargs_c);
+
+/**
+ * @method jsobj_exec_value
+ * 执行js对象中的指定命令并获取返回值。
+ * @annotation ["global"]
+ * @param {jsvalue_t} obj js对象。
+ * @param {const char*} name 命令名称。
+ * @param {const value_t*} args_p value参数列表。
+ * @param {uint32_t} args_c value参数个数。
+ * @param {value_t*} v 返回的值。
+ * @param {str_t*} temp 字符串参数。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t jsobj_exec_value(jsvalue_t obj, const char* name, const value_t* args_p, uint32_t args_c,
+                       value_t* v, str_t* temp);
+
+/**
  * @method jsobj_can_exec
  * 检查js对象中是否可以执行指定命令。
  * @annotation ["global"]

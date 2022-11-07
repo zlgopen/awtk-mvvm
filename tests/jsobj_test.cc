@@ -110,8 +110,7 @@ TEST(JsValue, request) {
   navigator_request_t* req = jsvalue_to_navigator_request(jsreq);
   ASSERT_EQ(tk_object_get_prop_int(TK_OBJECT(req), "int", 0), 100);
   ASSERT_EQ(string(tk_object_get_prop_str(TK_OBJECT(req), "str")), string("str"));
-  ASSERT_EQ(string(tk_object_get_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_TARGET)),
-            string("main"));
+  ASSERT_EQ(string(tk_object_get_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_TARGET)), string("main"));
   ASSERT_EQ(tk_object_get_prop_bool(TK_OBJECT(req), NAVIGATOR_ARG_OPEN_NEW, FALSE), TRUE);
   ASSERT_EQ(tk_object_get_prop_bool(TK_OBJECT(req), NAVIGATOR_ARG_CLOSE_CURRENT, FALSE), TRUE);
 
@@ -121,4 +120,41 @@ TEST(JsValue, request) {
   jsvalue_unref(jsreq1);
   jsvalue_unref(jsreq);
   tk_object_unref(TK_OBJECT(req));
+}
+
+TEST(JsValue, exec) {
+  str_t str;
+  uint32_t i;
+  value_t value;
+  value_t vargs_p[3];
+  jsvalue_t jsargs_p[3];
+  jsvalue_t jsobj = JS_EMPTY_ARRAY;
+  jsvalue_t jsret;
+
+  str_init(&str, 0);
+  value_set_int32(vargs_p, 0);
+  value_set_int32(vargs_p + 1, 1);
+  value_set_int32(vargs_p + 2, 2);
+
+  ASSERT_EQ(jsobj_exec_value(jsobj, "push", vargs_p, 3, &value, &str), RET_OK);
+  ASSERT_EQ(jsobj_get_prop_count(jsobj), 3);
+  ASSERT_EQ(value_int32(&value), 3);
+
+  jsargs_p[0] = jsvalue_from_number(3);
+  jsargs_p[1] = jsvalue_from_number(4);
+  jsargs_p[2] = jsvalue_from_number(5);
+  jsret = jsobj_exec_ex_value(jsobj, "push", jsargs_p, 3);
+  ASSERT_EQ(jsvalue_to_number(jsret), 6);
+
+  for (i = 0; i < 6; i++) {
+    ASSERT_EQ(jsobj_get_prop_by_index(jsobj, i, &value, &str), RET_OK);
+    ASSERT_EQ(value_int32(&value), i);
+  }
+
+  for (i = 0; i < 3; i++) {
+    jsvalue_unref(*(jsargs_p + i));
+  }
+  jsvalue_unref(jsret);
+  jsvalue_unref(jsobj);
+  str_reset(&str);
 }

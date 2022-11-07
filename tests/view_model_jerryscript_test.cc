@@ -119,7 +119,7 @@ TEST(ModelJerryScript, exec1) {
   ASSERT_NE(obj, TK_OBJECT(NULL));
 
   ASSERT_EQ(tk_object_can_exec(obj, "save1", "awtk\n"), TRUE);
-  ASSERT_EQ(tk_object_exec(obj, "save1", "awtk\n"), 10);
+  ASSERT_EQ(tk_object_exec(obj, "save1", "awtk\n"), RET_OK);
 
   tk_object_unref(TK_OBJECT(view_model));
 }
