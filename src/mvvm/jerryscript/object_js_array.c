@@ -24,7 +24,6 @@
 #include "tkc/utils.h"
 #include "tkc/value.h"
 #include "tkc/types_def.h"
-#include "fscript_ext/fscript_array.h"
 #include "mvvm/jerryscript/object_js_array.h"
 
 #define JS_ARRAY_FUNC_SORT_COMPARE "sortCompare"
@@ -87,10 +86,14 @@ static ret_t object_js_array_get(tk_object_t* obj, uint32_t i, value_t* v) {
 
 static ret_t object_js_array_get_prop(tk_object_t* obj, const char* name, value_t* v) {
   object_js_base_t* o = OBJECT_JS_BASE(obj);
-  return_value_if_fail(o != NULL, RET_BAD_PARAMS);
+  object_js_array_t* array_o = OBJECT_JS_ARRAY(obj);
+  return_value_if_fail(o != NULL && array_o != NULL, RET_BAD_PARAMS);
 
-  if (tk_str_eq(name, TK_OBJECT_ARRAY_PROP_LENGTH) || tk_str_eq(name, TK_OBJECT_ARRAY_PROP_SIZE) ||
-      tk_str_eq(name, TK_OBJECT_PROP_SIZE)) {
+  if (tk_str_eq(name, FSCRIPT_ARRAY_PROP_VTABEL_NAME)) {
+    value_set_pointer(v, array_o->vt);
+    return RET_OK;
+  } else if (tk_str_eq(name, TK_OBJECT_ARRAY_PROP_LENGTH) ||
+             tk_str_eq(name, TK_OBJECT_ARRAY_PROP_SIZE) || tk_str_eq(name, TK_OBJECT_PROP_SIZE)) {
     value_set_int(v, jerry_get_array_length(o->jsobj));
     return RET_OK;
   } else if (name[0] == '[') {
@@ -111,8 +114,14 @@ static ret_t object_js_array_remove_prop(tk_object_t* obj, const char* name) {
   return_value_if_fail(o != NULL, RET_BAD_PARAMS);
 
   if (name[0] == '[') {
+    value_t result;
+    value_t args_p[2];
     uint32_t index = tk_atoi(name + 1);
-    return jsobj_remove_prop_by_index(o->jsobj, index);
+    value_set_int(args_p, index);
+    value_set_int(args_p + 1, 1);
+    /* jsobj_remove_prop_by_index接口只会删除对应index的元素，其他元素的index和数组size不会变化 */
+    /* 因此此处采用JS数组原生的splice函数实现 */
+    return object_js_array_exec_splice(obj, args_p, 2, &result);
   }
 
   return object_js_base_remove_prop(obj, name);
@@ -690,8 +699,7 @@ tk_object_t* object_js_array_create(jsvalue_t jsobj, bool_t free_handle) {
   return_value_if_fail(o != NULL, NULL);
 
   object_js_base_init(obj, jsobj, free_handle);
-  tk_object_set_prop_pointer(obj, FSCRIPT_ARRAY_PROP_VTABEL_NAME,
-                             (void*)&s_js_fscript_array_vtable);
+  o->vt = &s_js_fscript_array_vtable;
 
   return obj;
 }

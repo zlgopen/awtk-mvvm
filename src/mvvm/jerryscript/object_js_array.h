@@ -22,6 +22,7 @@
 #ifndef TK_OBJECT_JS_ARRAY_H
 #define TK_OBJECT_JS_ARRAY_H
 
+#include "fscript_ext/fscript_array.h"
 #include "mvvm/jerryscript/object_js_base.h"
 
 BEGIN_C_DECLS
@@ -35,6 +36,7 @@ BEGIN_C_DECLS
  */
 typedef struct _object_js_array_t {
   object_js_base_t base;
+  const fscript_array_vtable_t* vt;
 } object_js_array_t;
 
 /**
