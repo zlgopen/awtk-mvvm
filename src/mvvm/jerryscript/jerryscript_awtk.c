@@ -26,6 +26,7 @@
 #include "base/widget.h"
 #include "base/events.h"
 #include "awtk_global.h"
+#include "conf_io/app_conf.h"
 #include "mvvm/base/navigator.h"
 #include "mvvm/base/view_model_factory.h"
 #include "mvvm/jerryscript/jsobj_4_mvvm.h"
@@ -424,6 +425,12 @@ ret_t jerryscript_awtk_init(void) {
   jsfunc_register_global("setLocale", wrap_set_locale);
   jsfunc_register_global("getTheme", wrap_get_theme);
   jsfunc_register_global("setTheme", wrap_set_theme);
+
+  if (jsobj_register_global("appConf", app_conf_get_instance()) != RET_OK) {
+    jsvalue_t global_obj = jsvalue_get_global_object();
+    jsobj_set_prop_value(global_obj, "appConf", JS_UNDEFINED);
+    jsvalue_unref(global_obj);
+  }
 
   return RET_OK;
 }
