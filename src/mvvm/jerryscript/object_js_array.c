@@ -84,6 +84,15 @@ static ret_t object_js_array_get(tk_object_t* obj, uint32_t i, value_t* v) {
   return ret;
 }
 
+static ret_t object_js_array_exec_splice(tk_object_t* obj, const value_t* args_p, uint32_t args_c,
+                                         value_t* result) {
+  const char* func_name = "splice";
+  object_js_base_t* o = OBJECT_JS_BASE(obj);
+  return_value_if_fail(o != NULL, RET_BAD_PARAMS);
+
+  return jsobj_exec_value(o->jsobj, func_name, args_p, args_c, result, &(o->temp));
+}
+
 static ret_t object_js_array_get_prop(tk_object_t* obj, const char* name, value_t* v) {
   object_js_base_t* o = OBJECT_JS_BASE(obj);
   object_js_array_t* array_o = OBJECT_JS_ARRAY(obj);
@@ -247,15 +256,6 @@ static ret_t object_js_array_fscript_array_set(fscript_t* fscript, fscript_args_
   value_set_bool(v, ret == RET_OK);
 
   return RET_OK;
-}
-
-static ret_t object_js_array_exec_splice(tk_object_t* obj, const value_t* args_p, uint32_t args_c,
-                                         value_t* result) {
-  const char* func_name = "splice";
-  object_js_base_t* o = OBJECT_JS_BASE(obj);
-  return_value_if_fail(o != NULL, RET_BAD_PARAMS);
-
-  return jsobj_exec_value(o->jsobj, func_name, args_p, args_c, result, &(o->temp));
 }
 
 static ret_t object_js_array_fscript_array_insert(fscript_t* fscript, fscript_args_t* args,
