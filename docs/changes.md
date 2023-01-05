@@ -1,5 +1,8 @@
 # 最新动态
 
+* 2023/01/05
+  * 完善 jsvalue\_from\_value、jsvalue\_to\_value，支持 bitmap 类型。
+
 * 2022/12/14
   * 修复编译问题。（感谢兆坤提供补丁）
 

@@ -22,6 +22,7 @@
 #include "tkc/mem.h"
 #include "tkc/utils.h"
 #include "tkc/named_value.h"
+#include "base/bitmap.h"
 #include "mvvm/base/utils.h"
 #include "mvvm/jerryscript/object_js_factory.h"
 #include "mvvm/jerryscript/jsobj.h"
@@ -308,6 +309,26 @@ tk_object_t* jsvalue_to_obj(jsvalue_t value) {
   return obj;
 }
 
+static void tk_bitmap_free_callback(void* native_p, struct jerry_object_native_info_t* info_p) {
+}
+
+static const jerry_object_native_info_t s_tk_bitmap_info = {.free_cb = tk_bitmap_free_callback};
+
+static ret_t jsbitmap_set_native_ptr(jsvalue_t obj, bitmap_t* ptr) {
+  return_value_if_fail(ptr != NULL, RET_BAD_PARAMS);
+
+  jerry_set_object_native_pointer(obj, (void*)ptr, &s_tk_bitmap_info);
+  return RET_OK;
+}
+
+static bitmap_t* jsbitmap_get_native_ptr(jsvalue_t obj) {
+  void* p = NULL;
+  if (jerry_get_object_native_pointer(obj, &p, &s_tk_bitmap_info)) {
+    return (bitmap_t*)(p);
+  }
+  return NULL;
+}
+
 jsvalue_t jsvalue_from_value(const value_t* v, str_t* temp) {
   jsvalue_t value;
 
@@ -330,6 +351,9 @@ jsvalue_t jsvalue_from_value(const value_t* v, str_t* temp) {
   } else if (v->type == VALUE_TYPE_POINTER) {
     value = jerry_create_object();
     jerry_set_object_native_pointer(value, (void*)value_pointer(v), NULL);
+  } else if (v->type == VALUE_TYPE_BITMAP) {
+    value = jerry_create_object();
+    jsbitmap_set_native_ptr(value, value_bitmap(v));
   } else if (v->type == VALUE_TYPE_BINARY) {
     binary_data_t* bin = value_binary_data(v);
     uint8_t* buffer = (uint8_t*)bin->data;
@@ -365,14 +389,17 @@ ret_t jsvalue_to_value(jsvalue_t value, value_t* v, str_t* temp) {
     value_set_bool(v, raw_value);
     ret = RET_OK;
   } else if (jsvalue_is_object(value)) {
-    tk_object_t* obj = jsvalue_to_obj(value);
-    if (obj != NULL) {
-      value_set_object(v, obj);
+    void* p = NULL;
+    if (jerry_get_object_native_pointer(value, &p, NULL)) {
+      value_set_pointer(v, p);
+      ret = RET_OK;
+    } else if ((p = jsbitmap_get_native_ptr(value)) != NULL) {
+      value_set_bitmap(v, p);
       ret = RET_OK;
     } else {
-      void* p = NULL;
-      if (jerry_get_object_native_pointer(value, &p, NULL)) {
-        value_set_pointer(v, p);
+      tk_object_t* obj = jsvalue_to_obj(value);
+      if (obj != NULL) {
+        value_set_object(v, obj);
         ret = RET_OK;
       } else {
         log_debug("not supported yet.\n");
