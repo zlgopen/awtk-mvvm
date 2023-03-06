@@ -1,5 +1,8 @@
 # 最新动态
 
+* 2023/03/06
+  * 完善README.md。（感谢雨欣提供补丁）
+
 * 2023/01/05
   * 完善 jsvalue\_from\_value、jsvalue\_to\_value，支持 bitmap 类型。
 
