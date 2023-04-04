@@ -87,6 +87,17 @@ ui_loader_t* ui_loader_mvvm(void);
 widget_t* ui_loader_mvvm_load_widget(navigator_request_t* req);
 
 /**
+ * @method ui_loader_mvvm_load_widget_with_parent
+ * 加载导航请求指定的控件，并指定父控件对象。
+
+ * @param {navigator_request_t*} req 导航请求。
+ * @param {widget_t*} parent 父控件对象。
+ *
+ * @return {widget_t*} 控件对象。
+ */
+widget_t* ui_loader_mvvm_load_widget_with_parent(navigator_request_t* req, widget_t* parent);
+
+/**
  * @method ui_loader_mvvm_reload_widget
  * 重新加载动态渲染规则指定的控件。
 

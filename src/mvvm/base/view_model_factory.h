@@ -35,7 +35,7 @@ typedef view_model_t* (*view_model_generic_create_t)(const char* type, navigator
  * 模型工厂。
  *
  */
-typedef struct _model_factory_t {
+typedef struct _view_model_factory_t {
   tk_object_t* creators;
   slist_t generic_creators;
 } view_model_factory_t;

@@ -1062,20 +1062,37 @@ ui_loader_mvvm_t* ui_loader_mvvm_cast(ui_loader_t* loader) {
 }
 
 widget_t* ui_loader_mvvm_load_widget(navigator_request_t* req) {
+  return ui_loader_mvvm_load_widget_with_parent(req, NULL);
+}
+
+widget_t* ui_loader_mvvm_load_widget_with_parent(navigator_request_t* req, widget_t* parent) {
   const asset_info_t* ui = NULL;
   const char* target = NULL;
   widget_t* root = NULL;
+  char applet_name[TK_NAME_LEN + 1] = {0};
+  assets_manager_t* am = assets_manager();
   return_value_if_fail(req != NULL, NULL);
 
   target = tk_object_get_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_TARGET);
   return_value_if_fail(target != NULL, NULL);
 
-  ui = assets_manager_ref(assets_manager(), ASSET_TYPE_UI, target);
+  if (strncmp(target, STR_SCHEMA_FILE, strlen(STR_SCHEMA_FILE)) != 0 &&
+      assets_managers_is_applet_assets_supported()) {
+    const char* p = strchr(target, '.');
+    if (p != NULL) {
+      tk_strncpy_s(applet_name, sizeof(applet_name) - 1, target, p - target);
+      am = assets_managers_ref(applet_name);
+      target = p + 1;
+    }
+  }
+
+  ui = assets_manager_ref(am, ASSET_TYPE_UI, target);
   if (ui != NULL && ui->data != NULL && ui->size > 0) {
     ui_loader_t* loader = ui_loader_mvvm();
     ui_builder_t* builder = ui_builder_default_create(target);
 
     if (builder != NULL) {
+      builder->widget = parent;
       UI_LOADER_MVVM(loader)->navigator_request = req;
       UI_LOADER_MVVM(loader)->ui = ui;
       ui_loader_mvvm_load(loader, ui->data, ui->size, builder);
@@ -1084,8 +1101,12 @@ widget_t* ui_loader_mvvm_load_widget(navigator_request_t* req) {
     }
 
     if (root == NULL) {
-      assets_manager_unref(assets_manager(), ui);
+      assets_manager_unref(am, ui);
     }
+  }
+
+  if (applet_name[0]) {
+    assets_managers_unref(am);
   }
 
   return root;

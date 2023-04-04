@@ -316,7 +316,7 @@ ret_t navigator_request_on_result(navigator_request_t* req, const value_t* resul
 #define NAVIGATOR_ARG_PROPS_CHANGED "props_changed"
 
 /**
- * @const NAVIGATOR_ARG_PROPS_CHANGED
+ * @const NAVIGATOR_ARG_ITEMS_CHANGED
  * 是否为集合中的项目增加或者删除的事件。
  */
 #define NAVIGATOR_ARG_ITEMS_CHANGED "items_changed"
