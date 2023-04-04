@@ -2,6 +2,7 @@
 
 * 2023/04/04
   * 添加 ui\_loader\_mvvm\_load\_widget\_with\_parent 和 完善 ui\_loader\_mvvm\_load_\widget，支持 applet，以及更新部分注释。（感谢兆坤提供补丁）
+  * 修改注册 app\_conf 到 JS 层时，如果 app\_conf 为空不打印告警。
 
 * 2023/03/06
   * 完善README.md。（感谢雨欣提供补丁）

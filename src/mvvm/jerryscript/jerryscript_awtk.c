@@ -406,6 +406,16 @@ static JSFUNC_DECL(wrap_set_theme) {
   return jsvalue_from_number(ret);
 }
 
+static ret_t jerryscript_register_app_conf(void) {
+  object_t* app_conf = app_conf_get_instance();
+  if (app_conf == NULL || jsobj_register_global("appConf", app_conf) != RET_OK) {
+    jsvalue_t global_obj = jsvalue_get_global_object();
+    jsobj_set_prop_value(global_obj, "appConf", JS_UNDEFINED);
+    jsvalue_unref(global_obj);
+  }
+  return RET_OK;
+}
+
 ret_t jerryscript_awtk_init(void) {
   ret_t_init();
   event_type_t_init();
@@ -425,12 +435,7 @@ ret_t jerryscript_awtk_init(void) {
   jsfunc_register_global("setLocale", wrap_set_locale);
   jsfunc_register_global("getTheme", wrap_get_theme);
   jsfunc_register_global("setTheme", wrap_set_theme);
-
-  if (jsobj_register_global("appConf", app_conf_get_instance()) != RET_OK) {
-    jsvalue_t global_obj = jsvalue_get_global_object();
-    jsobj_set_prop_value(global_obj, "appConf", JS_UNDEFINED);
-    jsvalue_unref(global_obj);
-  }
+  jerryscript_register_app_conf();
 
   return RET_OK;
 }
