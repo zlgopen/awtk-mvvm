@@ -578,6 +578,24 @@ ret_t navigator_set_theme(const char* theme, const char* target) {
   return ret;
 }
 
+ret_t navigator_set_screen_saver_time(uint32_t time) {
+  ret_t ret = RET_OK;
+  navigator_request_t* req = NULL;
+  return_value_if_fail(navigator() != NULL, RET_FAIL);
+
+  req = navigator_request_create(NULL, NULL);
+  return_value_if_fail(req != NULL, 0);
+
+  tk_object_set_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_SET_SCREEN_SAVER_TIME);
+  tk_object_set_prop_int(TK_OBJECT(req), NAVIGATOR_ARG_TIME, time);
+
+  ret = navigator_handle_request(navigator(), req);
+  tk_object_unref(TK_OBJECT(req));
+
+  return ret;
+
+}
+
 ret_t navigator_to_ex(navigator_request_t* req) {
   return navigator_handle_request(navigator(), req);
 }

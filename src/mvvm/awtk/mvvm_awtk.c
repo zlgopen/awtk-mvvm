@@ -202,6 +202,8 @@ ret_t mvvm_awtk_init(void) {
                              navigator_handler_awtk_get_theme_create());
   navigator_register_handler(navigator(), NAVIGATOR_REQ_SET_THEME,
                              navigator_handler_awtk_set_theme_create());
+  navigator_register_handler(navigator(), NAVIGATOR_REQ_SET_SCREEN_SAVER_TIME,
+                             navigator_handler_awtk_set_screen_saver_time_create());
 
   return RET_OK;
 }

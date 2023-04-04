@@ -753,6 +753,18 @@ static ret_t navigator_handler_awtk_on_set_theme(navigator_handler_t* handler,
   return ret;
 }
 
+static ret_t navigator_handler_awtk_on_set_screen_saver_time(navigator_handler_t* handler,
+                                                             navigator_request_t* req) {
+  ret_t ret = RET_OK;
+  widget_t* widget = NULL;
+  widget_t* wm = window_manager();
+  uint32_t time = tk_object_get_prop_int(TK_OBJECT(req), NAVIGATOR_ARG_TIME, 0);
+
+  ret = window_manager_set_screen_saver_time(wm, time);
+
+  return ret;
+}
+
 navigator_handler_t* navigator_handler_awtk_notify_view_model_create(void) {
   tk_object_t* obj = NULL;
   navigator_handler_t* handler = NULL;
@@ -814,6 +826,19 @@ navigator_handler_t* navigator_handler_awtk_set_theme_create(void) {
   return_value_if_fail(handler != NULL, NULL);
 
   handler->on_request = navigator_handler_awtk_on_set_theme;
+
+  return handler;
+}
+
+navigator_handler_t* navigator_handler_awtk_set_screen_saver_time_create(void) {
+  tk_object_t* obj = NULL;
+  navigator_handler_t* handler = NULL;
+
+  obj = tk_object_create(&s_navigator_handler_awtk_vtable);
+  handler = NAVIGATOR_HANDLER(obj);
+  return_value_if_fail(handler != NULL, NULL);
+
+  handler->on_request = navigator_handler_awtk_on_set_screen_saver_time;
 
   return handler;
 }

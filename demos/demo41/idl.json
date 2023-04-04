@@ -1,0 +1,47 @@
+[
+  {
+    "type": "class",
+    "methods": [
+      {
+        "params": [
+          {
+            "type": "screensaver_t*",
+            "name": "screensaver",
+            "desc": "screensaver对象"
+          },
+          {
+            "type": "int32_t",
+            "name": "time",
+            "desc": "时间。"
+          }
+        ],
+        "annotation": {},
+        "desc": "设置屏保时间。",
+        "name": "screensaver_set_time",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      }
+    ],
+    "events": [],
+    "properties": [
+      {
+        "name": "value",
+        "desc": "时间。",
+        "type": "int32_t",
+        "annotation": {
+          "readable": true,
+          "writable": true
+        }
+      }
+    ],
+    "header": "demo41/screensaver.h",
+    "desc": "屏保时间设定。",
+    "name": "screensaver_t",
+    "annotation": {
+      "model": true
+    },
+    "level": 1
+  }
+]

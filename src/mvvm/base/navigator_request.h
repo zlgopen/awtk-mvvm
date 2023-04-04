@@ -219,6 +219,12 @@ ret_t navigator_request_on_result(navigator_request_t* req, const value_t* resul
 #define NAVIGATOR_REQ_SET_THEME "_set_theme_"
 
 /**
+ * @const NAVIGATOR_REQ_SET_SCREEN_SAVER_TIME
+ * 请求设置屏保时间。
+ */
+#define NAVIGATOR_REQ_SET_SCREEN_SAVER_TIME "_set_screen_saver_time_"
+
+/**
  * @enum navigator_request_argument_type_t
  * @annotation ["scriptable", "string"]
  * @prefix NAVIGATOR_ARG_
@@ -344,6 +350,12 @@ ret_t navigator_request_on_result(navigator_request_t* req, const value_t* resul
  * 主题。
  */
 #define NAVIGATOR_ARG_THEME "theme"
+
+/**
+ * @const NAVIGATOR_ARG_TIME
+ * 时间。
+ */
+#define NAVIGATOR_ARG_TIME "time"
 
 END_C_DECLS
 

@@ -406,6 +406,21 @@ static JSFUNC_DECL(wrap_set_theme) {
   return jsvalue_from_number(ret);
 }
 
+static JSFUNC_DECL(wrap_set_screen_saver_time) {
+  ret_t ret = RET_FAIL;
+  uint32_t time = 0;
+
+  if (args_count >= 1) {
+    if (jerry_value_is_number(args_p[0])) {
+      time = jsvalue_to_number(args_p[0]);
+    }
+  }
+
+  ret = navigator_set_screen_saver_time(time);
+
+  return jsvalue_from_number(ret);
+}
+
 static ret_t jerryscript_register_app_conf(void) {
   object_t* app_conf = app_conf_get_instance();
   if (app_conf == NULL || jsobj_register_global("appConf", app_conf) != RET_OK) {
@@ -435,6 +450,7 @@ ret_t jerryscript_awtk_init(void) {
   jsfunc_register_global("setLocale", wrap_set_locale);
   jsfunc_register_global("getTheme", wrap_get_theme);
   jsfunc_register_global("setTheme", wrap_set_theme);
+  jsfunc_register_global("setScreenSaverTime", wrap_set_screen_saver_time);
   jerryscript_register_app_conf();
 
   return RET_OK;

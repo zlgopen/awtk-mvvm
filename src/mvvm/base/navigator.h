@@ -479,6 +479,18 @@ const char* navigator_get_theme(const char* target);
 ret_t navigator_set_theme(const char* theme, const char* target);
 
 /**
+ * @method navigator_set_screen_saver_time
+ * 设置屏保时间。
+ *
+ * @annotation ["static"]
+ *
+ * @param {uint32_t} time 屏保时间(单位毫秒), 为0关闭屏保。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t navigator_set_screen_saver_time(uint32_t time);
+
+/**
  * @method navigator_to_ex
  * 发送指定的请求，并可传递参数和返回结果。
  *

@@ -59,6 +59,7 @@ navigator_handler_t* navigator_handler_awtk_get_locale_create(void);
 navigator_handler_t* navigator_handler_awtk_set_locale_create(void);
 navigator_handler_t* navigator_handler_awtk_get_theme_create(void);
 navigator_handler_t* navigator_handler_awtk_set_theme_create(void);
+navigator_handler_t* navigator_handler_awtk_set_screen_saver_time_create(void);
 
 #define NAVIGATOR_HANDLER_AWTK(h) ((navigator_handler_awtk_t*)h)
 

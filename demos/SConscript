@@ -46,6 +46,7 @@ env.Program(os.path.join(BIN_DIR, 'demo37'), Glob('demo37/*.c'),LIBS=LIBS)
 env.Program(os.path.join(BIN_DIR, 'demo38'), Glob('demo38/*.c'),LIBS=LIBS)
 env.Program(os.path.join(BIN_DIR, 'demo39'), Glob('demo39/*.c'),LIBS=LIBS)
 env.Program(os.path.join(BIN_DIR, 'demo40'), Glob('demo40/*.c'),LIBS=LIBS)
+env.Program(os.path.join(BIN_DIR, 'demo41'), Glob('demo41/*.c'),LIBS=LIBS)
 
 if 'WITH_JS' in os.environ and os.environ['WITH_JS'] == 'true':
   env.Program(os.path.join(BIN_DIR, 'jsdemo1'), Glob('jsdemo1/*.c'),LIBS=LIBS)
@@ -69,6 +70,7 @@ if 'WITH_JS' in os.environ and os.environ['WITH_JS'] == 'true':
   env.Program(os.path.join(BIN_DIR, 'jsdemo19'), Glob('jsdemo19/*.c'), LIBS=LIBS)
   env.Program(os.path.join(BIN_DIR, 'jsdemo35'), Glob('jsdemo35/*.c'),LIBS=LIBS)
   env.Program(os.path.join(BIN_DIR, 'jsdemo40'), Glob('jsdemo40/*.c'),LIBS=LIBS)
+  env.Program(os.path.join(BIN_DIR, 'jsdemo41'), Glob('jsdemo41/*.c'),LIBS=LIBS)
 
 if 'WITH_IOTJS' in os.environ and os.environ['WITH_IOTJS'] == 'true':
   env.Program(os.path.join(BIN_DIR, 'iotjsdemo1'), Glob('iotjsdemo1/*.c'),LIBS=LIBS)
