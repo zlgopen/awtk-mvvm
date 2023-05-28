@@ -577,8 +577,8 @@ class CodeGen {
     if(cls.parent === 'emitter_t' || cls.parent === 'object_t') {
       let objName = this.toObjName(cls.name);
       result += `
-  emitter_on(EMITTER(${objName}), EVT_PROPS_CHANGED, emitter_forward, vm);
-  emitter_on(EMITTER(${objName}), EVT_ITEMS_CHANGED, emitter_forward, vm);
+  emitter_on(EMITTER(${objName}), EVT_PROPS_CHANGED, emitter_forward_retarget, vm);
+  emitter_on(EMITTER(${objName}), EVT_ITEMS_CHANGED, emitter_forward_retarget, vm);
 `
     }
 
