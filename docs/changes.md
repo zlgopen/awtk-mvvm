@@ -1,5 +1,8 @@
 # 最新动态
 
+* 2023/05/31
+  * 完善调试信息。（感谢兆坤提供补丁）
+
 * 2023/05/28
   * 完善代码生成工具。框架需要的是view\_model而不是model，所以使用emitter\_forward\_retarget代替emitter\_forward。
 

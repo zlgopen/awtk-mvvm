@@ -48,7 +48,11 @@ ret_t view_model_on_will_mount(view_model_t* view_model, navigator_request_t* re
   view_model_will_mount_event_t e;
   return_value_if_fail(view_model != NULL && req != NULL, RET_BAD_PARAMS);
 
-  log_debug("%s\n", __FUNCTION__);
+  if (view_model->object.vt != NULL && TK_STR_IS_NOT_EMPTY(view_model->object.vt->type)) {
+    log_debug("%s : %s\r\n", __FUNCTION__, view_model->object.vt->type);
+  } else {
+    log_debug("%s\r\n", __FUNCTION__);
+  }
   e.req = req;
   e.e = event_init(EVT_VIEW_MODEL_WILL_MOUNT, view_model);
   emitter_dispatch(EMITTER(view_model), (event_t*)&e);
@@ -63,7 +67,11 @@ ret_t view_model_on_mount(view_model_t* view_model) {
   event_t e = event_init(EVT_VIEW_MODEL_MOUNT, view_model);
   return_value_if_fail(view_model != NULL, RET_BAD_PARAMS);
 
-  log_debug("%s\n", __FUNCTION__);
+  if (view_model->object.vt != NULL && TK_STR_IS_NOT_EMPTY(view_model->object.vt->type)) {
+    log_debug("%s : %s\r\n", __FUNCTION__, view_model->object.vt->type);
+  } else {
+    log_debug("%s\r\n", __FUNCTION__);
+  }
   emitter_dispatch(EMITTER(view_model), (event_t*)&e);
   if (view_model->vt != NULL && view_model->vt->on_mount != NULL) {
     return view_model->vt->on_mount(view_model);
@@ -76,7 +84,11 @@ ret_t view_model_on_will_unmount(view_model_t* view_model) {
   event_t e = event_init(EVT_VIEW_MODEL_WILL_UNMOUNT, view_model);
   return_value_if_fail(view_model != NULL, RET_BAD_PARAMS);
 
-  log_debug("%s\n", __FUNCTION__);
+  if (view_model->object.vt != NULL && TK_STR_IS_NOT_EMPTY(view_model->object.vt->type)) {
+    log_debug("%s : %s\r\n", __FUNCTION__, view_model->object.vt->type);
+  } else {
+    log_debug("%s\r\n", __FUNCTION__);
+  }
   emitter_dispatch(EMITTER(view_model), (event_t*)&e);
   if (view_model->vt != NULL && view_model->vt->on_will_unmount != NULL) {
     return view_model->vt->on_will_unmount(view_model);
@@ -89,7 +101,11 @@ ret_t view_model_on_unmount(view_model_t* view_model) {
   event_t e = event_init(EVT_VIEW_MODEL_UNMOUNT, view_model);
   return_value_if_fail(view_model != NULL, RET_BAD_PARAMS);
 
-  log_debug("%s\n", __FUNCTION__);
+  if (view_model->object.vt != NULL && TK_STR_IS_NOT_EMPTY(view_model->object.vt->type)) {
+    log_debug("%s : %s\r\n", __FUNCTION__, view_model->object.vt->type);
+  } else {
+    log_debug("%s\r\n", __FUNCTION__);
+  }
   emitter_dispatch(EMITTER(view_model), (event_t*)&e);
   if (view_model->vt != NULL && view_model->vt->on_unmount != NULL) {
     return view_model->vt->on_unmount(view_model);
