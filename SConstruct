@@ -1,4 +1,4 @@
-﻿import os
+import os
 import re
 import platform
 import scripts.app_helper as app
@@ -28,6 +28,9 @@ SConscripts = ['src/SConscript']
 APP_LIBS = ['streams']
 APP_CFLAGS = '-DMVVM_DLL_EXPORT '
 APP_3RD_ROOT = os.path.normpath(os.path.join(os.getcwd(), '3rd'))
+
+APP_TOOLS_ROOT = os.path.normpath(os.path.join(os.getcwd(), 'tools'))
+os.environ['APP_TOOLS_ROOT'] = APP_TOOLS_ROOT
 
 os.environ['BUILD_DEMOS'] = 'true'
 os.environ['BUILD_TESTS'] = 'true'
@@ -115,6 +118,7 @@ if 'BUILD_TESTS' in os.environ and os.environ['BUILD_TESTS'] == 'true':
 if 'BUILD_TOOLS' in os.environ and os.environ['BUILD_TOOLS'] == 'true':
   if 'WITH_JS' in os.environ and os.environ['WITH_JS'] == 'true' :
     SConscripts += ['tools/mvvm_factory_gen/SConscript']
+  SConscripts += ['tools/mvvm_prop_gen/SConscript']
 
 helper = app.Helper(ARGUMENTS);
 helper.set_dll_def('src/mvvm.def').set_dll_def_processor(dll_def_processor).add_cpppath(TK_3RD_DIRS).add_ccflags(APP_CFLAGS).add_libs(APP_LIBS).add_libpath(APP_LIBPATH).call(DefaultEnvironment)
