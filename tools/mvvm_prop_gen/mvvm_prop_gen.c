@@ -638,7 +638,7 @@ error:
 
 ret_t mvvm_prop_gen_save_result(mvvm_prop_result_t** results, uint32_t result_size, str_t* json) {
   uint32_t i = 0;
-  return_value_if_fail(results != NULL && result_size > 0 && json != NULL, RET_BAD_PARAMS);
+  return_value_if_fail(results != NULL && json != NULL, RET_BAD_PARAMS);
 
   str_append(json, "{");
   for (i = 0; i < result_size; ++i) {

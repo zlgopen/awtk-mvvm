@@ -162,7 +162,7 @@ ret_t xml_mvvm_prop_file_to_packfile(const char* in_filename, const char* out_fi
 
   str_init(&json, 1024);
   result = xml_mvvm_prop_file_to_array(in_filename, &result_size);
-  if (result != NULL && result_size > 0) {
+  if (result != NULL) {
     mvvm_prop_gen_save_result(result, result_size, &json);
     if (fs_file_write(fp, json.str, json.size) != json.size) {
       ret = RET_FAIL;

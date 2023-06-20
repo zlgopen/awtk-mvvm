@@ -25,9 +25,7 @@ output：文件输出，将可能存在的路径打包存储到指定文件中�
 1、v-on
 2、fscript {bind_data, bind_data = prop > 50 ? "true" : "false" }
 3、fscript {index==selected_index}
-4、no error return
-   <view v-model="temp" v-data="value">
-   <view v-data="value" v-model="temp">
-5、...
+4、...
 ```
+> 如果使用了未支持的属性生成文件后，可能无法进行解包操作，因为某些参数含有关键字(如："\", "[]")。
 
