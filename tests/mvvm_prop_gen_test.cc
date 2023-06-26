@@ -197,20 +197,35 @@ TEST(mvvm_prop_gen, dummy_view_model) {
   mvvm_prop_gen_result_destory(prop_array, prop_size);
 }
 
+TEST(mvvm_prop_gen, error_type) {
+  uint32_t i;
+  uint32_t prop_size;
+  mvvm_prop_result_t** prop_array;
+  const char* xml = "<user_input v-data:=\"data\" v-model=\"user_message\" v-data=\"{value}\">"
+                      "<view v-data=\"{time}\" v-model=\"family_address\">"
+                        "<label v-data:text=\"{address}\"/>"
+                      "</view>"
+                    "</user_input>";
+  prop_array = xml_mvvm_prop_xml_to_array(xml, &prop_size);
+  ASSERT_EQ(prop_size, 1);
+  ASSERT_EQ(res_to_str(prop_array[0]), "family_address.address user_message.address ");
+  mvvm_prop_gen_result_destory(prop_array, prop_size);
+}
+
 TEST(mvvm_prop_gen, multi) {
   uint32_t i;
   uint32_t prop_size;
   mvvm_prop_result_t** prop_array;
-  const char* xml = "<user_input v-data=\"data\" v-model=\"user_message\" v-data=\"{value}\">"
+  const char* xml = "<user_input v-data:test=\"data\" v-model=\"user_message\" v-data:test=\"{value}\">"
                       "<view v-data:text=\"{time}\" v-model=\"family_address\">"
                         "<label v-data:text=\"{address}\"/>"
                       "</view>"
                     "</user_input>";
   prop_array = xml_mvvm_prop_xml_to_array(xml, &prop_size);
   ASSERT_EQ(prop_size, 4);
-  ASSERT_EQ(res_to_str(prop_array[0]), "data");
+  ASSERT_EQ(res_to_str(prop_array[0]), "user_message.data ");
   ASSERT_EQ(res_to_str(prop_array[1]), "user_message.value ");
-  ASSERT_EQ(res_to_str(prop_array[2]), "user_message.time ");
+  ASSERT_EQ(res_to_str(prop_array[2]), "family_address.time user_message.time ");
   ASSERT_EQ(res_to_str(prop_array[3]), "family_address.address user_message.address ");
   mvvm_prop_gen_result_destory(prop_array, prop_size);
 }

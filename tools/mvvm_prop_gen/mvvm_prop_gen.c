@@ -20,14 +20,17 @@
  */
 
 #include "tkc/mem.h"
+#include "tkc/darray.h"
 #include "common/utils.h"
 #include "mvvm_prop_gen.h"
 #include "mvvm/awtk/ui_loader_mvvm.h"
 
-#define SCOPE_START "scope_start"
-#define SCOPE_END "scope_end"
-
 #define TYPE_NEED_STORE(TYPE) ((TYPE >= MVVM_VIEW_MODEL) && (TYPE <= MVVM_ITEM_FOREACH))
+
+typedef ret_t (*mvvm_prop_gen_exec)(mvvm_prop_gen_t*, const char*, ...);
+
+struct _mvvm_prop_exec_t;
+typedef struct _mvvm_prop_exec_t mvvm_prop_exec_t;
 
 struct _mvvm_prop_record_t;
 typedef struct _mvvm_prop_record_t mvvm_prop_record_t;
@@ -42,6 +45,12 @@ typedef enum _MVVM_TYPE {
   MVVM_RESERVERS = 0xFF
 } MVVM_TYPE;
 
+struct _mvvm_prop_exec_t {
+  uint8_t priority;
+  const char* prop;
+  mvvm_prop_gen_exec exec;
+};
+
 struct _mvvm_prop_record_t {
   str_t vm;
   char* tag;
@@ -51,6 +60,7 @@ struct _mvvm_prop_record_t {
 };
 
 struct _mvvm_prop_gen_t {
+  darray_t* exec_stack;
   uint32_t result_size;
   uint32_t result_valid;
   mvvm_prop_record_t* records;
@@ -113,6 +123,38 @@ static ret_t mvvm_prop_result_destory(mvvm_prop_result_t* mvvm_prop_result) {
   return RET_OK;
 }
 
+static int32_t mvvm_prop_exec_cmp(const void* a, const void* b) {
+  mvvm_prop_exec_t* exec_a = (mvvm_prop_exec_t*)a;
+  mvvm_prop_exec_t* exec_b = (mvvm_prop_exec_t*)b;
+  return_value_if_fail(exec_a != NULL && exec_b != NULL, RET_BAD_PARAMS);
+  return (exec_a->priority) - (exec_b->priority);
+}
+
+static ret_t mvvm_prop_run_exec(void* ctx, const void* data) {
+  mvvm_prop_gen_t* mvvm_prop_gen = (mvvm_prop_gen_t*)ctx;
+  mvvm_prop_exec_t* mvvm_prop_exec = (mvvm_prop_exec_t*)data;
+  return_value_if_fail(mvvm_prop_gen != NULL && mvvm_prop_exec != NULL, RET_BAD_PARAMS);
+  mvvm_prop_exec->exec(mvvm_prop_gen, mvvm_prop_exec->prop);
+  return RET_OK;
+}
+
+static mvvm_prop_exec_t* mvvm_prop_exec_create(mvvm_prop_gen_exec exec, uint8_t priority, const char* prop) {
+  mvvm_prop_exec_t* mvvm_prop_exec = TKMEM_ZALLOC(mvvm_prop_exec_t);
+  return_value_if_fail(mvvm_prop_exec != NULL && exec != NULL && prop != NULL, NULL);
+
+  mvvm_prop_exec->prop = prop;
+  mvvm_prop_exec->exec = exec;
+  mvvm_prop_exec->priority = priority;
+
+  return mvvm_prop_exec;
+}
+
+static ret_t mvvm_prop_exec_destory(mvvm_prop_exec_t* mvvm_prop_exec) {
+  return_value_if_fail(mvvm_prop_exec != NULL, RET_BAD_PARAMS);
+  TKMEM_FREE(mvvm_prop_exec);
+  return RET_OK;
+}
+
 static mvvm_prop_record_t* mvvm_prop_record_create(const char* tag) {
   mvvm_prop_record_t* record = TKMEM_ZALLOC(mvvm_prop_record_t);
   return_value_if_fail(record != NULL && tag != NULL, NULL);
@@ -153,6 +195,7 @@ mvvm_prop_gen_t* mvvm_prop_gen_create(void) {
   goto_error_if_fail(mvvm_prop_gen->results != NULL);
 
   mvvm_prop_gen->records = NULL;
+  mvvm_prop_gen->exec_stack = darray_create(10, mvvm_prop_exec_destory, mvvm_prop_exec_cmp);
 
   return mvvm_prop_gen;
 error:
@@ -168,6 +211,10 @@ ret_t mvvm_prop_gen_destory(mvvm_prop_gen_t* mvvm_prop_gen) {
 
   if (mvvm_prop_gen->results != NULL) {
     mvvm_prop_gen_result_destory(mvvm_prop_gen->results, mvvm_prop_gen->result_size);
+  }
+
+  if (mvvm_prop_gen->exec_stack != NULL) {
+    darray_destroy(mvvm_prop_gen->exec_stack);
   }
 
   while (mvvm_prop_gen->records != NULL) {
@@ -207,7 +254,8 @@ static ret_t result_add_path_item(mvvm_prop_result_t* mvvm_prop_result, path_ite
   return RET_OK;
 }
 
-static ret_t result_push_in_results_array(mvvm_prop_gen_t* mvvm_prop_gen, mvvm_prop_result_t* result) {
+static ret_t result_push_in_results_array(mvvm_prop_gen_t* mvvm_prop_gen,
+                                          mvvm_prop_result_t* result) {
   return_value_if_fail(mvvm_prop_gen != NULL && result != NULL, RET_BAD_PARAMS);
 
   if (mvvm_prop_gen->result_size >= mvvm_prop_gen->result_valid) {
@@ -262,13 +310,13 @@ static ret_t scope_end_evt_exec(mvvm_prop_gen_t* mvvm_prop_gen, const char* tag)
   return RET_OK;
 }
 
-static ret_t view_model_evt_exec(mvvm_prop_gen_t* mvvm_prop_gen, const char* tag, const char* prop) {
+static ret_t view_model_evt_exec(mvvm_prop_gen_t* mvvm_prop_gen, const char* prop) {
   MVVM_TYPE type = MVVM_VIEW_MODEL;
   mvvm_prop_record_t* record = NULL;
-  return_value_if_fail(mvvm_prop_gen != NULL && tag != NULL && prop != NULL, RET_BAD_PARAMS);
+  return_value_if_fail(mvvm_prop_gen != NULL && prop != NULL, RET_BAD_PARAMS);
 
   record = mvvm_prop_gen->records;
-  return_value_if_fail(record != NULL && tk_str_eq(record->tag, tag) && record->type == MVVM_NOTYPE, RET_FAIL);
+  return_value_if_fail(record != NULL && record->type == MVVM_NOTYPE, RET_FAIL);
 
   while (prop != NULL && *prop != '\0') {
     if (tk_str_start_with(prop, "sub_view_model:")) {
@@ -342,7 +390,8 @@ static const char* prop_format(const char* prop, uint32_t prop_len) {
   return (const char*)ptr;
 }
 
-static ret_t bind_data_exec_foreach(mvvm_prop_result_t* result, const char* vm, const char* bind_data) {
+static ret_t bind_data_exec_foreach(mvvm_prop_result_t* result, const char* vm,
+                                    const char* bind_data) {
   uint32_t prop_len = 0;
   uint32_t iter_len = 0;
   const char* prop = NULL;
@@ -388,14 +437,14 @@ static ret_t bind_data_exec_foreach(mvvm_prop_result_t* result, const char* vm, 
   return RET_OK;
 }
 
-static ret_t bind_data_evt_exec(mvvm_prop_gen_t* mvvm_prop_gen, const char* tag, const char* prop) {
+static ret_t bind_data_evt_exec(mvvm_prop_gen_t* mvvm_prop_gen, const char* prop) {
   bool_t is_array;
   mvvm_prop_record_t* record = NULL;
   mvvm_prop_result_t* result = NULL;
-  return_value_if_fail(mvvm_prop_gen != NULL && tag != NULL && prop != NULL, RET_BAD_PARAMS);
+  return_value_if_fail(mvvm_prop_gen != NULL && prop != NULL, RET_BAD_PARAMS);
 
   record = mvvm_prop_gen->records;
-  return_value_if_fail(record != NULL && tk_str_eq(record->tag, tag), RET_FAIL);
+  return_value_if_fail(record != NULL, RET_FAIL);
   record = record->type >= MVVM_VIEW_MODEL ? record : record->last_vm;
 
   is_array = check_prop_is_array(prop);
@@ -447,15 +496,15 @@ static ret_t bind_data_evt_exec(mvvm_prop_gen_t* mvvm_prop_gen, const char* tag,
   return RET_OK;
 }
 
-static ret_t item_foreach_evt_exec(mvvm_prop_gen_t* mvvm_prop_gen, const char* tag, const char* prop) {
+static ret_t item_foreach_evt_exec(mvvm_prop_gen_t* mvvm_prop_gen, const char* prop) {
   uint32_t iter_len = 0;
   const char* iter = NULL;
   mvvm_prop_record_t* record = NULL;
   enum VF_STATE { VF_START, VF_VM, VF_INDEX, VF_ITEM = 4 } state = VF_START;
-  return_value_if_fail(mvvm_prop_gen != NULL && tag != NULL && prop != NULL, RET_BAD_PARAMS);
+  return_value_if_fail(mvvm_prop_gen != NULL && prop != NULL, RET_BAD_PARAMS);
 
   record = mvvm_prop_gen->records;
-  return_value_if_fail(record != NULL && tk_str_eq(record->tag, tag) && record->type == MVVM_NOTYPE, RET_FAIL);
+  return_value_if_fail(record != NULL && record->type == MVVM_NOTYPE, RET_FAIL);
 
   return_value_if_fail(copy_last_view_model_name(mvvm_prop_gen) == RET_OK, RET_FAIL);
 
@@ -465,7 +514,7 @@ static ret_t item_foreach_evt_exec(mvvm_prop_gen_t* mvvm_prop_gen, const char* t
       str_append_char(&record->vm, '.');
       str_append_with_len(&record->vm, prop, iter_len);
       /* may be is prop, so gen one result path */
-      bind_data_evt_exec(mvvm_prop_gen, tag, tk_strrstr(record->vm.str, ".") + 1);
+      bind_data_evt_exec(mvvm_prop_gen, tk_strrstr(record->vm.str, ".") + 1);
       state = VF_VM;
     } else if ((state & VF_VM) == VF_VM) {
       while (tk_isspace(*prop) && (prop += 1) && (iter_len -= 1)) continue;
@@ -503,37 +552,78 @@ static ret_t item_foreach_evt_exec(mvvm_prop_gen_t* mvvm_prop_gen, const char* t
   return RET_OK;
 }
 
-static ret_t item_for_items_evt_exec(mvvm_prop_gen_t* mvvm_prop_gen, const char* tag, const char* prop) {
-  return_value_if_fail(mvvm_prop_gen != NULL && tag != NULL && prop != NULL, RET_BAD_PARAMS);
+static ret_t item_for_items_evt_exec(mvvm_prop_gen_t* mvvm_prop_gen, const char* prop) {
+  return_value_if_fail(mvvm_prop_gen != NULL && prop != NULL, RET_BAD_PARAMS);
 
   if (tk_stricmp(prop, "true") == 0) {
-    return item_foreach_evt_exec(mvvm_prop_gen, tag, "");
+    return item_foreach_evt_exec(mvvm_prop_gen, "");
   }
 
   return RET_OK;
 }
 
-mvvm_prop_gen_exec mvvm_prop_gen_translate_keyword(const char* keyword) {
-  return_value_if_fail(keyword != NULL, NULL);
-
-  if (tk_str_eq(keyword, SCOPE_START)) {
-    return scope_start_evt_exec;
-  } else if (tk_str_eq(keyword, SCOPE_END)) {
-    return scope_end_evt_exec;
-  } else if (tk_str_eq(keyword, WIDGET_PROP_V_MODEL)) {
-    return view_model_evt_exec;
-  } else if (tk_str_start_with(keyword, BINDING_RULE_DATA_PREFIX)) {
-    return bind_data_evt_exec;
-  } else if (tk_str_eq(keyword, BINDING_RULE_ITEMS)) {
-    return item_foreach_evt_exec;
-  } else if (tk_str_eq(keyword, WIDGET_PROP_V_FOR_ITEMS)) {
-    return item_for_items_evt_exec;
-  }
-
-  return NULL;
+ret_t mvvm_prop_gen_exec_start(mvvm_prop_gen_t* mvvm_prop_gen, const char* tag) {
+  return_value_if_fail(mvvm_prop_gen != NULL && tag != NULL, RET_BAD_PARAMS);
+  darray_clear(mvvm_prop_gen->exec_stack);
+  return scope_start_evt_exec(mvvm_prop_gen, tag);
 }
 
-mvvm_prop_result_t** mvvm_prop_gen_result_create(mvvm_prop_gen_t* mvvm_prop_gen, uint32_t* result_size) {
+ret_t mvvm_prop_gen_exec_end(mvvm_prop_gen_t* mvvm_prop_gen, const char* tag) {
+  return_value_if_fail(mvvm_prop_gen != NULL && tag != NULL, RET_BAD_PARAMS);
+  return scope_end_evt_exec(mvvm_prop_gen, tag);
+}
+
+static bool_t mvvm_prop_gen_is_bind_data(const char* keyword) {
+  return_value_if_fail(keyword != NULL, FALSE);
+
+  if (!tk_str_start_with(keyword, BINDING_RULE_DATA_PREFIX)) {
+    return FALSE;
+  }
+  keyword += strlen(BINDING_RULE_DATA_PREFIX);
+
+  if ((*keyword) != ':') {
+    return FALSE;
+  }
+  keyword += 1;
+
+  if (strlen(keyword) > 0) {
+    return TRUE;
+  }
+  return FALSE;
+}
+
+ret_t mvvm_prop_gen_try_gen_exec_by_keyword(mvvm_prop_gen_t* mvvm_prop_gen, const char* keyword,
+                                            const char* prop) {
+  mvvm_prop_exec_t* mvvm_prop_exec = NULL;
+  return_value_if_fail(mvvm_prop_gen != NULL, RET_BAD_PARAMS);
+
+  if (keyword == NULL && prop == NULL) {
+    darray_sort(mvvm_prop_gen->exec_stack, NULL);
+    darray_foreach(mvvm_prop_gen->exec_stack, mvvm_prop_run_exec, (void*)mvvm_prop_gen);
+    darray_clear(mvvm_prop_gen->exec_stack);
+  } else if (tk_str_eq(keyword, WIDGET_PROP_V_MODEL)) {
+    mvvm_prop_exec = mvvm_prop_exec_create(view_model_evt_exec, 0, prop);
+    return_value_if_fail(mvvm_prop_exec != NULL, RET_FAIL);
+  } else if (mvvm_prop_gen_is_bind_data(keyword)) {
+    mvvm_prop_exec = mvvm_prop_exec_create(bind_data_evt_exec, 1, prop);
+    return_value_if_fail(mvvm_prop_exec != NULL, RET_FAIL);
+  } else if (tk_str_eq(keyword, BINDING_RULE_ITEMS)) {
+    mvvm_prop_exec = mvvm_prop_exec_create(item_foreach_evt_exec, 0, prop);
+    return_value_if_fail(mvvm_prop_exec != NULL, RET_FAIL);
+  } else if (tk_str_eq(keyword, WIDGET_PROP_V_FOR_ITEMS)) {
+    mvvm_prop_exec = mvvm_prop_exec_create(item_for_items_evt_exec, 0, prop);
+    return_value_if_fail(mvvm_prop_exec != NULL, RET_FAIL);
+  }
+
+  if (mvvm_prop_exec) {
+    darray_push(mvvm_prop_gen->exec_stack, mvvm_prop_exec);
+  }
+
+  return RET_OK;
+}
+
+mvvm_prop_result_t** mvvm_prop_gen_result_create(mvvm_prop_gen_t* mvvm_prop_gen,
+                                                 uint32_t* result_size) {
   mvvm_prop_result_t** results = NULL;
   return_value_if_fail(mvvm_prop_gen != NULL, NULL);
 

@@ -33,6 +33,7 @@ typedef struct _xml_mvvm_prop_builder_t {
 
 static const char* xml_mvvm_prop_data_format(const char* prop, uint32_t prop_len) {
   char* ptr = (char*)prop;
+  if (prop_len == 0) return prop;
   if (ptr[prop_len - 1] == '}') ptr[prop_len - 1] = '\0';
   if (ptr[0] == '{') ptr += 1;
   return ptr;
@@ -41,38 +42,24 @@ static const char* xml_mvvm_prop_data_format(const char* prop, uint32_t prop_len
 static void xml_mvvm_prop_builder_on_start(XmlBuilder* builder, const char* tag,
                                            const char** attrs) {
   uint32_t i = 0;
-  mvvm_prop_gen_exec gen_exec = NULL;
   xml_mvvm_prop_builder_t* b = (xml_mvvm_prop_builder_t*)builder;
   return_if_fail(b != NULL && builder != NULL && tag != NULL && attrs != NULL);
 
-  gen_exec = mvvm_prop_gen_translate_keyword("scope_start");
-  if (gen_exec != NULL) {
-    gen_exec(b->mvvm_prop_gen, tag);
-  }
-
+  mvvm_prop_gen_exec_start(b->mvvm_prop_gen, tag);
   while (attrs[i] != NULL && attrs[i + 1] != NULL) {
-    gen_exec = mvvm_prop_gen_translate_keyword(attrs[i]);
-    if (gen_exec != NULL) {
-      const char* prop = NULL;
-      prop = xml_mvvm_prop_data_format((const char*)attrs[i + 1], strlen(attrs[i + 1]));
-      gen_exec(b->mvvm_prop_gen, tag, prop);
-    }
+    const char* prop = NULL;
+    prop = xml_mvvm_prop_data_format((const char*)attrs[i + 1], strlen(attrs[i + 1]));
+    mvvm_prop_gen_try_gen_exec_by_keyword(b->mvvm_prop_gen, attrs[i], prop);
     i += 2;
   }
-
+  mvvm_prop_gen_try_gen_exec_by_keyword(b->mvvm_prop_gen, NULL, NULL);
   return;
 }
 
 static void xml_mvvm_prop_builder_on_end(XmlBuilder* builder, const char* tag) {
-  mvvm_prop_gen_exec gen_exec = NULL;
   xml_mvvm_prop_builder_t* b = (xml_mvvm_prop_builder_t*)builder;
   return_if_fail(b != NULL && builder != NULL);
-
-  gen_exec = mvvm_prop_gen_translate_keyword("scope_end");
-  if (gen_exec != NULL) {
-    gen_exec(b->mvvm_prop_gen, tag);
-  }
-
+  mvvm_prop_gen_exec_end(b->mvvm_prop_gen, tag);
   return;
 }
 

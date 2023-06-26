@@ -40,8 +40,6 @@ typedef struct _path_item_t path_item_t;
 struct _mvvm_prop_gen_t;
 typedef struct _mvvm_prop_gen_t mvvm_prop_gen_t;
 
-typedef ret_t (*mvvm_prop_gen_exec)(mvvm_prop_gen_t*, const char*, ...);
-
 /**
  * @class path_item_t
  *
@@ -129,13 +127,34 @@ mvvm_prop_gen_t* mvvm_prop_gen_create(void);
 ret_t mvvm_prop_gen_destory(mvvm_prop_gen_t* mvvm_prop_gen);
 
 /**
- * @method mvvm_prop_gen_translate_keyword
- * 通过关键字获取对应处理函数，v-model|v-data|v-for|scope_start|scope_end|... 。
+ * @method mvvm_prop_gen_exec_start
+ * 执行器执行开始事件(scope_start)。
  *
- * @param {const char*} 关键字。
- * @return {mvvm_prop_gen_exec} 返回对应事件处理方法函数指针，为NULL则代表不处理该关键字。
+ * @param {mvvm_prop_gen_t*} mvvm_prop_gen_t对象。
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
-mvvm_prop_gen_exec mvvm_prop_gen_translate_keyword(const char* keyword);
+ret_t mvvm_prop_gen_exec_start(mvvm_prop_gen_t* mvvm_prop_gen, const char* tag);
+
+/**
+ * @method mvvm_prop_gen_exec_end
+ * 执行器执行完成事件(scope_end)。
+ *
+ * @param {mvvm_prop_gen_t*} mvvm_prop_gen_t对象。
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t mvvm_prop_gen_exec_end(mvvm_prop_gen_t* mvvm_prop_gen, const char* tag);
+
+/**
+ * @method mvvm_prop_gen_try_gen_exec_by_keyword
+ * 通过关键字尝试生成对应函数到执行器堆栈。如果关键字和属性值同时为NULL，则调用堆栈全部函数。
+ *
+ * @param {mvvm_prop_gen_t*} mvvm_prop_gen_t对象。
+ * @param {const char*} 关键字。
+ * @param {const char*} 属性值。
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t mvvm_prop_gen_try_gen_exec_by_keyword(mvvm_prop_gen_t* mvvm_prop_gen, const char* keyword,
+                                            const char* prop);
 
 /**
  * @method mvvm_prop_gen_result_create
@@ -145,7 +164,8 @@ mvvm_prop_gen_exec mvvm_prop_gen_translate_keyword(const char* keyword);
  * @param {uint32_t*} 已用属性路径组对象条数。
  * @return {mvvm_prop_result_t**} 返回已用属性路径组对象。
  */
-mvvm_prop_result_t** mvvm_prop_gen_result_create(mvvm_prop_gen_t* mvvm_prop_gen, uint32_t* result_size);
+mvvm_prop_result_t** mvvm_prop_gen_result_create(mvvm_prop_gen_t* mvvm_prop_gen,
+                                                 uint32_t* result_size);
 
 /**
  * @method mvvm_prop_gen_result_destory
