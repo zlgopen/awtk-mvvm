@@ -20,7 +20,7 @@ is_error |= os.system(cmd2);
 if is_error != 0:
   print("mvvm_prop_gen.def gen failed!")
 
-files = env.Object(['xml_mvvm_prop.c', 'mvvm_prop_gen.c'])
+files = ['xml_mvvm_prop.c', 'mvvm_prop_gen.c']
 
 EXPORT_DEF=''
 if OS_NAME == 'Windows' :

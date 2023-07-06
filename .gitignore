@@ -22,3 +22,7 @@ bin/js*
 lib
 bin
 res
+tools/mvvm_prop_gen/idl/
+tools/mvvm_prop_gen/mvvm_prop_gen.def
+idl/idl.json
+src/mvvm.def
