@@ -57,6 +57,12 @@ static ret_t func_navigator_to(fscript_t* fscript, fscript_args_t* args, value_t
   }
 }
 
+static ret_t func_navigator_close(fscript_t* fscript, fscript_args_t* args, value_t* v) {
+  return_value_if_fail(args->size == 1, RET_BAD_PARAMS);
+
+  return navigator_close(value_str(args->args));
+}
+
 static ret_t func_navigator_replace(fscript_t* fscript, fscript_args_t* args, value_t* v) {
   return_value_if_fail(args->size == 1, RET_BAD_PARAMS);
 
@@ -160,6 +166,7 @@ static ret_t func_command_args_to_object(fscript_t* fscript, fscript_args_t* arg
 
 static ret_t mvvm_funcs_init(void) {
   fscript_register_func("navigator_to", func_navigator_to);
+  fscript_register_func("navigator_close", func_navigator_close);
   fscript_register_func("navigator_replace", func_navigator_replace);
   fscript_register_func("count_view_models", func_count_view_models);
   fscript_register_func("get_view_models", func_get_view_models);
