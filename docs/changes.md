@@ -1,5 +1,8 @@
 # 最新动态
 
+* 2023/07/19
+  * improve binding\_context\_awtk for global key.
+
 * 2023/07/12
   * 导出 navigator\_close 到 fscript。（感谢兆坤提供补丁）
 

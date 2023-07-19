@@ -22,10 +22,12 @@
 #include "awtk.h"
 #include "mvvm/mvvm.h"
 
+#include "app_view_model.h"
 #include "humidity_view_model.h"
 #include "temperature_view_model.h"
 
 ret_t application_init(void) {
+  view_model_factory_register("app", app_view_model_create);
   view_model_factory_register("humidity", humidity_view_model_create);
   view_model_factory_register("temperature", temperature_view_model_create);
 

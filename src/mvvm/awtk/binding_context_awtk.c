@@ -343,6 +343,16 @@ static ret_t command_binding_exec_command(command_binding_t* rule) {
   return RET_OK;
 }
 
+static ret_t on_global_key_event(void* c, event_t* e) {
+  command_binding_t* rule = COMMAND_BINDING(c);
+
+  if (command_binding_filter(rule, e)) {
+    return RET_OK;
+  }
+
+  return command_binding_exec_command(rule);
+}
+
 static ret_t on_widget_event(void* c, event_t* e) {
   command_binding_t* rule = COMMAND_BINDING(c);
   binding_context_t* ctx = BINDING_RULE_CONTEXT(rule);
@@ -391,7 +401,7 @@ ret_t binding_context_awtk_bind_command(binding_context_t* ctx, binding_rule_t* 
     if (event != EVT_NONE) {
       if (strstr(binding->event, STR_GLOBAL_EVENT_PREFIX) != NULL) {
         window_manager_t* wm = WINDOW_MANAGER(widget_get_window_manager(widget));
-        uint32_t id = emitter_on(wm->global_emitter, event, on_widget_event, rule);
+        uint32_t id = emitter_on(wm->global_emitter, event, on_global_key_event, rule);
         if (id != TK_INVALID_ID) {
           widget_on(widget, EVT_DESTROY, binding_context_off_global_when_widget_destroy,
                     tk_pointer_from_int(id));

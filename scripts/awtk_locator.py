@@ -1,7 +1,7 @@
 import os
 import sys
 
-AWTK_ROOT = ''
+AWTK_ROOT = '../awtk-vnc'
 
 def getAwtkRoot():
     return AWTK_ROOT
