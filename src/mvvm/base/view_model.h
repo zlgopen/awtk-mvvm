@@ -79,7 +79,7 @@ struct _view_model_t {
  *
  * @param {view_model_t*} view_model view_model对象。
  *
- * @return {ret_t} 返回view_model对象。
+ * @return {view_model_t*} 返回view_model对象。
  */
 view_model_t* view_model_init(view_model_t* view_model);
 

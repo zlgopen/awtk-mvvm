@@ -1,5 +1,8 @@
 # 最新动态
 
+* 2023/08/23
+  * 修正注释。（感谢兆坤提供补丁）
+
 * 2023/07/19
   * improve binding\_context\_awtk for global key.
 
