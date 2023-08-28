@@ -71,7 +71,11 @@ python ./scripts/update_res.py all
 scons
 ```
 
-> 完整编译选项请参考 [编译选项](https://github.com/zlgopen/awtk-widget-generator/blob/master/docs/build_options.md)
+> 完整的命令行参数可通过如下命令查看：
+
+```cmd
+scons help
+```
 
 * 编译 LINUX FB 版本（请先编译 awtk-linux-fb）
 

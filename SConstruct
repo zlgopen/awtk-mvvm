@@ -2,6 +2,11 @@ import os
 import re
 import platform
 import scripts.app_helper as app
+import scripts.scons_argv
+scripts.scons_argv.init(ARGUMENTS)
+
+helper = app.Helper(ARGUMENTS);
+complie_helper = helper.get_curr_config()
 
 def dll_def_processor():
   content = ''
@@ -32,15 +37,14 @@ APP_3RD_ROOT = os.path.normpath(os.path.join(os.getcwd(), '3rd'))
 APP_TOOLS_ROOT = os.path.normpath(os.path.join(os.getcwd(), 'tools'))
 os.environ['APP_TOOLS_ROOT'] = APP_TOOLS_ROOT
 
-os.environ['BUILD_DEMOS'] = 'true'
-os.environ['BUILD_TESTS'] = 'true'
-os.environ['BUILD_TOOLS'] = 'true'
-os.environ['WITH_JS'] = 'true'
+os.environ['BUILD_DEMOS'] = str(complie_helper.get_value('BUILD_DEMOS', True)).lower()
+os.environ['BUILD_TESTS'] = str(complie_helper.get_value('BUILD_TESTS', True)).lower()
+os.environ['BUILD_TOOLS'] = str(complie_helper.get_value('BUILD_TOOLS', True)).lower()
+os.environ['WITH_JS'] = str(complie_helper.get_value('WITH_JERRYSCRIPT', True)).lower()
 if 'WITH_JS' in os.environ and os.environ['WITH_JS'] == 'true':
   os.environ['WITH_JS_SNAPSHOT'] = 'true'
   os.environ['WITH_JS_EXTERNAL_CONTEXT'] = 'true'
-  if ARGUMENTS.get('IOTJS', '').lower().startswith('t'):
-    os.environ['WITH_IOTJS'] = 'true'
+  os.environ['WITH_IOTJS'] = str(complie_helper.get_value('WITH_IOTJS', True)).lower()
 
   APP_CFLAGS +=' -DWITH_JERRYSCRIPT '
   if 'WITH_JS_SNAPSHOT' in os.environ and os.environ['WITH_JS_SNAPSHOT'] == 'true':
@@ -120,7 +124,6 @@ if 'BUILD_TOOLS' in os.environ and os.environ['BUILD_TOOLS'] == 'true':
     SConscripts += ['tools/mvvm_factory_gen/SConscript']
   SConscripts += ['tools/mvvm_prop_gen/SConscript']
 
-helper = app.Helper(ARGUMENTS);
 helper.set_dll_def('src/mvvm.def').set_dll_def_processor(dll_def_processor).add_cpppath(TK_3RD_DIRS).add_ccflags(APP_CFLAGS).add_libs(APP_LIBS).add_libpath(APP_LIBPATH).call(DefaultEnvironment)
 
 helper.SConscript(SConscripts)
