@@ -136,8 +136,6 @@ binding_rule_t* binding_rule_parse(const char* name, const char* value, bool_t i
     }
   }
 
-  tk_object_set_prop_str(TK_OBJECT(rule), BINDING_RULE_PROP_INITED, "TRUE");
-
   tokenizer_deinit(&t);
 
   return rule;

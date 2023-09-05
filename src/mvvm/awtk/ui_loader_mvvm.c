@@ -289,64 +289,61 @@ static ret_t rbuffer_get_data_range_of_a_condition_widget(rbuffer_t* rbuffer, ui
 static binding_rule_t* ui_loader_mvvm_bind_data(ui_loader_mvvm_t* loader, widget_t* widget,
                                                 const char* name, const char* value) {
   binding_rule_t* rule = binding_rule_parse(name, value, widget->vt->inputable);
-  data_binding_t* binding;
-  return_value_if_fail(rule != NULL, NULL);
+  data_binding_t* binding = DATA_BINDING(rule);
+  return_value_if_fail(binding != NULL, NULL);
 
-  binding = DATA_BINDING(rule);
-  if (binding != NULL) {
-    rule->parent = loader->rule;
-    rule->widget = widget;
+  rule->parent = loader->rule;
+  rule->widget = widget;
 
-    if (binding_context_bind_data(loader->binding_context, rule) == RET_OK) {
-      return rule;
-    }
+  if (binding_context_bind_data(loader->binding_context, rule) != RET_OK) {
+    TK_OBJECT_UNREF(rule);
+    return NULL;
   }
 
-  tk_object_unref(TK_OBJECT(rule));
-  return NULL;
+  tk_object_set_prop_str(TK_OBJECT(rule), BINDING_RULE_PROP_INITED, "TRUE");
+
+  return rule;
 }
 
 static binding_rule_t* ui_loader_mvvm_bind_command(ui_loader_mvvm_t* loader, widget_t* widget,
                                                    const char* name, const char* value) {
   binding_rule_t* rule = binding_rule_parse(name, value, widget->vt->inputable);
-  command_binding_t* binding;
-  return_value_if_fail(rule != NULL, NULL);
+  command_binding_t* binding = COMMAND_BINDING(rule);
+  return_value_if_fail(binding != NULL, NULL);
 
-  binding = COMMAND_BINDING(rule);
-  if (binding != NULL) {
-    rule->parent = loader->rule;
-    rule->widget = widget;
+  rule->parent = loader->rule;
+  rule->widget = widget;
 
-    if (binding_context_bind_command(loader->binding_context, rule) == RET_OK) {
-      return rule;
-    }
+  if (binding_context_bind_command(loader->binding_context, rule) != RET_OK) {
+    TK_OBJECT_UNREF(rule);
+    return NULL;
   }
 
-  tk_object_unref(TK_OBJECT(rule));
-  return NULL;
+  tk_object_set_prop_str(TK_OBJECT(rule), BINDING_RULE_PROP_INITED, "TRUE");
+
+  return rule;
 }
 
 static binding_rule_t* ui_loader_mvvm_bind_items(ui_loader_mvvm_t* loader, widget_t* widget,
                                                  const char* name, const char* value,
                                                  uint32_t data_pos, uint32_t data_size) {
   binding_rule_t* rule = binding_rule_parse(name, value, widget->vt->inputable);
-  items_binding_t* binding;
-  return_value_if_fail(rule != NULL, NULL);
+  items_binding_t* binding = ITEMS_BINDING(rule);
+  return_value_if_fail(binding != NULL, NULL);
 
-  binding = ITEMS_BINDING(rule);
-  if (binding != NULL) {
-    rule->parent = loader->rule;
-    rule->widget = widget;
-    binding->widget_data_pos = data_pos;
-    binding->widget_data_size = data_size;
+  rule->parent = loader->rule;
+  rule->widget = widget;
+  binding->widget_data_pos = data_pos;
+  binding->widget_data_size = data_size;
 
-    if (binding_context_bind_items(loader->binding_context, rule) == RET_OK) {
-      return rule;
-    }
+  if (binding_context_bind_items(loader->binding_context, rule) != RET_OK) {
+    TK_OBJECT_UNREF(rule);
+    return NULL;
   }
 
-  tk_object_unref(TK_OBJECT(rule));
-  return NULL;
+  tk_object_set_prop_str(TK_OBJECT(rule), BINDING_RULE_PROP_INITED, "TRUE");
+
+  return rule;
 }
 
 static binding_rule_t* ui_loader_mvvm_bind_condition(ui_loader_mvvm_t* loader, widget_t* widget,
@@ -362,9 +359,11 @@ static binding_rule_t* ui_loader_mvvm_bind_condition(ui_loader_mvvm_t* loader, w
   binding->widget_data_size = data_size;
 
   if (binding_context_bind_condition(loader->binding_context, rule) != RET_OK) {
-    tk_object_unref(TK_OBJECT(rule));
-    rule = NULL;
+    TK_OBJECT_UNREF(rule);
+    return NULL;
   }
+
+  tk_object_set_prop_str(TK_OBJECT(rule), BINDING_RULE_PROP_INITED, "TRUE");
 
   return rule;
 }
