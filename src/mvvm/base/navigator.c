@@ -450,10 +450,10 @@ int32_t navigator_count_view_models(const char* target) {
 ret_t navigator_get_view_models(const char* target, darray_t* result) {
   ret_t ret = RET_OK;
   navigator_request_t* req = NULL;
-  return_value_if_fail(navigator() != NULL && result != NULL, 0);
+  return_value_if_fail(navigator() != NULL && result != NULL, RET_BAD_PARAMS);
 
   req = navigator_request_create(NULL, NULL);
-  return_value_if_fail(req != NULL, 0);
+  return_value_if_fail(req != NULL, RET_OOM);
 
   req->user_data = result;
   tk_object_set_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_GET_VIEW_MODEL);
@@ -468,10 +468,10 @@ ret_t navigator_get_view_models(const char* target, darray_t* result) {
 ret_t navigator_notify_view_props_changed(const char* target) {
   ret_t ret = RET_OK;
   navigator_request_t* req = NULL;
-  return_value_if_fail(navigator() != NULL, 0);
+  return_value_if_fail(navigator() != NULL, RET_BAD_PARAMS);
 
   req = navigator_request_create(NULL, NULL);
-  return_value_if_fail(req != NULL, 0);
+  return_value_if_fail(req != NULL, RET_OOM);
 
   tk_object_set_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_NOTIFY_VIEW_MODEL);
   tk_object_set_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_TARGET, target);
@@ -486,10 +486,10 @@ ret_t navigator_notify_view_props_changed(const char* target) {
 ret_t navigator_notify_view_items_changed(tk_object_t* items, const char* target) {
   ret_t ret = RET_OK;
   navigator_request_t* req = NULL;
-  return_value_if_fail(navigator() != NULL, 0);
+  return_value_if_fail(navigator() != NULL, RET_BAD_PARAMS);
 
   req = navigator_request_create(NULL, NULL);
-  return_value_if_fail(req != NULL, 0);
+  return_value_if_fail(req != NULL, RET_OOM);
 
   tk_object_set_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_NOTIFY_VIEW_MODEL);
   tk_object_set_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_TARGET, target);
@@ -508,7 +508,7 @@ tk_object_t* navigator_get_locale(const char* target) {
   return_value_if_fail(navigator() != NULL, NULL);
 
   req = navigator_request_create(NULL, NULL);
-  return_value_if_fail(req != NULL, 0);
+  return_value_if_fail(req != NULL, NULL);
 
   tk_object_set_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_GET_LOCALE);
   tk_object_set_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_TARGET, target);
@@ -528,7 +528,7 @@ ret_t navigator_set_locale(const char* language, const char* country, const char
   return_value_if_fail(navigator() != NULL, RET_FAIL);
 
   req = navigator_request_create(NULL, NULL);
-  return_value_if_fail(req != NULL, 0);
+  return_value_if_fail(req != NULL, RET_OOM);
 
   tk_object_set_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_SET_LOCALE);
   tk_object_set_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_LANGUAGE, language);
@@ -547,7 +547,7 @@ const char* navigator_get_theme(const char* target) {
   return_value_if_fail(navigator() != NULL, NULL);
 
   req = navigator_request_create(NULL, NULL);
-  return_value_if_fail(req != NULL, 0);
+  return_value_if_fail(req != NULL, NULL);
 
   tk_object_set_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_GET_THEME);
   tk_object_set_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_TARGET, target);
@@ -566,7 +566,7 @@ ret_t navigator_set_theme(const char* theme, const char* target) {
   return_value_if_fail(navigator() != NULL, RET_FAIL);
 
   req = navigator_request_create(NULL, NULL);
-  return_value_if_fail(req != NULL, 0);
+  return_value_if_fail(req != NULL, RET_OOM);
 
   tk_object_set_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_SET_THEME);
   tk_object_set_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_THEME, theme);
@@ -584,7 +584,7 @@ ret_t navigator_set_screen_saver_time(uint32_t time) {
   return_value_if_fail(navigator() != NULL, RET_FAIL);
 
   req = navigator_request_create(NULL, NULL);
-  return_value_if_fail(req != NULL, 0);
+  return_value_if_fail(req != NULL, RET_OOM);
 
   tk_object_set_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_REQ, NAVIGATOR_REQ_SET_SCREEN_SAVER_TIME);
   tk_object_set_prop_int(TK_OBJECT(req), NAVIGATOR_ARG_TIME, time);

@@ -756,7 +756,6 @@ static ret_t navigator_handler_awtk_on_set_theme(navigator_handler_t* handler,
 static ret_t navigator_handler_awtk_on_set_screen_saver_time(navigator_handler_t* handler,
                                                              navigator_request_t* req) {
   ret_t ret = RET_OK;
-  widget_t* widget = NULL;
   widget_t* wm = window_manager();
   uint32_t time = tk_object_get_prop_int(TK_OBJECT(req), NAVIGATOR_ARG_TIME, 0);
 
