@@ -37,9 +37,16 @@ APP_3RD_ROOT = os.path.normpath(os.path.join(os.getcwd(), '3rd'))
 APP_TOOLS_ROOT = os.path.normpath(os.path.join(os.getcwd(), 'tools'))
 os.environ['APP_TOOLS_ROOT'] = APP_TOOLS_ROOT
 
+BUILD_TOOLS = True
+BUILD_TESTS = True
+BUILD_DEMOS = True
+if complie_helper.get_value('LINUX_FB', True) :
+  BUILD_TOOLS = False
+  BUILD_TESTS = False
+
 os.environ['BUILD_DEMOS'] = str(complie_helper.get_value('BUILD_DEMOS', True)).lower()
-os.environ['BUILD_TESTS'] = str(complie_helper.get_value('BUILD_TESTS', True)).lower()
-os.environ['BUILD_TOOLS'] = str(complie_helper.get_value('BUILD_TOOLS', True)).lower()
+os.environ['BUILD_TESTS'] = str(complie_helper.get_value('BUILD_TESTS', BUILD_TESTS)).lower()
+os.environ['BUILD_TOOLS'] = str(complie_helper.get_value('BUILD_TOOLS', BUILD_TOOLS)).lower()
 os.environ['WITH_JS'] = str(complie_helper.get_value('WITH_JERRYSCRIPT', True)).lower()
 if 'WITH_JS' in os.environ and os.environ['WITH_JS'] == 'true':
   os.environ['WITH_JS_SNAPSHOT'] = 'true'

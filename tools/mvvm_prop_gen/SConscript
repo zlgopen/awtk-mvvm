@@ -30,8 +30,8 @@ if OS_NAME == 'Windows' :
     EXPORT_DEF = ' "tools/mvvm_prop_gen/mvvm_prop_gen.def" '
 
 LINKFLAGS=env['LINKFLAGS'] + EXPORT_DEF
-CFLAGS=env['CFLAGS'] + ' -DMVVM_DLL_EXPORT '
-CCFLAGS=env['CCFLAGS'] + ' -DMVVM_DLL_EXPORT '
+CFLAGS=env['CFLAGS']
+CCFLAGS=env['CCFLAGS']
 env.SharedLibrary(os.path.join(BIN_DIR, 'mvvm_prop_gen'), files, LINKFLAGS=LINKFLAGS, CFLAGS=CFLAGS, CCFLAGS=CCFLAGS)
 
 LIBS=['mvvm', 'mvvm_prop_gen'] + env['LIBS']
