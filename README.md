@@ -157,7 +157,8 @@ os.environ['WITH_JS'] = 'true'
 | demo38 | (no)     | (no)      | 无 GUI 情况集成硬件外设                                    |
 | demo39 | (no)     | cppdemo39 | 列表渲染的过时用法 (v-for-item)                            |
 | demo40 | jsdemo40 | (no)      | 多个语言互译与主题切换                                     |
-| demo41 | jsdemo41 | (no)      | 屏保的使用方法                                            |
+| demo41 | jsdemo41 | (no)      | 屏保的使用方法                                             |
+| demo42 | (no)     | (no)      | 控件定时器使用方法                                         |
 
 * [完整示例及模板项目](https://github.com/zlgopen/awtk-mvvm-c-hello)
 

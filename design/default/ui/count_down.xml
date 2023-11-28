@@ -1,0 +1,16 @@
+<window v-model="dummy" text="count down">
+  <label name="count_down" x="center" y="middle:-60" w="50%" h="40" v-data:text="{int(value/60)+':'+value%60}" 
+    v-on:timer="{fscript, Args=set(value, max(0, value-1))}"/>
+
+  <button x="center:-150" y="middle" w="80" h="40" text="start" 
+    v-on:click="{fscript, Args=start_timer('count_down', 500);set(value, 100)}" /> 
+
+  <button x="center:-50" y="middle" w="80" h="40" text="suspend" 
+    v-on:click="{fscript, Args=suspend_timer('count_down')}" /> 
+  
+  <button x="center:50" y="middle" w="80" h="40" text="resume" 
+    v-on:click="{fscript, Args=resume_timer('count_down')}" /> 
+
+  <button x="center:150" y="middle" w="80" h="40" text="stop" 
+    v-on:click="{fscript, Args=stop_timer('count_down');set(value, 0)}" /> 
+</window>
