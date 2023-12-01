@@ -309,6 +309,25 @@ static bool_t command_binding_filter(command_binding_t* rule, event_t* e) {
     } else {
       return TRUE;
     }
+  } else if (e->type == EVT_POINTER_DOWN || e->type == EVT_POINTER_UP ||
+             e->type == EVT_CONTEXT_MENU || e->type == EVT_CLICK || e->type == EVT_DOUBLE_CLICK ||
+             e->type == EVT_LONG_PRESS || e->type == EVT_POINTER_DOWN_BEFORE_CHILDREN ||
+             e->type == EVT_POINTER_UP_BEFORE_CHILDREN || e->type == EVT_POINTER_DOWN_ABORT) {
+    shortcut_t shortcut;
+    pointer_event_t* evt = (pointer_event_t*)e;
+
+    shortcut_init(&shortcut, rule->filter.key);
+    shortcut.ctrl = shortcut.lctrl = shortcut.rctrl = evt->ctrl;
+    shortcut.alt = shortcut.lalt = shortcut.ralt = evt->alt;
+    shortcut.shift = shortcut.lshift = shortcut.rshift = evt->shift;
+    shortcut.cmd = evt->cmd;
+    shortcut.menu = evt->menu;
+
+    if (shortcut_match(&(rule->filter), &shortcut)) {
+      return FALSE;
+    } else {
+      return TRUE;
+    }
   }
 
   return FALSE;
