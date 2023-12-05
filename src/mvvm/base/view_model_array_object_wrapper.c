@@ -106,7 +106,7 @@ static bool_t view_model_array_object_wrapper_can_exec(tk_object_t* obj, const c
     return TRUE;
   }
 
-  if (tk_str_eq(name, TK_OBJECT_CMD_EDIT)) {
+  if (tk_str_eq(name, TK_OBJECT_CMD_EDIT) || tk_str_eq(name, TK_OBJECT_CMD_DETAIL)) {
     return TRUE;
   }
 
@@ -126,8 +126,7 @@ static bool_t view_model_array_object_wrapper_can_exec(tk_object_t* obj, const c
 }
 
 static const char* view_model_array_object_wrapper_get_target(char target[TK_NAME_LEN + 1],
-                                                              const char* prefix,
-                                                              const char* action) {
+    const char* name, const char* prefix,  const char* action) {
   const char* p = NULL;
   if (prefix != NULL) {
     p = strrchr(prefix, '.');
@@ -136,26 +135,42 @@ static const char* view_model_array_object_wrapper_get_target(char target[TK_NAM
     } else {
       p++;
     }
-    tk_snprintf(target, TK_NAME_LEN, "%s_%s", p, action);
+    if (name != NULL) {
+      tk_snprintf(target, TK_NAME_LEN, "%s_%s_%s", name, p, action);
+    } else {
+      tk_snprintf(target, TK_NAME_LEN, "%s_%s", p, action);
+    }
   } else {
-    tk_snprintf(target, TK_NAME_LEN, "%s", action);
+    if (name != NULL) { 
+      tk_snprintf(target, TK_NAME_LEN, "%s_%s", name, action);
+    } else {
+      tk_snprintf(target, TK_NAME_LEN, "%s", action);
+    }
   }
 
   return target;
 }
 
-static ret_t view_model_array_object_wrapper_cmd_add(const char* prefix, const char* path) {
+static ret_t view_model_array_object_wrapper_cmd_add(const char* name, const char* prefix, const char* path) {
   char target[TK_NAME_LEN + 1];
 
-  view_model_array_object_wrapper_get_target(target, prefix, "add");
+  view_model_array_object_wrapper_get_target(target, name, prefix, TK_OBJECT_CMD_ADD);
 
   return navigator_to_with_key_value(target, STR_PATH_PREFIX, path);
 }
 
-static ret_t view_model_array_object_wrapper_cmd_edit(const char* prefix, const char* path) {
+static ret_t view_model_array_object_wrapper_cmd_edit(const char* name, const char* prefix, const char* path) {
   char target[TK_NAME_LEN + 1];
 
-  view_model_array_object_wrapper_get_target(target, prefix, "edit");
+  view_model_array_object_wrapper_get_target(target, name, prefix, TK_OBJECT_CMD_EDIT);
+
+  return navigator_to_with_key_value(target, STR_PATH_PREFIX, path);
+}
+
+static ret_t view_model_array_object_wrapper_cmd_detail(const char* name, const char* prefix, const char* path) {
+  char target[TK_NAME_LEN + 1];
+
+  view_model_array_object_wrapper_get_target(target, name, prefix, TK_OBJECT_CMD_DETAIL);
 
   return navigator_to_with_key_value(target, STR_PATH_PREFIX, path);
 }
@@ -203,12 +218,14 @@ static ret_t view_model_array_object_wrapper_exec(tk_object_t* obj, const char* 
     return_value_if_fail(ret == RET_OK, RET_FAIL);
     return_value_if_fail(last_index >= 0, RET_FAIL);
     args = view_model_array_object_wrapper_gen_path(obj, path, last_index);
-    return view_model_array_object_wrapper_cmd_add(object_wrapper->prop_prefix, args);
+    return view_model_array_object_wrapper_cmd_add(object_wrapper->obj->name, object_wrapper->prop_prefix, args);
   }
 
   if (ret == RET_NOT_FOUND || ret == RET_NOT_IMPL) {
     if (tk_str_eq(name, TK_OBJECT_CMD_EDIT)) {
-      return view_model_array_object_wrapper_cmd_edit(object_wrapper->prop_prefix, args);
+      return view_model_array_object_wrapper_cmd_edit(object_wrapper->obj->name, object_wrapper->prop_prefix, args);
+    } else if (tk_str_eq(name, TK_OBJECT_CMD_DETAIL)) {
+      return view_model_array_object_wrapper_cmd_detail(object_wrapper->obj->name, object_wrapper->prop_prefix, args);
     }
   }
 
