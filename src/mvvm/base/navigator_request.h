@@ -357,6 +357,12 @@ ret_t navigator_request_on_result(navigator_request_t* req, const value_t* resul
  */
 #define NAVIGATOR_ARG_TIME "time"
 
+/**
+ * @const NAVIGATOR_ARG_VIEW_MODEL_TYPE
+ * ViewModel的类型(让view model的创建函数有机会知道自己的类型)。
+ */
+#define NAVIGATOR_ARG_VIEW_MODEL_TYPE "view_model_type"
+
 END_C_DECLS
 
 #endif /*TK_NAVIGATOR_REQUEST_H*/
