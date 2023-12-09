@@ -87,7 +87,10 @@ view_model_t* view_model_factory_create_model_one(const char* type, navigator_re
   view_model_create_t create = NULL;
   return_value_if_fail(s_model_factory != NULL && type != NULL, NULL);
   create = (view_model_create_t)tk_object_get_prop_pointer(s_model_factory->creators, type);
-  tk_object_set_prop_str(req->args, NAVIGATOR_ARG_VIEW_MODEL_TYPE, type);
+
+  if (req != NULL) {
+    tk_object_set_prop_str(req->args, NAVIGATOR_ARG_VIEW_MODEL_TYPE, type);
+  }
 
   if (create == NULL) {
     char stype[TK_NAME_LEN + 1] = {0};

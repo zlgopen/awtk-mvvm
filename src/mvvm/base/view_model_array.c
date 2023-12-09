@@ -40,13 +40,22 @@ static const char* view_model_array_preprocess_prop(view_model_t* view_model, co
   view_model_array_t* vm_array = VIEW_MODEL_ARRAY(view_model);
   return_value_if_fail(view_model != NULL && prop != NULL, NULL);
 
-  tk_snprintf(index, TK_NUM_MAX_LEN, "[%d].", vm_array->cursor);
+  if (tk_str_start_with(prop, "item")) {
+    tk_snprintf(index, TK_NUM_MAX_LEN, "[%d].", vm_array->cursor);
+    str_set(&(vm_array->temp_prop), prop);
+    str_replace(&(vm_array->temp_prop), "item_", index);
+    str_replace(&(vm_array->temp_prop), "item.", index);
 
-  str_set(&(vm_array->temp_prop), prop);
-  str_replace(&(vm_array->temp_prop), "item_", index);
-  str_replace(&(vm_array->temp_prop), "item.", index);
+    return vm_array->temp_prop.str;
+  } else if(tk_str_start_with(prop, "selected.")) {
+    tk_snprintf(index, TK_NUM_MAX_LEN, "[%d].", vm_array->selected_index);
+    str_set(&(vm_array->temp_prop), prop);
+    str_replace(&(vm_array->temp_prop), "selected.", index);
 
-  return vm_array->temp_prop.str;
+    return vm_array->temp_prop.str;
+  } else {
+    return prop;
+  }
 }
 
 ret_t view_model_array_inc_cursor(view_model_t* view_model) {

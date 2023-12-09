@@ -1,7 +1,10 @@
 # 最新动态
 
+* 2023/12/10
+  * 完善 view\_model\_array\_preprocess\_prop，支持通过selected.来访问当前选择的项目。
+
 * 2023/12/09
-  * 完善view\_model\_factory，支持指定view_model的参数。比如: db(table=scores, filter='chinese > 90');
+  * 完善view\_model\_factory，支持指定view\_model的参数。比如: db(table=scores, filter='chinese > 90');
 
 * 2023/12/05
   * 完善view\_model\_array\_object\_wrapper，支持detail命令。
