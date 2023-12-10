@@ -294,3 +294,25 @@ view_model_t* view_model_create_sub_view_model_array(view_model_t* view_model, c
 
   return view_model->vt->create_sub_view_model_array(view_model, name);
 }
+
+uint32_t view_model_get_items_size(tk_object_t* obj) {
+  value_t v;
+  if (tk_object_get_prop(obj, TK_OBJECT_PROP_SIZE, &v) == RET_OK) {
+    return value_uint32(&v);
+  }
+
+  if (tk_object_get_prop(obj, VIEW_MODEL_PROP_ITEMS, &v) == RET_OK) {
+    if (v.type == VALUE_TYPE_OBJECT) {
+      return tk_object_get_prop_uint32(value_object(&v), TK_OBJECT_PROP_SIZE, 0);
+    } else {
+      return value_uint32(&v);
+    }
+  }
+  
+  if (tk_object_get_prop(obj, VIEW_MODEL_PROP_ITEMS "." TK_OBJECT_PROP_SIZE, &v) == RET_OK) {
+    return value_uint32(&v);
+  }
+
+  return 0;
+}
+

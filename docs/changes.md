@@ -4,6 +4,7 @@
   * 完善 view\_model\_array\_preprocess\_prop，支持通过selected.来访问当前选择的项目。
   * 修复单元测试。
   * 增加单元测试。
+  * 修复table view绑定时大量无用log
 
 * 2023/12/09
   * 完善view\_model\_factory，支持指定view\_model的参数。比如: db(table=scores, filter='chinese > 90');

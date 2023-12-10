@@ -202,6 +202,17 @@ static ret_t widget_set_prop_if_diff(widget_t* widget, const char* name, const v
 
 static ret_t binding_context_awtk_update_data(data_binding_t* rule, bool_t force) {
   binding_context_t* ctx = BINDING_RULE_CONTEXT(rule);
+  view_model_t* view_model = BINDING_RULE_VIEW_MODEL(rule);
+
+  if (tk_object_is_collection(TK_OBJECT(view_model))) {
+    uint32_t size = view_model_get_items_size(TK_OBJECT(view_model)); 
+    binding_context_t* context = BINDING_RULE_CONTEXT(rule);
+    uint32_t cursor = binding_context_get_items_cursor_of_rule(context, BINDING_RULE(rule));
+
+    if (cursor >= size) {
+      return RET_OK;
+    }
+  }
 
   if (tk_str_start_with(rule->path, DATA_BINDING_ERROR_OF)) {
     return RET_OK;

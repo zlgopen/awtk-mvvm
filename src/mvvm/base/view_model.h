@@ -315,6 +315,14 @@ typedef struct _model_will_mount_event_t {
   navigator_request_t* req;
 } view_model_will_mount_event_t;
 
+/**
+ * @method view_model_get_items_size
+ * 获取items的大小。
+ * @param {tk_object_t*} obj items对象。
+ * @return {uint32_t} 返回items的大小。
+*/
+uint32_t view_model_get_items_size(tk_object_t* obj);
+
 END_C_DECLS
 
 #endif /*TK_VIEW_MODEL_H*/
