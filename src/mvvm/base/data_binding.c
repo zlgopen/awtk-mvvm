@@ -80,6 +80,19 @@ static ret_t data_binding_object_set_prop(tk_object_t* obj, const char* name, co
     return ret;
   }
 
+  if (equal(BINDING_RULE_PROP_INITED, name)) {
+    BINDING_RULE(rule)->inited = TRUE;
+    rule->expr = fscript_create(obj, rule->path);
+    if (rule->to_view != NULL) {
+      rule->to_view_expr = fscript_create(obj, rule->to_view);
+    }
+    if (rule->to_model != NULL) {
+      rule->to_model_expr = fscript_create(obj, rule->to_model);
+    }
+
+    return RET_OK;
+  }
+
   value = value_str(v);
 
   if (rule->path == NULL && value == NULL) {
@@ -131,15 +144,6 @@ static ret_t data_binding_object_set_prop(tk_object_t* obj, const char* name, co
     rule->converter_args = tk_str_copy(rule->converter_args, value);
   } else if (equal(DATA_BINDING_VALIDATOR, name)) {
     rule->validator = tk_str_copy(rule->validator, value);
-  } else if (equal(BINDING_RULE_PROP_INITED, name)) {
-    BINDING_RULE(rule)->inited = TRUE;
-    rule->expr = fscript_create(obj, rule->path);
-    if (rule->to_view != NULL) {
-      rule->to_view_expr = fscript_create(obj, rule->to_view);
-    }
-    if (rule->to_model != NULL) {
-      rule->to_model_expr = fscript_create(obj, rule->to_model);
-    }
   } else {
     if (rule->props == NULL) {
       rule->props = object_default_create();

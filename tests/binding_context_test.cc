@@ -119,6 +119,8 @@ TEST(BindingContextAwtk, data_two_way) {
 
   ctx = binding_context_create(NULL, STR_V_MODEL_TEMP, win);
   rule = binding_rule_create(slider, "v-data:value", "{i32}");
+  tk_object_set_prop_bool(TK_OBJECT(rule), BINDING_RULE_PROP_INITED, true);
+
   binding_context_bind_data(ctx, rule);
   binding_context_set_bound(ctx, TRUE);
 
@@ -146,11 +148,13 @@ TEST(BindingContextAwtk, multi_view_model) {
 
   ctx = binding_context_create(NULL, STR_V_MODEL_TEMP, temp_slider);
   rule = binding_rule_create(temp_slider, "v-data:value", "{i32}");
+  tk_object_set_prop_bool(TK_OBJECT(rule), BINDING_RULE_PROP_INITED, true);
   binding_context_bind_data(ctx, rule);
   binding_context_set_bound(ctx, TRUE);
 
   ctx = binding_context_create(NULL, STR_V_MODEL_HUMIDITY, humidity_slider);
   rule = binding_rule_create(humidity_slider, "v-data:value", "{i32}");
+  tk_object_set_prop_bool(TK_OBJECT(rule), BINDING_RULE_PROP_INITED, true);
   binding_context_bind_data(ctx, rule);
   binding_context_set_bound(ctx, TRUE);
 
@@ -178,6 +182,7 @@ TEST(BindingContextAwtk, data_once) {
 
   ctx = binding_context_create(NULL, STR_V_MODEL_TEMP, win);
   rule = binding_rule_create(slider, "v-data:value", "{i32, Mode=Once}");
+  tk_object_set_prop_bool(TK_OBJECT(rule), BINDING_RULE_PROP_INITED, true);
   binding_context_bind_data(ctx, rule);
   binding_context_set_bound(ctx, TRUE);
 
@@ -204,6 +209,7 @@ TEST(BindingContextAwtk, data_one_way) {
 
   ctx = binding_context_create(NULL, STR_V_MODEL_TEMP, win);
   rule = binding_rule_create(slider, "v-data:value", "{i32, Mode=OneWay}");
+  tk_object_set_prop_bool(TK_OBJECT(rule), BINDING_RULE_PROP_INITED, true);
   binding_context_bind_data(ctx, rule);
   binding_context_set_bound(ctx, TRUE);
 
@@ -233,6 +239,7 @@ TEST(BindingContextAwtk, data_changed) {
 
   ctx = binding_context_create(NULL, STR_V_MODEL_TEMP, win);
   rule = binding_rule_create(slider, "v-data:value", "{i32, Mode=TwoWay, Trigger=Changed}");
+  tk_object_set_prop_bool(TK_OBJECT(rule), BINDING_RULE_PROP_INITED, true);
   binding_context_bind_data(ctx, rule);
   binding_context_set_bound(ctx, TRUE);
 
@@ -264,6 +271,7 @@ TEST(BindingContextAwtk, data_changing) {
 
   ctx = binding_context_create(NULL, STR_V_MODEL_TEMP, win);
   rule = binding_rule_create(slider, "v-data:value", "{i32, Mode=TwoWay, Trigger=Changing}");
+  tk_object_set_prop_bool(TK_OBJECT(rule), BINDING_RULE_PROP_INITED, true);
   binding_context_bind_data(ctx, rule);
   binding_context_set_bound(ctx, TRUE);
 
@@ -295,6 +303,7 @@ TEST(BindingContextAwtk, data_explicit) {
 
   ctx = binding_context_create(NULL, STR_V_MODEL_TEMP, win);
   rule = binding_rule_create(slider, "v-data:value", "{i32, Mode=TwoWay, Trigger=Explicit}");
+  tk_object_set_prop_bool(TK_OBJECT(rule), BINDING_RULE_PROP_INITED, true);
   binding_context_bind_data(ctx, rule);
   binding_context_set_bound(ctx, TRUE);
 
@@ -327,8 +336,10 @@ TEST(BindingContextAwtk, command_update_to_view_model) {
 
   ctx = binding_context_create(NULL, STR_V_MODEL_TEMP, win);
   rule = binding_rule_create(slider, "v-data:value", "{i32, Mode=TwoWay, Trigger=Explicit}");
+  tk_object_set_prop_bool(TK_OBJECT(rule), BINDING_RULE_PROP_INITED, true);
   binding_context_bind_data(ctx, rule);
   rule = binding_rule_create(slider, "v-on:pointer_down", "{save, Args=2, UpdateModel=True}");
+  tk_object_set_prop_bool(TK_OBJECT(rule), BINDING_RULE_PROP_INITED, true);
   binding_context_bind_command(ctx, rule);
   binding_context_set_bound(ctx, TRUE);
 
@@ -372,6 +383,7 @@ TEST(BindingContextAwtk, command_close_window) {
 
   ctx = binding_context_create(NULL, STR_V_MODEL_TEMP, win);
   rule = binding_rule_create(button, "v-on:pointer_down", "{save, Args=2, CloseWindow=True}");
+  tk_object_set_prop_bool(TK_OBJECT(rule), BINDING_RULE_PROP_INITED, true);
   binding_context_bind_command(ctx, rule);
   binding_context_set_bound(ctx, TRUE);
 
@@ -406,6 +418,7 @@ TEST(BindingContextAwtk, fscript1) {
   ctx = binding_context_create(NULL, STR_V_MODEL_TEMP, win);
   rule = binding_rule_create(button, "v-on:pointer_down",
                              "{fscript, Args=widget_set(x, widget_get(x)+10)}");
+  tk_object_set_prop_bool(TK_OBJECT(rule), BINDING_RULE_PROP_INITED, true);
   binding_context_bind_command(ctx, rule);
   binding_context_set_bound(ctx, TRUE);
 
@@ -429,6 +442,7 @@ TEST(BindingContextAwtk, fscript2) {
   ctx = binding_context_create(NULL, STR_V_MODEL_TEMP, win);
   rule = binding_rule_create(button, "v-on:pointer_down",
                              "{fscript, Args=widget_set(parent.x, widget_get(parent.x)+10)}");
+  tk_object_set_prop_bool(TK_OBJECT(rule), BINDING_RULE_PROP_INITED, true);
   binding_context_bind_command(ctx, rule);
   binding_context_set_bound(ctx, TRUE);
 
@@ -452,6 +466,7 @@ TEST(BindingContextAwtk, fscript3) {
   ctx = binding_context_create(NULL, STR_V_MODEL_TEMP, win);
   rule = binding_rule_create(button, "v-on:pointer_down",
                              "{fscript, Args=widget_set(window.x, widget_get(window.x)+10)}");
+  tk_object_set_prop_bool(TK_OBJECT(rule), BINDING_RULE_PROP_INITED, true);
   binding_context_bind_command(ctx, rule);
   binding_context_set_bound(ctx, TRUE);
 
@@ -477,6 +492,7 @@ TEST(BindingContextAwtk, fscript4) {
   rule = binding_rule_create(
       button, "v-on:pointer_down",
       "{fscript, Args=widget_set(window.button.x, widget_get(window.button.x)+10)}");
+  tk_object_set_prop_bool(TK_OBJECT(rule), BINDING_RULE_PROP_INITED, true);
   binding_context_bind_command(ctx, rule);
   binding_context_set_bound(ctx, TRUE);
 
