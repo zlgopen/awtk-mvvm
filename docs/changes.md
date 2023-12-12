@@ -1,5 +1,8 @@
 # 最新动态
 
+* 2023/12/12
+  * 完善 binding\_context\_update\_error\_of，修复错误信息无法清除的问题。
+
 * 2023/12/10
   * 完善 view\_model\_array\_preprocess\_prop，支持通过selected.来访问当前选择的项目。
   * 修复单元测试。

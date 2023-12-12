@@ -135,9 +135,7 @@ static ret_t binding_context_update_error_of(data_binding_t* rule) {
   view_model_t* view_model = BINDING_RULE_VIEW_MODEL(rule);
   return_value_if_fail(ctx != NULL && view_model != NULL, RET_BAD_PARAMS);
 
-  if (view_model->last_error.size > 0) {
-    slist_foreach(&(ctx->data_bindings), widget_visit_data_binding_update_error_of, rule);
-  }
+  slist_foreach(&(ctx->data_bindings), widget_visit_data_binding_update_error_of, rule);
 
   return RET_OK;
 }
