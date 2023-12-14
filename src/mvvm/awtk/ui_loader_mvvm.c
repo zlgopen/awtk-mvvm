@@ -438,8 +438,19 @@ static ret_t widget_destroy_and_clear_bindings(widget_t* widget, binding_context
 static ret_t ui_loader_mvvm_on_widget_destroy(void* ctx, event_t* e) {
   binding_context_t* bctx = BINDING_CONTEXT(ctx);
   binding_context_clear_bindings_of_widget(bctx, e->target);
+  widget_off_by_ctx(bctx->widget, e->target);
 
   return RET_REMOVE;
+}
+
+static ret_t ui_loader_mvvm_on_widget_binding_context_destroy(void* ctx, event_t* e) {
+  widget_t* widget = WIDGET(ctx);
+  if (widget->emitter != NULL) {
+    widget_off_by_tag(widget, EVENT_TAG);
+  }
+
+  (void)e;
+  return RET_OK;
 }
 
 static ret_t ui_loader_mvvm_build_data_with_widget(ui_loader_mvvm_t* loader,
@@ -551,6 +562,9 @@ static widget_t* ui_loader_mvvm_build_widget(ui_loader_mvvm_t* loader, rbuffer_t
   }
 
   widget_on_with_tag(widget, EVT_DESTROY, ui_loader_mvvm_on_widget_destroy, ctx, EVENT_TAG);
+  if (ctx->widget != widget) {
+    widget_on_with_tag(WIDGET(ctx->widget), EVT_DESTROY, ui_loader_mvvm_on_widget_binding_context_destroy, widget, EVENT_TAG);
+  }
 
   return widget;
 
