@@ -9,6 +9,7 @@ sources= Glob('mvvm/base/*.c') + \
   Glob('mvvm/hardware/*.c') +  \
   Glob('mvvm/awtk/*.c') + \
   Glob('mvvm/cpp/*.cpp') + \
+  Glob('mvvm/view_models/*.c') + \
   Glob('mvvm/*.c')
 
 if 'WITH_JS' in os.environ and os.environ['WITH_JS'] == 'true':

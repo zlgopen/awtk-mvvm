@@ -28,7 +28,7 @@ static ret_t view_model_dummy_on_destroy(tk_object_t* obj) {
 
   tk_object_unref(TK_OBJECT(dummy->props));
 
-  return RET_OK;
+  return view_model_deinit(VIEW_MODEL(obj));
 }
 
 static int32_t view_model_dummy_compare(tk_object_t* obj, tk_object_t* other) {
@@ -83,5 +83,5 @@ view_model_t* view_model_dummy_create(navigator_request_t* req) {
 
   dummy->props = object_default_create();
 
-  return VIEW_MODEL(obj);
+  return view_model_init(VIEW_MODEL(obj));
 }

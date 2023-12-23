@@ -24,6 +24,7 @@
 #include "mvvm/base/view_model_dummy.h"
 #include "mvvm/base/view_model_array_dummy.h"
 #include "mvvm/base/custom_binder.h"
+#include "mvvm/view_models/view_model_file.h"
 
 ret_t mvvm_init(void) {
   mvvm_base_init();
@@ -31,6 +32,7 @@ ret_t mvvm_init(void) {
 
   log_debug("mvvm_init\n");
   return_value_if_fail(mvvm_awtk_init() == RET_OK, RET_FAIL);
+  view_model_factory_register(STR_VIEW_MODEL_FILE, view_model_file_create); 
   view_model_factory_register(STR_VIEW_MODEL_DUMMY, view_model_dummy_create); 
   view_model_factory_register(STR_VIEW_MODEL_ARRAY_DUMMY, view_model_array_dummy_create); 
 
