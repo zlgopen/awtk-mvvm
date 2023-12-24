@@ -25,6 +25,7 @@
 #include "mvvm/base/view_model_array_dummy.h"
 #include "mvvm/base/custom_binder.h"
 #include "mvvm/view_models/view_model_file.h"
+#include "mvvm/view_models/view_model_conf.h"
 
 ret_t mvvm_init(void) {
   mvvm_base_init();
@@ -35,6 +36,16 @@ ret_t mvvm_init(void) {
   view_model_factory_register(STR_VIEW_MODEL_FILE, view_model_file_create); 
   view_model_factory_register(STR_VIEW_MODEL_DUMMY, view_model_dummy_create); 
   view_model_factory_register(STR_VIEW_MODEL_ARRAY_DUMMY, view_model_array_dummy_create); 
+
+  view_model_factory_register(STR_VIEW_MODEL_CONF_INI, view_model_conf_create);
+  view_model_factory_register(STR_VIEW_MODEL_CONF_CSV, view_model_conf_create);
+  
+  view_model_factory_register(STR_VIEW_MODEL_CONF_JSON, view_model_conf_create);
+  view_model_factory_register(STR_VIEW_MODEL_CONF_XML, view_model_conf_create);
+  view_model_factory_register(STR_VIEW_MODEL_CONF_UBJSON, view_model_conf_create);
+  view_model_factory_register(STR_VIEW_MODEL_CONF_JSON_ARRAY, view_model_conf_create);
+  view_model_factory_register(STR_VIEW_MODEL_CONF_XML_ARRAY, view_model_conf_create);
+  view_model_factory_register(STR_VIEW_MODEL_CONF_UBJSON_ARRAY, view_model_conf_create);
 
   return RET_OK;
 }

@@ -1,5 +1,8 @@
 # 最新动态
 
+* 2023/12/24
+  * 增加view\_model\_conf
+
 * 2023/12/23
   * 增加view\_model\_file
 

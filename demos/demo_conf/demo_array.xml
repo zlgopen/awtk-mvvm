@@ -1,0 +1,5 @@
+<networks>
+  <network device="eth0" ip="192.168.1.1" />
+  <network device="eth1" ip="192.168.1.2" />
+  <network device="eth2" ip="192.168.1.3" />
+</networks>

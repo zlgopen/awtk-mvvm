@@ -1,0 +1,22 @@
+<window v-model="ubjson(url=${app_dir}/demos/demo_conf/demo.ubjson)">
+  <view x="c" y="m" w="300" h="160" children_layout="default(c=2,r=4,s=10,m=10)">
+    <label text="net device" />
+    <edit  v-data:value="{network.device}"/>
+    
+    <label text="net ip" />
+    <edit  v-data:value="{network.ip}"/>
+
+    <label text="serial device" />
+    <edit  v-data:value="{serial.device}"/>
+    
+    <label text="serial baudrate" />
+    <edit  v-data:value="{serial.baudrate}"/>
+  </view>
+
+  <view x="c" y="b:20" w="100%" h="60" children_layout="default(c=3,r=1,s=10,m=10)">
+    <button text="Save" v-on:click="{save}"/>
+    <label />
+    <button text="Back" v-on:click="{nothing, CloseWindow=true}"/>
+  </view>
+
+</window>

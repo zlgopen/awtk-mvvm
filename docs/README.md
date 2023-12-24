@@ -12,3 +12,5 @@
 10. [内存需求评估](memory_req.md)
 11. [过时用法](outmoded.md)
 12. [ViewModel 生命周期](view_model_stage.md)
+13. [配置读写 模型](view_model_conf.md)
+14. [文件读写 模型](view_model_file.md)

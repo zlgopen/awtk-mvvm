@@ -1,0 +1,28 @@
+<window v-model="json(url=http://t.weather.sojson.com/api/weather/city/101030100)">
+  <view x="c" y="m" w="300" h="300" children_layout="default(c=2,r=6,s=10,m=10)">
+    <label text="城市" />
+    <label  v-data:value="{cityInfo.city}"/>
+    
+    <label text="温度" />
+    <label  v-data:value="{data.wendu}"/>
+
+    <label text="湿度" />
+    <label  v-data:value="{data.shidu}"/>
+    
+    <label text="PM2.5" />
+    <label  v-data:value="{data.pm25}"/>
+    
+    <label text="空气质量" />
+    <label  v-data:value="{data.quality}"/>
+    
+    <label text="感冒指数" />
+    <label  v-data:value="{data.ganmao}"/>
+  </view>
+
+  <view x="c" y="b:20" w="100%" h="60" children_layout="default(c=3,r=1,s=10,m=10)">
+    <button text="Save" v-on:click="{save}"/>
+    <button text="Refresh" v-on:click="{reload}"/>
+    <button text="Back" v-on:click="{nothing, CloseWindow=true}"/>
+  </view>
+
+</window>

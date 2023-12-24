@@ -1,0 +1,20 @@
+<window v-model="csv(url=${app_dir}/demos/demo_conf/demo.csv, col_names='device,ip')">
+   <label x="0" y="0" w="100%" h="30" v-data:text="{items}"/>
+   <list_view x="0"  y="30" w="100%" h="-80" item_height="40">
+    <scroll_view name="column" x="0"  y="0" w="100%" h="100%" v-for-items="true" >
+      <list_item  children_layout="default(rows=1,cols=0,s=4)">
+        <property name="v-data:style">
+          <![CDATA[ {(index % 2) ? "odd" : "even"} ]]>
+        </property>
+        <label w="20" v-data:text="{index}"/>
+        <label w="35%" v-data:text="{item.device}"/>
+        <label w="35%" v-data:text="{item.ip}"/>
+      </list_item>
+    </scroll_view>
+    <scroll_bar_m name="bar" x="right" y="0" w="6" h="100%" value="0"/>
+  </list_view>
+  <column  x="0" y="b" w="100%" h="40" children_layout="default(rows=1,col=2,s=5,m=5)">
+    <button text="OK" v-on:click="{nothing, CloseWindow=true}"/>
+    <button text="Cancel" v-on:click="{nothing, CloseWindow=true}"/>
+  </column>
+</window>
