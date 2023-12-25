@@ -2,6 +2,7 @@
 
 * 2023/12/24
   * 增加view\_model\_conf
+  * 完善binding\_context\_awtk\_update\_data
 
 * 2023/12/23
   * 增加view\_model\_file

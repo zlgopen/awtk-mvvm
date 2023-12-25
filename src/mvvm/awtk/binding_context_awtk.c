@@ -207,7 +207,8 @@ static ret_t binding_context_awtk_update_data(data_binding_t* rule, bool_t force
     binding_context_t* context = BINDING_RULE_CONTEXT(rule);
     uint32_t cursor = binding_context_get_items_cursor_of_rule(context, BINDING_RULE(rule));
 
-    if (cursor >= size) {
+    /*用于去掉TableView绑定时大量无用警告*/
+    if (cursor >= size && cursor > 0) {
       return RET_OK;
     }
   }
