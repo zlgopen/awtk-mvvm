@@ -566,13 +566,6 @@ static ret_t binding_context_awtk_notify_items_changed(binding_context_t* ctx, t
   tk_compare_t compare = (tk_compare_t)binding_context_awtk_compare_items_object;
   slist_t* bindings = &(ctx->dynamic_bindings);
 
-  if (ctx->update_view_idle_id != TK_INVALID_ID) {
-    idle_remove(ctx->update_view_idle_id);
-    ctx->update_view_idle_id = TK_INVALID_ID;
-    ctx->updating_view = FALSE;
-    ctx->updating_view_by_ui = FALSE;
-  }
-
   darray_init(&matched, 1, NULL, NULL);
   if (binding_context_awtk_find_binding_rule(bindings, compare, items, &matched) == RET_OK) {
     if (sync) {

@@ -1,5 +1,9 @@
 # 最新动态
 
+* 2023/12/27
+  * 完善 binding\_context\_awtk\_notify\_items\_changed，去掉优化，否则在同时触发items change和props changes时，props的界面没有更新。
+
+
 * 2023/12/24
   * 增加view\_model\_conf
   * 完善binding\_context\_awtk\_update\_data
