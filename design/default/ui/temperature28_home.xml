@@ -17,9 +17,13 @@
       <![CDATA[{if(value < 50, "low", "high")}]]>
     </property>
   </label>
-  <button name="inc" text="Inc" v-on:click="{fscript, Args=widget_set(window.slider1.value, widget_get(window.slider1.value)+10)}" />
-  <button name="dec" text="Dec" v-on:click="{fscript, Args=widget_set(window.slider1.value, widget_get(window.slider1.value)-10)}" />
-  <button text="Open" v-on:click="{fscript, Args=navigator_to(temperature28)}" />
-  <button text="Replace" v-on:click="{fscript, Args=navigator_replace(temperature28)}" />
-  <button text="Exec Open" v-on:click="{fscript, Args=exec(navigate, temperature28)}" />
+  <button name="inc" text="Inc" 
+    v-on:click="{fscript, Args=widget_set('window.slider1.value', widget_get('window.slider1.value')+10)}" />
+  <button name="dec" text="Dec" 
+    v-on:click="{fscript, Args=widget_set('window.slider1.value', widget_get('window.slider1.value')-10)}" />
+  <button text="OpenIf(<50)" v-on:click="{fscript, 
+    Args=if(value <50, navigator_to('temperature28'), dialog_toast('too high', 3000))}" />
+  <button text="Open" v-on:click="{fscript, Args=navigator_to('temperature28')}" />
+  <button text="Replace" v-on:click="{fscript, Args=navigator_replace('temperature28')}" />
+  <button text="Exec Open" v-on:click="{fscript, Args=exec('navigate', 'temperature28')}" />
 </window>
