@@ -85,7 +85,7 @@ navigator_request_t* navigator_request_create(const char* args,
   if (args != NULL && *args != '\0') {
     req->args = object_default_create();
     if (req->args != NULL) {
-      if (tk_str_start_with(args, COMMAND_ARGS_STRING_PREFIX)) {
+      if (strchr(args, '?') != NULL) {
         tk_command_arguments_to_object(args, req->args);
       } else {
         tk_object_set_prop_str(req->args, NAVIGATOR_ARG_TARGET, args);

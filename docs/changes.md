@@ -1,5 +1,8 @@
 # 最新动态
 
+* 2023/12/28
+  * navigate命令的参数，target后可以直接跟参数?... 如：{navigate, Args=coffee_win?prefix=coffee}
+
 * 2023/12/27
   * 完善 binding\_context\_awtk\_notify\_items\_changed，去掉优化，否则在同时触发items change和props changes时，props的界面没有更新。
 

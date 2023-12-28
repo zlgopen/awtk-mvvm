@@ -25,6 +25,7 @@
 #include "tkc/fscript.h"
 #include "tkc/tokenizer.h"
 #include "mvvm/base/utils.h"
+#include "mvvm/base/navigator_request.h"
 
 const char* tk_destruct_array_prop_name(const char* name, uint32_t* index) {
   const char* prop = NULL;
@@ -54,6 +55,15 @@ ret_t tk_command_arguments_to_object(const char* args, tk_object_t* obj) {
     params = args + strlen(COMMAND_ARGS_STRING_PREFIX);
   } else if (tk_str_start_with(args, COMMAND_ARGS_FSCRIPT_PREFIX)) {
     params = args + strlen(COMMAND_ARGS_FSCRIPT_PREFIX);
+  } else {
+    params = strchr(args, '?');
+    if (params != NULL) {
+      char target[TK_NAME_LEN+1] = {0};
+
+      tk_strncpy(target, args, params - args);
+      tk_object_set_prop_str(obj, NAVIGATOR_ARG_TARGET, target);
+      params++;
+    }
   }
   return_value_if_fail(params != NULL, RET_BAD_PARAMS);
   return_value_if_fail(tokenizer_init(&t, params, strlen(params), "=") != NULL, RET_BAD_PARAMS);
