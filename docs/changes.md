@@ -1,5 +1,8 @@
 # 最新动态
 
+* 2023/12/29
+  * 修复selected\_index可能大于size的问题。
+
 * 2023/12/28
   * navigate命令的参数，target后可以直接跟参数?... 如：{navigate, Args=coffee_win?prefix=coffee}
 

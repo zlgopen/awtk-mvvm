@@ -130,7 +130,9 @@ ret_t view_model_array_default_get_prop(view_model_t* view_model, const char* na
   return_value_if_fail(name != NULL && value != NULL, RET_BAD_PARAMS);
 
   if (tk_str_eq(VIEW_MODEL_PROP_SELECTED_INDEX, name)) {
-    value_set_int(value, vm_array->selected_index);
+    int32_t size = tk_object_get_prop_uint32(TK_OBJECT(view_model), TK_OBJECT_PROP_SIZE, 0);
+
+    value_set_int(value, tk_min_int(vm_array->selected_index, size-1));
     return RET_OK;
   } else if (tk_str_eq(VIEW_MODEL_PROP_CURSOR, name)) {
     value_set_int(value, vm_array->cursor);
