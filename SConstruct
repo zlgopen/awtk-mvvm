@@ -30,7 +30,7 @@ def dll_def_processor():
 TK_3RD_DIRS = []
 APP_LIBPATH = []
 SConscripts = ['src/SConscript']
-APP_LIBS = ['streams']
+APP_LIBS = []
 APP_CFLAGS = '-DMVVM_DLL_EXPORT '
 APP_3RD_ROOT = os.path.normpath(os.path.join(os.getcwd(), '3rd'))
 
