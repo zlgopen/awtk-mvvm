@@ -1,5 +1,8 @@
 # 最新动态
 
+* 2023/12/30
+  * 修复view\_model\_object\_wrapper/view\_model\_array\_object\_wrapper 事件分发的问题。
+
 * 2023/12/29
   * 修复selected\_index可能大于size的问题。
 

@@ -30,9 +30,11 @@ static ret_t view_model_object_wrapper_on_changed(void* ctx, event_t* e) {
 
   if (e->target == object_wrapper->obj) {
     e->target = object_wrapper;
+    emitter_dispatch(EMITTER(object_wrapper), e);
+    e->target = object_wrapper->obj;
+  } else {
+    emitter_dispatch(EMITTER(object_wrapper), e);
   }
-
-  emitter_dispatch(EMITTER(object_wrapper), e);
 
   return RET_OK;
 }
