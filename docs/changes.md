@@ -1,5 +1,9 @@
 # 最新动态
 
+* 2024/01/01
+  * view\_model\_conf 支持从request中获取参数。
+  * view\_model\_file 支持从request中获取参数。
+
 * 2023/12/30
   * 修复view\_model\_object\_wrapper/view\_model\_array\_object\_wrapper 事件分发的问题。
 

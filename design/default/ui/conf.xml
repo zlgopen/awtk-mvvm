@@ -1,5 +1,5 @@
 <window v-model="dummy">
-  <view x="c" y="m" w="80%" h="160" children_layout="default(c=3,r=3,s=10,m=10)">
+  <view x="c" y="m" w="100%" h="240" children_layout="default(c=4,r=5,s=10,m=10)">
     <button text="INI" v-on:click="{navigate, Args=ini}"/>
     <button text="JSON" v-on:click="{navigate, Args=json}"/>
     <button text="UBJSON" v-on:click="{navigate, Args=ubjson}"/>
@@ -9,6 +9,17 @@
     <button text="JSON Array" v-on:click="{navigate, Args=json_array}"/>
     <button text="XML Array" v-on:click="{navigate, Args=xml_array}"/>
     <button text="CSV" v-on:click="{navigate, Args=csv}"/>
+    
+    <button text="INI" v-on:click="{navigate, Args=ini?url=${app_dir}/demos/demo_conf/demo1.ini}"/>
+    <button text="JSON" v-on:click="{navigate, Args=json?url=${app_dir}/demos/demo_conf/demo1.json}"/>
+    <button text="UBJSON" v-on:click="{navigate, Args=ubjson?url=${app_dir}/demos/demo_conf/demo1.ubjson}"/>
+    <button text="XML" v-on:click="{navigate, Args=xml?url=${app_dir}/demos/demo_conf/demo1.xml}"/>
+    
+    <button text="JSON Weather" v-on:click="{navigate, Args=json_weather?url=http://t.weather.sojson.com/api/weather/city/101040100}"/>
+    <button text="JSON Array" v-on:click="{navigate, Args=json_array?url=${app_dir}/demos/demo_conf/demo_array1.json&prefix=networks}"/>
+    <button text="XML Array" v-on:click="{navigate, Args=xml_array?url=${app_dir}/demos/demo_conf/demo_array1.xml&prefix=networks}"/>
+    <button text="CSV" v-on:click="{navigate, Args=csv?url=${app_dir}/demos/demo_conf/demo1.csv&col_names='device,ip'}"/>
+
     <button text="Quit" v-on:click="{nothing, QuitApp=true}"/>
   <view>
 </window>

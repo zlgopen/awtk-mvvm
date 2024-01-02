@@ -49,12 +49,14 @@ ret_t tk_command_arguments_to_object(const char* args, tk_object_t* obj) {
   const char* k = NULL;
   const char* v = NULL;
   char key[MAX_PATH + 1];
+  bool_t is_expr = FALSE;
   return_value_if_fail(args != NULL && obj != NULL, RET_BAD_PARAMS);
 
   if (tk_str_start_with(args, COMMAND_ARGS_STRING_PREFIX)) {
     params = args + strlen(COMMAND_ARGS_STRING_PREFIX);
   } else if (tk_str_start_with(args, COMMAND_ARGS_FSCRIPT_PREFIX)) {
     params = args + strlen(COMMAND_ARGS_FSCRIPT_PREFIX);
+    is_expr = TRUE;
   } else {
     params = strchr(args, '?');
     if (params != NULL) {
@@ -76,7 +78,11 @@ ret_t tk_command_arguments_to_object(const char* args, tk_object_t* obj) {
 
     tk_strncpy(key, k, MAX_PATH);
 
-    v = tokenizer_next_expr_until(&t, "&,}");
+    if (is_expr) {
+      v = tokenizer_next_expr_until(&t, "&,}");
+    } else {
+      v = tokenizer_next_str_until(&t, "&,");
+    }
     if (v != NULL && *v == '=') {
       v += 1;
     }

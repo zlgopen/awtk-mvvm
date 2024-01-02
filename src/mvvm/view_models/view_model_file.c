@@ -86,7 +86,7 @@ static ret_t view_model_file_set_prop(tk_object_t* obj, const char* name, const 
     file->is_dirty = TRUE;
   } else if (tk_str_eq(name, STR_VIEW_MODEL_FILE_PROP_AUTO_LOAD)) {
     file->auto_load = value_bool(v);
-  } else if(tk_str_eq(name, STR_VIEW_MODEL_FILE_PROP_IS_DIRTY)) {
+  } else if (tk_str_eq(name, STR_VIEW_MODEL_FILE_PROP_IS_DIRTY)) {
     file->is_dirty = value_bool(v);
   } else {
     return RET_NOT_FOUND;
@@ -219,11 +219,13 @@ static ret_t view_model_file_init(view_model_file_t* file, tk_object_t* args) {
     file->size = file_get_size(file->filename.str);
   }
   file->auto_load = auto_load;
-  
+
   return RET_OK;
 }
 
 view_model_t* view_model_file_create(navigator_request_t* req) {
+  const char* path = NULL;
+  bool_t auto_load = FALSE;
   const char* type_and_args = NULL;
   tk_object_t* obj = tk_object_create(&s_model_file_vtable);
   view_model_file_t* file = VIEW_MODEL_FILE(obj);
@@ -235,8 +237,10 @@ view_model_t* view_model_file_create(navigator_request_t* req) {
   file->is_dirty = FALSE;
   str_init(&(file->filename), MAX_PATH);
 
-  if (type_and_args != NULL && strchr(type_and_args, '(') != NULL) {
-    /*add*/
+  if (req->args != NULL && tk_object_get_prop_str(req->args, "path") != NULL) {
+    /*优先使用请求参数*/
+    view_model_file_init(file, req->args);
+  } else if (type_and_args != NULL && strchr(type_and_args, '(') != NULL) {
     tk_object_t* args = func_call_parse(type_and_args, tk_strlen(type_and_args));
     if (args != NULL) {
       view_model_file_init(file, args);

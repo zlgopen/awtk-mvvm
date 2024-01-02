@@ -1,16 +1,8 @@
-<window v-model="file(path=${app_dir}/test.txt, auto_load=true)" >
-  <edit x="2" y="10" h="30" w="-4" v-data:value="{filename}" readonly="true"/>
-
-  <mledit x="0" y="50" h="60%" w="100%" v-data:value="{content}" 
-    left_margin="33" top_margin="2" bottom_margin="2" right_margin="16" wrap_word="true" max_lines="100">
-   <line_number x="0" y="0" w="32" h="100%" value="0"/>
-   <scroll_bar_d x="right" y="0" w="14" h="100%" value="0"/>
- </mledit>
-
- <button x="10" y="b:50" w="25%" h="30" text="Open" v-on:click="{browse, Args=open(filter='.txt.c.cpp.md', title='Text File')}"/>
- <button x="r:10" y="b:50" w="25%" h="30" text="SaveAs" v-on:click="{browse, Args=saveas(filter='.txt.c.cpp.md', title='Text File')}"/>
-
- <button x="10" y="b:10" w="25%" h="30" text="Reload" v-on:click="{reload}"/>
- <button x="c" y="b:10" w="25%" h="30" text="Save" v-on:click="{save}"/>
- <button x="r:10" y="b:10" w="25%" h="30" text="Quit" v-on:click="{nothing, QuitApp=true}"/>
+<window v-model="dummy">
+  <view x="c" y="m" w="100%" h="240" children_layout="default(c=2,r=2,s=10,m=10)">
+    <button text="notepad1" v-on:click="{navigate, Args=notepad?path=${app_dir}/demos/demo_file/test1.txt&auto_load=true}"/>
+    <button text="notepad2" v-on:click="{navigate, Args=notepad?path=${app_dir}/demos/demo_file/test2.txt&auto_load=true}"/>
+    <button text="notepad3" v-on:click="{navigate, Args=notepad}"/>
+    <button text="Quit" v-on:click="{nothing, QuitApp=true}"/>
+  <view>
 </window>

@@ -45,6 +45,7 @@ view_model_t* view_model_conf_create(navigator_request_t* req) {
   tk_object_t* obj = NULL;
   const char* url = NULL;
   bool_t is_array = FALSE;
+  bool_t use_req_args = FALSE;
   view_model_t* vm = NULL;
   const char* prefix = NULL;
   char surl[MAX_PATH + 1] = {0};
@@ -59,7 +60,15 @@ view_model_t* view_model_conf_create(navigator_request_t* req) {
 
   type = args->name;
   return_value_if_fail(type != NULL, NULL);
-  url = tk_object_get_prop_str(args, "url");
+
+  if (req->args != NULL && tk_object_get_prop_str(req->args, "url") != NULL) {
+    /*优先使用请求参数*/
+    use_req_args = TRUE;
+    url = tk_object_get_prop_str(req->args, "url");
+  } else {
+    url = tk_object_get_prop_str(args, "url");
+  }
+
   return_value_if_fail(url != NULL, NULL);
   create_if_not_exist = tk_object_get_prop_bool(args, "create_if_not_exist", FALSE);
 
@@ -86,8 +95,8 @@ view_model_t* view_model_conf_create(navigator_request_t* req) {
   } else if (tk_str_eq(type, STR_VIEW_MODEL_CONF_INI)) {
     obj = conf_ini_load(url, create_if_not_exist);
   } else if (tk_str_eq(type, STR_VIEW_MODEL_CONF_CSV)) {
-    const char* sep = tk_object_get_prop_str(args, "sep");
-    const char* col_names = tk_object_get_prop_str(args, "col_names");
+    const char* sep = tk_object_get_prop_str(use_req_args ? req->args : args, "sep");
+    const char* col_names = tk_object_get_prop_str(use_req_args ? req->args : args, "col_names");
     csv_file_t* csv = csv_file_create(url, sep != NULL ? sep[0] : ',');
     obj = csv_file_object_create(csv);
     if (col_names != NULL) {
