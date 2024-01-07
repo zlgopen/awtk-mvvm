@@ -158,7 +158,7 @@ os.environ['WITH_JS'] = 'true'
 | demo39 | (no)     | cppdemo39 | 列表渲染的过时用法 (v-for-item)                            |
 | demo40 | jsdemo40 | (no)      | 多个语言互译与主题切换                                     |
 | demo41 | jsdemo41 | (no)      | 屏保的使用方法                                             |
-| demo42 | (no)     | (no)      | 控件定时器使用方法                                         |
+| demo_count_down | (no)     | (no)      | 控件定时器使用方法                                         |
 | demo_file|(no)     | (no)      | 读写文件。 |
 | demo_conf|(no)     | (no)      | 读写配置。 |
 

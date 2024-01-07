@@ -1,5 +1,8 @@
 # 最新动态
 
+* 2024/01/07
+  * dummy view model支持设置初始值。
+
 * 2024/01/01
   * view\_model\_conf 支持从request中获取参数。
   * view\_model\_file 支持从request中获取参数。

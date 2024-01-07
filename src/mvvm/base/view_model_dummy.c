@@ -21,6 +21,7 @@
 
 #include "tkc/utils.h"
 #include "tkc/object_default.h"
+#include "tkc/func_call_parser.h"
 #include "mvvm/base/view_model_dummy.h"
 
 static ret_t view_model_dummy_on_destroy(tk_object_t* obj) {
@@ -79,9 +80,17 @@ static const object_vtable_t s_model_dummy_vtable = {.type = "view_model_dummy",
 view_model_t* view_model_dummy_create(navigator_request_t* req) {
   tk_object_t* obj = tk_object_create(&s_model_dummy_vtable);
   view_model_dummy_t* dummy = VIEW_MODEL_DUMMY(obj);
+  const char* type_and_args = NULL;
   return_value_if_fail(dummy != NULL, NULL);
 
-  dummy->props = object_default_create();
+  type_and_args = tk_object_get_prop_str(req->args, NAVIGATOR_ARG_VIEW_MODEL_TYPE);
+  if (type_and_args != NULL && strchr(type_and_args, '(') != NULL) {
+    dummy->props = func_call_parse(type_and_args, tk_strlen(type_and_args));
+  }
+
+  if (dummy->props == NULL) {
+    dummy->props = object_default_create();
+  }
 
   return view_model_init(VIEW_MODEL(obj));
 }

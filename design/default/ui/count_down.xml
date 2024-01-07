@@ -1,4 +1,4 @@
-<window v-model="dummy" text="count down">
+<window v-model="dummy(value=100)" text="count down">
   <label name="count_down" x="center" y="middle:-60" w="50%" h="40" v-data:text="{int(value/60)+':'+value%60}" 
     v-on:timer="{fscript, Args=set(value, max(0, value-1))}"/>
 
