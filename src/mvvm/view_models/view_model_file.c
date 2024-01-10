@@ -171,7 +171,7 @@ static ret_t view_model_file_browse(view_model_file_t* file, const char* args) {
 static ret_t view_model_file_exec(tk_object_t* obj, const char* name, const char* args) {
   ret_t ret = RET_OK;
   view_model_file_t* file = VIEW_MODEL_FILE(obj);
-  return_value_if_fail(file != NULL && name != NULL, FALSE);
+  return_value_if_fail(file != NULL && name != NULL, RET_BAD_PARAMS);
 
   if (tk_str_eq(name, TK_OBJECT_CMD_SAVE)) {
     file->is_dirty = FALSE;
@@ -224,8 +224,6 @@ static ret_t view_model_file_init(view_model_file_t* file, tk_object_t* args) {
 }
 
 view_model_t* view_model_file_create(navigator_request_t* req) {
-  const char* path = NULL;
-  bool_t auto_load = FALSE;
   const char* type_and_args = NULL;
   tk_object_t* obj = tk_object_create(&s_model_file_vtable);
   view_model_file_t* file = VIEW_MODEL_FILE(obj);
