@@ -534,6 +534,7 @@ static ret_t binding_context_rebind_items_sync(binding_rule_t* rule) {
 
 static ret_t binding_context_rebind_items_in_idle(const idle_info_t* info) {
   items_binding_t* rule = ITEMS_BINDING(info->ctx);
+  return_value_if_fail(rule != NULL, RET_BAD_PARAMS);
 
   rule->rebind_idle_id = TK_INVALID_ID;
   binding_context_rebind_items_sync(BINDING_RULE(rule));
@@ -543,6 +544,7 @@ static ret_t binding_context_rebind_items_in_idle(const idle_info_t* info) {
 
 static ret_t visit_items_binding_rebind(void* ctx, const void* data) {
   items_binding_t* rule = ITEMS_BINDING(data);
+  return_value_if_fail(rule != NULL, RET_BAD_PARAMS);
   if (rule->rebind_idle_id == TK_INVALID_ID) {
     rule->rebind_idle_id = idle_add(binding_context_rebind_items_in_idle, rule);
   }
@@ -551,6 +553,7 @@ static ret_t visit_items_binding_rebind(void* ctx, const void* data) {
 
 static ret_t visit_items_binding_rebind_sync(void* ctx, const void* data) {
   items_binding_t* rule = ITEMS_BINDING(data);
+  return_value_if_fail(rule != NULL, RET_BAD_PARAMS);
   if (rule->rebind_idle_id != TK_INVALID_ID) {
     idle_remove(rule->rebind_idle_id);
     rule->rebind_idle_id = TK_INVALID_ID;
@@ -1024,6 +1027,7 @@ static int32_t binding_context_awtk_compare_items_binding(binding_rule_t* rule, 
 
 static ret_t binding_context_awtk_remove_rebind_idle(void* ctx, const void* data) {
   items_binding_t* rule = ITEMS_BINDING(data);
+  return_value_if_fail(rule != NULL, RET_BAD_PARAMS);
 
   if (rule->rebind_idle_id != TK_INVALID_ID) {
     idle_remove(rule->rebind_idle_id);

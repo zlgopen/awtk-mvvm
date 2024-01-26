@@ -26,12 +26,18 @@
 #include "mvvm/base/binding_context.h"
 #include "mvvm/base/view_model_array.h"
 #include "mvvm/base/items_binding.h"
+#include "base/idle.h"
 
 #define equal tk_str_ieq
 
 static ret_t items_binding_on_destroy(tk_object_t* obj) {
   items_binding_t* rule = ITEMS_BINDING(obj);
   return_value_if_fail(rule != NULL, RET_BAD_PARAMS);
+
+  if(rule->rebind_idle_id != TK_INVALID_ID) {
+    idle_remove(rule->rebind_idle_id);
+    rule->rebind_idle_id = TK_INVALID_ID;
+  }
 
   TKMEM_FREE(rule->items_name);
   TKMEM_FREE(rule->item_name);
