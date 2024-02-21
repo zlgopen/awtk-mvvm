@@ -2,6 +2,7 @@
 
 * 2024/02/21
   * 完善 MVVM 绑定的 can exec。（感谢兆坤提供补丁）
+  * command binding 添加 is_continue 属性，主要解决控件同时绑定value_changed 和 value_changed_by_ui命令时，有个会不执行的问题。（感谢兆坤提供补丁）
 
 * 2024/01/26
   * 完善items biding（感谢志鹏提供补丁）

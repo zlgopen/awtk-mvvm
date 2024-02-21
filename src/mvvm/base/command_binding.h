@@ -52,6 +52,13 @@ typedef struct _command_binding_t {
   bool_t quit_app;
 
   /**
+   * @property {bool_t} is_continue
+   * @annotation ["readable"]
+   * 执行命令之后，是否继续处理该事件。
+   */
+  bool_t is_continue;
+
+  /**
    * @property {bool_t} update_model
    * @annotation ["readable"]
    * 执行命令之前，是否更新数据到模型。
@@ -163,6 +170,7 @@ command_binding_t* command_binding_cast(void* rule);
 #define COMMAND_BINDING_AUTO_DISABLE "AutoDisable"
 #define COMMAND_BINDING_CLOSE_WINDOW "CloseWindow"
 #define COMMAND_BINDING_UPDATE_VIEW_MODEL "UpdateModel"
+#define COMMAND_BINDING_IS_CONTINUE "IsContinue"
 
 #define COMMAND_BINDING_EVENT "Event"
 #define COMMAND_BINDING_KEY_FILTER "KeyFilter"

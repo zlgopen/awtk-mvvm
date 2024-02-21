@@ -99,6 +99,8 @@ static ret_t command_binding_set_prop(tk_object_t* obj, const char* name, const 
     rule->quit_app = value != NULL ? tk_atob(value) : TRUE;
   } else if (equal(COMMAND_BINDING_UPDATE_VIEW_MODEL, name)) {
     rule->update_model = value != NULL ? tk_atob(value) : TRUE;
+  } else if (equal(COMMAND_BINDING_IS_CONTINUE, name)) {
+    rule->is_continue = value != NULL ? tk_atob(value) : TRUE;
   } else if (equal(BINDING_RULE_PROP_INITED, name)) {
     BINDING_RULE(rule)->inited = TRUE;
   } else {
@@ -142,6 +144,8 @@ static ret_t command_binding_get_prop(tk_object_t* obj, const char* name, value_
     value_set_bool(v, rule->quit_app);
   } else if (equal(COMMAND_BINDING_UPDATE_VIEW_MODEL, name)) {
     value_set_bool(v, rule->update_model);
+  } else if (equal(COMMAND_BINDING_IS_CONTINUE, name)) {
+    value_set_bool(v, rule->is_continue);
   } else {
     if (rule->props != NULL) {
       ret = tk_object_get_prop(rule->props, name, v);

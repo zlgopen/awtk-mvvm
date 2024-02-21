@@ -203,7 +203,7 @@ static ret_t binding_context_awtk_update_data(data_binding_t* rule, bool_t force
   view_model_t* view_model = BINDING_RULE_VIEW_MODEL(rule);
 
   if (tk_object_is_collection(TK_OBJECT(view_model))) {
-    uint32_t size = view_model_get_items_size(TK_OBJECT(view_model)); 
+    uint32_t size = view_model_get_items_size(TK_OBJECT(view_model));
     binding_context_t* context = BINDING_RULE_CONTEXT(rule);
     uint32_t cursor = binding_context_get_items_cursor_of_rule(context, BINDING_RULE(rule));
 
@@ -365,8 +365,10 @@ static ret_t command_binding_exec_command(command_binding_t* rule) {
     log_debug("%s cannot exec\n", rule->command);
   }
 
-  if (ret == RET_OK || ret == RET_ITEMS_CHANGED || ret == RET_OBJECT_CHANGED) {
-    return RET_STOP;
+  if (!rule->is_continue) {
+    if (ret == RET_OK || ret == RET_ITEMS_CHANGED || ret == RET_OBJECT_CHANGED) {
+      return RET_STOP;
+    }
   }
 
   return RET_OK;
