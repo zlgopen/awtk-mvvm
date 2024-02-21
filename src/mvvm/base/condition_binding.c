@@ -84,6 +84,25 @@ static ret_t condition_binding_object_get_prop(tk_object_t* obj, const char* nam
   return ret;
 }
 
+static bool_t condition_binding_object_can_exec(tk_object_t* obj, const char* name,
+                                                const char* args) {
+  condition_binding_t* rule = (condition_binding_t*)(obj);
+  binding_context_t* context = BINDING_RULE_CONTEXT(rule);
+  view_model_t* view_model = BINDING_RULE_VIEW_MODEL(rule);
+
+  return_value_if_fail(obj != NULL && name != NULL, FALSE);
+  if (binding_context_can_exec(context, name, args)) {
+    return TRUE;
+  }
+
+  if (tk_object_is_collection(TK_OBJECT(view_model))) {
+    uint32_t cursor = binding_context_get_items_cursor_of_rule(context, BINDING_RULE(rule));
+    view_model_array_set_cursor(view_model, cursor);
+  }
+
+  return view_model_can_exec(view_model, name, args);
+}
+
 static ret_t condition_binding_object_exec(tk_object_t* obj, const char* name, const char* args) {
   condition_binding_t* rule = (condition_binding_t*)(obj);
   binding_context_t* context = BINDING_RULE_CONTEXT(rule);
@@ -107,10 +126,12 @@ static const object_vtable_t s_condition_binding_vtable = {
     .desc = "condition_binding",
     .size = sizeof(condition_binding_t),
     .is_collection = FALSE,
+    .can_exec = condition_binding_object_can_exec,
     .exec = condition_binding_object_exec,
     .on_destroy = condition_binding_on_destroy,
     .get_prop = condition_binding_object_get_prop,
-    .set_prop = condition_binding_object_set_prop};
+    .set_prop = condition_binding_object_set_prop,
+};
 
 condition_binding_t* condition_binding_create(void) {
   tk_object_t* obj = tk_object_create(&s_condition_binding_vtable);

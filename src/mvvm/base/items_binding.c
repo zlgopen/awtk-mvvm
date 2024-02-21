@@ -34,7 +34,7 @@ static ret_t items_binding_on_destroy(tk_object_t* obj) {
   items_binding_t* rule = ITEMS_BINDING(obj);
   return_value_if_fail(rule != NULL, RET_BAD_PARAMS);
 
-  if(rule->rebind_idle_id != TK_INVALID_ID) {
+  if (rule->rebind_idle_id != TK_INVALID_ID) {
     idle_remove(rule->rebind_idle_id);
     rule->rebind_idle_id = TK_INVALID_ID;
   }
@@ -102,6 +102,24 @@ static ret_t items_binding_object_get_prop(tk_object_t* obj, const char* name, v
   return ret;
 }
 
+static bool_t items_binding_object_can_exec(tk_object_t* obj, const char* name, const char* args) {
+  items_binding_t* rule = (items_binding_t*)(obj);
+  binding_context_t* context = BINDING_RULE_CONTEXT(rule);
+  view_model_t* view_model = BINDING_RULE_VIEW_MODEL(rule);
+
+  return_value_if_fail(obj != NULL && name != NULL, FALSE);
+  if (binding_context_can_exec(context, name, args)) {
+    return TRUE;
+  }
+
+  if (tk_object_is_collection(TK_OBJECT(view_model))) {
+    uint32_t cursor = binding_context_get_items_cursor_of_rule(context, BINDING_RULE(rule));
+    view_model_array_set_cursor(view_model, cursor);
+  }
+
+  return view_model_can_exec(view_model, name, args);
+}
+
 static ret_t items_binding_object_exec(tk_object_t* obj, const char* name, const char* args) {
   items_binding_t* rule = (items_binding_t*)(obj);
   binding_context_t* context = BINDING_RULE_CONTEXT(rule);
@@ -120,14 +138,17 @@ static ret_t items_binding_object_exec(tk_object_t* obj, const char* name, const
   return view_model_exec(view_model, name, args);
 }
 
-static const object_vtable_t s_items_binding_vtable = {.type = "items_binding",
-                                                       .desc = "items_binding",
-                                                       .size = sizeof(items_binding_t),
-                                                       .is_collection = FALSE,
-                                                       .exec = items_binding_object_exec,
-                                                       .on_destroy = items_binding_on_destroy,
-                                                       .get_prop = items_binding_object_get_prop,
-                                                       .set_prop = items_binding_object_set_prop};
+static const object_vtable_t s_items_binding_vtable = {
+    .type = "items_binding",
+    .desc = "items_binding",
+    .size = sizeof(items_binding_t),
+    .is_collection = FALSE,
+    .can_exec = items_binding_object_can_exec,
+    .exec = items_binding_object_exec,
+    .on_destroy = items_binding_on_destroy,
+    .get_prop = items_binding_object_get_prop,
+    .set_prop = items_binding_object_set_prop,
+};
 
 items_binding_t* items_binding_create(void) {
   tk_object_t* obj = tk_object_create(&s_items_binding_vtable);

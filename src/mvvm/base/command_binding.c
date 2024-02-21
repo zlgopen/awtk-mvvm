@@ -173,6 +173,27 @@ static const char* command_binding_resolve_arguments(tk_object_t* obj, const cha
   return ret;
 }
 
+static bool_t command_binding_object_can_exec(tk_object_t* obj, const char* name,
+                                              const char* args) {
+  command_binding_t* rule = (command_binding_t*)(obj);
+  binding_context_t* context = BINDING_RULE_CONTEXT(rule);
+  view_model_t* view_model = BINDING_RULE_VIEW_MODEL(rule);
+  return_value_if_fail(obj != NULL && name != NULL, FALSE);
+
+  args = command_binding_resolve_arguments(obj, args, &(rule->temp));
+
+  if (binding_context_can_exec(context, name, args)) {
+    return TRUE;
+  }
+
+  if (tk_object_is_collection(TK_OBJECT(view_model))) {
+    uint32_t cursor = binding_context_get_items_cursor_of_rule(context, BINDING_RULE(rule));
+    view_model_array_set_cursor(view_model, cursor);
+  }
+
+  return view_model_can_exec(view_model, name, args);
+}
+
 static ret_t command_binding_object_exec(tk_object_t* obj, const char* name, const char* args) {
   command_binding_t* rule = (command_binding_t*)(obj);
   binding_context_t* context = BINDING_RULE_CONTEXT(rule);
@@ -193,14 +214,17 @@ static ret_t command_binding_object_exec(tk_object_t* obj, const char* name, con
   return view_model_exec(view_model, name, args);
 }
 
-static const object_vtable_t s_command_binding_vtable = {.type = "command_binding",
-                                                         .desc = "command_binding",
-                                                         .size = sizeof(command_binding_t),
-                                                         .is_collection = FALSE,
-                                                         .on_destroy = command_binding_on_destroy,
-                                                         .exec = command_binding_object_exec,
-                                                         .get_prop = command_binding_get_prop,
-                                                         .set_prop = command_binding_set_prop};
+static const object_vtable_t s_command_binding_vtable = {
+    .type = "command_binding",
+    .desc = "command_binding",
+    .size = sizeof(command_binding_t),
+    .is_collection = FALSE,
+    .on_destroy = command_binding_on_destroy,
+    .can_exec = command_binding_object_can_exec,
+    .exec = command_binding_object_exec,
+    .get_prop = command_binding_get_prop,
+    .set_prop = command_binding_set_prop,
+};
 
 command_binding_t* command_binding_create(void) {
   command_binding_t* rule = (command_binding_t*)tk_object_create(&s_command_binding_vtable);

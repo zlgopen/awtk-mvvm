@@ -203,6 +203,24 @@ static ret_t data_binding_object_get_prop(tk_object_t* obj, const char* name, va
   return ret;
 }
 
+static bool_t data_binding_object_can_exec(tk_object_t* obj, const char* name, const char* args) {
+  data_binding_t* rule = (data_binding_t*)(obj);
+  binding_context_t* context = BINDING_RULE_CONTEXT(rule);
+  view_model_t* view_model = BINDING_RULE_VIEW_MODEL(rule);
+
+  return_value_if_fail(obj != NULL && name != NULL, FALSE);
+  if (binding_context_can_exec(context, name, args)) {
+    return TRUE;
+  }
+
+  if (tk_object_is_collection(TK_OBJECT(view_model))) {
+    uint32_t cursor = binding_context_get_items_cursor_of_rule(context, BINDING_RULE(rule));
+    view_model_array_set_cursor(view_model, cursor);
+  }
+
+  return view_model_can_exec(view_model, name, args);
+}
+
 static ret_t data_binding_object_exec(tk_object_t* obj, const char* name, const char* args) {
   data_binding_t* rule = (data_binding_t*)(obj);
   binding_context_t* context = BINDING_RULE_CONTEXT(rule);
@@ -221,14 +239,17 @@ static ret_t data_binding_object_exec(tk_object_t* obj, const char* name, const 
   return view_model_exec(view_model, name, args);
 }
 
-static const object_vtable_t s_data_binding_vtable = {.type = "data_binding",
-                                                      .desc = "data_binding",
-                                                      .size = sizeof(data_binding_t),
-                                                      .is_collection = FALSE,
-                                                      .exec = data_binding_object_exec,
-                                                      .on_destroy = data_binding_on_destroy,
-                                                      .get_prop = data_binding_object_get_prop,
-                                                      .set_prop = data_binding_object_set_prop};
+static const object_vtable_t s_data_binding_vtable = {
+    .type = "data_binding",
+    .desc = "data_binding",
+    .size = sizeof(data_binding_t),
+    .is_collection = FALSE,
+    .can_exec = data_binding_object_can_exec,
+    .exec = data_binding_object_exec,
+    .on_destroy = data_binding_on_destroy,
+    .get_prop = data_binding_object_get_prop,
+    .set_prop = data_binding_object_set_prop,
+};
 
 data_binding_t* data_binding_create(void) {
   tk_object_t* obj = tk_object_create(&s_data_binding_vtable);
@@ -255,7 +276,7 @@ static ret_t value_to_model(data_binding_t* rule, const value_t* from, value_t* 
   const char* name = rule->converter;
 
   if (name != NULL) {
-    value_converter_t* c =value_converter_create_with_args(name, rule->converter_args);
+    value_converter_t* c = value_converter_create_with_args(name, rule->converter_args);
     if (c != NULL) {
       if (value_converter_to_model(c, from, to) == RET_OK) {
         tk_object_unref(TK_OBJECT(c));
