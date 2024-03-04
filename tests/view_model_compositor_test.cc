@@ -61,3 +61,82 @@ TEST(ViewModelCompositor, basic) {
 
   TK_OBJECT_UNREF(vm);
 }
+
+TEST(ViewModelCompositor, prefix) {
+  value_t v;
+  navigator_request_t req;
+  memset(&req, 0x00, sizeof(req));
+  view_model_factory_register("a", temperature_view_model_create);
+  view_model_factory_register("b", humidity_view_model_create);
+  view_model_t* vm = test_view_model_compositor_create("a+b", &req);
+  view_model_compositor_t* compositor = VIEW_MODEL_COMPOSITOR(vm);
+  ASSERT_EQ(compositor->view_models.size, 2);
+
+  ASSERT_EQ(view_model_get_prop(vm, "a.temp", &v), RET_OK);
+  ASSERT_EQ(value_int(&v), 123);
+  ASSERT_EQ(view_model_set_prop(vm, "a.temp", &v), RET_OK);
+
+  ASSERT_EQ(view_model_get_prop(vm, "b.humi", &v), RET_OK);
+  ASSERT_EQ(view_model_set_prop(vm, "b.humi", &v), RET_OK);
+
+  ASSERT_EQ(view_model_get_prop(vm, "not_exist", &v), RET_NOT_FOUND);
+  ASSERT_EQ(view_model_set_prop(vm, "not_exist", &v), RET_NOT_FOUND);
+
+  ASSERT_EQ(view_model_can_exec(vm, "b.apply_humi", NULL), TRUE);
+  ASSERT_EQ(view_model_can_exec(vm, "a.apply_temp", NULL), TRUE);
+
+  ASSERT_EQ(view_model_exec(vm, "b.apply_humi", NULL), RET_OK);
+  ASSERT_EQ(view_model_exec(vm, "a.apply_temp", NULL), RET_OK);
+
+  ASSERT_EQ(view_model_can_exec(vm, "not_exist", NULL), FALSE);
+  ASSERT_NE(view_model_exec(vm, "not_exist", NULL), RET_OK);
+
+  TK_OBJECT_UNREF(vm);
+}
+
+view_model_t* my_humidity_view_model_create(navigator_request_t* req) {
+  view_model_t* vm = humidity_view_model_create(req);
+  tk_object_set_name(TK_OBJECT(vm), "vm1");
+
+  return vm;
+}
+
+view_model_t* my_temperature_view_model_create(navigator_request_t* req) {
+  view_model_t* vm = temperature_view_model_create(req);
+  tk_object_set_name(TK_OBJECT(vm), "vm2");
+  
+  return vm;
+}
+
+TEST(ViewModelCompositor, named) {
+  value_t v;
+  navigator_request_t req;
+  memset(&req, 0x00, sizeof(req));
+  view_model_factory_register("temp", my_temperature_view_model_create);
+  view_model_factory_register("humi", my_humidity_view_model_create);
+
+  view_model_t* vm = test_view_model_compositor_create("temp+humi", &req);
+  view_model_compositor_t* compositor = VIEW_MODEL_COMPOSITOR(vm);
+  ASSERT_EQ(compositor->view_models.size, 2);
+
+  ASSERT_EQ(view_model_get_prop(vm, "vm2.temp", &v), RET_OK);
+  ASSERT_EQ(value_int(&v), 123);
+  ASSERT_EQ(view_model_set_prop(vm, "vm2.temp", &v), RET_OK);
+
+  ASSERT_EQ(view_model_get_prop(vm, "vm1.humi", &v), RET_OK);
+  ASSERT_EQ(view_model_set_prop(vm, "vm1.humi", &v), RET_OK);
+
+  ASSERT_EQ(view_model_get_prop(vm, "not_exist", &v), RET_NOT_FOUND);
+  ASSERT_EQ(view_model_set_prop(vm, "not_exist", &v), RET_NOT_FOUND);
+
+  ASSERT_EQ(view_model_can_exec(vm, "vm1.apply_humi", NULL), TRUE);
+  ASSERT_EQ(view_model_can_exec(vm, "vm2.apply_temp", NULL), TRUE);
+
+  ASSERT_EQ(view_model_exec(vm, "vm1.apply_humi", NULL), RET_OK);
+  ASSERT_EQ(view_model_exec(vm, "vm2.apply_temp", NULL), RET_OK);
+
+  ASSERT_EQ(view_model_can_exec(vm, "not_exist", NULL), FALSE);
+  ASSERT_NE(view_model_exec(vm, "not_exist", NULL), RET_OK);
+
+  TK_OBJECT_UNREF(vm);
+}

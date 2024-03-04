@@ -22,6 +22,25 @@
 #include "tkc/utils.h"
 #include "tkc/object_default.h"
 #include "mvvm/base/view_model_compositor.h"
+  
+static view_model_t* view_model_compositor_find(tk_object_t* obj, const char* name) {
+  uint32_t i = 0;
+  view_model_compositor_t* compositor = VIEW_MODEL_COMPOSITOR(obj);
+  view_model_t** all = (view_model_t**)(compositor->view_models.elms);
+  uint32_t nr = compositor->view_models.size;
+
+  for (i = 0; i < nr; i++) {
+    view_model_t* iter = all[i];
+    if (iter->object.name != NULL) {
+      uint32_t len = strlen(iter->object.name);
+      if (strncmp(name, iter->object.name, len) == 0 && name[len] == '.') {
+        return iter;
+      }
+    }
+  }
+
+  return NULL;
+}
 
 static ret_t view_model_compositor_on_destroy(tk_object_t* obj) {
   view_model_compositor_t* compositor = VIEW_MODEL_COMPOSITOR(obj);
@@ -44,13 +63,20 @@ static int32_t view_model_compositor_compare(tk_object_t* obj, tk_object_t* othe
 }
 
 static ret_t view_model_compositor_set_prop(tk_object_t* obj, const char* name, const value_t* v) {
+  view_model_t* iter = NULL;
   view_model_compositor_t* compositor = VIEW_MODEL_COMPOSITOR(obj);
   view_model_t** all = (view_model_t**)(compositor->view_models.elms);
   uint32_t nr = compositor->view_models.size;
   uint32_t i = 0;
+  
+  iter = view_model_compositor_find(obj, name);
+  if (iter != NULL) {
+    name = name + strlen(iter->object.name) + 1;
+    return view_model_set_prop(iter, name, v);
+  }
 
   for (i = 0; i < nr; i++) {
-    view_model_t* iter = all[i];
+    iter = all[i];
     if (view_model_set_prop(iter, name, v) == RET_OK) {
       return RET_OK;
     }
@@ -58,15 +84,21 @@ static ret_t view_model_compositor_set_prop(tk_object_t* obj, const char* name, 
 
   return RET_NOT_FOUND;
 }
-
 static ret_t view_model_compositor_get_prop(tk_object_t* obj, const char* name, value_t* v) {
+  view_model_t* iter = NULL;
   view_model_compositor_t* compositor = VIEW_MODEL_COMPOSITOR(obj);
   view_model_t** all = (view_model_t**)(compositor->view_models.elms);
   uint32_t nr = compositor->view_models.size;
   uint32_t i = 0;
 
+  iter = view_model_compositor_find(obj, name);
+  if (iter != NULL) {
+    name = name + strlen(iter->object.name) + 1;
+    return view_model_get_prop(iter, name, v);
+  }
+
   for (i = 0; i < nr; i++) {
-    view_model_t* iter = all[i];
+    iter = all[i];
     if (view_model_get_prop(iter, name, v) == RET_OK) {
       return RET_OK;
     }
@@ -76,10 +108,17 @@ static ret_t view_model_compositor_get_prop(tk_object_t* obj, const char* name, 
 }
 
 static bool_t view_model_compositor_can_exec(tk_object_t* obj, const char* name, const char* args) {
+  view_model_t* iter = NULL;
   view_model_compositor_t* compositor = VIEW_MODEL_COMPOSITOR(obj);
   view_model_t** all = (view_model_t**)(compositor->view_models.elms);
   uint32_t nr = compositor->view_models.size;
   uint32_t i = 0;
+
+  iter = view_model_compositor_find(obj, name);
+  if (iter != NULL) {
+    name = name + strlen(iter->object.name) + 1;
+    return view_model_can_exec(iter, name, args);
+  }
 
   for (i = 0; i < nr; i++) {
     view_model_t* iter = all[i];
@@ -92,13 +131,20 @@ static bool_t view_model_compositor_can_exec(tk_object_t* obj, const char* name,
 }
 
 static ret_t view_model_compositor_exec(tk_object_t* obj, const char* name, const char* args) {
+  view_model_t* iter = NULL;
   view_model_compositor_t* compositor = VIEW_MODEL_COMPOSITOR(obj);
   view_model_t** all = (view_model_t**)(compositor->view_models.elms);
   uint32_t nr = compositor->view_models.size;
   uint32_t i = 0;
 
+  iter = view_model_compositor_find(obj, name);
+  if (iter != NULL) {
+    name = name + strlen(iter->object.name) + 1;
+    return view_model_exec(iter, name, args);
+  }
+
   for (i = 0; i < nr; i++) {
-    view_model_t* iter = all[i];
+    iter = all[i];
     ret_t ret = view_model_exec(iter, name, args);
     if (ret != RET_NOT_FOUND && ret != RET_NOT_IMPL) {
       return ret;
