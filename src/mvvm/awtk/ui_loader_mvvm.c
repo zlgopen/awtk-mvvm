@@ -414,6 +414,9 @@ static ret_t widget_init_count_of_widget_before_1st_dynamic_rule(widget_t* widge
 
 static ret_t visit_clear_binding(void* ctx, const void* data) {
   widget_t* widget = WIDGET(data);
+  if (widget->emitter != NULL) {
+    widget_off_by_tag(widget, EVENT_TAG);
+  }
   return binding_context_clear_bindings_of_widget(ctx, widget);
 }
 
