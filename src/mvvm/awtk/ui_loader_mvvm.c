@@ -413,10 +413,18 @@ static ret_t widget_init_count_of_widget_before_1st_dynamic_rule(widget_t* widge
 }
 
 static ret_t visit_clear_binding(void* ctx, const void* data) {
+  binding_context_t* bctx = BINDING_CONTEXT(ctx);
+  widget_t* ctx_widget = WIDGET(bctx->widget);
   widget_t* widget = WIDGET(data);
+
   if (widget->emitter != NULL) {
     widget_off_by_tag(widget, EVENT_TAG);
   }
+
+  if (ctx_widget != NULL && ctx_widget->emitter != NULL) {
+    widget_off_by_ctx(ctx_widget, widget);
+  }
+
   return binding_context_clear_bindings_of_widget(ctx, widget);
 }
 
@@ -566,7 +574,8 @@ static widget_t* ui_loader_mvvm_build_widget(ui_loader_mvvm_t* loader, rbuffer_t
 
   widget_on_with_tag(widget, EVT_DESTROY, ui_loader_mvvm_on_widget_destroy, ctx, EVENT_TAG);
   if (ctx->widget != widget) {
-    widget_on_with_tag(WIDGET(ctx->widget), EVT_DESTROY, ui_loader_mvvm_on_widget_binding_context_destroy, widget, EVENT_TAG);
+    widget_on_with_tag(WIDGET(ctx->widget), EVT_DESTROY,
+                       ui_loader_mvvm_on_widget_binding_context_destroy, widget, EVENT_TAG);
   }
 
   return widget;
