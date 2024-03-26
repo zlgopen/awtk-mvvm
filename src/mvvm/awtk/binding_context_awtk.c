@@ -62,6 +62,9 @@ static view_model_t* binding_context_awtk_create_one_view_model(view_model_t* pa
     return_value_if_fail(name != NULL, NULL);
     view_model = view_model_create_sub_view_model_array(parent, name + 1);
   } else {
+    if (req != NULL) {
+      req->parent_view_model = TK_OBJECT(parent);
+    }
     view_model = view_model_factory_create_model(type, req);
   }
 

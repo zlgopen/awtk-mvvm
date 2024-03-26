@@ -60,6 +60,12 @@ struct _navigator_request_t {
    */
   void* user_data;
 
+  /**
+   * @property {tk_object_t*} parent_view_model
+   * @annotation ["readable"]
+   * 父view_model。
+   */
+  tk_object_t* parent_view_model;
   /*private*/
   tk_object_t* args;
 };

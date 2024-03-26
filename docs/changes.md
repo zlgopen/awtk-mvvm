@@ -1,5 +1,8 @@
 # 最新动态
 
+* 2024/03/26
+  * 创建view model时req带上parent view model。
+
 * 2024/03/22
   * 修复控件异步销毁时没有注销该控件与binding context之间的事件导致的崩溃问题。（感谢兆坤提供补丁）
 
