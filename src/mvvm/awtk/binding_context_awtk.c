@@ -100,7 +100,10 @@ static view_model_t* binding_context_awtk_create_view_model(view_model_t* parent
       view_model = binding_context_awtk_create_one_view_model(parent, type, req);
     }
   } else {
-    view_model = view_model_factory_create_model_generic(parent, type, req);
+    if (req != NULL) {
+      req->parent_view_model = TK_OBJECT(parent);
+    }
+    view_model = view_model_factory_create_model_generic(type, req);
   }
 
   if (view_model == NULL) {
