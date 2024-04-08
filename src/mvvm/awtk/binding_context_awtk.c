@@ -99,6 +99,8 @@ static view_model_t* binding_context_awtk_create_view_model(view_model_t* parent
     } else {
       view_model = binding_context_awtk_create_one_view_model(parent, type, req);
     }
+  } else {
+    view_model = view_model_factory_create_model_generic(parent, type, req);
   }
 
   if (view_model == NULL) {

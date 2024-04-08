@@ -114,6 +114,10 @@ view_model_t* view_model_factory_create_model(const char* type, navigator_reques
   return view_model_factory_create_model_one(type, req);
 }
 
+view_model_t* view_model_factory_create_model_generic(const char* type, navigator_request_t* req) {
+  return view_model_generic_create(type, req);
+}
+
 ret_t view_model_factory_deinit(void) {
   return_value_if_fail(s_model_factory != NULL && s_model_factory->creators != NULL,
                        RET_BAD_PARAMS);

@@ -98,6 +98,16 @@ ret_t view_model_factory_register_generic(view_model_generic_create_t create);
 view_model_t* view_model_factory_create_model(const char* type, navigator_request_t* req);
 
 /**
+ * @method view_model_factory_create_model_generic
+ * 创建通用模型。
+ * @param {const char*} type 模型的类型。
+ * @param {navigator_request_t*} req 请求参数。
+ *
+ * @return {view_model_t*} 返回view_model对象。
+ */
+view_model_t* view_model_factory_create_model_generic(const char* type, navigator_request_t* req);
+
+/**
  * @method view_model_factory_deinit
  * ~初始化模型工厂。
  *

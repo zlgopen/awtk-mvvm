@@ -1,5 +1,8 @@
 # 最新动态
 
+* 2024/04/08
+  * 创建view model时如果type为NULL则尝试从通用模型中创建，以便XML中不指定v-model属性时可以使用通用模型。
+
 * 2024/03/26
   * 创建view model时req带上parent view model。
 
