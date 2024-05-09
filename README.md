@@ -146,10 +146,10 @@ os.environ['WITH_JS'] = 'true'
 | demo27 | (no)     | (no)      | 组合 view model                                            |
 | demo28 | (no)     | (no)      | 表达式综合应用                                             |
 | demo29 | (no)     | (no)      | 扩展 app_conf 的命令                                       |
-| demo30 | jsdemo30 | (no)      | 发送按键事件和设置属性                                     |
+| demo30 | (no)     | (no)      | 发送按键事件和设置属性                                     |
 | demo31 | (no)     | (no)      | 嵌套 view model                                            |
-| demo32 | jsdemo32 | (no)      | 一个 view model 多个 model 的用法                          |
-| demo33 | jsdemo33 | (no)      | 演示 navigate 命令以及 Args 的基本用法                     |
+| demo32 | (no)     | (no)      | 一个 view model 多个 model 的用法                          |
+| demo33 | (no)     | (no)      | 演示 navigate 命令以及 Args 的基本用法                     |
 | demo34 | (no)     | (no)      | 演示模型触发界面更新。                                     |
 | demo35 | jsdemo35 | (no)      | 条件渲染的基本用法                                         |
 | demo36 | (no)     | (no)      | 自定义导航器处理插件，以及 MVVM 窗口和非 MVVM 窗口的交互   |
