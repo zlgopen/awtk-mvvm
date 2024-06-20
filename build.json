@@ -1,0 +1,24 @@
+{
+  "name": "temperature1",
+  "version": "1.0",
+  "assets": "res/assets",
+  "includes": [
+    ".",
+    "src"
+  ],
+  "sources": [
+    "src/mvvm/base/*.c",
+    "src/mvvm/awtk/*.c",
+    "src/mvvm/view_models/*.c",
+    "src/mvvm/*.c",
+    "demos/demo1/*.c"
+  ],
+  "web": {
+    "app_type": "c",
+    "assets": "design",
+    "config": {
+      "fontScale": "0.8",
+      "defaultFont": "sans"
+    }
+  }
+}
