@@ -144,6 +144,7 @@ tk_object_t* book_create(void) {
   return_value_if_fail(obj != NULL, NULL);
 
   book_t* book = BOOK(obj);
+  str_init(&(book->name), 32);
   str_random(&(book->name), "book %d", 10000);
   book->stock = random() % 100;
 
