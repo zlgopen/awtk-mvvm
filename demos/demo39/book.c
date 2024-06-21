@@ -8,6 +8,7 @@ book_t* book_create(void) {
   book_t* book = TKMEM_ZALLOC(book_t);
   return_value_if_fail(book != NULL, NULL);
 
+  str_init(&(book->name), 32);
   str_random(&(book->name), "book %d", 10000);
   book->stock = random() % 100;
 
