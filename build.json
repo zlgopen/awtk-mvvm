@@ -11,7 +11,7 @@
     "src/mvvm/awtk/*.c",
     "src/mvvm/view_models/*.c",
     "src/mvvm/*.c",
-    "demos/demo1/*.c"
+    "demos/demo14/*.c"
   ],
   "web": {
     "app_type": "c",
