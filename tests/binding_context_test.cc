@@ -38,16 +38,18 @@ static view_model_t* test_persons_view_model_get(navigator_request_t* req) {
 
 static ret_t persons_gen(view_model_t* view_model, uint32_t n) {
   uint32_t i = 0;
+  navigator_request_t* req = navigator_request_create("test", NULL);
   view_model_array_dummy_clear(view_model);
 
   for (i = 0; i < n; i++) {
-    view_model_t* subview_model = view_model_dummy_create(NULL);
+    view_model_t* subview_model = view_model_dummy_create(req);
     tk_object_set_prop_int(TK_OBJECT(subview_model), "a", i);
     tk_object_set_prop_int(TK_OBJECT(subview_model), "b", i + 1);
     tk_object_set_prop_int(TK_OBJECT(subview_model), "c", i + 2);
     view_model_array_dummy_add(view_model, subview_model);
     tk_object_unref(TK_OBJECT(subview_model));
   }
+  TK_OBJECT_UNREF(req);
 
   return RET_OK;
 }
