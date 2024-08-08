@@ -1,5 +1,8 @@
 # 最新动态
 
+* 2024/08/08
+  * jerryscript 增加了几个扩展函数[JS 扩展函数](docs/js_ext_api.md)
+
 * 2024/06/20
   * 增加支持 awtk-web 的文档和示例。
 

@@ -289,3 +289,69 @@ TEST(ModelJerryScript, invalid) {
   tk_object_t* obj = TK_OBJECT(view_model);
   ASSERT_EQ(obj, TK_OBJECT(NULL));
 }
+
+TEST(ModelJerryScript, io) {
+  const char* code =
+      "ViewModel('test', {\
+         data: {count:0},\
+         onWillMount: function(req) {\
+           text_file_write('test.txt', 'hello world');\
+           this.count = req.count;\
+           this.name = text_file_read('test.txt');\
+           assert(file_exist('test.txt'));\
+           assert(file_remove('test.txt'));\
+           assert(!file_exist('test.txt'));\
+           this.notifyPropsChanged();\
+           return 0;\
+         }\
+       });";
+  view_model_t* view_model;
+  tk_object_t* obj;
+
+  navigator_request_t* req = navigator_request_create("test", NULL);
+
+  jerry_script_eval_buff(code, strlen(code), "test", TRUE);
+  view_model = view_model_factory_create_model("test", req);
+  obj = TK_OBJECT(view_model);
+  ASSERT_NE(obj, TK_OBJECT(NULL));
+
+  ASSERT_EQ(view_model_on_will_mount(view_model, req), RET_OK);
+  ASSERT_EQ(string(tk_object_get_prop_str(obj, "name")), "hello world");
+
+  tk_object_unref(TK_OBJECT(req));
+  tk_object_unref(TK_OBJECT(view_model));
+}
+
+TEST(ModelJerryScript, io_json) {
+  const char* code =
+      "ViewModel('test', {\
+         data: {count:0},\
+         onWillMount: function(req) {\
+           var obj = {count : 123}; \
+           text_file_write('test.json', JSON.stringify(obj));\
+           var txt = text_file_read('test.json');\
+           obj = JSON.parse(txt);\
+           this.count = obj.count;\
+           assert(file_exist('test.json'));\
+           assert(file_remove('test.json'));\
+           assert(!file_exist('test.json'));\
+           this.notifyPropsChanged();\
+           return 0;\
+         }\
+       });";
+  view_model_t* view_model;
+  tk_object_t* obj;
+
+  navigator_request_t* req = navigator_request_create("test", NULL);
+
+  jerry_script_eval_buff(code, strlen(code), "test", TRUE);
+  view_model = view_model_factory_create_model("test", req);
+  obj = TK_OBJECT(view_model);
+  ASSERT_NE(obj, TK_OBJECT(NULL));
+
+  ASSERT_EQ(view_model_on_will_mount(view_model, req), RET_OK);
+  ASSERT_EQ(tk_object_get_prop_int(obj, "count", 0), 123);
+
+  tk_object_unref(TK_OBJECT(req));
+  tk_object_unref(TK_OBJECT(view_model));
+}

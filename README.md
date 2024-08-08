@@ -167,3 +167,6 @@ os.environ['WITH_JS'] = 'true'
 * [awtk-mvvm-c-examples](https://github.com/zlgopen/awtk-mvvm-c-examples) 
 
 * [无需代码对 sqlite3 进行增删改查](https://github.com/zlgopen/awtk-database-repository)
+
+* [JS 扩展函数](docs/js_ext_api.md)
+

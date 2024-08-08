@@ -19,6 +19,7 @@
  *
  */
 
+#include "tkc/fs.h"
 #include "tkc/mem.h"
 #include "tkc/utils.h"
 #include "tkc/path.h"
@@ -102,13 +103,120 @@ jerry_value_t wrap_require(const jerry_call_info_t* call_info_p, const jerry_val
   return jerry_create_null();
 }
 
+jerry_value_t wrap_text_file_read(const jerry_call_info_t* call_info_p, const jerry_value_t argv[],
+                           const jerry_length_t argc) {
+  char* data = NULL;
+  jerry_value_t jret = 0;
+
+  if (argc == 1) {
+    char filename[MAX_PATH + 1] = {0};
+    jerry_size_t size = jerry_get_utf8_string_size(argv[0]);
+
+    if (size < MAX_PATH) {
+      jerry_string_to_utf8_char_buffer(argv[0], (jerry_char_t*)filename, size);
+      filename[size] = '\0';
+      data = (char*)file_read(filename, NULL);
+    }
+  }
+
+  if (data != NULL) {
+    jret = jerry_create_string((const jerry_char_t*)data);
+    TKMEM_FREE(data);
+  } else {
+    jret = jerry_create_null();
+  }
+
+  return jret;
+}
+
+jerry_value_t wrap_text_file_remove(const jerry_call_info_t* call_info_p, const jerry_value_t argv[],
+                           const jerry_length_t argc) {
+  bool_t ret = FALSE;
+
+  if (argc == 1) {
+    char filename[MAX_PATH + 1] = {0};
+    jerry_size_t size = jerry_get_utf8_string_size(argv[0]);
+
+    if (size < MAX_PATH) {
+      jerry_string_to_utf8_char_buffer(argv[0], (jerry_char_t*)filename, size);
+      filename[size] = '\0';
+      ret = file_remove(filename) == RET_OK;
+    }
+  }
+
+  return jerry_create_boolean(ret);
+}
+
+jerry_value_t wrap_text_file_exist(const jerry_call_info_t* call_info_p, const jerry_value_t argv[],
+                           const jerry_length_t argc) {
+  bool_t ret = FALSE;
+
+  if (argc == 1) {
+    char filename[MAX_PATH + 1] = {0};
+    jerry_size_t size = jerry_get_utf8_string_size(argv[0]);
+
+    if (size < MAX_PATH) {
+      jerry_string_to_utf8_char_buffer(argv[0], (jerry_char_t*)filename, size);
+      filename[size] = '\0';
+      ret = file_exist(filename);
+    }
+  }
+
+  return jerry_create_boolean(ret);
+}
+
+jerry_value_t wrap_assert(const jerry_call_info_t* call_info_p, const jerry_value_t argv[],
+                           const jerry_length_t argc) {
+  bool_t p = FALSE;
+
+  if (argc == 1) {
+    assert(jerry_value_is_true(argv[0]));
+  }
+
+  return jerry_create_boolean(TRUE);
+}
+
+jerry_value_t wrap_text_file_write(const jerry_call_info_t* call_info_p, const jerry_value_t argv[],
+                           const jerry_length_t argc) {
+  bool_t ret = FALSE;
+
+  if (argc == 2) {
+    char* data = NULL;
+    char filename[MAX_PATH + 1];
+    jerry_size_t size = jerry_get_utf8_string_size(argv[0]);
+
+    if (size < MAX_PATH) {
+      jerry_string_to_utf8_char_buffer(argv[0], (jerry_char_t*)filename, size);
+      filename[size] = '\0';
+
+      size = jerry_get_utf8_string_size(argv[1]);
+      data = (char*)TKMEM_ALLOC(size + 1);
+
+      if (data != NULL) {
+        jerry_string_to_utf8_char_buffer(argv[1], (jerry_char_t*)data, size);
+        data[size] = '\0';
+        ret = file_write(filename, data, size) == RET_OK;
+        TKMEM_FREE(data);
+      }
+    }
+  }
+
+  return jerry_create_boolean(ret);
+}
+
 #define STR_BOOT_JS "var exports = {};\nthis." STR_MODULES "={};\nvar console = {log : print}\n\n"
 
 static ret_t jerry_script_register_builtins(void) {
   jerryx_handler_register_global((const jerry_char_t*)"gc", jerryx_handler_gc);
   jerryx_handler_register_global((const jerry_char_t*)"print", jerryx_handler_print);
   jerryx_handler_register_global((const jerry_char_t*)"require", wrap_require);
+
 #ifndef WITH_IOTJS
+  jerryx_handler_register_global((const jerry_char_t*)"text_file_read", wrap_text_file_read);
+  jerryx_handler_register_global((const jerry_char_t*)"text_file_write", wrap_text_file_write);
+  jerryx_handler_register_global((const jerry_char_t*)"file_remove", wrap_text_file_remove);
+  jerryx_handler_register_global((const jerry_char_t*)"file_exist", wrap_text_file_exist);
+  jerryx_handler_register_global((const jerry_char_t*)"assert", wrap_assert);
   jerry_script_eval_buff(STR_BOOT_JS, strlen(STR_BOOT_JS), "boot.js", TRUE);
 #endif /*WITH_IOTJS*/
 
