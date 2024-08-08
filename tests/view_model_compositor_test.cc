@@ -18,6 +18,9 @@ static view_model_t* test_view_model_compositor_create(const char* vmodel,
     const char* type1 = tokenizer_next(&t);
     view_model_t* vm = view_model_factory_create_model(type1, req);
     if (vm != NULL) {
+      if (TK_OBJECT(vm)->name == NULL) {
+        tk_object_set_name(TK_OBJECT(vm), type1);
+      }
       if (view_model_compositor_add(compositor, vm) != RET_OK) {
         log_warn("view_model_compositor_add failed\n");
         TK_OBJECT_UNREF(vm);
