@@ -13,10 +13,11 @@
     </scroll_view>
     <scroll_bar_m name="bar" x="right" y="0" w="6" h="100%" value="0"/>
   </list_view>
-  <column  x="0" y="b:10" w="100%" h="96" children_layout="default(rows=3,cols=3,s=5,m=5)">
+  <column  x="0" y="b:10" w="100%" h="96" children_layout="default(rows=2,cols=5,s=5,m=5)">
     <button text="Remove" v-on:click="{remove, Args=selected_index}"/>
     <button text="Add" v-on:click="{add}"/>
     <button text="Edit" v-on:click="{edit}"/>
+    <button text="Detail" v-on:click="{detail}"/>
 
     <button text="Up" v-on:click="{move_up, Args=selected_index}"/>
     <button text="Down" v-on:click="{move_down, Args=selected_index}"/>

@@ -133,7 +133,7 @@ static view_model_t* view_model_object_create_sub_view_model_array(view_model_t*
 
 static ret_t view_model_object_wrapper_on_will_mount(view_model_t* view_model,
                                                      navigator_request_t* req) {
-  const char* prefix = tk_object_get_prop_str(TK_OBJECT(req), STR_PATH_PREFIX);
+  const char* prefix = tk_object_get_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_PREFIX);
   view_model_object_wrapper_t* object_wrapper = VIEW_MODEL_OBJECT_WRAPPPER(view_model);
 
   if (prefix != NULL) {

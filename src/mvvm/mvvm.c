@@ -46,6 +46,9 @@ ret_t mvvm_init(void) {
   view_model_factory_register(STR_VIEW_MODEL_CONF_JSON_ARRAY, view_model_conf_create);
   view_model_factory_register(STR_VIEW_MODEL_CONF_XML_ARRAY, view_model_conf_create);
   view_model_factory_register(STR_VIEW_MODEL_CONF_UBJSON_ARRAY, view_model_conf_create);
+  view_model_factory_register(STR_VIEW_MODEL_CONF_ADD, view_model_conf_create);
+  view_model_factory_register(STR_VIEW_MODEL_CONF_EDIT, view_model_conf_create);
+  view_model_factory_register(STR_VIEW_MODEL_CONF_DETAIL, view_model_conf_create);
 
   return RET_OK;
 }

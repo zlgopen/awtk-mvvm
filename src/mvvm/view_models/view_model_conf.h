@@ -110,6 +110,9 @@ view_model_t* view_model_conf_create(navigator_request_t* req);
 
 #define STR_VIEW_MODEL_CONF_CSV "csv"
 
+#define STR_VIEW_MODEL_CONF_ADD "conf_add"
+#define STR_VIEW_MODEL_CONF_EDIT "conf_edit"
+#define STR_VIEW_MODEL_CONF_DETAIL "conf_detail"
 
 END_C_DECLS
 

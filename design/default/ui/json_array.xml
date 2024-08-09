@@ -1,8 +1,9 @@
-<window v-model="json_array(url=${app_dir}/demos/demo_conf/demo_array.json, prefix=networks)">
+<window v-model="json_array(url=${app_dir}/demos/demo_conf/demo_array.json, prefix=networks, name=foo)">
    <label x="0" y="0" w="100%" h="30" v-data:text="{items}"/>
-   <list_view x="0"  y="30" w="100%" h="-80" item_height="40">
+   <list_view x="0"  y="30" w="100%" h="-136" item_height="40">
     <scroll_view name="column" x="0"  y="0" w="100%" h="100%" v-for-items="true" >
-      <list_item  children_layout="default(rows=1,cols=0,s=4)">
+      <list_item  children_layout="default(rows=1,cols=0,s=4)"
+        style="default" focusable="true" v-on:click="{set_selected}" v-data:focused="{index==selected_index}" style:focused:border_color="#000000" style:focused:border_width="1">
         <property name="v-data:style">
           <![CDATA[ {(index % 2) ? "odd" : "even"} ]]>
         </property>
@@ -14,8 +15,17 @@
     </scroll_view>
     <scroll_bar_m name="bar" x="right" y="0" w="6" h="100%" value="0"/>
   </list_view>
-  <column  x="0" y="b" w="100%" h="40" children_layout="default(rows=1,col=2,s=5,m=5)">
-    <button text="OK" v-on:click="{nothing, CloseWindow=true}"/>
-    <button text="Back" v-on:click="{nothing, CloseWindow=true}"/>
-  </column>
+  <column x="0" y="b:10" w="100%" h="96" children_layout="default(rows=2,cols=5,s=5,m=5)">
+      <button v-on:click="{remove, Args=selected_index}" text="Remove"/>
+      <button v-on:click="{add}" text="Add"/>
+      <button v-on:click="{edit}" text="Edit"/>
+      <button v-on:click="{detail}" text="Detail"/>
+      <button v-on:click="{move_up, Args=selected_index}" text="Up"/>
+      <button v-on:click="{move_down, Args=selected_index}" text="Down"/>
+      <button v-on:click="{clear}" text="Clear"/>
+      <button v-on:click="{save}" text="Save"/>
+      <button v-on:click="{reload}" text="Reload"/>
+      <button text="Back" v-on:click="{nothing, CloseWindow=true}"/>
+    </column>
+
 </window>

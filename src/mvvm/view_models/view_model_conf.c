@@ -34,6 +34,7 @@
 #include "conf_io/conf_ubjson.h"
 #include "conf_io/conf_ini.h"
 
+#include "mvvm/base/utils.h"
 #include "mvvm/base/navigator.h"
 #include "mvvm/view_models/view_model_conf.h"
 #include "mvvm/base/view_model_object_wrapper.h"
@@ -48,12 +49,14 @@ view_model_t* view_model_conf_create(navigator_request_t* req) {
   bool_t use_req_args = FALSE;
   view_model_t* vm = NULL;
   const char* prefix = NULL;
+  const char* name = NULL;
   char surl[MAX_PATH + 1] = {0};
   const char* type_and_args = NULL;
   bool_t create_if_not_exist = FALSE;
   return_value_if_fail(req != NULL, NULL);
   type_and_args = tk_object_get_prop_str(req->args, NAVIGATOR_ARG_VIEW_MODEL_TYPE);
   return_value_if_fail(type_and_args != NULL, NULL);
+  obj = tk_object_get_prop_object(req->args, NAVIGATOR_ARG_MODEL);
 
   args = func_call_parse(type_and_args, tk_strlen(type_and_args));
   return_value_if_fail(args != NULL, NULL);
@@ -69,15 +72,28 @@ view_model_t* view_model_conf_create(navigator_request_t* req) {
     url = tk_object_get_prop_str(args, "url");
   }
 
-  return_value_if_fail(url != NULL, NULL);
+  name = tk_object_get_prop_str(args, "name");
+  prefix = tk_object_get_prop_str(args, "prefix");
   create_if_not_exist = tk_object_get_prop_bool(args, "create_if_not_exist", FALSE);
 
-  prefix = tk_object_get_prop_str(args, "prefix");
+  if (obj == NULL) { 
+    return_value_if_fail(url != NULL, NULL);
+  } 
 
-  path_expand_vars(url, surl, MAX_PATH);
-  url = surl;
+  if (url != NULL) {
+    path_expand_vars(url, surl, MAX_PATH);
+    url = surl;
+  }
 
-  if (tk_str_eq(type, STR_VIEW_MODEL_CONF_JSON)) {
+  if (obj != NULL && url == NULL) {
+    if (tk_str_eq(type, STR_VIEW_MODEL_CONF_ADD)) {
+      /*init*/
+      const char* path = tk_object_get_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_PREFIX);
+      model_init_sub_object_with_args(obj, path, args);
+    }
+    log_debug("reuse model: %s %s\n", obj->name, obj->vt->type);
+    TK_OBJECT_REF(obj);
+  } else if (tk_str_eq(type, STR_VIEW_MODEL_CONF_JSON)) {
     obj = conf_json_load(url, create_if_not_exist);
   } else if (tk_str_eq(type, STR_VIEW_MODEL_CONF_XML)) {
     obj = conf_xml_load(url, create_if_not_exist);
@@ -106,6 +122,12 @@ view_model_t* view_model_conf_create(navigator_request_t* req) {
   } else {
     log_debug("unknown type:%s\n", type);
   }
+  return_value_if_fail(obj != NULL, NULL);
+
+  if (obj->name == NULL && name != NULL) {
+    tk_object_set_name(obj, name);
+    log_debug("set object name as %s\n", obj->name);
+  }
 
   if (is_array) {
     vm = view_model_array_object_wrapper_create_ex(obj, prefix);
@@ -117,3 +139,4 @@ view_model_t* view_model_conf_create(navigator_request_t* req) {
 
   return vm;
 }
+

@@ -157,6 +157,24 @@ ret_t navigator_to_by_object(tk_object_t* args) {
   return ret;
 }
 
+ret_t navigator_to_with_model(const char* target, tk_object_t* model, const char* prefix) {
+  ret_t ret = RET_OK;
+  navigator_request_t* req = NULL;
+  return_value_if_fail(target != NULL && navigator() != NULL, RET_BAD_PARAMS);
+
+  req = navigator_request_create(NULL, NULL);
+  return_value_if_fail(req != NULL, RET_OOM);
+
+  tk_object_set_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_TARGET, target);
+  tk_object_set_prop_object(TK_OBJECT(req), NAVIGATOR_ARG_MODEL, model);
+  tk_object_set_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_PREFIX, prefix);
+
+  ret = navigator_handle_request(navigator(), req);
+  tk_object_unref(TK_OBJECT(req));
+
+  return ret;
+}
+
 ret_t navigator_to_with_key_value(const char* target, const char* key, const char* value) {
   ret_t ret = RET_OK;
   navigator_request_t* req = NULL;

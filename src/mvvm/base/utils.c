@@ -24,6 +24,8 @@
 #include "tkc/named_value.h"
 #include "tkc/fscript.h"
 #include "tkc/tokenizer.h"
+#include "tkc/object_default.h"
+
 #include "mvvm/base/utils.h"
 #include "mvvm/base/navigator_request.h"
 
@@ -202,3 +204,21 @@ bool_t tk_is_valid_prop_name(const char* name) {
 
   return TRUE;
 }
+
+ret_t model_init_sub_object_with_args(tk_object_t* model, const char* prefix, tk_object_t* args) {
+  uint32_t n = 0;
+  uint32_t i = 0;
+  char name[MAX_PATH+1] = {0};
+  object_default_t* dargs = OBJECT_DEFAULT(args);
+  return_value_if_fail(dargs != NULL, RET_BAD_PARAMS);
+
+  n = dargs->props.size;
+  for (i = 0; i < n; i++) {
+    named_value_t* iter = (named_value_t*)darray_get(&dargs->props, i);
+    tk_snprintf(name, sizeof(name)-1, "%s.%s", prefix, iter->name);
+    tk_object_set_prop(model, name, &iter->value);
+  }
+
+  return RET_OK;
+}
+

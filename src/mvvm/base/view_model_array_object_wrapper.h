@@ -74,8 +74,6 @@ view_model_t* view_model_array_object_wrapper_create_ex(tk_object_t* obj, const 
 #define VIEW_MODEL_ARRAY_OBJECT_WRAPPPER(view_model) \
   ((view_model_array_object_wrapper_t*)(view_model))
 
-#define STR_PATH_PREFIX "prefix"
-
 END_C_DECLS
 
 #endif /*TK_VIEW_MODEL_ARRAY_OBJECT_WRAPPPER_H*/

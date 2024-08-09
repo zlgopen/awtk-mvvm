@@ -167,6 +167,20 @@ ret_t navigator_to_by_object(tk_object_t* args);
 ret_t navigator_to_with_key_value(const char* target, const char* key, const char* value);
 
 /**
+ * @method navigator_to_with_model
+ * 请求打开指定的窗口。
+ *
+ * @annotation ["static"]
+ *
+ * @param {const char*} target 目标窗口的名称。
+ * @param {tk_object_t*} model 模型。
+ * @param {const char*} prefix 路径前缀。
+ *
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t navigator_to_with_model(const char* target, tk_object_t* model, const char* prefix);
+
+/**
  * @method navigator_replace
  * 请求打开指定的窗口，并关闭当前窗口。
  *

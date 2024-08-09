@@ -86,7 +86,27 @@ ret_t tk_command_arguments_fscript(tk_object_t* args, tk_object_t* ctx);
  */
 ret_t str_random(str_t* str, const char* format, uint32_t max);
 
+/**
+ * @method tk_is_valid_prop_name
+ * 判断是否是合法的属性名。
+ * @annotation ["global"]
+ * @param {const char*} name 属性名。
+ *
+ * @return {bool_t} 返回TRUE表示是合法的属性名，否则表示不是。
+ */
 bool_t tk_is_valid_prop_name(const char* name);
+
+/**
+ * @method model_init_sub_object_with_args
+ * 初始化子对象。
+ * @annotation ["global"]
+ * @param {tk_object_t*} model 模型对象。
+ * @param {const char*} prefix 前缀。
+ * @param {tk_object_t*} args 参数。
+ * 
+ * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
+ */
+ret_t model_init_sub_object_with_args(tk_object_t* model, const char* prefix, tk_object_t* args);
 
 #define destruct_array_prop_name tk_destruct_array_prop_name
 

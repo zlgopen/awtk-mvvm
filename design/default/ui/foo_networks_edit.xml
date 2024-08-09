@@ -1,0 +1,14 @@
+<window v-model="conf_edit()">
+  <view w="100%" h="100%" children_layout="default(c=2,h=40,s=10,m=5)">
+    <label text="Device" />
+    <edit v-data:value="{device}"/>
+    <label text="IP" />
+    <edit v-data:value="{ip}" input_type="ipv4"/>
+    <label text="Mask" />
+    <edit v-data:value="{mask}" input_type="ipv4"/>
+    <label text="GateWay" />
+    <edit v-data:value="{gateway}" input_type="ipv4"/>
+  </view>
+  <button text="OK" floating="true" self_layout="default(x=20, y=b:80, w=128, h=30)" v-on:click="{save, CloseWindow=true}"/>
+  <button text="Cancel" floating="true" self_layout="default(x=r:20, y=b:80, w=128, h=30)" v-on:click="{reload, CloseWindow=true}"/>
+</window>

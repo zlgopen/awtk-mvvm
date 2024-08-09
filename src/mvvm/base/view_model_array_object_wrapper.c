@@ -153,28 +153,28 @@ static const char* view_model_array_object_wrapper_get_target(char target[TK_NAM
   return target;
 }
 
-static ret_t view_model_array_object_wrapper_cmd_add(const char* name, const char* prefix, const char* path) {
+static ret_t view_model_array_object_wrapper_cmd_add(tk_object_t* model, const char* prefix, const char* path) {
   char target[TK_NAME_LEN + 1];
 
-  view_model_array_object_wrapper_get_target(target, name, prefix, TK_OBJECT_CMD_ADD);
+  view_model_array_object_wrapper_get_target(target, model->name, prefix, TK_OBJECT_CMD_ADD);
 
-  return navigator_to_with_key_value(target, STR_PATH_PREFIX, path);
+  return navigator_to_with_model(target, model, path);
 }
 
-static ret_t view_model_array_object_wrapper_cmd_edit(const char* name, const char* prefix, const char* path) {
+static ret_t view_model_array_object_wrapper_cmd_edit(tk_object_t* model, const char* prefix, const char* path) {
   char target[TK_NAME_LEN + 1];
 
-  view_model_array_object_wrapper_get_target(target, name, prefix, TK_OBJECT_CMD_EDIT);
+  view_model_array_object_wrapper_get_target(target, model->name, prefix, TK_OBJECT_CMD_EDIT);
 
-  return navigator_to_with_key_value(target, STR_PATH_PREFIX, path);
+  return navigator_to_with_model(target, model, path);
 }
 
-static ret_t view_model_array_object_wrapper_cmd_detail(const char* name, const char* prefix, const char* path) {
+static ret_t view_model_array_object_wrapper_cmd_detail(tk_object_t* model, const char* prefix, const char* path) {
   char target[TK_NAME_LEN + 1];
 
-  view_model_array_object_wrapper_get_target(target, name, prefix, TK_OBJECT_CMD_DETAIL);
+  view_model_array_object_wrapper_get_target(target, model->name, prefix, TK_OBJECT_CMD_DETAIL);
 
-  return navigator_to_with_key_value(target, STR_PATH_PREFIX, path);
+  return navigator_to_with_model(target, model, path);
 }
 
 static const char* view_model_array_object_wrapper_gen_path(tk_object_t* obj, char* path,
@@ -205,7 +205,7 @@ static ret_t view_model_array_object_wrapper_exec(tk_object_t* obj, const char* 
   if (tk_str_eq(name, TK_OBJECT_CMD_CLEAR) || tk_str_eq(name, TK_OBJECT_CMD_ADD)) {
     args = object_wrapper->prop_prefix;
   } else if (args == NULL || tk_str_eq(VIEW_MODEL_PROP_SELECTED_INDEX, args) ||
-             tk_str_eq(name, TK_OBJECT_CMD_EDIT)) {
+             tk_str_eq(name, TK_OBJECT_CMD_EDIT) || tk_str_eq(name, TK_OBJECT_CMD_DETAIL)) {
     args = view_model_array_object_wrapper_gen_path(obj, path, vm_array->selected_index);
   }
 
@@ -220,14 +220,14 @@ static ret_t view_model_array_object_wrapper_exec(tk_object_t* obj, const char* 
     return_value_if_fail(ret == RET_OK, RET_FAIL);
     return_value_if_fail(last_index >= 0, RET_FAIL);
     args = view_model_array_object_wrapper_gen_path(obj, path, last_index);
-    return view_model_array_object_wrapper_cmd_add(object_wrapper->obj->name, object_wrapper->prop_prefix, args);
+    return view_model_array_object_wrapper_cmd_add(object_wrapper->obj, object_wrapper->prop_prefix, args);
   }
 
   if (ret == RET_NOT_FOUND || ret == RET_NOT_IMPL) {
     if (tk_str_eq(name, TK_OBJECT_CMD_EDIT)) {
-      return view_model_array_object_wrapper_cmd_edit(object_wrapper->obj->name, object_wrapper->prop_prefix, args);
+      return view_model_array_object_wrapper_cmd_edit(object_wrapper->obj, object_wrapper->prop_prefix, args);
     } else if (tk_str_eq(name, TK_OBJECT_CMD_DETAIL)) {
-      return view_model_array_object_wrapper_cmd_detail(object_wrapper->obj->name, object_wrapper->prop_prefix, args);
+      return view_model_array_object_wrapper_cmd_detail(object_wrapper->obj, object_wrapper->prop_prefix, args);
     }
   }
 
@@ -301,7 +301,7 @@ static view_model_t* view_model_object_create_sub_view_model_array(view_model_t*
 
 static ret_t view_model_array_object_wrapper_on_will_mount(view_model_t* view_model,
                                                            navigator_request_t* req) {
-  const char* prefix = tk_object_get_prop_str(TK_OBJECT(req), STR_PATH_PREFIX);
+  const char* prefix = tk_object_get_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_PREFIX);
   view_model_array_object_wrapper_t* object_wrapper = VIEW_MODEL_ARRAY_OBJECT_WRAPPPER(view_model);
 
   if (prefix != NULL) {

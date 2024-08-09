@@ -1,5 +1,8 @@
 # 最新动态
 
+* 2024/08/09
+  * 完善app_conf/conf的数组子对象的编辑/新增和详情。
+
 * 2024/08/08
   * jerryscript 增加了几个扩展函数[JS 扩展函数](docs/js_ext_api.md)
 
