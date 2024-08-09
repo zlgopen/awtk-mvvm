@@ -249,6 +249,7 @@ eth2,192.168.1.3
 | url | string | 文件路径（必须） |
 | col_names | string | 列名，用分隔符分隔 |
 | sep | char | 分隔符，默认为逗号 |
+| name | string | 名称（可选，用于决定add/edit/detail子界面的文件名） |
 
 示例
 
@@ -305,6 +306,7 @@ csv(url=${app_dir}/demos/demo_conf/demo.csv, col_names='device,ip', sep=',')
 | :-----| ---- | :---- |
 | url | string | 文件路径 （必须）|
 | prefix | string | 路径前缀（可选） |
+| name | string | 名称（可选，用于决定add/edit/detail子界面的文件名） |
 
 示例
 
@@ -350,9 +352,117 @@ json_array(url=${app_dir}/demos/demo_conf/demo_array.json, prefix=networks)
 | :-----| ---- | :---- |
 | url | string | 文件路径 （必须）|
 | prefix | string | 路径前缀（可选） |
+| name | string | 名称（可选，用于决定add/edit/detail子界面的文件名） |
 
 示例
 
 ```xml
 xml_array(url=${app_dir}/demos/demo_conf/demo_array.xml, prefix=networks)
 ```
+
+## 8. 对于数组数据，绑定到列表时，可以添加、编辑、查看详细信息。
+
+### 8.1 conf_add 用于添加数据
+
+> 不需要指定 URL，但可以指定初始化数据。
+
+添加数据的界面 UI 的文件名为: 
+
+* [\<name\>_]\<prefix\>_add.xml。
+
+name 和 prefix 在数组的模型中指定。比如，在下面的例子中，添加界面的文件名为：foo_networks_add.xml。
+
+```xml
+<window v-model="json_array(url=${app_dir}/demos/demo_conf/demo_array.json, prefix=networks, name=foo)">
+```
+
+示例
+
+foo_networks_add.xml
+
+```xml
+<window v-model="conf_add(device='ethx',ip='192.168.1.100',mask='255.255.255.0',gateway='192.168.1.1')">
+  <view w="100%" h="100%" children_layout="default(c=2,h=40,s=10,m=5)">
+    <label text="Device" />
+    <edit text="default" v-data:value="{device}"/>
+    <label text="IP" />
+    <edit v-data:value="{ip}" input_type="ipv4"/>
+    <label text="Mask" />
+    <edit v-data:value="{mask}" input_type="ipv4"/>
+    <label text="GateWay" />
+    <edit v-data:value="{gateway}" input_type="ipv4"/>
+  </view>
+  <button text="OK" floating="true" self_layout="default(x=20, y=b:80, w=128, h=30)" v-on:click="{save, CloseWindow=true}"/>
+  <button text="Cancel" floating="true" self_layout="default(x=r:20, y=b:80, w=128, h=30)" v-on:click="{reload, CloseWindow=true}"/>
+</window>
+```
+
+### 8.2 conf_edit 用于编辑数据
+
+> 不需要指定 URL 和其它参数。
+
+
+编辑数据的界面 UI 的文件名为: 
+
+* [\<name\>_]\<prefix\>_edit.xml。
+
+name 和 prefix 在数组的模型中指定。比如，在下面的例子中，编辑界面的文件名为：foo_networks_edit.xml。
+
+```xml
+<window v-model="json_array(url=${app_dir}/demos/demo_conf/demo_array.json, prefix=networks, name=foo)">
+```
+
+示例
+
+```xml
+<window v-model="conf_edit()">
+  <view w="100%" h="100%" children_layout="default(c=2,h=40,s=10,m=5)">
+    <label text="Device" />
+    <edit v-data:value="{device}"/>
+    <label text="IP" />
+    <edit v-data:value="{ip}" input_type="ipv4"/>
+    <label text="Mask" />
+    <edit v-data:value="{mask}" input_type="ipv4"/>
+    <label text="GateWay" />
+    <edit v-data:value="{gateway}" input_type="ipv4"/>
+  </view>
+  <button text="OK" floating="true" self_layout="default(x=20, y=b:80, w=128, h=30)" v-on:click="{save, CloseWindow=true}"/>
+  <button text="Cancel" floating="true" self_layout="default(x=r:20, y=b:80, w=128, h=30)" v-on:click="{reload, CloseWindow=true}"/>
+</window>
+```
+
+
+### 8.3 conf_detail 用于查看数据
+
+> 不需要指定 URL 和其它参数。
+
+查看数据的界面 UI 的文件名为: 
+
+* [\<name\>_]\<prefix\>_detail.xml。
+
+name 和 prefix 在数组的模型中指定。比如，在下面的例子中，查看界面的文件名为：foo_networks_detail.xml。
+
+```xml
+<window v-model="json_array(url=${app_dir}/demos/demo_conf/demo_array.json, prefix=networks, name=foo)">
+```
+
+示例
+
+```xml
+<window v-model="conf_detail()">
+  <view w="100%" h="100%" children_layout="default(c=2,h=40,s=10,m=5)">
+    <label text="Device" />
+    <edit v-data:value="{device}" readonly="true"/>
+    <label text="IP" />
+    <edit v-data:value="{ip}" input_type="ipv4" readonly="true"/>
+    <label text="Mask" />
+    <edit v-data:value="{mask}" input_type="ipv4" readonly="true"/>
+    <label text="GateWay" />
+    <edit v-data:value="{gateway}" input_type="ipv4" readonly="true"/>
+  </view>
+  <button text="OK" floating="true" self_layout="default(x=c, y=b:80, w=128, h=30)" v-on:click="{nothing, CloseWindow=true}"/>
+</window>
+```
+
+完整示例请参考 demo_conf。
+
