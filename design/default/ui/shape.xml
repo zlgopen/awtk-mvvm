@@ -1,7 +1,7 @@
 <window anim_hint="htranslate" v-model="shape" children_layout="default(h=30,col=1,s=10, m=5)">
   <column children_layout="default(row=1,col=2)">
     <label text="Name:" />
-    <edit v-data:value="{name, Trigger=Changing}" tips="name cannot be null"/>
+    <edit name="name" v-data:value="{name, Trigger=Changing}" tips="name cannot be null"/>
   </column>
   
   <column children_layout="default(row=1,col=2)">
@@ -11,22 +11,22 @@
 
   <column children_layout="default(row=1,col=2)">
     <label text="X:" />
-    <spin_box input_type="uint" min="0" max="150" step="1" v-data:value="{x}"/>
+    <spin_box name="x" input_type="uint" min="0" max="150" step="1" v-data:value="{x}"/>
   </column>
 
   <column children_layout="default(row=1,col=2)">
     <label text="Y:" />
-    <spin_box input_type="uint" min="0" max="150" step="1" v-data:value="{y}"/>
+    <spin_box name="y" input_type="uint" min="0" max="150" step="1" v-data:value="{y}"/>
   </column>
 
   <column children_layout="default(row=1,col=2)">
     <label text="W:" />
-    <spin_box input_type="uint" min="0" max="150" step="1" v-data:value="{w}"/>
+    <spin_box name="w" input_type="uint" min="0" max="150" step="1" v-data:value="{w}"/>
   </column>
 
   <column children_layout="default(row=1,col=2)">
     <label text="H:" />
-    <spin_box input_type="uint" min="0" max="150" step="1" v-data:value="{h}"/>
+    <spin_box name="h" input_type="uint" min="0" max="150" step="1" v-data:value="{h}"/>
   </column>
   
   <column children_layout="default(row=1,col=2)">
@@ -35,13 +35,13 @@
   </column>
   
   <column children_layout="default(row=1,col=3)">
-    <radio_button text="Rect" v-data:value="{type==1}" v-on:click="{changeType, Args=1}"/>
-    <radio_button text="Circle" v-data:value="{type==2}" v-on:click="{changeType, Args=2}" />
-    <radio_button text="Line" v-data:value="{type==3}" v-on:click="{changeType, Args=3}"/>
+    <radio_button name="rect" text="Rect" v-data:value="{type==1}" v-on:click="{changeType, Args=1}"/>
+    <radio_button name="circle" text="Circle" v-data:value="{type==2}" v-on:click="{changeType, Args=2}" />
+    <radio_button name="line" text="Line" v-data:value="{type==3}" v-on:click="{changeType, Args=3}"/>
   </column>
   
   <column children_layout="default(row=1,col=1)">
-    <label text="overview" v-data:text="{overview}"/>
+    <label name="overview" text="overview" v-data:text="{overview}"/>
   </column>
   
   <button text="Save" floating="true" self_layout="default(x=c, y=b:30, w=80, h=30)" v-on:click="{save}"/>

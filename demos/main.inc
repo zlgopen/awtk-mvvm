@@ -1,5 +1,6 @@
 #include "awtk.h"
 #include "mvvm_app.inc"
+#include "remote_ui/service/remote_ui_service.h"
 
 BEGIN_C_DECLS
 #ifdef AWTK_WEB
@@ -23,6 +24,11 @@ extern ret_t application_exit(void);
 static ret_t global_init(void) {
   mvvm_app_init();
   mvvm_app_run_default_scripts();
+
+#ifdef TK_IS_PC
+  tk_service_start(main_loop_get_event_source_manager(main_loop()), REMOTE_UI_URL,
+                   remote_ui_service_create, NULL);
+#endif /*TK_IS_PC*/
 
 #ifdef LINUX
   signal(SIGINT, on_signal);

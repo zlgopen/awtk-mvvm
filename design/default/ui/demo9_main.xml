@@ -4,9 +4,9 @@
  v-on:global_key_down:f4="{stop}" 
  v-on:global_key_long_press:f2="{fscript, Args=print(&quot;global_key_long_press:f2&quot;)}">
   <label text="F3 Start F4 Stop" x="center" y="middle:-128" w="100%" h="40" /> 
-  <label v-data:text="{running}" x="center" y="middle:-80" w="40%" h="40" /> 
-  <button text="Temperature" x="center" y="middle:-40" w="40%" h="40" 
+  <label name="running" v-data:text="{running}" x="center" y="middle:-80" w="40%" h="40" /> 
+  <button name="temp" text="Temperature" x="center" y="middle:-40" w="40%" h="40" 
     v-on:click="{navigate, Args=temperature9}"/>
-  <button text="Humidity" x="center" y="middle:40" w="40%" h="40" 
+  <button name="humidity" text="Humidity" x="center" y="middle:40" w="40%" h="40" 
     v-on:click="{navigate, Args=humidity}"/>
 </window>
