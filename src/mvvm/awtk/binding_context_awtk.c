@@ -704,7 +704,7 @@ uint32_t binding_context_awtk_get_items_cursor_of_rule(binding_context_t* ctx,
 
 const char* binding_context_awtk_resolve_path_by_rule(binding_context_t* ctx, binding_rule_t* rule,
                                                       const char* path, bool_t* is_cursor) {
-  return_value_if_fail(ctx != NULL && rule != NULL, NULL);
+  return_value_if_fail(ctx != NULL, NULL);
 
   if (path == NULL || *path == '\0' || rule == NULL) {
     return path;
