@@ -49,7 +49,7 @@
 * 功能 随机点击压力测试
 * 适用于 任意程序
 
-### 5.demo8_stess.ini
+### 5.demo8_stress.ini
 
 * 功能 demo8 基本测试
 * 适用于 demo8/jsdemo8
@@ -62,18 +62,24 @@
 * 功能 演示带条件的 goto
 * 适用于 有 slider 的界面
 
-### 8.demo9_stess.ini
+### 8.demo9_stress.ini
 
 * 功能 demo9 基本测试
 * 适用于 demo9/jsdemo9
 
-### 9.demo15_stess.ini
+### 9.demo15_stress.ini
 
 * 功能 demo15 基本测试
 * 适用于 demo15/jsdemo15
 
-### 10.demo16_stess.ini
+### 10.demo16_stress.ini
 
 * 功能 demo16 基本测试
 * 适用于 demo16/jsdemo16
+
+### 11.demo17_stress.ini
+
+* 功能 demo17 基本测试
+* 适用于 demo17/jsdemo17
+
 
