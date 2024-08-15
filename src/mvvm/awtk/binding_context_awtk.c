@@ -120,6 +120,9 @@ static ret_t visit_data_binding_update_error_of(void* ctx, const void* data) {
   data_binding_t* rule = DATA_BINDING((void*)data);
   data_binding_t* trigger_rule = DATA_BINDING(ctx);
   view_model_t* view_model = BINDING_RULE_VIEW_MODEL(trigger_rule);
+  return_value_if_fail(rule != NULL, RET_BAD_PARAMS);
+  return_value_if_fail(trigger_rule != NULL, RET_BAD_PARAMS);
+  return_value_if_fail(view_model != NULL, RET_BAD_PARAMS);
 
   if (tk_str_start_with(rule->path, DATA_BINDING_ERROR_OF)) {
     const char* path = rule->path + sizeof(DATA_BINDING_ERROR_OF) - 1;
@@ -134,6 +137,7 @@ static ret_t visit_data_binding_update_error_of(void* ctx, const void* data) {
 
 static ret_t widget_visit_data_binding_update_error_of(void* ctx, const void* data) {
   darray_t* node = (darray_t*)data;
+  return_value_if_fail(node != NULL, RET_BAD_PARAMS);
 
   return darray_foreach(node, visit_data_binding_update_error_of, ctx);
 }
@@ -151,6 +155,7 @@ static ret_t binding_context_update_error_of(data_binding_t* rule) {
 static ret_t on_widget_prop_change(void* ctx, event_t* e) {
   data_binding_t* rule = DATA_BINDING(ctx);
   prop_change_event_t* evt = prop_change_event_cast(e);
+  return_value_if_fail(evt != NULL && rule != NULL, RET_BAD_PARAMS);
 
   if (tk_str_eq(evt->name, rule->prop)) {
     data_binding_set_prop(rule, evt->value);
@@ -165,6 +170,8 @@ static ret_t on_widget_value_change(void* ctx, event_t* e) {
   widget_t* widget = WIDGET(e->target);
   data_binding_t* rule = DATA_BINDING(ctx);
   binding_context_t* bctx = BINDING_RULE_CONTEXT(rule);
+  return_value_if_fail(widget != NULL && rule != NULL && bctx != NULL, RET_BAD_PARAMS);
+
   return_value_if_fail(widget_get_prop(widget, rule->prop, &v) == RET_OK, RET_OK);
 
   if (!bctx->updating_view) {
@@ -180,7 +187,8 @@ static ret_t on_widget_value_change(void* ctx, event_t* e) {
 static ret_t widget_set_prop_if_diff(widget_t* widget, const char* name, const value_t* v,
                                      bool_t set_force) {
   value_t old;
-
+  return_value_if_fail(widget != NULL && widget->vt != NULL, RET_BAD_PARAMS);
+  
   if (!set_force) {
     if (widget->vt->inputable) {
       if (tk_str_eq(name, WIDGET_PROP_TEXT) || tk_str_eq(name, WIDGET_PROP_VALUE)) {
@@ -209,6 +217,7 @@ static ret_t widget_set_prop_if_diff(widget_t* widget, const char* name, const v
 static ret_t binding_context_awtk_update_data(data_binding_t* rule, bool_t force) {
   binding_context_t* ctx = BINDING_RULE_CONTEXT(rule);
   view_model_t* view_model = BINDING_RULE_VIEW_MODEL(rule);
+  return_value_if_fail(ctx != NULL && view_model != NULL, RET_BAD_PARAMS);
 
   if (tk_object_is_collection(TK_OBJECT(view_model))) {
     uint32_t size = view_model_get_items_size(TK_OBJECT(view_model));
@@ -229,6 +238,7 @@ static ret_t binding_context_awtk_update_data(data_binding_t* rule, bool_t force
       (rule->mode == BINDING_ONCE && !(ctx->bound))) {
     value_t v;
     widget_t* widget = WIDGET(BINDING_RULE_WIDGET(rule));
+    return_value_if_fail(widget != NULL, RET_BAD_PARAMS);
 
     value_set_int(&v, 0);
 
@@ -281,6 +291,7 @@ ret_t binding_context_awtk_bind_data(binding_context_t* ctx, binding_rule_t* rul
 
 static ret_t binding_context_awtk_update_command_stat(command_binding_t* rule) {
   widget_t* widget = WIDGET(BINDING_RULE_WIDGET(rule));
+  return_value_if_fail(widget != NULL && rule != NULL, RET_BAD_PARAMS);
 
   if (rule->auto_disable && !widget_is_window(widget)) {
     bool_t can_exec = command_binding_can_exec(rule);
@@ -353,6 +364,8 @@ static bool_t command_binding_filter(command_binding_t* rule, event_t* e) {
 
 static ret_t command_binding_exec_command(command_binding_t* rule) {
   ret_t ret = RET_OK;
+  return_value_if_fail(rule != NULL, RET_BAD_PARAMS);
+
   if (command_binding_can_exec(rule)) {
     if (rule->update_model) {
       binding_context_update_to_model(BINDING_RULE_CONTEXT(rule));
@@ -384,6 +397,7 @@ static ret_t command_binding_exec_command(command_binding_t* rule) {
 
 static ret_t on_global_key_event(void* c, event_t* e) {
   command_binding_t* rule = COMMAND_BINDING(c);
+  return_value_if_fail(rule != NULL, RET_BAD_PARAMS);
 
   if (command_binding_filter(rule, e)) {
     return RET_OK;
@@ -396,6 +410,7 @@ static ret_t on_widget_event(void* c, event_t* e) {
   command_binding_t* rule = COMMAND_BINDING(c);
   binding_context_t* ctx = BINDING_RULE_CONTEXT(rule);
   widget_t* widget = WIDGET(e->target);
+  return_value_if_fail(rule != NULL && ctx != NULL && widget != NULL, RET_BAD_PARAMS);
 
   if ((ctx->updating_view && !ctx->updating_view_by_ui) || (widget->loading)) {
     if (e->type == EVT_VALUE_CHANGED) {
@@ -534,6 +549,8 @@ static int32_t binding_context_awtk_compare_items_object(binding_rule_t* rule,
 }
 
 static ret_t binding_context_rebind_items_sync(binding_rule_t* rule) {
+  return_value_if_fail(rule != NULL, RET_BAD_PARAMS);
+
   log_debug("start_rebind\n");
   ui_loader_mvvm_reload_widget(rule);
   binding_context_update_to_view(BINDING_RULE_CONTEXT(rule));
@@ -576,9 +593,11 @@ static ret_t visit_items_binding_rebind_sync(void* ctx, const void* data) {
 static ret_t binding_context_awtk_notify_items_changed(binding_context_t* ctx, tk_object_t* items,
                                                        bool_t sync) {
   darray_t matched;
+  slist_t* bindings = NULL;
   tk_compare_t compare = (tk_compare_t)binding_context_awtk_compare_items_object;
-  slist_t* bindings = &(ctx->dynamic_bindings);
+  return_value_if_fail(ctx != NULL && items != NULL, RET_BAD_PARAMS);
 
+  bindings = &(ctx->dynamic_bindings);
   darray_init(&matched, 1, NULL, NULL);
   if (binding_context_awtk_find_binding_rule(bindings, compare, items, &matched) == RET_OK) {
     if (sync) {
@@ -594,6 +613,8 @@ static ret_t binding_context_awtk_notify_items_changed(binding_context_t* ctx, t
 
 uint32_t binding_context_awtk_calc_widget_index_of_rule(binding_context_t* ctx,
                                                         binding_rule_t* rule) {
+  return_value_if_fail(ctx != NULL && rule != NULL, 0);
+
   if (!binding_rule_is_items_binding(rule) && !binding_rule_is_condition_binding(rule)) {
     widget_t* widget = WIDGET(BINDING_RULE_WIDGET(rule));
     return_value_if_fail(widget != NULL, 0);
@@ -648,8 +669,11 @@ uint32_t binding_context_awtk_calc_widget_index_of_rule(binding_context_t* ctx,
 
 uint32_t binding_context_awtk_get_items_cursor_of_rule(binding_context_t* ctx,
                                                        binding_rule_t* rule) {
-  binding_rule_t* temp = rule->parent;
+  binding_rule_t* temp = NULL;
 
+  return_value_if_fail(ctx != NULL && rule != NULL, 0);
+
+  temp = rule->parent;
   while (temp != NULL && !binding_rule_is_items_binding(temp)) {
     temp = temp->parent;
   }
@@ -680,6 +704,8 @@ uint32_t binding_context_awtk_get_items_cursor_of_rule(binding_context_t* ctx,
 
 const char* binding_context_awtk_resolve_path_by_rule(binding_context_t* ctx, binding_rule_t* rule,
                                                       const char* path, bool_t* is_cursor) {
+  return_value_if_fail(ctx != NULL && rule != NULL, NULL);
+
   if (path == NULL || *path == '\0' || rule == NULL) {
     return path;
   } else {
@@ -842,6 +868,8 @@ static bool_t binding_context_awtk_can_exec(binding_context_t* ctx, const char* 
 }
 
 static ret_t binding_context_awtk_exec(binding_context_t* ctx, const char* cmd, const char* args) {
+  return_value_if_fail(ctx != NULL && cmd != NULL, RET_BAD_PARAMS);
+
   if (tk_str_ieq(COMMAND_BINDING_CMD_SEND_KEY, cmd)) {
     widget_t* win = widget_get_window(WIDGET(ctx->widget));
 
@@ -859,6 +887,7 @@ static ret_t visit_data_binding_update_to_model(void* ctx, const void* data) {
   value_t v;
   data_binding_t* rule = DATA_BINDING(data);
   widget_t* widget = WIDGET(BINDING_RULE_WIDGET(rule));
+  return_value_if_fail(rule != NULL && widget != NULL, RET_BAD_PARAMS);
 
   if (rule->trigger == UPDATE_WHEN_EXPLICIT) {
     if (rule->mode == BINDING_TWO_WAY || rule->mode == BINDING_ONE_WAY_TO_VIEW_MODEL) {
@@ -889,6 +918,7 @@ static ret_t visit_data_binding_update_to_view(void* ctx, const void* data) {
 
 static ret_t widget_visit_data_binding_update_to_view(void* ctx, const void* data) {
   darray_t* node = (darray_t*)data;
+  return_value_if_fail(node != NULL, RET_BAD_PARAMS);
 
   (void)ctx;
   return darray_foreach(node, visit_data_binding_update_to_view, NULL);
@@ -900,6 +930,7 @@ static ret_t visit_command_binding_update_to_view(void* ctx, const void* data) {
 
 static ret_t widget_visit_command_binding_update_to_view(void* ctx, const void* data) {
   darray_t* node = (darray_t*)data;
+  return_value_if_fail(node != NULL, RET_BAD_PARAMS);
 
   (void)ctx;
   return darray_foreach(node, visit_command_binding_update_to_view, NULL);
@@ -909,7 +940,10 @@ static ret_t binding_context_awtk_update_data_of_widget(binding_context_t* ctx, 
   widget_t* widget = NULL;
   darray_t* node = NULL;
   binding_rule_t* rule = NULL;
-  slist_node_t* iter = ctx->data_bindings.first;
+  slist_node_t* iter = NULL;
+  return_value_if_fail(ctx != NULL, RET_BAD_PARAMS);
+  
+  iter = ctx->data_bindings.first;
 
   while (iter != NULL) {
     node = (darray_t*)(iter->data);
@@ -933,7 +967,10 @@ static ret_t binding_context_awtk_update_command_stat_of_widget(binding_context_
   widget_t* widget = NULL;
   darray_t* node = NULL;
   binding_rule_t* rule = NULL;
-  slist_node_t* iter = ctx->command_bindings.first;
+  slist_node_t* iter = NULL;
+  return_value_if_fail(ctx != NULL, RET_BAD_PARAMS);
+
+  iter = ctx->command_bindings.first;
 
   while (iter != NULL) {
     node = (darray_t*)(iter->data);
@@ -955,6 +992,7 @@ static ret_t binding_context_awtk_update_command_stat_of_widget(binding_context_
 static ret_t visit_dynamic_binding_update_to_view(void* ctx, const void* data) {
   binding_rule_t* rule = BINDING_RULE(data);
   binding_context_t* bctx = BINDING_RULE_CONTEXT(data);
+  return_value_if_fail(bctx != NULL, RET_BAD_PARAMS);
 
   if (bctx->bound && binding_rule_is_condition_binding(rule)) {
     uint32_t index = binding_context_calc_widget_index_of_rule(bctx, rule);
@@ -980,11 +1018,14 @@ static ret_t visit_dynamic_binding_update_to_view(void* ctx, const void* data) {
 
 static ret_t widget_visit_dynamic_binding_update_to_view(void* ctx, const void* data) {
   darray_t* node = (darray_t*)data;
+  return_value_if_fail(node != NULL, RET_BAD_PARAMS);
 
   return darray_foreach(node, visit_dynamic_binding_update_to_view, ctx);
 }
 
 static ret_t binding_context_awtk_update_to_view_sync(binding_context_t* ctx) {
+  return_value_if_fail(ctx != NULL, RET_BAD_PARAMS);
+
   slist_foreach(&(ctx->dynamic_bindings), widget_visit_dynamic_binding_update_to_view, FALSE);
   slist_foreach(&(ctx->data_bindings), widget_visit_data_binding_update_to_view, NULL);
   slist_foreach(&(ctx->command_bindings), widget_visit_command_binding_update_to_view, NULL);
@@ -1051,7 +1092,10 @@ static ret_t binding_context_awtk_remove_rebind_idle(void* ctx, const void* data
 static ret_t binding_context_awtk_remove_all_rebind_idle(binding_context_t* ctx) {
   darray_t matched;
   tk_compare_t compare = (tk_compare_t)binding_context_awtk_compare_items_binding;
-  slist_t* bindings = &(ctx->dynamic_bindings);
+  slist_t* bindings = NULL;
+  return_value_if_fail(ctx != NULL, RET_BAD_PARAMS);
+  
+  bindings = &(ctx->dynamic_bindings);
 
   darray_init(&matched, 1, NULL, NULL);
   if (binding_context_awtk_find_binding_rule(bindings, compare, NULL, &matched) == RET_OK) {
@@ -1064,6 +1108,8 @@ static ret_t binding_context_awtk_remove_all_rebind_idle(binding_context_t* ctx)
 
 static ret_t on_reset_emitter(void* ctx, const void* data) {
   widget_t* widget = WIDGET(data);
+  return_value_if_fail(widget != NULL, RET_BAD_PARAMS);
+
   if (widget->emitter != NULL) {
     widget_off_by_tag(widget, EVENT_TAG);
   }
@@ -1073,6 +1119,8 @@ static ret_t on_reset_emitter(void* ctx, const void* data) {
 }
 
 static ret_t binding_context_awtk_unbind_widget(binding_context_t* ctx) {
+  return_value_if_fail(ctx != NULL, RET_BAD_PARAMS);
+
   if (ctx->widget != NULL) {
     widget_t* widget = WIDGET(ctx->widget);
 
@@ -1126,9 +1174,9 @@ static const binding_context_vtable_t s_binding_context_vtable = {
     .resolve_path_by_rule = binding_context_awtk_resolve_path_by_rule};
 
 static darray_t* binding_context_awtk_get_children(binding_context_t* ctx) {
+  darray_t* children = NULL;
   widget_t* widget = WIDGET(ctx->widget);
   tk_object_t* props = widget->custom_props;
-  darray_t* children = NULL;
 
   if (props != NULL && tk_object_has_prop(props, WIDGET_PROP_V_MODEL_CHILDREN)) {
     children = (darray_t*)tk_object_get_prop_pointer(props, WIDGET_PROP_V_MODEL_CHILDREN);
@@ -1162,8 +1210,12 @@ static ret_t binding_context_awtk_remove_child(binding_context_t* ctx, binding_c
 }
 
 static ret_t binding_context_awtk_on_widget_remove(void* ctx, event_t* e) {
+  widget_t* widget = NULL;
   binding_context_t* bctx = BINDING_CONTEXT(ctx);
-  widget_t* widget = WIDGET(bctx->widget);
+  return_value_if_fail(bctx != NULL, RET_BAD_PARAMS);
+
+  widget = WIDGET(bctx->widget);
+  return_value_if_fail(widget != NULL, RET_BAD_PARAMS);
 
   if (widget->parent == NULL || widget_index_of(widget) == -1) {
     binding_context_t* root = binding_context_get_root(bctx);
@@ -1185,6 +1237,7 @@ static ret_t binding_context_awtk_destroy_async(const idle_info_t* info) {
 
 static ret_t binding_context_awtk_on_widget_destroy(void* ctx, event_t* e) {
   binding_context_t* bctx = BINDING_CONTEXT(ctx);
+  return_value_if_fail(bctx != NULL, RET_BAD_PARAMS);
 
   binding_context_set_bound(bctx, FALSE);
 
