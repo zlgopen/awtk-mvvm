@@ -61,3 +61,19 @@
 ### 7.slider_key_0_50.ini
 * 功能 演示带条件的 goto
 * 适用于 有 slider 的界面
+
+### 8.demo9_stess.ini
+
+* 功能 demo9 基本测试
+* 适用于 demo9/jsdemo9
+
+### 9.demo15_stess.ini
+
+* 功能 demo15 基本测试
+* 适用于 demo15/jsdemo15
+
+### 10.demo16_stess.ini
+
+* 功能 demo16 基本测试
+* 适用于 demo16/jsdemo16
+
