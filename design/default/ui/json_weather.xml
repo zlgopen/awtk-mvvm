@@ -20,9 +20,9 @@
   </view>
 
   <view x="c" y="b:20" w="100%" h="60" children_layout="default(c=3,r=1,s=10,m=10)">
-    <button text="Save" v-on:click="{save}"/>
-    <button text="Refresh" v-on:click="{reload}"/>
-    <button text="Back" v-on:click="{nothing, CloseWindow=true}"/>
+    <button name="save" text="Save" v-on:click="{save}"/>
+    <button name="refresh" text="Refresh" v-on:click="{reload}"/>
+    <button name="back" text="Back" v-on:click="{nothing, CloseWindow=true}"/>
   </view>
 
 </window>

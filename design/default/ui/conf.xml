@@ -1,12 +1,12 @@
 <window v-model="dummy">
   <view x="c" y="m" w="100%" h="80%" children_layout="default(c=2,r=10,s=10,m=10)">
-    <button text="INI" v-on:click="{navigate, Args=ini}"/>
-    <button text="JSON" v-on:click="{navigate, Args=json}"/>
-    <button text="UBJSON" v-on:click="{navigate, Args=ubjson}"/>
-    <button text="XML" v-on:click="{navigate, Args=xml}"/>
+    <button name="ini" text="INI" v-on:click="{navigate, Args=ini}"/>
+    <button name="json" text="JSON" v-on:click="{navigate, Args=json}"/>
+    <button name="ubjson" text="UBJSON" v-on:click="{navigate, Args=ubjson}"/>
+    <button name="xml" text="XML" v-on:click="{navigate, Args=xml}"/>
     
-    <button text="JSON Weather" v-on:click="{navigate, Args=json_weather}"/>
-    <button text="JSON Array" v-on:click="{navigate, Args=json_array}"/>
+    <button name="weather" text="JSON Weather" v-on:click="{navigate, Args=json_weather}"/>
+    <button name="json_array" text="JSON Array" v-on:click="{navigate, Args=json_array}"/>
     <button text="XML Array" v-on:click="{navigate, Args=xml_array}"/>
     <button text="CSV" v-on:click="{navigate, Args=csv}"/>
     

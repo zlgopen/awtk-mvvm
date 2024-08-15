@@ -16,16 +16,16 @@
     <scroll_bar_m name="bar" x="right" y="0" w="6" h="100%" value="0"/>
   </list_view>
   <column x="0" y="b:10" w="100%" h="96" children_layout="default(rows=2,cols=5,s=5,m=5)">
-      <button v-on:click="{remove, Args=selected_index}" text="Remove"/>
-      <button v-on:click="{add}" text="Add"/>
-      <button v-on:click="{edit}" text="Edit"/>
-      <button v-on:click="{detail}" text="Detail"/>
-      <button v-on:click="{move_up, Args=selected_index}" text="Up"/>
-      <button v-on:click="{move_down, Args=selected_index}" text="Down"/>
-      <button v-on:click="{clear}" text="Clear"/>
-      <button v-on:click="{save}" text="Save"/>
-      <button v-on:click="{reload}" text="Reload"/>
-      <button text="Back" v-on:click="{nothing, CloseWindow=true}"/>
+      <button name="remove" v-on:click="{remove, Args=selected_index}" text="Remove"/>
+      <button name="add" v-on:click="{add}" text="Add"/>
+      <button name="edit" v-on:click="{edit}" text="Edit"/>
+      <button name="detail" v-on:click="{detail}" text="Detail"/>
+      <button name="move_up" v-on:click="{move_up, Args=selected_index}" text="Up"/>
+      <button name="move_down" v-on:click="{move_down, Args=selected_index}" text="Down"/>
+      <button name="clear" v-on:click="{clear}" text="Clear"/>
+      <button name="save" v-on:click="{save}" text="Save"/>
+      <button name="reload" v-on:click="{reload}" text="Reload"/>
+      <button name="back" text="Back" v-on:click="{nothing, CloseWindow=true}"/>
     </column>
 
 </window>

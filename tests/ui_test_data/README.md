@@ -82,4 +82,15 @@
 * 功能 demo17 基本测试
 * 适用于 demo17/jsdemo17
 
+### 12.demo18_stress.ini
+
+* 功能 demo18 基本测试
+* 适用于 demo18/jsdemo18
+
+### 13.demo_conf_stress.ini
+
+* 功能 demo_conf 基本测试
+* 适用于 demo_conf
+
+
 
