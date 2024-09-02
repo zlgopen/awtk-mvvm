@@ -78,6 +78,9 @@ static const object_vtable_t s_calculator_view_model_vtable = {"calculator_view_
                                                                calculator_view_model_set_prop,
                                                                NULL,
                                                                NULL,
+                                                               NULL,
+                                                               NULL,
+                                                               NULL,
                                                                calculator_view_model_can_exec,
                                                                calculator_view_model_exec};
 

@@ -80,6 +80,9 @@ static const object_vtable_t s_home_view_model_vtable = {"home_view_model_t",
                                                          home_view_model_set_prop,
                                                          NULL,
                                                          NULL,
+                                                         NULL,
+                                                         NULL,
+                                                         NULL,
                                                          home_view_model_can_exec,
                                                          home_view_model_exec};
 

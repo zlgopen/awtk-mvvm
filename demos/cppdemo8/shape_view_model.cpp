@@ -128,6 +128,9 @@ static const object_vtable_t s_shape_view_model_vtable = {"shape_view_model_t",
                                                           shape_view_model_set_prop,
                                                           NULL,
                                                           NULL,
+                                                          NULL,
+                                                          NULL,
+                                                          NULL,
                                                           shape_view_model_can_exec,
                                                           shape_view_model_exec};
 

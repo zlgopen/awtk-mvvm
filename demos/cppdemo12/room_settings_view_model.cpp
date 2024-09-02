@@ -83,6 +83,9 @@ static const object_vtable_t s_room_settings_view_model_vtable = {
     room_settings_view_model_set_prop,
     NULL,
     NULL,
+    NULL,
+    NULL,
+    NULL,
     room_settings_view_model_can_exec,
     room_settings_view_model_exec};
 

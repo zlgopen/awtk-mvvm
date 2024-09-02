@@ -73,6 +73,9 @@ static const object_vtable_t s_book_view_model_vtable = {"book_view_model_t",
                                                          book_view_model_set_prop,
                                                          NULL,
                                                          NULL,
+                                                         NULL,
+                                                         NULL,
+                                                         NULL,
                                                          book_view_model_can_exec,
                                                          book_view_model_exec};
 

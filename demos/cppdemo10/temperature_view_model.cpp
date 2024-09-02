@@ -72,6 +72,9 @@ static const object_vtable_t s_temperature_view_model_vtable = {"temperature_vie
                                                                 temperature_view_model_set_prop,
                                                                 NULL,
                                                                 NULL,
+                                                                NULL,
+                                                                NULL,
+                                                                NULL,
                                                                 temperature_view_model_can_exec,
                                                                 temperature_view_model_exec};
 
