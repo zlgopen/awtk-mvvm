@@ -1105,7 +1105,7 @@ widget_t* ui_loader_mvvm_load_widget_with_parent(navigator_request_t* req, widge
       assets_managers_is_applet_assets_supported()) {
     const char* p = strchr(target, '.');
     if (p != NULL) {
-      tk_strncpy_s(applet_name, sizeof(applet_name) - 1, target, p - target);
+      tk_strncpy_s(applet_name, sizeof(applet_name), target, p - target);
       am = assets_managers_ref(applet_name);
       target = p + 1;
     }

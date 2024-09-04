@@ -97,7 +97,7 @@ view_model_t* view_model_factory_create_model_one(const char* type, navigator_re
     const char* p = strchr(type, '(');
     if (p != NULL) {
       /*形如: db(table=scores, key=name)*/
-      tk_strncpy_s(stype, sizeof(stype) - 1, type, p - type);
+      tk_strncpy_s(stype, sizeof(stype), type, p - type);
       create = (view_model_create_t)tk_object_get_prop_pointer(s_model_factory->creators, stype);
     }
   }
