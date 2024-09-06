@@ -29,6 +29,10 @@ static view_model_t* view_model_compositor_find(tk_object_t* obj, const char* na
   view_model_t** all = (view_model_t**)(compositor->view_models.elms);
   uint32_t nr = compositor->view_models.size;
 
+  if (strchr(name, '.') == NULL) {
+    return NULL;
+  }
+
   for (i = 0; i < nr; i++) {
     view_model_t* iter = all[i];
     if (iter->object.name != NULL) {

@@ -54,6 +54,9 @@ static const object_vtable_t s_humidity_view_model_vtable = {"humidity_view_mode
                                                              humidity_view_model_set_prop,
                                                              NULL,
                                                              NULL,
+                                                             NULL,
+                                                             NULL,
+                                                             NULL,
                                                              humidity_view_model_can_exec,
                                                              humidity_view_model_exec};
 
