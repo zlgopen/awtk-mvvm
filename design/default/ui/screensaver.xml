@@ -1,8 +1,8 @@
 <window v-model="screensaver"
-        v-on:window_open="{setTime}"
+        v-on:window_open="{apply}"
         v-on:global_screen_saver="{navigate, Args=image_animation}">
   <image x="c" y="10%" w="160" h="40" image="logo"/>
   <label x="c" y="40%" w="200" h="30" text="在此输入屏保时间："/>
-  <edit x="c" y="m" w="160" h="50" input_type="int" min="0" tip="enter screemsaver time" v-data:text="time"/>
-  <button x="c" y="70%" w="70" h="30" text="setting" v-on:click="{setTime}"/>
+  <edit x="c" y="m" w="160" h="50" input_type="int" min="0" max="1000000" tip="enter screemsaver time" v-data:text="time"/>
+  <button x="c" y="70%" w="70" h="30" text="setting" v-on:click="{apply}"/>
 </window>

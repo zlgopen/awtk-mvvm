@@ -22,7 +22,7 @@
 #include "screensaver.h"
 #include "mvvm/base/navigator.h"
 
-ret_t screensaver_set_time(screensaver_t* screensaver) {
+ret_t screensaver_apply(screensaver_t* screensaver) {
   return_value_if_fail(screensaver != NULL, RET_BAD_PARAMS);
 
   navigator_set_screen_saver_time(screensaver->time);
@@ -30,7 +30,7 @@ ret_t screensaver_set_time(screensaver_t* screensaver) {
   return RET_OK;
 }
 
-bool_t screensaver_can_set_time(screensaver_t* screensaver) {
+bool_t screensaver_can_apply(screensaver_t* screensaver) {
   return_value_if_fail(screensaver != NULL, FALSE);
 
   return screensaver->time >= 1000;

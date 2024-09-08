@@ -43,24 +43,24 @@ typedef struct _screensaver_t {
 } screensaver_t;
 
 /**
- * @method screensaver_set_time
+ * @method screensaver_apply
  * 设置屏保时间。
- *
+ * @annotation ["command"]
  * @param {screensaver_t*} screensaver screensaver对象
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
-ret_t screensaver_set_time(screensaver_t* screensaver);
+ret_t screensaver_apply(screensaver_t* screensaver);
 
 /**
- * @method screensaver_can_set_time
- * 检查 screensaver_set_time 是否可以执行。
+ * @method screensaver_can_apply
+ * 检查 screensaver_apply 是否可以执行。
  *
  * @param {screensaver_t*} screensaver screensaver对象
  *
  * @return {ret_t} 返回TRUE表示成功，否则表示失败。
  */
-bool_t screensaver_can_set_time(screensaver_t* screensaver);
+bool_t screensaver_can_apply(screensaver_t* screensaver);
 
 END_C_DECLS
 
