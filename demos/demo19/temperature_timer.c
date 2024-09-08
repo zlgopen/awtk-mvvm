@@ -20,25 +20,31 @@
  */
 
 #include "awtk.h"
-
-#include "temperature_timer.h"
 #include "temperature_view_model.h"
+#include "temperature_timer.h"
 
 #define PROP_TEMP "value"
+#define PROP_TIME "timer"
 
 static ret_t on_timer(const timer_info_t* info) {
   tk_object_t* view_model = TK_OBJECT(info->ctx);
 
-  int32_t temp = tk_object_get_prop_int(view_model, PROP_TEMP, 0) + 1;
-  tk_object_set_prop_int(view_model, PROP_TEMP, temp);
+  int32_t time = tk_object_get_prop_int(view_model, PROP_TIME, 0) - 1;
+  int32_t temp = tk_object_get_prop_int(view_model, PROP_TEMP, 0);
+  if (temp < 100) {
+    tk_object_set_prop_int(view_model, PROP_TEMP, temp + 1);
+  }
+  tk_object_set_prop_int(view_model, PROP_TIME, time);
 
-  return temp < 10 ? RET_REPEAT : RET_REMOVE;
+  return time > 0 ? RET_REPEAT : RET_REMOVE;
 }
 
 view_model_t* temperature_view_model_timer_create(navigator_request_t* req) {
   view_model_t* view_model = temperature_view_model_create(req);
 
   timer_add(on_timer, view_model, 1000);
+  tk_object_set_prop_int(TK_OBJECT(view_model), PROP_TEMP, 0);
+  tk_object_set_prop_int(TK_OBJECT(view_model), PROP_TIME, 10);
 
   return view_model;
 }

@@ -67,7 +67,7 @@
       }
     ],
     "header": "demo34/temperature.h",
-    "desc": "temperature info",
+    "desc": "用于演示模型触发界面更新。\n\n> 需要继承emitter_t!!",
     "name": "temperature_t",
     "parent": "emitter_t",
     "annotation": {

@@ -152,18 +152,14 @@ static ret_t temperature_humidity_view_model_exec(tk_object_t* obj, const char* 
 }
 
 static const object_vtable_t s_humidity_view_model_vtable = {
-    "temperature_humidity_view_model_t",
-    "temperature_humidity_view_model_t",
-    sizeof(temperature_humidity_view_model_t),
-    FALSE,
-    temperature_humidity_view_model_on_destroy,
-    NULL,
-    temperature_humidity_view_model_get_prop,
-    temperature_humidity_view_model_set_prop,
-    NULL,
-    NULL,
-    temperature_humidity_view_model_can_exec,
-    temperature_humidity_view_model_exec};
+    .type = "temperature_humidity_view_model_t",
+    .desc = "temperature_humidity_view_model_t",
+    .size = sizeof(temperature_humidity_view_model_t),
+    .on_destroy = temperature_humidity_view_model_on_destroy,
+    .get_prop = temperature_humidity_view_model_get_prop,
+    .set_prop = temperature_humidity_view_model_set_prop,
+    .can_exec = temperature_humidity_view_model_can_exec,
+    .exec = temperature_humidity_view_model_exec};
 
 view_model_t* temperature_humidity_view_model_create(navigator_request_t* req) {
   tk_object_t* obj = tk_object_create(&s_humidity_view_model_vtable);

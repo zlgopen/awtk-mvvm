@@ -44,26 +44,18 @@ static ret_t humidity_view_model_on_destroy(tk_object_t* obj) {
   return view_model_deinit(VIEW_MODEL(obj));
 }
 
-static const object_vtable_t s_humidity_view_model_vtable = {"humidity_view_model_t",
-                                                             "humidity_view_model_t",
-                                                             sizeof(humidity_view_model_t),
-                                                             FALSE,
-                                                             humidity_view_model_on_destroy,
-                                                             NULL,
-                                                             humidity_view_model_get_prop,
-                                                             humidity_view_model_set_prop,
-                                                             NULL,
-                                                             NULL,
-                                                             NULL,
-                                                             NULL,
-                                                             NULL,
-                                                             humidity_view_model_can_exec,
-                                                             humidity_view_model_exec};
+static const object_vtable_t s_humidity_view_model_vtable = {.type = "humidity_view_model_t",
+                                                             .desc = "humidity_view_model_t",
+                                                             .size = sizeof(humidity_view_model_t),
+                                                             .on_destroy = humidity_view_model_on_destroy,
+                                                             .get_prop = humidity_view_model_get_prop,
+                                                             .set_prop = humidity_view_model_set_prop,
+                                                             .can_exec = humidity_view_model_can_exec,
+                                                             .exec = humidity_view_model_exec};
 
 view_model_t* humidity_view_model_create(navigator_request_t* req) {
   tk_object_t* obj = tk_object_create(&s_humidity_view_model_vtable);
   view_model_t* vm = view_model_init(VIEW_MODEL(obj));
-  humidity_view_model_t* humidity_view_model = (humidity_view_model_t*)(vm);
 
   return vm;
 }

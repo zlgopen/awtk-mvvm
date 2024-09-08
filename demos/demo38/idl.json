@@ -79,7 +79,7 @@
         }
       }
     ],
-    "header": "demo17/temperature.h",
+    "header": "demo38/temperature.h",
     "desc": "温度控制器。",
     "name": "temperature_t",
     "annotation": {

@@ -46,8 +46,6 @@ static ret_t book_store_view_model_on_destroy(tk_object_t* obj) {
 }
 
 static ret_t book_store_view_model_set_prop(tk_object_t* obj, const char* name, const value_t* v) {
-  book_store_view_model_t* vm = ((book_store_view_model_t*)(obj));
-
   return RET_NOT_FOUND;
 }
 
@@ -101,7 +99,6 @@ static bool_t book_store_view_model_can_exec(tk_object_t* obj, const char* name,
 
 static ret_t book_store_view_model_exec(tk_object_t* obj, const char* name, const char* args) {
   uint32_t index = 0;
-  view_model_t* view_model = VIEW_MODEL(obj);
   book_store_view_model_t* vm = (book_store_view_model_t*)(obj);
 
   if (args != NULL) {
@@ -147,18 +144,14 @@ static ret_t book_store_view_model_exec(tk_object_t* obj, const char* name, cons
   return RET_NOT_FOUND;
 }
 
-static const object_vtable_t s_book_store_view_model_vtable = {"book_store_view_model_t",
-                                                               "book_store_view_model_t",
-                                                               sizeof(book_store_view_model_t),
-                                                               FALSE,
-                                                               book_store_view_model_on_destroy,
-                                                               NULL,
-                                                               book_store_view_model_get_prop,
-                                                               book_store_view_model_set_prop,
-                                                               NULL,
-                                                               NULL,
-                                                               book_store_view_model_can_exec,
-                                                               book_store_view_model_exec};
+static const object_vtable_t s_book_store_view_model_vtable = {.type = "book_store_view_model_t",
+                                                               .desc = "book_store_view_model_t",
+                                                               .size = sizeof(book_store_view_model_t),
+                                                               .on_destroy = book_store_view_model_on_destroy,
+                                                               .get_prop = book_store_view_model_get_prop,
+                                                               .set_prop = book_store_view_model_set_prop,
+                                                               .can_exec = book_store_view_model_can_exec,
+                                                               .exec = book_store_view_model_exec};
 
 view_model_t* book_store_view_model_create(navigator_request_t* req) {
   tk_object_t* obj = tk_object_create(&s_book_store_view_model_vtable);

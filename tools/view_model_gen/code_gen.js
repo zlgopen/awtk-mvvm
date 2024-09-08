@@ -353,8 +353,8 @@ class CodeGen {
       } else {
         getProp = `  if (tk_str_ieq("${iter.name}", name)) {\n`
       }
-      getProp += `     ${this.genGetProp(cls, iter)}\n`;
-      getProp += '     return RET_OK;';
+      getProp += `    ${this.genGetProp(cls, iter)}\n`;
+      getProp += '    return RET_OK;';
       return getProp;
     }).join('');
 
@@ -402,8 +402,8 @@ class CodeGen {
       } else {
         setProp = `  if (tk_str_ieq("${iter.name}", name)) {\n`
       }
-      setProp += `     ${this.genSetProp(cls, iter)}\n`;
-      setProp += '     return RET_OK;';
+      setProp += `    ${this.genSetProp(cls, iter)}\n`;
+      setProp += '    return RET_OK;';
       return setProp;
     }).join('');
 

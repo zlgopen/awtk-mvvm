@@ -52,18 +52,14 @@ static ret_t app_view_model_on_destroy(tk_object_t* obj) {
   return view_model_deinit(VIEW_MODEL(obj));
 }
 
-static const object_vtable_t s_app_view_model_vtable = {"app_view_model_t",
-                                                             "app_view_model_t",
-                                                             sizeof(app_view_model_t),
-                                                             FALSE,
-                                                             app_view_model_on_destroy,
-                                                             NULL,
-                                                             app_view_model_get_prop,
-                                                             app_view_model_set_prop,
-                                                             NULL,
-                                                             NULL,
-                                                             app_view_model_can_exec,
-                                                             app_view_model_exec};
+static const object_vtable_t s_app_view_model_vtable = {.type = "app_view_model_t",
+                                                             .desc = "app_view_model_t",
+                                                             .size = sizeof(app_view_model_t),
+                                                             .on_destroy = app_view_model_on_destroy,
+                                                             .get_prop = app_view_model_get_prop,
+                                                             .set_prop = app_view_model_set_prop,
+                                                             .can_exec = app_view_model_can_exec,
+                                                             .exec = app_view_model_exec};
 
 view_model_t* app_view_model_create(navigator_request_t* req) {
   tk_object_t* obj = tk_object_create(&s_app_view_model_vtable);

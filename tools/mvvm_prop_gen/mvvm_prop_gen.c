@@ -27,7 +27,7 @@
 
 #define TYPE_NEED_STORE(TYPE) ((TYPE >= MVVM_VIEW_MODEL) && (TYPE <= MVVM_ITEM_FOREACH))
 
-typedef ret_t (*mvvm_prop_gen_exec)(mvvm_prop_gen_t*, const char*, ...);
+typedef ret_t (*mvvm_prop_gen_exec)(mvvm_prop_gen_t*, const char*);
 
 struct _mvvm_prop_exec_t;
 typedef struct _mvvm_prop_exec_t mvvm_prop_exec_t;
@@ -195,7 +195,7 @@ mvvm_prop_gen_t* mvvm_prop_gen_create(void) {
   goto_error_if_fail(mvvm_prop_gen->results != NULL);
 
   mvvm_prop_gen->records = NULL;
-  mvvm_prop_gen->exec_stack = darray_create(10, mvvm_prop_exec_destory, mvvm_prop_exec_cmp);
+  mvvm_prop_gen->exec_stack = darray_create(10, (tk_destroy_t)mvvm_prop_exec_destory, (tk_compare_t)mvvm_prop_exec_cmp);
 
   return mvvm_prop_gen;
 error:
@@ -231,13 +231,11 @@ ret_t mvvm_prop_gen_destory(mvvm_prop_gen_t* mvvm_prop_gen) {
 
 static ret_t copy_last_view_model_name(mvvm_prop_gen_t* mvvm_prop_gen) {
   mvvm_prop_record_t* record = NULL;
-  mvvm_prop_record_t* last_record = NULL;
   return_value_if_fail(mvvm_prop_gen != NULL, RET_BAD_PARAMS);
 
   record = mvvm_prop_gen->records;
   return_value_if_fail(record != NULL && record->last_vm != NULL, RET_FAIL);
 
-  last_record = record->last_vm;
   return str_append(&record->vm, record->last_vm->vm.str);
 }
 

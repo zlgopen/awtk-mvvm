@@ -38,7 +38,6 @@ static ret_t home_view_model_get_prop(tk_object_t* obj, const char* name, value_
 
 static bool_t home_view_model_can_exec(tk_object_t* obj, const char* name, const char* args) {
   home_view_model_t* vm = (home_view_model_t*)(obj);
-  Home* aHome = vm->aHome;
   if (tk_str_ieq("AdjustBedRoom", name)) {
     return TRUE;
 

@@ -166,18 +166,14 @@ static ret_t address_view_model_on_destroy(tk_object_t* obj) {
   return view_model_deinit(VIEW_MODEL(obj));
 }
 
-static const object_vtable_t s_address_view_model_vtable = {"address_view_model_t",
-                                                            "address_view_model_t",
-                                                            sizeof(address_view_model_t),
-                                                            FALSE,
-                                                            address_view_model_on_destroy,
-                                                            NULL,
-                                                            address_view_model_get_prop,
-                                                            address_view_model_set_prop,
-                                                            NULL,
-                                                            NULL,
-                                                            address_view_model_can_exec,
-                                                            address_view_model_exec};
+static const object_vtable_t s_address_view_model_vtable = {.type = "address_view_model_t",
+                                                            .desc = "address_view_model_t",
+                                                            .size = sizeof(address_view_model_t),
+                                                            .on_destroy = address_view_model_on_destroy,
+                                                            .get_prop = address_view_model_get_prop,
+                                                            .set_prop = address_view_model_set_prop,
+                                                            .can_exec = address_view_model_can_exec,
+                                                            .exec = address_view_model_exec};
 
 view_model_t* address_view_model_create(navigator_request_t* req) {
   tk_object_t* obj = tk_object_create(&s_address_view_model_vtable);

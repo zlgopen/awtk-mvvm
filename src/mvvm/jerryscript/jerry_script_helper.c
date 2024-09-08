@@ -167,8 +167,6 @@ jerry_value_t wrap_text_file_exist(const jerry_call_info_t* call_info_p, const j
 
 jerry_value_t wrap_assert(const jerry_call_info_t* call_info_p, const jerry_value_t argv[],
                            const jerry_length_t argc) {
-  bool_t p = FALSE;
-
   if (argc == 1) {
     assert(jerry_value_is_true(argv[0]));
   }

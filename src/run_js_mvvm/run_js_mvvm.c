@@ -255,7 +255,7 @@ static ret_t assets_init(void) {
   const char* res_root = NULL;
   bool_t run_default = FALSE;
 
-  if (s_is_revert != NULL && s_is_revert != '\0') {
+  if (TK_STR_IS_NOT_EMPTY(s_is_revert)) {
     bool_t is_revert = tk_atob(s_is_revert);
     if (is_revert) {
       res_root = assets_manager_get_res_root(am);
@@ -265,7 +265,7 @@ static ret_t assets_init(void) {
     }
   }
 
-  if (s_run_default != NULL && s_run_default != '\0') {
+  if (TK_STR_IS_NOT_EMPTY(s_run_default)) {
     run_default = tk_atob(s_run_default);
   }
 

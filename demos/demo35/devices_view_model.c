@@ -184,18 +184,14 @@ static ret_t devices_view_model_exec(tk_object_t* obj, const char* name, const c
   return RET_NOT_FOUND;
 }
 
-static const object_vtable_t s_devices_view_model_vtable = {"devices_view_model_t",
-                                                            "devices_view_model_t",
-                                                            sizeof(devices_view_model_t),
-                                                            FALSE,
-                                                            devices_view_model_on_destroy,
-                                                            NULL,
-                                                            devices_view_model_get_prop,
-                                                            devices_view_model_set_prop,
-                                                            NULL,
-                                                            NULL,
-                                                            devices_view_model_can_exec,
-                                                            devices_view_model_exec};
+static const object_vtable_t s_devices_view_model_vtable = {.type = "devices_view_model_t",
+                                                            .desc = "devices_view_model_t",
+                                                            .size = sizeof(devices_view_model_t),
+                                                            .on_destroy = devices_view_model_on_destroy,
+                                                            .get_prop = devices_view_model_get_prop,
+                                                            .set_prop = devices_view_model_set_prop,
+                                                            .can_exec = devices_view_model_can_exec,
+                                                            .exec = devices_view_model_exec};
 
 view_model_t* devices_view_model_create(navigator_request_t* req) {
   tk_object_t* obj = tk_object_create(&s_devices_view_model_vtable);

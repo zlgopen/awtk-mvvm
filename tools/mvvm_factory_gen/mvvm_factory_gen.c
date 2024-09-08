@@ -59,7 +59,6 @@ ret_t output_snapshot_c_source(const char* filename, const char* prefix, const c
                                uint8_t* buff, uint32_t size) {
   uint32_t i = 0;
   fs_file_t* ft = NULL;
-  char str[TK_NAME_LEN + 1];
   char var_name[2 * TK_NAME_LEN + 1];
   return_value_if_fail(filename != NULL && buff != NULL, RET_BAD_PARAMS);
 
@@ -90,7 +89,7 @@ ret_t output_snapshot_c_source(const char* filename, const char* prefix, const c
 int main(int argc, char** argv) {
   const char* in_filename = NULL;
   const char* out_dirname = NULL;
-  const char* script = NULL;
+  jerry_char_t* script = NULL;
   const key_type_value_t* kv = asset_type_find_by_value(ASSET_TYPE_SCRIPT);
   uint32_t script_size = 0;
   uint32_t data_size = 0;
@@ -115,7 +114,7 @@ int main(int argc, char** argv) {
       jerry_value_t parse_result;
 
       jerry_script_init();
-      parse_result = jerry_parse(script, script_size, NULL);
+      parse_result = jerry_parse((const jerry_char_t*)script, script_size, NULL);
 
       if (!jerry_value_is_error(parse_result)) {
         jerry_value_t generate_result = jerry_generate_snapshot(parse_result, 0, data, 1024 * 1024);
@@ -153,7 +152,7 @@ int main(int argc, char** argv) {
     str_set(&path, out_dirname);
     str_append(&path, "/mvvm_factory.res");
 
-    data_size = strlen(script);
+    data_size = strlen((const char*)script);
     output_c_source(path.str, "default", kv->name, "mvvm_factory", (uint8_t*)script, data_size);
     printf("filename=%s size=%u\n", path.str, data_size);
 

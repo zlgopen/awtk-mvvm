@@ -37,7 +37,6 @@ static view_model_t* app_conf_create_view_model(navigator_request_t* req) {
   tk_object_t* args = NULL;
   tk_object_t* obj = app_conf_get_instance();
   const char* type_and_args = NULL;
-  bool_t create_if_not_exist = FALSE;
   return_value_if_fail(req != NULL, NULL);
   return_value_if_fail(obj != NULL, NULL);
   type_and_args = tk_object_get_prop_str(req->args, NAVIGATOR_ARG_VIEW_MODEL_TYPE);

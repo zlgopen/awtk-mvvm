@@ -40,7 +40,7 @@ static view_model_t* view_model_jerryscript_create(const char* type, navigator_r
 
     info = assets_manager_ref_ex(am, ASSET_TYPE_SCRIPT, ASSET_TYPE_SCRIPT_JS, type);
     if (info != NULL) {
-      if (info->data != NULL && info->size > 0) {
+      if (info->size > 0) {
         if (jerry_script_eval_buff((const char*)(info->data), info->size, type, TRUE) == RET_OK) {
           jsvalue_unref(jsobj);
           jsobj = jsvalue_get_view_model(type);

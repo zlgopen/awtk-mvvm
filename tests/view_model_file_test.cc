@@ -4,7 +4,6 @@
 #include "tkc/path.h"
 
 TEST(ViewModelFile, basic) {
-    value_t v;
     char filename[256];
     navigator_request_t* req = navigator_request_create("name=aaa", NULL);
     view_model_t* vm = view_model_factory_create_model("file(path=${app_dir}/tests/test_data/hello.txt, auto_load=true)", req);

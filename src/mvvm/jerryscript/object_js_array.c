@@ -99,7 +99,7 @@ static ret_t object_js_array_get_prop(tk_object_t* obj, const char* name, value_
   return_value_if_fail(o != NULL && array_o != NULL, RET_BAD_PARAMS);
 
   if (tk_str_eq(name, FSCRIPT_ARRAY_PROP_VTABEL_NAME)) {
-    value_set_pointer(v, array_o->vt);
+    value_set_pointer(v, (void*)(array_o->vt));
     return RET_OK;
   } else if (tk_str_eq(name, TK_OBJECT_ARRAY_PROP_LENGTH) ||
              tk_str_eq(name, TK_OBJECT_ARRAY_PROP_SIZE) || tk_str_eq(name, TK_OBJECT_PROP_SIZE)) {

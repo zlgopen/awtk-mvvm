@@ -127,7 +127,7 @@ static ret_t ${vmClsName}_set_prop(tk_object_t* obj, const char* name, const val
 
 ${setPropsDispatch}
 
-  name = destruct_array_prop_name(name, &index);
+  name = tk_destruct_array_prop_name(name, &index);
   view_model = ${vmClsName}_attach(obj, index);
 
   return view_model_set_prop(view_model, name, v);
@@ -144,7 +144,7 @@ static ret_t ${vmClsName}_get_prop(tk_object_t* obj, const char* name, value_t* 
 
 ${getPropsDispatch}
 
-  name = destruct_array_prop_name(name, &index);
+  name = tk_destruct_array_prop_name(name, &index);
   view_model = ${vmClsName}_attach(obj, index);
 
   return view_model_get_prop(view_model, name, v);
@@ -186,18 +186,22 @@ static ret_t ${vmClsName}_on_destroy(tk_object_t* obj) {
 }
 
 static const object_vtable_t s_${vmClsName}_vtable = {
-  "${vmClsType}",
-  "${vmClsType}",
-  sizeof(${vmClsType}),
-  TRUE,
-  ${vmClsName}_on_destroy,
-  NULL,
-  ${vmClsName}_get_prop,
-  ${vmClsName}_set_prop,
-  NULL,
-  NULL,
-  ${vmClsName}_can_exec,
-  ${vmClsName}_exec
+  .type = "${vmClsType}",
+  .desc = "${vmClsType}",
+  .size = sizeof(${vmClsType}),
+  .is_collection = TRUE,
+  .on_destroy = ${vmClsName}_on_destroy,
+  .compare = NULL,
+  .get_prop = ${vmClsName}_get_prop,
+  .set_prop = ${vmClsName}_set_prop,
+  .remove_prop = NULL,
+  .foreach_prop = NULL,
+  .clear_props = NULL,
+  .find_prop = NULL,
+  .find_props = NULL,
+  .can_exec = ${vmClsName}_can_exec,
+  .exec = ${vmClsName}_exec,
+  .clone = NULL
 };
 
 view_model_t* ${vmClsName}_create_with(${clsType}* ${objName}) {

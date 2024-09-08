@@ -37,7 +37,7 @@ static ret_t to_temp_c(const value_t* from, value_t* to) {
 
 static ret_t to_temp_f_sprintf(const value_t* from, value_t* to, value_t args) {
   char temp[33] = {0};
-  char* format = value_str(&args);
+  const char* format = value_str(&args);
   tk_snprintf(temp, sizeof(temp), format, value_int(from) * 1.8 + 32);
   value_dup_str(to, temp);
   return RET_OK;

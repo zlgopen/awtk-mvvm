@@ -27,8 +27,8 @@
 #include "mvvm/jerryscript/view_model_jerryscript_object_wrapper.h"
 
 static ret_t view_model_jerryscript_on_create(view_model_t* view_model, navigator_request_t* req) {
-  ret_t ret;
   jsvalue_t jsobj;
+  ret_t ret =  RET_FAIL;
   view_model_jerryscript_object_wrapper_t* vm = VIEW_MODEL_JERRYSCRIPT_OBJECT_WRAPPER(view_model);
   return_value_if_fail(vm != NULL, RET_BAD_PARAMS);
 
@@ -54,9 +54,8 @@ static ret_t view_model_jerryscript_on_destroy(view_model_t* view_model) {
 
 static ret_t view_model_jerryscript_on_will_mount(view_model_t* view_model,
                                                   navigator_request_t* req) {
-  ret_t ret;
-  value_t v;
   jsvalue_t jsobj;
+  ret_t ret = RET_FAIL;
   view_model_jerryscript_object_wrapper_t* vm = VIEW_MODEL_JERRYSCRIPT_OBJECT_WRAPPER(view_model);
   return_value_if_fail(vm != NULL, RET_BAD_PARAMS);
 

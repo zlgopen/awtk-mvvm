@@ -40,7 +40,6 @@ static string res_to_str(mvvm_prop_result_t* mvvm_prop_result) {
 
 TEST(mvvm_prop_gen, basic_use) {
   ret_t ret;
-  uint32_t i;
   uint32_t prop_size;
   mvvm_prop_result_t** prop_array;
 
@@ -72,7 +71,6 @@ TEST(mvvm_prop_gen, basic_file) {
   prop_array = xml_mvvm_prop_packfile_to_array("./design/default/ui/basic_file_test.json", &prop_size);
   ASSERT_EQ(prop_size > 0 && prop_array != NULL, TRUE);
   if (prop_array != NULL) {
-    int i = 0;
     for (i = 0; i < prop_size; i++) {
       cout << res_to_str(prop_array[i]) << endl;
 
@@ -86,7 +84,6 @@ TEST(mvvm_prop_gen, basic_file) {
 }
 
 TEST(mvvm_prop_gen, basic) {
-  uint32_t i;
   uint32_t prop_size;
   mvvm_prop_result_t** prop_array;
   const char* xml = "<window v-model=\"user_message\">"
@@ -109,7 +106,6 @@ TEST(mvvm_prop_gen, basic) {
 }
 
 TEST(mvvm_prop_gen, sub_view_model) {
-  uint32_t i;
   uint32_t prop_size;
   mvvm_prop_result_t** prop_array;
   const char* xml = "<window v-model=\"form\">"
@@ -134,7 +130,6 @@ TEST(mvvm_prop_gen, sub_view_model) {
 }
 
 TEST(mvvm_prop_gen, scope) {
-  uint32_t i;
   uint32_t prop_size;
   mvvm_prop_result_t** prop_array;
   const char* xml = "<view v-model=\"weather\">"
@@ -183,7 +178,6 @@ TEST(mvvm_prop_gen, scope) {
 }
 
 TEST(mvvm_prop_gen, dummy_view_model) {
-  uint32_t i;
   uint32_t prop_size;
   mvvm_prop_result_t** prop_array;
   const char* xml = "<view>"
@@ -198,7 +192,6 @@ TEST(mvvm_prop_gen, dummy_view_model) {
 }
 
 TEST(mvvm_prop_gen, error_type) {
-  uint32_t i;
   uint32_t prop_size;
   mvvm_prop_result_t** prop_array;
   const char* xml = "<user_input v-data:=\"data\" v-model=\"user_message\" v-data=\"{value}\">"
@@ -213,7 +206,6 @@ TEST(mvvm_prop_gen, error_type) {
 }
 
 TEST(mvvm_prop_gen, multi) {
-  uint32_t i;
   uint32_t prop_size;
   mvvm_prop_result_t** prop_array;
   const char* xml = "<user_input v-data:test=\"data\" v-model=\"user_message\" v-data:test=\"{value}\">"
@@ -231,7 +223,6 @@ TEST(mvvm_prop_gen, multi) {
 }
 
 TEST(mvvm_prop_gen, array) {
-  uint32_t i;
   uint32_t prop_size;
   mvvm_prop_result_t** prop_array;
   const char* xml = "<view v-model=\"app_conf\">"
@@ -254,7 +245,6 @@ TEST(mvvm_prop_gen, array) {
 }
 
 TEST(mvvm_prop_gen, v_for_empty) {
-  uint32_t i;
   uint32_t prop_size;
   mvvm_prop_result_t** prop_array;
   const char* xml = "<view v-model=\"app_conf\">"
@@ -297,7 +287,6 @@ TEST(mvvm_prop_gen, v_for_empty) {
 }
 
 TEST(mvvm_prop_gen, v_for_item_1) {
-  uint32_t i;
   uint32_t prop_size;
   mvvm_prop_result_t** prop_array;
   const char* xml = "<view v-model=\"app_conf\">"

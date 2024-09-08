@@ -106,7 +106,6 @@ static ret_t on_cmd_exec(void* ctx, event_t* e) {
 }
 
 TEST(ViewModelObjectWrapper, cmd_exec) {
-    value_t v;
     str_t str;
     tk_object_t* o = object_default_create();
     view_model_t* vm = view_model_object_wrapper_create_ex(o, "prefix");

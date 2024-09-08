@@ -216,7 +216,6 @@ static ret_t js_navigater_request_on_destroy(void* ctx, event_t* e) {
 }
 
 static ret_t js_navigater_request_on_result(navigator_request_t* req, const value_t* result) {
-  ret_t ret = RET_OK;
   jsvalue_t func = (jsvalue_t)tk_object_get_prop_int(TK_OBJECT(req), JSOBJ_PROP_ON_RESULT, 0);
 
   if (jsvalue_is_function(func)) {

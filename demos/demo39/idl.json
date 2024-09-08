@@ -162,7 +162,7 @@
         }
       }
     ],
-    "header": "demo13/book_store.h",
+    "header": "demo39/book_store.h",
     "desc": "book store。",
     "name": "book_store_t",
     "annotation": {
@@ -260,7 +260,7 @@
         }
       }
     ],
-    "header": "demo13/book.h",
+    "header": "demo39/book.h",
     "desc": "图书信息。",
     "name": "book_t",
     "annotation": {

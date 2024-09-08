@@ -77,6 +77,15 @@
           "readable": true,
           "writable": true
         }
+      },
+      {
+        "name": "timer",
+        "desc": "计时（倒数）。",
+        "type": "uint32_t",
+        "annotation": {
+          "readable": true,
+          "writable": true
+        }
       }
     ],
     "header": "demo10/temperature.h",

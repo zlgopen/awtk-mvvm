@@ -409,8 +409,6 @@ ret_t jsvalue_to_value(jsvalue_t value, value_t* v, str_t* temp) {
     jerry_length_t byte_offset = 0;
     jerry_length_t byte_length = 0;
 
-    jerry_typedarray_type_t type = jerry_get_typedarray_type(value);
-    jerry_length_t length = jerry_get_typedarray_length(value);
     jsvalue_t jbuffer = jerry_get_typedarray_buffer(value, &byte_offset, &byte_length);
 
     uint8_t* buff = jerry_get_arraybuffer_pointer(jbuffer);
