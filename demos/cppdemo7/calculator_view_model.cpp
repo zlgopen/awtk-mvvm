@@ -68,24 +68,23 @@ static ret_t calculator_view_model_on_destroy(tk_object_t* obj) {
   return view_model_deinit(VIEW_MODEL(obj));
 }
 
-static const object_vtable_t s_calculator_view_model_vtable = {"calculator_view_model_t",
-                                                               "calculator_view_model_t",
-                                                               sizeof(calculator_view_model_t),
-                                                               FALSE,
-                                                               calculator_view_model_on_destroy,
-                                                               NULL,
-                                                               calculator_view_model_get_prop,
-                                                               calculator_view_model_set_prop,
-                                                               NULL,
-                                                               NULL,
-                                                               NULL,
-                                                               NULL,
-                                                               NULL,
-                                                               calculator_view_model_can_exec,
-                                                               calculator_view_model_exec};
+static const struct calculator_view_model_vtable_t {
+  object_vtable_t base;
+  calculator_view_model_vtable_t() {
+    base.type = "calculator_view_model_t";
+    base.desc = "calculator_view_model_t";
+    base.size = sizeof(calculator_view_model_t);
+    base.is_collection = FALSE;
+    base.on_destroy = calculator_view_model_on_destroy;
+    base.get_prop = calculator_view_model_get_prop;
+    base.set_prop = calculator_view_model_set_prop;
+    base.can_exec = calculator_view_model_can_exec;
+    base.exec = calculator_view_model_exec;
+  }
+} s_calculator_view_model_vtable;
 
 view_model_t* calculator_view_model_create_with(Calculator* aCalculator) {
-  tk_object_t* obj = tk_object_create(&s_calculator_view_model_vtable);
+  tk_object_t* obj = tk_object_create(&s_calculator_view_model_vtable.base);
   view_model_t* vm = view_model_init(VIEW_MODEL(obj));
   calculator_view_model_t* calculator_view_model = (calculator_view_model_t*)(vm);
 

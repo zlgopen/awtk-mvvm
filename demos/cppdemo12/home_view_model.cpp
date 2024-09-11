@@ -69,24 +69,23 @@ static ret_t home_view_model_on_destroy(tk_object_t* obj) {
   return view_model_deinit(VIEW_MODEL(obj));
 }
 
-static const object_vtable_t s_home_view_model_vtable = {"home_view_model_t",
-                                                         "home_view_model_t",
-                                                         sizeof(home_view_model_t),
-                                                         FALSE,
-                                                         home_view_model_on_destroy,
-                                                         NULL,
-                                                         home_view_model_get_prop,
-                                                         home_view_model_set_prop,
-                                                         NULL,
-                                                         NULL,
-                                                         NULL,
-                                                         NULL,
-                                                         NULL,
-                                                         home_view_model_can_exec,
-                                                         home_view_model_exec};
+static const struct home_view_model_vtable_t {
+  object_vtable_t base;
+  home_view_model_vtable_t() {
+    base.type = "home_view_model_t";
+    base.desc = "home_view_model_t";
+    base.size = sizeof(home_view_model_t);
+    base.is_collection = FALSE;
+    base.on_destroy = home_view_model_on_destroy;
+    base.get_prop = home_view_model_get_prop;
+    base.set_prop = home_view_model_set_prop;
+    base.can_exec = home_view_model_can_exec;
+    base.exec = home_view_model_exec;
+  }
+} s_home_view_model_vtable;
 
 view_model_t* home_view_model_create_with(Home* aHome) {
-  tk_object_t* obj = tk_object_create(&s_home_view_model_vtable);
+  tk_object_t* obj = tk_object_create(&s_home_view_model_vtable.base);
   view_model_t* vm = view_model_init(VIEW_MODEL(obj));
   home_view_model_t* home_view_model = (home_view_model_t*)(vm);
 

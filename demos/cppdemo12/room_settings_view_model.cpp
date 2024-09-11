@@ -71,25 +71,23 @@ static ret_t room_settings_view_model_on_destroy(tk_object_t* obj) {
   return view_model_deinit(VIEW_MODEL(obj));
 }
 
-static const object_vtable_t s_room_settings_view_model_vtable = {
-    "room_settings_view_model_t",
-    "room_settings_view_model_t",
-    sizeof(room_settings_view_model_t),
-    FALSE,
-    room_settings_view_model_on_destroy,
-    NULL,
-    room_settings_view_model_get_prop,
-    room_settings_view_model_set_prop,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    room_settings_view_model_can_exec,
-    room_settings_view_model_exec};
+static const struct room_settings_view_model_vtable_t {
+  object_vtable_t base;
+  room_settings_view_model_vtable_t() {
+    base.type = "room_settings_view_model_t";
+    base.desc = "room_settings_view_model_t";
+    base.size = sizeof(room_settings_view_model_t);
+    base.is_collection = FALSE;
+    base.on_destroy = room_settings_view_model_on_destroy;
+    base.get_prop = room_settings_view_model_get_prop;
+    base.set_prop = room_settings_view_model_set_prop;
+    base.can_exec = room_settings_view_model_can_exec;
+    base.exec = room_settings_view_model_exec;
+  }
+} s_room_settings_view_model_vtable;
 
 view_model_t* room_settings_view_model_create_with(RoomSettings* aRoomSettings) {
-  tk_object_t* obj = tk_object_create(&s_room_settings_view_model_vtable);
+  tk_object_t* obj = tk_object_create(&s_room_settings_view_model_vtable.base);
   view_model_t* vm = view_model_init(VIEW_MODEL(obj));
   room_settings_view_model_t* room_settings_view_model = (room_settings_view_model_t*)(vm);
 

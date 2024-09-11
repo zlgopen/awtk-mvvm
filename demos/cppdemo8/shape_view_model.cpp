@@ -118,24 +118,23 @@ static ret_t shape_view_model_on_destroy(tk_object_t* obj) {
   return view_model_deinit(VIEW_MODEL(obj));
 }
 
-static const object_vtable_t s_shape_view_model_vtable = {"shape_view_model_t",
-                                                          "shape_view_model_t",
-                                                          sizeof(shape_view_model_t),
-                                                          FALSE,
-                                                          shape_view_model_on_destroy,
-                                                          NULL,
-                                                          shape_view_model_get_prop,
-                                                          shape_view_model_set_prop,
-                                                          NULL,
-                                                          NULL,
-                                                          NULL,
-                                                          NULL,
-                                                          NULL,
-                                                          shape_view_model_can_exec,
-                                                          shape_view_model_exec};
+static const struct shape_view_model_vtable_t {
+  object_vtable_t base;
+  shape_view_model_vtable_t() {
+    base.type = "shape_view_model_t";
+    base.desc = "shape_view_model_t";
+    base.size = sizeof(shape_view_model_t);
+    base.is_collection = FALSE;
+    base.on_destroy = shape_view_model_on_destroy;
+    base.get_prop = shape_view_model_get_prop;
+    base.set_prop = shape_view_model_set_prop;
+    base.can_exec = shape_view_model_can_exec;
+    base.exec = shape_view_model_exec;
+  }
+} s_shape_view_model_vtable;
 
 view_model_t* shape_view_model_create_with(Shape* aShape) {
-  tk_object_t* obj = tk_object_create(&s_shape_view_model_vtable);
+  tk_object_t* obj = tk_object_create(&s_shape_view_model_vtable.base);
   view_model_t* vm = view_model_init(VIEW_MODEL(obj));
   shape_view_model_t* shape_view_model = (shape_view_model_t*)(vm);
 
