@@ -147,23 +147,22 @@ static ret_t book_store_view_model_exec(tk_object_t* obj, const char* name, cons
   return RET_NOT_FOUND;
 }
 
-static const struct book_store_view_model_vtable_t {
-  object_vtable_t base;
+static const struct book_store_view_model_vtable_t : object_vtable_t {
   book_store_view_model_vtable_t() {
-    base.type = "book_store_view_model_t";
-    base.desc = "book_store_view_model_t";
-    base.size = sizeof(book_store_view_model_t);
-    base.is_collection = FALSE;
-    base.on_destroy = book_store_view_model_on_destroy;
-    base.get_prop = book_store_view_model_get_prop;
-    base.set_prop = book_store_view_model_set_prop;
-    base.can_exec = book_store_view_model_can_exec;
-    base.exec = book_store_view_model_exec;
+    type = "book_store_view_model_t";
+    desc = "book_store_view_model_t";
+    size = sizeof(book_store_view_model_t);
+    is_collection = FALSE;
+    on_destroy = book_store_view_model_on_destroy;
+    get_prop = book_store_view_model_get_prop;
+    set_prop = book_store_view_model_set_prop;
+    can_exec = book_store_view_model_can_exec;
+    exec = book_store_view_model_exec;
   }
 } s_book_store_view_model_vtable;
 
 view_model_t* book_store_view_model_create(navigator_request_t* req) {
-  tk_object_t* obj = tk_object_create(&s_book_store_view_model_vtable.base);
+  tk_object_t* obj = tk_object_create(&s_book_store_view_model_vtable);
   view_model_t* view_model = view_model_init(VIEW_MODEL(obj));
   return_value_if_fail(view_model != NULL, NULL);
 

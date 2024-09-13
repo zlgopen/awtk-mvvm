@@ -69,23 +69,22 @@ static ret_t home_view_model_on_destroy(tk_object_t* obj) {
   return view_model_deinit(VIEW_MODEL(obj));
 }
 
-static const struct home_view_model_vtable_t {
-  object_vtable_t base;
+static const struct home_view_model_vtable_t : object_vtable_t {
   home_view_model_vtable_t() {
-    base.type = "home_view_model_t";
-    base.desc = "home_view_model_t";
-    base.size = sizeof(home_view_model_t);
-    base.is_collection = FALSE;
-    base.on_destroy = home_view_model_on_destroy;
-    base.get_prop = home_view_model_get_prop;
-    base.set_prop = home_view_model_set_prop;
-    base.can_exec = home_view_model_can_exec;
-    base.exec = home_view_model_exec;
+    type = "home_view_model_t";
+    desc = "home_view_model_t";
+    size = sizeof(home_view_model_t);
+    is_collection = FALSE;
+    on_destroy = home_view_model_on_destroy;
+    get_prop = home_view_model_get_prop;
+    set_prop = home_view_model_set_prop;
+    can_exec = home_view_model_can_exec;
+    exec = home_view_model_exec;
   }
 } s_home_view_model_vtable;
 
 view_model_t* home_view_model_create_with(Home* aHome) {
-  tk_object_t* obj = tk_object_create(&s_home_view_model_vtable.base);
+  tk_object_t* obj = tk_object_create(&s_home_view_model_vtable);
   view_model_t* vm = view_model_init(VIEW_MODEL(obj));
   home_view_model_t* home_view_model = (home_view_model_t*)(vm);
 
