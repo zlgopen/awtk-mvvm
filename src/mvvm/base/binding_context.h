@@ -54,7 +54,7 @@ typedef struct _binding_context_vtable_t {
   binding_context_can_exec_t can_exec;
   binding_context_bind_rule_t bind_data;
   binding_context_bind_rule_t bind_command;
-  binding_context_bind_rule_t bind_conditon;
+  binding_context_bind_rule_t bind_condition;
   binding_context_bind_rule_t bind_items;
   binding_context_notify_items_changed_t notify_items_changed;
   binding_context_get_items_cursor_of_rule_t get_items_cursor_of_rule;

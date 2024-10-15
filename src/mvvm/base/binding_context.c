@@ -373,9 +373,9 @@ ret_t binding_context_bind_command(binding_context_t* ctx, binding_rule_t* rule)
 ret_t binding_context_bind_condition(binding_context_t* ctx, binding_rule_t* rule) {
   ret_t ret = RET_FAIL;
   return_value_if_fail(ctx != NULL && rule != NULL, RET_BAD_PARAMS);
-  return_value_if_fail(ctx->vt != NULL && ctx->vt->bind_conditon != NULL, RET_BAD_PARAMS);
+  return_value_if_fail(ctx->vt != NULL && ctx->vt->bind_condition != NULL, RET_BAD_PARAMS);
 
-  ret = ctx->vt->bind_conditon(ctx, rule);
+  ret = ctx->vt->bind_condition(ctx, rule);
   if (ret == RET_OK) {
     ret = binding_context_push_dynamic_binding(ctx, rule);
   }
