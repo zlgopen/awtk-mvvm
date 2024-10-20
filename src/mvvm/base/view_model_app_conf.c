@@ -47,6 +47,7 @@ static view_model_t* app_conf_create_view_model(navigator_request_t* req) {
     const char* path = tk_object_get_prop_str(TK_OBJECT(req), NAVIGATOR_ARG_PREFIX);
     model_init_sub_object_with_args(obj, path, args);
   }
+  TK_OBJECT_UNREF(args);
 
   return view_model_object_wrapper_create(obj);
 }
