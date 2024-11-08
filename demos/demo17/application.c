@@ -23,6 +23,9 @@
 #include "mvvm/mvvm.h"
 
 ret_t application_init(void) {
+#ifdef WITHOUT_AWTK_MAIN
+  mvvm_app_init();
+#endif/*WITHOUT_AWTK_MAIN*/
   navigator_to("temperature17");
 
   return RET_OK;
@@ -30,6 +33,9 @@ ret_t application_init(void) {
 
 ret_t application_exit(void) {
   log_debug("application_exit\n");
+#ifdef WITHOUT_AWTK_MAIN
+  mvvm_app_deinit();
+#endif/*WITHOUT_AWTK_MAIN*/
 
   return RET_OK;
 }

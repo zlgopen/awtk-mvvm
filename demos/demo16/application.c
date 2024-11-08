@@ -23,6 +23,9 @@
 #include "mvvm/mvvm.h"
 
 ret_t application_init() {
+#ifdef WITHOUT_AWTK_MAIN
+  mvvm_app_init();
+#endif/*WITHOUT_AWTK_MAIN*/
   navigator_to("com_settings");
 
   return RET_OK;
@@ -30,6 +33,9 @@ ret_t application_init() {
 
 ret_t application_exit(void) {
   log_debug("application_exit\n");
+#ifdef WITHOUT_AWTK_MAIN
+  mvvm_app_deinit();
+#endif/*WITHOUT_AWTK_MAIN*/
 
   return RET_OK;
 }

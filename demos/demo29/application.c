@@ -43,6 +43,9 @@ static ret_t on_app_conf_events(void* ctx, event_t* e) {
 }
 
 ret_t application_init() {
+#ifdef WITHOUT_AWTK_MAIN
+  mvvm_app_init();
+#endif/*WITHOUT_AWTK_MAIN*/
   app_conf_init_json("demo29");
 
   emitter_on(EMITTER(app_conf_get_instance()), EVT_CMD_CAN_EXEC, on_app_conf_events, NULL);
@@ -58,6 +61,9 @@ ret_t application_exit(void) {
     app_conf_save();
     app_conf_deinit();
   }
+#ifdef WITHOUT_AWTK_MAIN
+  mvvm_app_deinit();
+#endif/*WITHOUT_AWTK_MAIN*/
 
   return RET_OK;
 }

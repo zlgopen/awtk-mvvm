@@ -24,12 +24,18 @@
 #include "temperature_timer.h"
 
 ret_t application_init(void) {
+#ifdef WITHOUT_AWTK_MAIN
+  mvvm_app_init();
+#endif/*WITHOUT_AWTK_MAIN*/
   view_model_factory_register("temperature_timer", temperature_view_model_timer_create);
 
   return navigator_to("temperature10");
 }
 
 ret_t application_exit(void) {
+#ifdef WITHOUT_AWTK_MAIN
+  mvvm_app_deinit();
+#endif/*WITHOUT_AWTK_MAIN*/
   log_debug("application_exit\n");
 
   return RET_OK;

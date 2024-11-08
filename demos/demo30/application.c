@@ -24,6 +24,9 @@
 #include "conf_io/app_conf_init_json.h"
 
 ret_t application_init(void) {
+#ifdef WITHOUT_AWTK_MAIN
+  mvvm_app_init();
+#endif/*WITHOUT_AWTK_MAIN*/
   app_conf_init_json("demo30");
 
   return navigator_to("send_key_set_prop");
@@ -36,6 +39,9 @@ ret_t application_exit(void) {
     app_conf_save();
     app_conf_deinit();
   }
+#ifdef WITHOUT_AWTK_MAIN
+  mvvm_app_init();
+#endif/*WITHOUT_AWTK_MAIN*/
 
   return RET_OK;
 }

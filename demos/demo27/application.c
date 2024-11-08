@@ -26,6 +26,9 @@
 #include "temperature_view_model.h"
 
 ret_t application_init() {
+#ifdef WITHOUT_AWTK_MAIN
+  mvvm_app_init();
+#endif/*WITHOUT_AWTK_MAIN*/
   app_conf_init_json("demo27");
   view_model_factory_register("temperature", temperature_view_model_create);
   view_model_factory_register("humidity", humidity_view_model_create);
@@ -40,6 +43,9 @@ ret_t application_exit(void) {
     app_conf_save();
     app_conf_deinit();
   }
+#ifdef WITHOUT_AWTK_MAIN
+  mvvm_app_deinit();
+#endif/*WITHOUT_AWTK_MAIN*/
 
   return RET_OK;
 }
