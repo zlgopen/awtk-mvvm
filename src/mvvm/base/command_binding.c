@@ -287,8 +287,6 @@ ret_t command_binding_exec(command_binding_t* rule) {
   args = rule->args;
   return_value_if_fail(view_model != NULL && context != NULL, RET_BAD_PARAMS);
 
-  args = command_binding_resolve_arguments(TK_OBJECT(rule), args, &(rule->temp));
-
   if (tk_str_eq(rule->command, COMMAND_BINDING_CMD_FSCRIPT)) {
     value_t v;
     memset(&v, 0x00, sizeof(value_t));
@@ -296,6 +294,8 @@ ret_t command_binding_exec(command_binding_t* rule) {
     value_reset(&v);
     return RET_OK;
   }
+
+  args = command_binding_resolve_arguments(TK_OBJECT(rule), args, &(rule->temp));
 
   if (binding_context_exec(context, rule->command, args) == RET_OK) {
     return RET_OK;
