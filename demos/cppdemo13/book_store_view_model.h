@@ -36,6 +36,9 @@ typedef struct _book_store_view_model_t {
 
   /*model object*/
   tk_object_t* abook_store;
+  tk_object_t* categories;
+  int32_t selected_category;
+  int32_t last_inserted_category;
 } book_store_view_model_t;
 
 /**
