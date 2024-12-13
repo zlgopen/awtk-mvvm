@@ -6,8 +6,8 @@
       <label w="25%" h="100%" text="设备参数" />
       <label w="40%" h="100%" text="数据" />
     </view>
-    <scroll_view x="0" y="24" w="100%" h="-24">
-      <list_item v-for="items" children_layout="default=(c=0,r=1,s=2,m=5)" v-on:click="{setCurrent, Args=fscript?index=index, AutoDisable=false}">
+    <scroll_view x="0" y="24" w="-12" h="-24">
+      <list_item v-for="{items}" children_layout="default=(c=0,r=1,s=2,m=5)" v-on:click="{setCurrent, Args=fscript?index=index, AutoDisable=false}">
         <label name="index" w="10%" v-data:text="{index}"/>
         <combo_box w="25%" h="80%" readonly="true" value="0" 
           options="PACK_SKP_1000;PACK_SKP_2000;PACK_SKP_3042;PACK_SKP_3132;PACK_SKP_3142;PACK_SKP_5002"
@@ -37,7 +37,7 @@
         </view>
       </list_item>
     </scroll_view>
-    <scroll_bar_m style:fg_color="#05e6ff" x="right" y="24" w="6" h="-24" value="0"/>
+    <scroll_bar_d x="right" y="24" w="12" h="-24" value="0"/>
   </list_view>
   <view x="2" y="b:2" w="-4" h="24" children_layout="default(c=5,r=1,s=2)">
     <check_button text="Unlock" v-data:value="unlocked"/>
