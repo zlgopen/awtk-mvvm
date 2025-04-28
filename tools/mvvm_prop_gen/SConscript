@@ -32,7 +32,7 @@ if OS_NAME == 'Windows' :
 LINKFLAGS=env['LINKFLAGS'] + EXPORT_DEF
 CFLAGS=env['CFLAGS']
 CCFLAGS=env['CCFLAGS']
-env.SharedLibrary(os.path.join(BIN_DIR, 'mvvm_prop_gen'), files, LINKFLAGS=LINKFLAGS, CFLAGS=CFLAGS, CCFLAGS=CCFLAGS)
+env.SharedLibrary(os.path.join(BIN_DIR, 'mvvm_prop_gen'), files, LINKFLAGS=LINKFLAGS, CFLAGS=CFLAGS, CCFLAGS=CCFLAGS, LIBS=['mvvm'] + env['LIBS'])
 
 LIBS=['mvvm', 'mvvm_prop_gen'] + env['LIBS']
 env.Program(os.path.join(BIN_DIR, 'mvvm_prop_gen'), ['main.c'], LIBS=LIBS)

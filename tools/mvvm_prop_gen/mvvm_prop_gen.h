@@ -28,7 +28,7 @@
 #define PROP_MAX_LEN 127
 #define MVVM_PROP_RESULT_INIT_SIZE 5
 
-#define json_PROTO_SIZE "size"
+#define JSON_PROTO_SIZE "size"
 #define JSON_PROTO_PATH "path"
 #define JSON_PROTO_IS_ARRAY "is_array"
 
@@ -109,7 +109,6 @@ typedef struct _mvvm_prop_result_t {
 
 /**
  * @method mvvm_prop_gen_create
- * @annotation ["constructor"]
  * 构造mvvm_prop_gen_t对象。
  *
  * @return {mvvm_prop_gen_t*} mvvm_prop_gen_t对象。
@@ -118,10 +117,9 @@ mvvm_prop_gen_t* mvvm_prop_gen_create(void);
 
 /**
  * @method mvvm_prop_gen_destory
- * @annotation ["destructor"]
  * 析构mvvm_prop_gen_t对象。
+ * @param {mvvm_prop_gen_t*} mvvm_prop_gen 对象。
  *
- * @param {mvvm_prop_gen_t*} mvvm_prop_gen_t对象。
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
 ret_t mvvm_prop_gen_destory(mvvm_prop_gen_t* mvvm_prop_gen);
@@ -129,8 +127,9 @@ ret_t mvvm_prop_gen_destory(mvvm_prop_gen_t* mvvm_prop_gen);
 /**
  * @method mvvm_prop_gen_exec_start
  * 执行器执行开始事件(scope_start)。
+ * @param {mvvm_prop_gen_t*} mvvm_prop_gen 对象。
+ * @param {const char*} tag 执行器标签。
  *
- * @param {mvvm_prop_gen_t*} mvvm_prop_gen_t对象。
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
 ret_t mvvm_prop_gen_exec_start(mvvm_prop_gen_t* mvvm_prop_gen, const char* tag);
@@ -138,8 +137,9 @@ ret_t mvvm_prop_gen_exec_start(mvvm_prop_gen_t* mvvm_prop_gen, const char* tag);
 /**
  * @method mvvm_prop_gen_exec_end
  * 执行器执行完成事件(scope_end)。
+ * @param {mvvm_prop_gen_t*} mvvm_prop_gen 对象。
+ * @param {const char*} tag 执行器标签。
  *
- * @param {mvvm_prop_gen_t*} mvvm_prop_gen_t对象。
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
 ret_t mvvm_prop_gen_exec_end(mvvm_prop_gen_t* mvvm_prop_gen, const char* tag);
@@ -147,10 +147,10 @@ ret_t mvvm_prop_gen_exec_end(mvvm_prop_gen_t* mvvm_prop_gen, const char* tag);
 /**
  * @method mvvm_prop_gen_try_gen_exec_by_keyword
  * 通过关键字尝试生成对应函数到执行器堆栈。如果关键字和属性值同时为NULL，则调用堆栈全部函数。
+ * @param {mvvm_prop_gen_t*} mvvm_prop_gen 对象。
+ * @param {const char*} keyword 关键字。
+ * @param {const char*} prop 属性值。
  *
- * @param {mvvm_prop_gen_t*} mvvm_prop_gen_t对象。
- * @param {const char*} 关键字。
- * @param {const char*} 属性值。
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
 ret_t mvvm_prop_gen_try_gen_exec_by_keyword(mvvm_prop_gen_t* mvvm_prop_gen, const char* keyword,
@@ -159,9 +159,9 @@ ret_t mvvm_prop_gen_try_gen_exec_by_keyword(mvvm_prop_gen_t* mvvm_prop_gen, cons
 /**
  * @method mvvm_prop_gen_result_create
  * 生成已用属性路径组对象，从解析器中将结果转移出来，需要使用 mvvm_prop_gen_result_destory 析构。
+ * @param {mvvm_prop_gen_t*} mvvm_prop_gen 对象。
+ * @param {uint32_t*} result_size 已用属性路径组对象条数。
  *
- * @param {mvvm_prop_gen_t*} mvvm_prop_gen_t对象。
- * @param {uint32_t*} 已用属性路径组对象条数。
  * @return {mvvm_prop_result_t**} 返回已用属性路径组对象。
  */
 mvvm_prop_result_t** mvvm_prop_gen_result_create(mvvm_prop_gen_t* mvvm_prop_gen,
@@ -170,9 +170,9 @@ mvvm_prop_result_t** mvvm_prop_gen_result_create(mvvm_prop_gen_t* mvvm_prop_gen,
 /**
  * @method mvvm_prop_gen_result_destory
  * 析构生成已用属性路径组对象。
+ * @param {mvvm_prop_result_t**} results 对象。
+ * @param {uint32_t} result_size 已用属性路径组对象条数。
  *
- * @param {mvvm_prop_result_t**} mvvm_prop_result_t对象。
- * @param {uint32_t} 已用属性路径组对象条数。
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
 ret_t mvvm_prop_gen_result_destory(mvvm_prop_result_t** results, uint32_t result_size);
@@ -180,9 +180,9 @@ ret_t mvvm_prop_gen_result_destory(mvvm_prop_result_t** results, uint32_t result
 /**
  * @method mvvm_prop_gen_proto_result
  * 将json字符串反序列化为已用属性路径组对象。
+ * @param {str_t*} json 序列化后的已用属性路径组对象json字符串。
+ * @param {uint32_t*} result_size 已用属性路径组对象条数。
  *
- * @param {str_t*} 序列化后的已用属性路径组对象json字符串。
- * @param {uint32_t*} 已用属性路径组对象条数。
  * @return {mvvm_prop_result_t**} 返回已用属性路径组对象。
  */
 mvvm_prop_result_t** mvvm_prop_gen_proto_result(str_t* json, uint32_t* result_size);
@@ -190,10 +190,10 @@ mvvm_prop_result_t** mvvm_prop_gen_proto_result(str_t* json, uint32_t* result_si
 /**
  * @method mvvm_prop_gen_save_result
  * 将已用属性路径组对象转化为json字符串。
+ * @param {mvvm_prop_result_t**} results 对象。
+ * @param {uint32_t} result_size 已用属性路径组对象条数。
+ * @param {str_t*} json 用于存放解析结果的json字符串。
  *
- * @param {mvvm_prop_result_t**} mvvm_prop_result_t对象。
- * @param {uint32_t} 已用属性路径组对象条数。
- * @param {str_t*} 用于存放解析结果的json字符串。
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
 ret_t mvvm_prop_gen_save_result(mvvm_prop_result_t** results, uint32_t result_size, str_t* json);

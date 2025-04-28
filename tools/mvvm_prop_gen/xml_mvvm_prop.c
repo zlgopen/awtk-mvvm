@@ -29,6 +29,7 @@ typedef struct _xml_mvvm_prop_builder_t {
   XmlBuilder builder;
 
   mvvm_prop_gen_t* mvvm_prop_gen;
+  str_t temp;
 } xml_mvvm_prop_builder_t;
 
 static const char* xml_mvvm_prop_data_format(const char* prop, uint32_t prop_len) {
@@ -47,8 +48,14 @@ static void xml_mvvm_prop_builder_on_start(XmlBuilder* builder, const char* tag,
 
   mvvm_prop_gen_exec_start(b->mvvm_prop_gen, tag);
   while (attrs[i] != NULL && attrs[i + 1] != NULL) {
-    const char* prop = NULL;
-    prop = xml_mvvm_prop_data_format((const char*)attrs[i + 1], strlen(attrs[i + 1]));
+    const char* prop = xml_mvvm_prop_data_format((const char*)attrs[i + 1], strlen(attrs[i + 1]));
+    str_clear(&b->temp);
+    if (str_decode_xml_entity(&b->temp, prop) == RET_OK) {
+      str_unescape(&(b->temp));
+      prop = b->temp.str;
+    } else {
+      log_warn("decode xml entiry %s failed\n", prop);
+    }
     mvvm_prop_gen_try_gen_exec_by_keyword(b->mvvm_prop_gen, attrs[i], prop);
     i += 2;
   }
@@ -77,6 +84,7 @@ static xml_mvvm_prop_builder_t* builder_init(xml_mvvm_prop_builder_t* b) {
   return_value_if_fail(b != NULL, NULL);
 
   b->mvvm_prop_gen = mvvm_prop_gen_create();
+  str_init(&b->temp, 1024);
 
   b->builder.on_pi = NULL;
   b->builder.on_text = NULL;
@@ -95,6 +103,7 @@ static void builder_deinit(xml_mvvm_prop_builder_t* b) {
     mvvm_prop_gen_destory(b->mvvm_prop_gen);
     b->mvvm_prop_gen = NULL;
   }
+  str_reset(&b->temp);
 
   return;
 }
@@ -142,22 +151,31 @@ ret_t xml_mvvm_prop_file_to_packfile(const char* in_filename, const char* out_fi
   fs_file_t* fp = NULL;
   uint32_t result_size = 0;
   mvvm_prop_result_t** result = NULL;
-  return_value_if_fail(in_filename != NULL && out_filename != NULL, RET_BAD_PARAMS);
+  return_value_if_fail(in_filename != NULL, RET_BAD_PARAMS);
 
-  fp = fs_open_file(os_fs(), out_filename, "wb+");
-  return_value_if_fail(fp != NULL, RET_FAIL);
+  if (out_filename != NULL) {
+    fp = fs_open_file(os_fs(), out_filename, "wb+");
+    return_value_if_fail(fp != NULL, RET_FAIL);
+  }
 
   str_init(&json, 1024);
   result = xml_mvvm_prop_file_to_array(in_filename, &result_size);
   if (result != NULL) {
     mvvm_prop_gen_save_result(result, result_size, &json);
-    if (fs_file_write(fp, json.str, json.size) != json.size) {
-      ret = RET_FAIL;
-      log_debug("write reuslt into file failed!\n");
+    if (fp != NULL) {
+      if (fs_file_write(fp, json.str, json.size) != json.size) {
+        ret = RET_FAIL;
+        log_debug("write reuslt into file failed!\n");
+      }
+    } else {
+      printf("%s\n", json.str);
     }
   }
+
+  if (fp != NULL) {
+    fs_file_close(fp);
+  }
   str_reset(&json);
-  fs_file_close(fp);
   mvvm_prop_gen_result_destory(result, result_size);
 
   return ret;

@@ -30,9 +30,8 @@ BEGIN_C_DECLS
 /**
  * @method xml_mvvm_prop_file_to_array
  * 通过标准xml文件生成已用属性路径组。
- *
- * @param  {const char*} 标准xml文件。
- * @param  {uint32_t*} 已用属性路径组条数。
+ * @param  {const char*} in_filename 标准xml文件。
+ * @param  {uint32_t*} result_size 已用属性路径组条数。
  *
  * @return {mvvm_prop_result_t**} 已用属性路径组对象。
  */
@@ -41,9 +40,8 @@ mvvm_prop_result_t** xml_mvvm_prop_file_to_array(const char* in_filename, uint32
 /**
  * @method xml_mvvm_prop_file_to_packfile
  * 通过标准xml文件打包生成已用属性路径组文件。
- *
- * @param  {const char*} 标准xml文件。
- * @param  {const char*} 已用属性路径组文件。
+ * @param  {const char*} in_filename 标准xml文件。
+ * @param  {const char*} out_filename 已用属性路径组文件。
  *
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
@@ -52,9 +50,8 @@ ret_t xml_mvvm_prop_file_to_packfile(const char* in_filename, const char* out_fi
 /**
  * @method xml_mvvm_prop_packfile_to_array
  * 通过已用属性路径组文件解包生成已用属性路径组。
- *
- * @param  {const char*} 已用属性路径组文件。
- * @param  {uint32_t*} 已用属性路径组条数。
+ * @param  {const char*} in_filename 已用属性路径组文件。
+ * @param  {uint32_t*} result_size 已用属性路径组条数。
  *
  * @return {mvvm_prop_result_t**} 已用属性路径组对象。
  */
@@ -63,9 +60,8 @@ mvvm_prop_result_t** xml_mvvm_prop_packfile_to_array(const char* in_filename, ui
 /**
  * @method xml_mvvm_prop_xml_to_array
  * 通过原始xml字串生成已用属性路径组。
- *
- * @param  {const char*} 已用属性路径组文件。
- * @param  {uint32_t*} 已用属性路径组条数。
+ * @param  {const char*} xml 已用属性路径组文件。
+ * @param  {uint32_t*} result_size 已用属性路径组条数。
  *
  * @return {mvvm_prop_result_t**} 已用属性路径组对象。
  */

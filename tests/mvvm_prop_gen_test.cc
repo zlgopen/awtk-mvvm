@@ -1,4 +1,4 @@
-#include <string>
+﻿#include <string>
 #include <iostream>
 #include "tkc/fs.h"
 #include "gtest/gtest.h"
@@ -159,21 +159,14 @@ TEST(mvvm_prop_gen, scope) {
                         "</view>"
                     "</view>";
   prop_array = xml_mvvm_prop_xml_to_array(xml, &prop_size);
-  ASSERT_EQ(prop_size, 12);
+  ASSERT_EQ(prop_size, 7);
   ASSERT_EQ(res_to_str(prop_array[0]), "weather.today ");
-  ASSERT_EQ(res_to_str(prop_array[1]), "temperature.temp_high weather.temp_high ");
-  ASSERT_EQ(res_to_str(prop_array[2]), "temperature.temp_low weather.temp_low ");
-  ASSERT_EQ(res_to_str(prop_array[3]), "result.is_true temperature.is_true weather.is_true ");
-
-  ASSERT_EQ(res_to_str(prop_array[4]), "humidity.hum_high weather.hum_high ");
-  ASSERT_EQ(res_to_str(prop_array[5]), "humidity.hum_low weather.hum_low ");
-  ASSERT_EQ(res_to_str(prop_array[6]), "humidity.result.is_true humidity.is_true weather.is_true ");
-
-  ASSERT_EQ(res_to_str(prop_array[7]), "weather.tomorrow ");
-  ASSERT_EQ(res_to_str(prop_array[8]), "weather.temperature.temp_high weather.temp_high ");
-  ASSERT_EQ(res_to_str(prop_array[9]), "weather.temperature.temp_low weather.temp_low ");
-  ASSERT_EQ(res_to_str(prop_array[10]), "weather.humidity.hum_high weather.hum_high ");
-  ASSERT_EQ(res_to_str(prop_array[11]), "weather.humidity.hum_low weather.hum_low ");
+  ASSERT_EQ(res_to_str(prop_array[1]), "temperature.temp_high weather.temp_high weather.temperature.temp_high ");
+  ASSERT_EQ(res_to_str(prop_array[2]), "temperature.temp_low weather.temp_low weather.temperature.temp_low ");
+  ASSERT_EQ(res_to_str(prop_array[3]), "result.is_true temperature.is_true weather.is_true humidity.result.is_true humidity.is_true ");
+  ASSERT_EQ(res_to_str(prop_array[4]), "humidity.hum_high weather.hum_high weather.humidity.hum_high ");
+  ASSERT_EQ(res_to_str(prop_array[5]), "humidity.hum_low weather.hum_low weather.humidity.hum_low ");
+  ASSERT_EQ(res_to_str(prop_array[6]), "weather.tomorrow ");
   mvvm_prop_gen_result_destory(prop_array, prop_size);
 }
 
@@ -244,6 +237,130 @@ TEST(mvvm_prop_gen, array) {
   mvvm_prop_gen_result_destory(prop_array, prop_size);
 }
 
+TEST(mvvm_prop_gen, duplicate) {
+  uint32_t prop_size;
+  mvvm_prop_result_t** prop_array;
+  const char* xml = "<view v-model=\"app_conf\">"
+                      "<label v-data:text=\"{color}\"/>"
+                      "<label v-data:text=\"{color}\"/>"
+                      "<view>"
+                        "<label v-data:text=\"{color}\"/>"
+                      "</view>"
+                    "</view>";
+  prop_array = xml_mvvm_prop_xml_to_array(xml, &prop_size);
+  ASSERT_EQ(prop_size, 1);
+  ASSERT_EQ(res_to_str(prop_array[0]), "app_conf.color ");
+  mvvm_prop_gen_result_destory(prop_array, prop_size);
+}
+
+TEST(mvvm_prop_gen, v_data_path) {
+  uint32_t i;
+  uint32_t prop_size;
+  mvvm_prop_result_t** prop_array;
+
+  const char* xml = "<view>"
+                      "<label v-data:text=\"{Logic.GVL.cold_alarm}\"/>"
+                    "</view>";
+  prop_array = xml_mvvm_prop_xml_to_array(xml, &prop_size);
+  ASSERT_EQ(prop_size, 1);
+  ASSERT_EQ(res_to_str(prop_array[0]), "Logic.GVL.cold_alarm");
+  mvvm_prop_gen_result_destory(prop_array, prop_size);
+}
+
+TEST(mvvm_prop_gen, v_data_expr) {
+  uint32_t i;
+  uint32_t prop_size;
+  mvvm_prop_result_t** prop_array;
+
+  const char* xml = "<view>"
+                      "<label v-data:visible=\"{Logic.GVL.temperature > Logic.GVL.cold_alarm}\"/>"
+                    "</view>";
+  prop_array = xml_mvvm_prop_xml_to_array(xml, &prop_size);
+  ASSERT_EQ(prop_size, 2);
+  ASSERT_EQ(res_to_str(prop_array[0]), "Logic.GVL.temperature");
+  ASSERT_EQ(res_to_str(prop_array[1]), "Logic.GVL.cold_alarm");
+  mvvm_prop_gen_result_destory(prop_array, prop_size);
+
+  const char* xml1 = "<view>"
+                        "<label v-data:visible=\"{Logic.GVL.temperature == Logic.GVL.cold_alarm}\"/>"
+                      "</view>";
+  prop_array = xml_mvvm_prop_xml_to_array(xml1, &prop_size);
+  ASSERT_EQ(prop_size, 2);
+  ASSERT_EQ(res_to_str(prop_array[0]), "Logic.GVL.temperature");
+  ASSERT_EQ(res_to_str(prop_array[1]), "Logic.GVL.cold_alarm");
+  mvvm_prop_gen_result_destory(prop_array, prop_size);
+
+  const char* xml2 = "<view>"
+                        "<label v-data:text=\"{if (Logic.GVL.temperature < Logic.GVL.cold_alarm) {\r\n  return \'����\';\r\n} else if (Logic.GVL.temperature > Logic.GVL.hot_alarm) {\r\n  return \'����\';\r\n} else {\r\n  return \'����\';\r\n}}\"/>"
+                      "</view>";
+  prop_array = xml_mvvm_prop_xml_to_array(xml2, &prop_size);
+  ASSERT_EQ(prop_size, 3);
+  ASSERT_EQ(res_to_str(prop_array[0]), "Logic.GVL.temperature");
+  ASSERT_EQ(res_to_str(prop_array[1]), "Logic.GVL.cold_alarm");
+  ASSERT_EQ(res_to_str(prop_array[2]), "Logic.GVL.hot_alarm");
+  mvvm_prop_gen_result_destory(prop_array, prop_size);
+}
+
+TEST(mvvm_prop_gen, v_data_direct_variable) {
+  uint32_t i;
+  uint32_t prop_size;
+  mvvm_prop_result_t** prop_array;
+
+  const char* xml = "<view>"
+                      "<label v-data:text=\"{%IW1}\"/>"
+                    "</view>";
+  prop_array = xml_mvvm_prop_xml_to_array(xml, &prop_size);
+  ASSERT_EQ(prop_size, 1);
+  ASSERT_EQ(res_to_str(prop_array[0]), "%IW1");
+  mvvm_prop_gen_result_destory(prop_array, prop_size);
+
+  const char* xml1 = "<view>"
+                        "<label v-data:visible=\"{%IW1 > %IW2}\"/>"
+                      "</view>";
+  prop_array = xml_mvvm_prop_xml_to_array(xml1, &prop_size);
+  ASSERT_EQ(prop_size, 2);
+  ASSERT_EQ(res_to_str(prop_array[0]), "%IW1");
+  ASSERT_EQ(res_to_str(prop_array[1]), "%IW2");
+  mvvm_prop_gen_result_destory(prop_array, prop_size);
+
+  const char* xml2 = "<view>"
+                        "<label v-data:visible=\"{%IW1 > Logic.GVL.temperature}\"/>"
+                      "</view>";
+  prop_array = xml_mvvm_prop_xml_to_array(xml2, &prop_size);
+  ASSERT_EQ(prop_size, 2);
+  ASSERT_EQ(res_to_str(prop_array[0]), "%IW1");
+  ASSERT_EQ(res_to_str(prop_array[1]), "Logic.GVL.temperature");
+  mvvm_prop_gen_result_destory(prop_array, prop_size);
+}
+
+TEST(mvvm_prop_gen, v_data_with_trigger) {
+  uint32_t i;
+  uint32_t prop_size;
+  mvvm_prop_result_t** prop_array;
+
+  const char* xml = "<view>"
+                      "<label v-data:visible=\"{Logic.GVL.temperature, Trigger=Changing, Mode=OneWay}\"/>"
+                    "</view>";
+  prop_array = xml_mvvm_prop_xml_to_array(xml, &prop_size);
+  ASSERT_EQ(prop_size, 1);
+  ASSERT_EQ(res_to_str(prop_array[0]), "Logic.GVL.temperature");
+  mvvm_prop_gen_result_destory(prop_array, prop_size);
+}
+
+TEST(mvvm_prop_gen, v_data_local_and_global_var) {
+  uint32_t i;
+  uint32_t prop_size;
+  mvvm_prop_result_t** prop_array;
+
+  const char* xml = "<view>"
+                      "<label v-data:text=\"{var local_var = 0;\r\nglobal.g_var = 1;\r\nreturn Logic.GVL.prop1;}\"/>"
+                    "</view>";
+  prop_array = xml_mvvm_prop_xml_to_array(xml, &prop_size);
+  ASSERT_EQ(prop_size, 1);
+  ASSERT_EQ(res_to_str(prop_array[0]), "Logic.GVL.prop1");
+  mvvm_prop_gen_result_destory(prop_array, prop_size);
+}
+
 TEST(mvvm_prop_gen, v_for_empty) {
   uint32_t prop_size;
   mvvm_prop_result_t** prop_array;
@@ -289,6 +406,7 @@ TEST(mvvm_prop_gen, v_for_empty) {
 TEST(mvvm_prop_gen, v_for_item_1) {
   uint32_t prop_size;
   mvvm_prop_result_t** prop_array;
+
   const char* xml = "<view v-model=\"app_conf\">"
                       "<page v-for=\"{vm_name, Index=vm_index, Item=message}\">"
                         "<view>"
@@ -337,7 +455,6 @@ TEST(mvvm_prop_gen, v_for_item_1) {
                           "<edit v-data:value=\"{item.ip}\"/>"
                           "<edit v-data:value=\"{item.mask}\"/>"
                           "<edit v-data:value=\"{item.gateway}\"/>"
-                          "<edit v-data:value=\">"
                         "</view>"
                       "</page>"
                     "</view>";
@@ -349,74 +466,88 @@ TEST(mvvm_prop_gen, v_for_item_1) {
   ASSERT_EQ(res_to_str(prop_array[3]), "app_conf.vm_name.[].mask ");
   ASSERT_EQ(res_to_str(prop_array[4]), "app_conf.vm_name.[].gateway ");
   mvvm_prop_gen_result_destory(prop_array, prop_size);
-}
 
-#if 0
-TEST(mvvm_prop_gen, not_impl_for_bind_data) {
-  uint32_t i;
-  uint32_t prop_size;
-  mvvm_prop_result_t** prop_array;
-  const char* xml = "<view>"
-                      "<label v-data:text=\"{phone == tel}\"/>"
-                      "<slider v-data:value=\"{value = number > 50 ? number : 0}\"/>"
+  const char* xml3 = "<view v-model=\"app_conf\">"
+                      "<page v-for=\"{vm_name.array, Index=vm_index, Item=message}\">"
+                        "<view>"
+                          "<label v-data:text=\"{vm_index}\"/>"
+                          "<edit v-data:value=\"{message.name}\"/>"
+                          "<edit v-data:value=\"{message.ip}\"/>"
+                          "<edit v-data:value=\"{message.mask}\"/>"
+                          "<edit v-data:value=\"{message.gateway}\"/>"
+                        "</view>"
+                      "</page>"
                     "</view>";
-  prop_array = xml_mvvm_prop_xml_to_array(xml, &prop_size);
+  prop_array = xml_mvvm_prop_xml_to_array(xml3, &prop_size);
+  ASSERT_EQ(prop_size, 5);
+  ASSERT_EQ(res_to_str(prop_array[0]), "app_conf.vm_name.array ");
+  ASSERT_EQ(res_to_str(prop_array[1]), "app_conf.vm_name.array.[].name ");
+  ASSERT_EQ(res_to_str(prop_array[2]), "app_conf.vm_name.array.[].ip ");
+  ASSERT_EQ(res_to_str(prop_array[3]), "app_conf.vm_name.array.[].mask ");
+  ASSERT_EQ(res_to_str(prop_array[4]), "app_conf.vm_name.array.[].gateway ");
+  mvvm_prop_gen_result_destory(prop_array, prop_size);
 
-  /* maybe if true */
-  // ASSERT_EQ(prop_size, 4);
-  // ASSERT_EQ(res_to_str(prop_array[0]), "phone ");
-  // ASSERT_EQ(res_to_str(prop_array[1]), "tel ");
-  // ASSERT_EQ(res_to_str(prop_array[2]), "value ");
-  // ASSERT_EQ(res_to_str(prop_array[3]), "number ");
-
-  /* now return */
+  const char* xml4 = "<view>" /* no view model */
+                     "  <view v-for=\"{vm_name.array, Index=index, Item=message}\">"
+                     "    <label v-data:text=\"{index}\"/>"
+                     "    <edit v-data:value=\"{message.name}\"/>"
+                     "  </view>"
+                     "</view>";
+  prop_array = xml_mvvm_prop_xml_to_array(xml4, &prop_size);
   ASSERT_EQ(prop_size, 2);
-  ASSERT_EQ(res_to_str(prop_array[0]), "phone == tel");
-  ASSERT_EQ(res_to_str(prop_array[1]), "value = number > 50 ? number : 0");
-
+  ASSERT_EQ(res_to_str(prop_array[0]), "vm_name.array");
+  ASSERT_EQ(res_to_str(prop_array[1]), "vm_name.array.[].name ");
   mvvm_prop_gen_result_destory(prop_array, prop_size);
 }
 
-TEST(mvvm_prop_gen, not_impl_for_fscript) {
+TEST(mvvm_prop_gen, v_on_fscript) {
   uint32_t i;
   uint32_t prop_size;
   mvvm_prop_result_t** prop_array;
-  const char* xml = "<view>"
-                      "<label v-data:text=\"{bool, bool = number > 50 ? 'true' : 'false'}\"/>"
+
+  const char* xml = "<view v-model=\"model_name\">"
+                      "<button v-on:click=\"{fscript, Args={print(prop1)}}\"/>"
                     "</view>";
   prop_array = xml_mvvm_prop_xml_to_array(xml, &prop_size);
-
-  /* maybe if true */
-  // ASSERT_EQ(prop_size, 2);
-  // ASSERT_EQ(res_to_str(prop_array[0]), "bool ");
-  // ASSERT_EQ(res_to_str(prop_array[1]), "number ");
-
-  /* now return */
   ASSERT_EQ(prop_size, 1);
-  ASSERT_EQ(res_to_str(prop_array[0]), "bool");
+  ASSERT_EQ(res_to_str(prop_array[0]), "model_name.prop1 ");
+  mvvm_prop_gen_result_destory(prop_array, prop_size);
 
+  const char* xml1 = "<view v-model=\"model_name\">"
+                        "<button v-on:click=\"{fscript, Args={print(prop1 + prop2)}}\"/>"
+                      "</view>";
+  prop_array = xml_mvvm_prop_xml_to_array(xml1, &prop_size);
+  ASSERT_EQ(prop_size, 2);
+  ASSERT_EQ(res_to_str(prop_array[0]), "model_name.prop1 ");
+  ASSERT_EQ(res_to_str(prop_array[1]), "model_name.prop2 ");
+  mvvm_prop_gen_result_destory(prop_array, prop_size);
+
+  const char* xml2 = "<view v-model=\"model_name\">"
+                        "<button v-on:click=\"{fscript, Args={print(prop1 + \'℃\')}}\"/>"
+                      "</view>";
+  prop_array = xml_mvvm_prop_xml_to_array(xml2, &prop_size);
+  ASSERT_EQ(prop_size, 1);
+  ASSERT_EQ(res_to_str(prop_array[0]), "model_name.prop1 ");
   mvvm_prop_gen_result_destory(prop_array, prop_size);
 }
 
-TEST(mvvm_prop_gen, not_impl_for_v_on) {
+TEST(mvvm_prop_gen, v_on_navigate) {
   uint32_t i;
   uint32_t prop_size;
   mvvm_prop_result_t** prop_array;
-  const char* xml = "<view v-model=\"value\">"
-                      "<button v-on:click=\"{bool == 'true' ? on : off}\"/>"
+
+  const char* xml = "<view v-model=\"model_name\">"
+                      "<button v-on:click=\"{navigate, Args=string?request=default_handler&target=home_page}\"/>"
                     "</view>";
   prop_array = xml_mvvm_prop_xml_to_array(xml, &prop_size);
-
-  /* maybe if true */
-  // ASSERT_EQ(prop_size, 3);
-  // ASSERT_EQ(res_to_str(prop_array[0]), "value.bool ");
-  // ASSERT_EQ(res_to_str(prop_array[1]), "value.on ");
-  // ASSERT_EQ(res_to_str(prop_array[2]), "value.off ");
-
-  /* now return */
   ASSERT_EQ(prop_size, 0);
+  mvvm_prop_gen_result_destory(prop_array, prop_size);
 
+  const char* xml1 = "<view v-model=\"model_name\">"
+                      "<button v-on:click=\"{navigate, Args=fscript?request=default_handler&target=target}\"/>"
+                    "</view>";
+  prop_array = xml_mvvm_prop_xml_to_array(xml1, &prop_size);
+  ASSERT_EQ(prop_size, 1);
+  ASSERT_EQ(res_to_str(prop_array[0]), "model_name.target ");
   mvvm_prop_gen_result_destory(prop_array, prop_size);
 }
-
-#endif
