@@ -422,7 +422,7 @@ static JSFUNC_DECL(wrap_set_screen_saver_time) {
 }
 
 static ret_t jerryscript_register_app_conf(void) {
-  object_t* app_conf = app_conf_get_instance();
+  tk_object_t* app_conf = app_conf_get_instance();
   if (app_conf == NULL || jsobj_register_global("appConf", app_conf) != RET_OK) {
     jsvalue_t global_obj = jsvalue_get_global_object();
     jsobj_set_prop_value(global_obj, "appConf", JS_UNDEFINED);
