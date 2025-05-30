@@ -230,7 +230,7 @@ mvvm_prop_gen_t* mvvm_prop_gen_create(void) {
   mvvm_prop_gen->records = NULL;
   mvvm_prop_gen->exec_stack =
       darray_create(10, (tk_destroy_t)mvvm_prop_exec_destory, (tk_compare_t)mvvm_prop_exec_cmp);
-  mvvm_prop_gen->expr_props = darray_create(10, default_destroy, tk_strcmp);
+  mvvm_prop_gen->expr_props = darray_create(10, default_destroy, (tk_compare_t)tk_strcmp);
   mvvm_prop_gen->fscript_ctx = object_default_create();
 
   return mvvm_prop_gen;
@@ -704,9 +704,6 @@ static ret_t visit_fscript_prop(void* ctx, const void* data) {
 
 static ret_t bind_data_evt_exec(mvvm_prop_gen_t* mvvm_prop_gen, const char* keyword,
                                 const char* expr) {
-  ret_t ret = RET_OK;
-  uint32_t i = 0;
-  const char* prop = NULL;
   binding_rule_t* rule = NULL;
   return_value_if_fail(mvvm_prop_gen != NULL && expr != NULL, RET_BAD_PARAMS);
 
