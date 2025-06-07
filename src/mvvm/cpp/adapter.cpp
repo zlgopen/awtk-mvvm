@@ -259,7 +259,7 @@ static ret_t view_model_array_adapter_set_prop(tk_object_t* obj, const char* nam
   subname = tk_destruct_array_prop_name(name, &index);
   return_value_if_fail(subname != NULL && subname != name, RET_BAD_PARAMS);
 
-  return adapter->cpp->SetProp(index, subname, v);
+  return adapter->cpp->SetPropEx(index, subname, v);
 }
 
 static ret_t view_model_array_adapter_get_prop(tk_object_t* obj, const char* name, value_t* v) {
@@ -279,7 +279,7 @@ static ret_t view_model_array_adapter_get_prop(tk_object_t* obj, const char* nam
   subname = tk_destruct_array_prop_name(name, &index);
   return_value_if_fail(subname != NULL && subname != name, RET_BAD_PARAMS);
 
-  return adapter->cpp->GetProp(index, subname, v);
+  return adapter->cpp->GetPropEx(index, subname, v);
 }
 
 static bool_t view_model_array_adapter_can_exec(tk_object_t* obj, const char* name,
@@ -294,7 +294,7 @@ static bool_t view_model_array_adapter_can_exec(tk_object_t* obj, const char* na
     return adapter->cpp->GetSize() > 0;
   }
 
-  return adapter->cpp->CanExec(index, name);
+  return adapter->cpp->CanExecEx(index, name);
 }
 
 static ret_t view_model_array_adapter_exec(tk_object_t* obj, const char* name, const char* args) {
@@ -312,7 +312,7 @@ static ret_t view_model_array_adapter_exec(tk_object_t* obj, const char* name, c
     return RET_ITEMS_CHANGED;
   }
 
-  return adapter->cpp->Exec(index, name);
+  return adapter->cpp->ExecEx(index, name);
 }
 
 static ret_t view_model_array_adapter_on_destroy(tk_object_t* obj) {

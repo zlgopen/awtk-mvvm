@@ -101,8 +101,6 @@ static ret_t book_store_view_model_on_destroy(tk_object_t* obj) {
 }
 
 static ret_t book_store_view_model_set_prop(tk_object_t* obj, const char* name, const value_t* v) {
-  book_store_view_model_t* vm = ((book_store_view_model_t*)(obj));
-
   return RET_NOT_FOUND;
 }
 
@@ -186,7 +184,6 @@ static bool_t book_store_view_model_can_exec(tk_object_t* obj, const char* name,
 
 static ret_t book_store_view_model_exec(tk_object_t* obj, const char* name, const char* args) {
   uint32_t index = 0;
-  view_model_t* view_model = VIEW_MODEL(obj);
   book_store_view_model_t* vm = (book_store_view_model_t*)(obj);
 
   if (TK_STR_IS_NOT_EMPTY(args)) {

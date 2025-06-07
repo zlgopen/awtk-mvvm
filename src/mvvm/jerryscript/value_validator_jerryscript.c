@@ -59,7 +59,6 @@ static value_validator_t* value_validator_jerryscript_create(const char* name) {
     obj = tk_object_create(&s_value_validator_jerryscript_vtable);
     if (obj != NULL) {
       value_validator_t* validator = VALUE_VALIDATOR(obj);
-      value_validator_jerryscript_t* jsvalidator = VALUE_VALIDATOR_JERRYSCRIPT(obj);
 
       validator->is_valid = value_validator_jerryscript_is_valid;
       validator->fix = value_validator_jerryscript_fix;

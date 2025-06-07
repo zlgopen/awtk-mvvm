@@ -20,7 +20,6 @@ view_model_t* book_store_view_model_attach(tk_object_t* obj, uint32_t index) {
 static ret_t book_store_view_model_set_prop(tk_object_t* obj, const char* name, const value_t* v) {
   uint32_t index = 0;
   view_model_t* view_model = VIEW_MODEL(obj);
-  BookStore* aBookStore = ((book_store_view_model_t*)(obj))->aBookStore;
 
   if (view_model_array_default_set_prop(view_model, name, v) == RET_OK) {
     return RET_OK;

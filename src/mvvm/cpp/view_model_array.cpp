@@ -33,19 +33,19 @@ uint32_t ViewModelArray::GetSize() const {
   return 0;
 }
 
-ret_t ViewModelArray::Exec(int32_t index, const char* name) {
+ret_t ViewModelArray::ExecEx(int32_t index, const char* name) {
   return RET_NOT_IMPL;
 }
 
-bool_t ViewModelArray::CanExec(int32_t index, const char* name) const {
+bool_t ViewModelArray::CanExecEx(int32_t index, const char* name) const {
   return FALSE;
 }
 
-ret_t ViewModelArray::GetProp(int32_t index, const char* name, value_t* v) const {
+ret_t ViewModelArray::GetPropEx(int32_t index, const char* name, value_t* v) const {
   return RET_NOT_FOUND;
 }
 
-ret_t ViewModelArray::SetProp(int32_t index, const char* name, const value_t* v) {
+ret_t ViewModelArray::SetPropEx(int32_t index, const char* name, const value_t* v) {
   return RET_NOT_FOUND;
 }
 

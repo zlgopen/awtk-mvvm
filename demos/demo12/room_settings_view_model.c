@@ -47,8 +47,6 @@ static ret_t room_settings_view_model_get_prop(tk_object_t* obj, const char* nam
 
 static bool_t room_settings_view_model_can_exec(tk_object_t* obj, const char* name, const char* args) {
  
-  room_settings_view_model_t* vm = (room_settings_view_model_t*)(obj);
-  room_settings_t* aroom_settings = vm->aroom_settings;
   if (tk_str_ieq("return", name)) {
     return TRUE;
   }

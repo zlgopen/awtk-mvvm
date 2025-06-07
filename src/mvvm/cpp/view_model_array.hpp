@@ -41,7 +41,7 @@ class ViewModelArray : public ViewModel {
   virtual uint32_t GetSize(void) const;
 
   /**
-   * @method Exec
+   * @method ExecEx
    * 执行指定的命令。
    *
    * @param {int32_t} index 索引。
@@ -49,10 +49,10 @@ class ViewModelArray : public ViewModel {
    *
    * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
    */
-  virtual ret_t Exec(int32_t index, const char* name);
+  virtual ret_t ExecEx(int32_t index, const char* name);
 
   /**
-   * @method CanExec
+   * @method CanExecEx
    * 检查指定的命令是否可以执行。
    *
    * @param {int32_t} index 索引。
@@ -60,10 +60,10 @@ class ViewModelArray : public ViewModel {
    *
    * @return {bool_t} 返回TRUE表示可以执行，否则表示不可以执行。
    */
-  virtual bool_t CanExec(int32_t index, const char* name) const;
+  virtual bool_t CanExecEx(int32_t index, const char* name) const;
 
   /**
-   * @method GetProp
+   * @method GetPropEx
    * 获取指定属性的值。
    *
    * @param {int32_t} index 索引。
@@ -72,10 +72,10 @@ class ViewModelArray : public ViewModel {
    *
    * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
    */
-  virtual ret_t GetProp(int32_t index, const char* name, value_t* v) const;
+  virtual ret_t GetPropEx(int32_t index, const char* name, value_t* v) const;
 
   /**
-   * @method SetProp
+   * @method SetPropEx
    * 设置指定属性的值。
    *
    * @param {int32_t} index 索引。
@@ -84,7 +84,7 @@ class ViewModelArray : public ViewModel {
    *
    * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
    */
-  virtual ret_t SetProp(int32_t index, const char* name, const value_t* v);
+  virtual ret_t SetPropEx(int32_t index, const char* name, const value_t* v);
 
   /**
    * @method Remove

@@ -1112,7 +1112,7 @@ widget_t* ui_loader_mvvm_load_widget_with_parent(navigator_request_t* req, widge
   }
 
   ui = assets_manager_ref(am, ASSET_TYPE_UI, target);
-  if (ui != NULL && ui->data != NULL && ui->size > 0) {
+  if (ui != NULL && ui->size > 0) {
     ui_loader_t* loader = ui_loader_mvvm();
     ui_builder_t* builder = ui_builder_default_create(target);
 

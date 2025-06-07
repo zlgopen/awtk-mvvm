@@ -254,7 +254,6 @@ TEST(mvvm_prop_gen, duplicate) {
 }
 
 TEST(mvvm_prop_gen, v_data_path) {
-  uint32_t i;
   uint32_t prop_size;
   mvvm_prop_result_t** prop_array;
 
@@ -268,7 +267,6 @@ TEST(mvvm_prop_gen, v_data_path) {
 }
 
 TEST(mvvm_prop_gen, v_data_expr) {
-  uint32_t i;
   uint32_t prop_size;
   mvvm_prop_result_t** prop_array;
 
@@ -302,7 +300,6 @@ TEST(mvvm_prop_gen, v_data_expr) {
 }
 
 TEST(mvvm_prop_gen, v_data_direct_variable) {
-  uint32_t i;
   uint32_t prop_size;
   mvvm_prop_result_t** prop_array;
 
@@ -334,7 +331,6 @@ TEST(mvvm_prop_gen, v_data_direct_variable) {
 }
 
 TEST(mvvm_prop_gen, v_data_with_trigger) {
-  uint32_t i;
   uint32_t prop_size;
   mvvm_prop_result_t** prop_array;
 
@@ -348,7 +344,6 @@ TEST(mvvm_prop_gen, v_data_with_trigger) {
 }
 
 TEST(mvvm_prop_gen, v_data_local_and_global_var) {
-  uint32_t i;
   uint32_t prop_size;
   mvvm_prop_result_t** prop_array;
 
@@ -501,7 +496,6 @@ TEST(mvvm_prop_gen, v_for_item_1) {
 }
 
 TEST(mvvm_prop_gen, v_on_fscript) {
-  uint32_t i;
   uint32_t prop_size;
   mvvm_prop_result_t** prop_array;
 
@@ -532,7 +526,6 @@ TEST(mvvm_prop_gen, v_on_fscript) {
 }
 
 TEST(mvvm_prop_gen, v_on_navigate) {
-  uint32_t i;
   uint32_t prop_size;
   mvvm_prop_result_t** prop_array;
 
