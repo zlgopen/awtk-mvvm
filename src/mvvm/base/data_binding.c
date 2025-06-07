@@ -82,12 +82,12 @@ static ret_t data_binding_object_set_prop(tk_object_t* obj, const char* name, co
 
   if (equal(BINDING_RULE_PROP_INITED, name)) {
     BINDING_RULE(rule)->inited = TRUE;
-    rule->expr = fscript_create(obj, rule->path);
+    rule->expr = fscript_create_ex2(obj, rule->path, FALSE, TK_OBJECT_LIFE_NONE);
     if (rule->to_view != NULL) {
-      rule->to_view_expr = fscript_create(obj, rule->to_view);
+      rule->to_view_expr = fscript_create_ex2(obj, rule->to_view, FALSE, TK_OBJECT_LIFE_NONE);
     }
     if (rule->to_model != NULL) {
-      rule->to_model_expr = fscript_create(obj, rule->to_model);
+      rule->to_model_expr = fscript_create_ex2(obj, rule->to_model, FALSE, TK_OBJECT_LIFE_NONE);
     }
 
     return RET_OK;
