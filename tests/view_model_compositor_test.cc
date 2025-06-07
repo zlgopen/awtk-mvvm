@@ -41,7 +41,7 @@ TEST(ViewModelCompositor, basic) {
   view_model_factory_register("humi", humidity_view_model_create);
   view_model_t* vm = test_view_model_compositor_create("temp+humi", &req);
   view_model_compositor_t* compositor = VIEW_MODEL_COMPOSITOR(vm);
-  ASSERT_EQ(compositor->view_models.size, 2);
+  ASSERT_EQ(compositor->view_models.size, 2u);
 
   ASSERT_EQ(view_model_get_prop(vm, "temp", &v), RET_OK);
   ASSERT_EQ(value_int(&v), 123);
@@ -73,7 +73,7 @@ TEST(ViewModelCompositor, prefix) {
   view_model_factory_register("b", humidity_view_model_create);
   view_model_t* vm = test_view_model_compositor_create("a+b", &req);
   view_model_compositor_t* compositor = VIEW_MODEL_COMPOSITOR(vm);
-  ASSERT_EQ(compositor->view_models.size, 2);
+  ASSERT_EQ(compositor->view_models.size, 2u);
 
   ASSERT_EQ(view_model_get_prop(vm, "a.temp", &v), RET_OK);
   ASSERT_EQ(value_int(&v), 123);
@@ -120,7 +120,7 @@ TEST(ViewModelCompositor, named) {
 
   view_model_t* vm = test_view_model_compositor_create("temp+humi", &req);
   view_model_compositor_t* compositor = VIEW_MODEL_COMPOSITOR(vm);
-  ASSERT_EQ(compositor->view_models.size, 2);
+  ASSERT_EQ(compositor->view_models.size, 2u);
 
   ASSERT_EQ(view_model_get_prop(vm, "vm2.temp", &v), RET_OK);
   ASSERT_EQ(value_int(&v), 123);

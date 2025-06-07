@@ -18,17 +18,17 @@ TEST(ObjectJsArray, fscript) {
   code = "array_push(js_array, 1, 2, 3);";
   ASSERT_EQ(fscript_eval(obj, code, &v), RET_OK);
   ASSERT_EQ(value_int32(&v), 3);
-  ASSERT_EQ(jsobj_get_prop_count(jsobj), 3);
+  ASSERT_EQ(jsobj_get_prop_count(jsobj), 3u);
 
   code = "array_pop(js_array);";
   ASSERT_EQ(fscript_eval(obj, code, &v), RET_OK);
   ASSERT_EQ(value_int32(&v), 3);
-  ASSERT_EQ(jsobj_get_prop_count(jsobj), 2);
+  ASSERT_EQ(jsobj_get_prop_count(jsobj), 2u);
 
   code = "array_shift(js_array);";
   ASSERT_EQ(fscript_eval(obj, code, &v), RET_OK);
   ASSERT_EQ(value_int32(&v), 1);
-  ASSERT_EQ(jsobj_get_prop_count(jsobj), 1);
+  ASSERT_EQ(jsobj_get_prop_count(jsobj), 1u);
 
   code = "array_set(js_array, 0, 9);";
   ASSERT_EQ(fscript_eval(obj, code, &v), RET_OK);
@@ -41,17 +41,17 @@ TEST(ObjectJsArray, fscript) {
   code = "array_insert(js_array, 0, 8);\narray_get(js_array, 0);";
   ASSERT_EQ(fscript_eval(obj, code, &v), RET_OK);
   ASSERT_EQ(value_int32(&v), 8);
-  ASSERT_EQ(jsobj_get_prop_count(jsobj), 2);
+  ASSERT_EQ(jsobj_get_prop_count(jsobj), 2u);
 
   code = "array_remove(js_array, 0);\narray_get(js_array, 0);";
   ASSERT_EQ(fscript_eval(obj, code, &v), RET_OK);
   ASSERT_EQ(value_int32(&v), 9);
-  ASSERT_EQ(jsobj_get_prop_count(jsobj), 1);
+  ASSERT_EQ(jsobj_get_prop_count(jsobj), 1u);
 
   code = "array_get_and_remove(js_array, 0);";
   ASSERT_EQ(fscript_eval(obj, code, &v), RET_OK);
   ASSERT_EQ(value_int32(&v), 9);
-  ASSERT_EQ(jsobj_get_prop_count(jsobj), 0);
+  ASSERT_EQ(jsobj_get_prop_count(jsobj), 0u);
 
   code = "array_push(js_array, 1, 2, 2);\narray_index_of(js_array, 2);";
   ASSERT_EQ(fscript_eval(obj, code, &v), RET_OK);
@@ -64,7 +64,7 @@ TEST(ObjectJsArray, fscript) {
   code = "array_clear(js_array);";
   ASSERT_EQ(fscript_eval(obj, code, &v), RET_OK);
   ASSERT_EQ(value_bool(&v), TRUE);
-  ASSERT_EQ(jsobj_get_prop_count(jsobj), 0);
+  ASSERT_EQ(jsobj_get_prop_count(jsobj), 0u);
 
   code = "array_push(js_array, 1, 2, 3);\narray_reverse(js_array);array_join(js_array,\",\");";
   ASSERT_EQ(fscript_eval(obj, code, &v), RET_OK);

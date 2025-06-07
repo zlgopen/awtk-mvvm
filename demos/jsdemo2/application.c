@@ -22,7 +22,7 @@
 #include "awtk.h"
 #include "mvvm/mvvm.h"
 
-ret_t application_init() {
+ret_t application_init(void) {
   navigator_to("temperature2");
 
   return RET_OK;

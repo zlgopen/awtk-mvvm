@@ -137,7 +137,7 @@ TEST(JsValue, exec) {
   value_set_int32(vargs_p + 2, 2);
 
   ASSERT_EQ(jsobj_exec_value(jsobj, "push", vargs_p, 3, &value, &str), RET_OK);
-  ASSERT_EQ(jsobj_get_prop_count(jsobj), 3);
+  ASSERT_EQ(jsobj_get_prop_count(jsobj), 3u);
   ASSERT_EQ(value_int32(&value), 3);
 
   jsargs_p[0] = jsvalue_from_number(3);
@@ -148,7 +148,7 @@ TEST(JsValue, exec) {
 
   for (i = 0; i < 6; i++) {
     ASSERT_EQ(jsobj_get_prop_by_index(jsobj, i, &value, &str), RET_OK);
-    ASSERT_EQ(value_int32(&value), i);
+    ASSERT_EQ(value_uint32(&value), i);
   }
 
   for (i = 0; i < 3; i++) {

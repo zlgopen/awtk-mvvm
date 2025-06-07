@@ -42,7 +42,7 @@ static ret_t on_app_conf_events(void* ctx, event_t* e) {
   return RET_OK;
 }
 
-ret_t application_init() {
+ret_t application_init(void) {
 #ifdef WITHOUT_AWTK_MAIN
   mvvm_app_init();
 #endif/*WITHOUT_AWTK_MAIN*/

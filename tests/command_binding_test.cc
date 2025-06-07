@@ -25,7 +25,7 @@ TEST(CommandBinding, key_filter) {
   tk_object_t* o = TK_OBJECT(rule);
 
   ASSERT_EQ(tk_object_set_prop_str(o, COMMAND_BINDING_KEY_FILTER, "ctrl_a"), RET_OK);
-  ASSERT_EQ(rule->filter.ctrl, TRUE);
+  ASSERT_EQ(rule->filter.ctrl, 1u);
   ASSERT_EQ(rule->filter.key, TK_KEY_a);
 
   tk_object_unref(TK_OBJECT(rule));
@@ -36,12 +36,12 @@ TEST(CommandBinding, key_filter1) {
   tk_object_t* o = TK_OBJECT(rule);
 
   ASSERT_EQ(tk_object_set_prop_str(o, COMMAND_BINDING_KEY_FILTER, "ctrl_shift_LEFT"), RET_OK);
-  ASSERT_EQ(rule->filter.ctrl, TRUE);
-  ASSERT_EQ(rule->filter.shift, TRUE);
-  ASSERT_EQ(rule->filter.lctrl, TRUE);
-  ASSERT_EQ(rule->filter.lshift, TRUE);
-  ASSERT_EQ(rule->filter.rctrl, TRUE);
-  ASSERT_EQ(rule->filter.rshift, TRUE);
+  ASSERT_EQ(rule->filter.ctrl, 1u);
+  ASSERT_EQ(rule->filter.shift, 1u);
+  ASSERT_EQ(rule->filter.lctrl, 1u);
+  ASSERT_EQ(rule->filter.lshift, 1u);
+  ASSERT_EQ(rule->filter.rctrl, 1u);
+  ASSERT_EQ(rule->filter.rshift, 1u);
   ASSERT_EQ(rule->filter.key, TK_KEY_LEFT);
 
   tk_object_unref(TK_OBJECT(rule));
