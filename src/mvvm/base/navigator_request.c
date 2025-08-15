@@ -103,7 +103,7 @@ ret_t navigator_request_on_result(navigator_request_t* req, const value_t* resul
   return_value_if_fail(req != NULL && result != NULL, RET_BAD_PARAMS);
 
   if (req->on_result != NULL) {
-    req->on_result(req, result);
+    return req->on_result(req, result);
   }
 
   return RET_OK;
