@@ -38,6 +38,7 @@ typedef ret_t (*navigator_on_result_t)(navigator_t* nav, const value_t* result);
 /**
  * @class navigator_t
  * @parent tk_object_t
+ * @annotation ["scriptable"]
  *
  * 导航器。负责窗口导航。
  *
@@ -132,7 +133,7 @@ ret_t navigator_unregister_handler(navigator_t* nav, const char* target);
  * 比如，"string?arg1=xx&arg2=yy"表示有两个参数，参数arg1的值为"xx"，参数arg2的值为"yy",
  * 如果没有用上述格式指定参数，则默认为target参数的值。
  *
- * @annotation ["static"]
+ * @annotation ["static", "scriptable"]
  *
  * @param {const char*} args 发送请求时要传递的参数。
  *

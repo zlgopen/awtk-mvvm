@@ -253,6 +253,8 @@ static ret_t navigator_handler_awtk_window_open(navigator_request_t* req) {
   win = navigator_handler_awtk_window_open_and_close(req, current);
   return_value_if_fail(win != NULL, RET_NOT_FOUND);
 
+  value_set_pointer(&(req->result), win);
+
   navigator_handler_awtk_window_dump(win);
 
   return RET_OK;
@@ -299,17 +301,26 @@ static ret_t navigator_handler_awtk_on_request(navigator_handler_t* handler,
     const char* target = tk_object_get_prop_str(obj, NAVIGATOR_ARG_TARGET);
 
     if (target != NULL) {
+      if (strncmp(target, STR_SCHEMA_FILE, strlen(STR_SCHEMA_FILE)) != 0 &&
+          assets_managers_is_applet_assets_supported()) {
+        const char* p = strchr(target, '.');
+        if (p != NULL) {
+          target = p + 1;
+        }
+      }
       widget_t* target_win = widget_child(wm, target);
 
       if (target_win != NULL) {
         widget_t* curr_win = window_manager_get_top_window(wm);
         bool_t close_current = tk_object_get_prop_bool(obj, NAVIGATOR_ARG_CLOSE_CURRENT, FALSE);
         if (target_win != curr_win) {
+          value_set_pointer(&(req->result), target_win);
           return window_manager_switch_to(wm, curr_win, target_win, close_current);
         } else {
           if (close_current) {
             return widget_dispatch_simple_event(curr_win, EVT_REQUEST_CLOSE_WINDOW);
           } else {
+            value_set_pointer(&(req->result), target_win);
             return RET_OK;
           }
         }

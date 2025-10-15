@@ -35,6 +35,7 @@ typedef struct _binding_rule_t binding_rule_t;
 /**
  * @class binding_rule_t
  * @parent tk_object_t
+ * @annotation ["scriptable"]
  *
  * 绑定规则基类。
  */
