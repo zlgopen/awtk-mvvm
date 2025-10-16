@@ -94,10 +94,10 @@ scons LINUX_FB=true
 (1) 如果不需要 JS，请修改 SConstruct，注释掉下面这行代码，然后重新编译：
 
 ```python
-os.environ['WITH_JS'] = 'true'
+os.environ['WITH_JS'] = str(compile_helper.get_value('WITH_JERRYSCRIPT', True)).lower()
 ```
 
-(3) 如果启用了 WITH_JS 和 WITH_JS_SNAPSHOT, 那么更新 JS 后，需重新编译生成 mvvm_factory_gen 工具，之后使用该工具重新生成 tools/mvvm_factory_gen/mvvm_factory.js 的快照，再重新编译 mvvm。
+(2) 如果启用了 WITH_JS 和 WITH_JS_SNAPSHOT, 那么更新 JS 后，需重新编译生成 mvvm_factory_gen 工具，之后使用该工具重新生成 tools/mvvm_factory_gen/mvvm_factory.js 的快照，再重新编译 mvvm。
 
 ## 四、文档
 * [介绍](docs/8.intro.md)
