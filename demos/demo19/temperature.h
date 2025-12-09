@@ -41,6 +41,13 @@ typedef struct _temperature_t {
    */
   double value;
 
+  /**
+   * @property {uint32_t} timer
+   * @annotation ["readable", "writable"]
+   * 计时（倒数）。
+   */
+  uint32_t timer;
+
   /*private*/
   double saved_value;
 } temperature_t;
