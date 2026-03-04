@@ -532,9 +532,13 @@ static widget_t* ui_loader_mvvm_build_widget(ui_loader_mvvm_t* loader, rbuffer_t
     goto_error_if_fail(rbuffer_read_string(rbuffer, &val) == RET_OK);
     if (tk_str_start_with(key, BINDING_RULE_DATA_PREFIX)) {
       /* 记录绑定数据的信息，统一在最后绑定数据 */
-      darray_push(&bind_data_rbuffer_offsets, tk_pointer_from_int(rbuffer_offset));
+      if (TK_STR_IS_NOT_EMPTY(val)) {
+        darray_push(&bind_data_rbuffer_offsets, tk_pointer_from_int(rbuffer_offset));
+      }
     } else if (tk_str_start_with(key, BINDING_RULE_COMMAND_PREFIX)) {
-      if (ctx != NULL) ui_loader_mvvm_bind_command(loader, widget, key, val);
+      if (TK_STR_IS_NOT_EMPTY(val)) {
+        if (ctx != NULL) ui_loader_mvvm_bind_command(loader, widget, key, val);
+      }
     } else if (tk_str_eq(key, BINDING_RULE_ITEMS)) {
     } else if (tk_str_eq(key, BINDING_RULE_CONDITION_IF)) {
     } else if (tk_str_eq(key, BINDING_RULE_CONDITION_ELIF)) {
