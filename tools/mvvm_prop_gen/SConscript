@@ -11,8 +11,8 @@ TK_ROOT=os.environ['TK_ROOT'];
 IDL_GEN = os.path.join(TK_ROOT, "tools/idl_gen/index.js")
 DLL_DEF_GEN = os.path.join(TK_ROOT, "tools/dll_def_gen/index.js")
 
-cmd1 = "node " + IDL_GEN + " idl/idl.json ./"
-cmd2 = "node " + DLL_DEF_GEN + " idl/idl.json mvvm_prop_gen.def"
+cmd1 = "node \"" + IDL_GEN + "\" idl/idl.json ./"
+cmd2 = "node \"" + DLL_DEF_GEN + "\" idl/idl.json mvvm_prop_gen.def"
 
 is_error = 0
 is_error |= os.system(cmd1);
