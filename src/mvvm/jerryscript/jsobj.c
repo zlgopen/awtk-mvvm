@@ -738,6 +738,9 @@ ret_t jsobj_exec_ex(jsvalue_t obj, const char* name, jsvalue_t jsargs) {
       jsvalue_t jsret = jerry_call_function(func, obj, &jsargs, 1);
       ret = jerry_value_check(jsret);
       if (ret == RET_OK) {
+        if (jerry_value_is_number(jsret)) {
+          ret = (ret_t)jsvalue_to_number(jsret);
+        }
         jsvalue_unref(jsret);
       }
     } else {

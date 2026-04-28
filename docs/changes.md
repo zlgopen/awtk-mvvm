@@ -1,5 +1,8 @@
 # 最新动态
 
+2026/04/28
+  * 修复 JS view model 的命令函数中返回 RET_OBJECT_CHANGED 无效的问题。
+
 2026/04/24
   * 修复 binding\_context\_can\_exec 返回值错误的问题。（感谢福明提供补丁）
   * 完善 mvvm\_prop\_gen 的编译脚本。（感谢朝泽提供补丁）
