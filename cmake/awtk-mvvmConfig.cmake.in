@@ -1,0 +1,11 @@
+@PACKAGE_INIT@
+
+include(CMakeFindDependencyMacro)
+find_dependency(awtk)
+
+include("${CMAKE_CURRENT_LIST_DIR}/awtk-mvvmTargets.cmake")
+
+set(awtk-mvvm_FOUND TRUE)
+set(AWTK_MVVM_FOUND TRUE)
+
+check_required_components(awtk-mvvm)

@@ -1,5 +1,8 @@
 # 最新动态
 
+2026/05/02
+  * 支持 cmake
+
 2026/04/28
   * 修复 JS view model 的命令函数中返回 RET_OBJECT_CHANGED 无效的问题。
 

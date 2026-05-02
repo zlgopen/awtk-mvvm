@@ -22,6 +22,7 @@
 #ifndef TK_VIEW_MODEL_HPP
 #define TK_VIEW_MODEL_HPP
 
+#include <cstdio>
 #include "mvvm/cpp/object.hpp"
 #include "mvvm/base/navigator_request.h"
 

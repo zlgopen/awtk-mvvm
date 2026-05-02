@@ -19,6 +19,7 @@
  *
  */
 
+#include <cstdio>
 #include "mvvm/cpp/adapter.hpp"
 
 namespace vm {

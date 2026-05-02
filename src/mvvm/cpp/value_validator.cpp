@@ -19,6 +19,7 @@
  *
  */
 
+#include <cstdio>
 #include "mvvm/cpp/value_validator.hpp"
 
 namespace vm {
