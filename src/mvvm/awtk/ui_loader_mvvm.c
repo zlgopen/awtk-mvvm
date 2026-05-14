@@ -36,6 +36,8 @@
 #include "mvvm/awtk/binding_context_awtk.h"
 #include "mvvm/awtk/ui_loader_mvvm.h"
 
+#define _HAS_WIDGET(r) (r->cursor + sizeof(widget_desc_t) <= r->capacity)
+
 static ret_t ui_loader_mvvm_load_a_snippet(ui_loader_mvvm_t* loader, rbuffer_t* rbuffer,
                                            ui_builder_t* b, widget_t* target);
 
@@ -46,7 +48,7 @@ static bool_t rbuffer_find_target_prop(rbuffer_t* rbuffer, const char* target, c
   uint32_t old = rbuffer->cursor;
   return_value_if_fail(rbuffer != NULL && target != NULL, FALSE);
 
-  if (rbuffer_skip(rbuffer, sizeof(widget_desc_t)) == RET_OK) {
+  if (_HAS_WIDGET(rbuffer) && rbuffer_skip(rbuffer, sizeof(widget_desc_t)) == RET_OK) {
     if (rbuffer_read_string(rbuffer, &key) == RET_OK) {
       while (*key) {
         if (tk_str_eq(key, target)) {
@@ -78,7 +80,7 @@ static const char* rbuffer_find_dynamic_binding_prop(rbuffer_t* rbuffer, const c
   uint32_t old = rbuffer->cursor;
   return_value_if_fail(rbuffer != NULL, NULL);
 
-  if (rbuffer_skip(rbuffer, sizeof(widget_desc_t)) == RET_OK) {
+  if (_HAS_WIDGET(rbuffer) && rbuffer_skip(rbuffer, sizeof(widget_desc_t)) == RET_OK) {
     if (rbuffer_read_string(rbuffer, &key) == RET_OK) {
       while (*key) {
         if (tk_str_eq(key, BINDING_RULE_ITEMS)) {
@@ -119,7 +121,7 @@ static const char* rbuffer_find_dynamic_binding_prop(rbuffer_t* rbuffer, const c
   uint32_t old = rbuffer->cursor;
   return_value_if_fail(rbuffer != NULL, NULL);
 
-  if (rbuffer_skip(rbuffer, sizeof(widget_desc_t)) == RET_OK) {
+  if (_HAS_WIDGET(rbuffer) && rbuffer_skip(rbuffer, sizeof(widget_desc_t)) == RET_OK) {
     if (rbuffer_read_string(rbuffer, &key) == RET_OK) {
       // widget设置了x/y/w/h，则第一个属性固定为WIDGET_PROP_SELF_LAYOUT，故过滤
       if (*key == 's') {
@@ -155,7 +157,7 @@ static bool_t rbuffer_find_target_dynamic_binding_prop(rbuffer_t* rbuffer, const
   uint32_t old = rbuffer->cursor;
   return_value_if_fail(rbuffer != NULL && target != NULL, FALSE);
 
-  if (rbuffer_skip(rbuffer, sizeof(widget_desc_t)) == RET_OK) {
+  if (_HAS_WIDGET(rbuffer) && rbuffer_skip(rbuffer, sizeof(widget_desc_t)) == RET_OK) {
     if (rbuffer_read_string(rbuffer, &key) == RET_OK) {
       // widget设置了x/y/w/h，则第一个属性固定为WIDGET_PROP_SELF_LAYOUT，故过滤
       if (*key == 's') {
