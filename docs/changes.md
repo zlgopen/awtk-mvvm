@@ -2,6 +2,7 @@
 
 2026/07/09
   * 修复诸如在 JS 层调用 “navigateTo({ request: '_confirm_', title: 'information', content: 'Are you sure?' })” 时由于字符串参数被覆盖导致显示有误的问题。（感谢朝泽提供补丁）
+  * 修复测试用例 ModelJerryScript.exec1 执行失败的问题。
 
 2026/05/14
   * 减少不必要的打印。（感谢朝泽提供补丁）
