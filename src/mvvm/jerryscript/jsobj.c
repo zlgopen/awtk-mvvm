@@ -301,7 +301,7 @@ tk_object_t* jsvalue_to_obj(jsvalue_t value) {
     jerry_get_object_native_pointer(value, &p, NULL);
 
     if (p == NULL) {
-      obj = object_js_factory_create_object(object_js_factory(), value, FALSE);
+      obj = object_js_factory_create_object(object_js_factory(), value, FALSE, FALSE);
       jsobj_set_native_ptr(value, obj);
     }
   }

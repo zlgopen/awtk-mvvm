@@ -1,5 +1,8 @@
 # 最新动态
 
+2026/07/09
+  * 修复诸如在 JS 层调用 “navigateTo({ request: '_confirm_', title: 'information', content: 'Are you sure?' })” 时由于字符串参数被覆盖导致显示有误的问题。（感谢朝泽提供补丁）
+
 2026/05/14
   * 减少不必要的打印。（感谢朝泽提供补丁）
   * 修复 ui load 的过程中再次 ui load 会覆盖 load 过程中的临时数据导致窗口关闭时会访问野指针的问题。（感谢朝泽提供补丁）

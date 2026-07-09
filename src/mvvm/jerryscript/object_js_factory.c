@@ -74,16 +74,16 @@ ret_t object_js_factory_register(object_js_factory_t* factory, jsobj_type_t type
 }
 
 tk_object_t* object_js_factory_create_object(object_js_factory_t* factory, jsvalue_t jsobj,
-                                             bool_t free_handle) {
+                                             bool_t free_handle, bool_t need_cache_str_from_js) {
   jsobj_type_t type = jerry_object_get_type(jsobj);
   const creator_item_t* iter = NULL;
   return_value_if_fail(factory != NULL && type != JERRY_OBJECT_TYPE_NONE, NULL);
 
   iter = darray_find(&(factory->creators), (void*)type);
   if (iter != NULL) {
-    return iter->create(jsobj, free_handle);
+    return iter->create(jsobj, free_handle, need_cache_str_from_js);
   } else {
-    return object_js_default_create(jsobj, free_handle);
+    return object_js_default_create(jsobj, free_handle, need_cache_str_from_js);
   }
 }
 

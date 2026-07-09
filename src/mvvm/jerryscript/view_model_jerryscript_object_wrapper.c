@@ -28,7 +28,7 @@
 
 static ret_t view_model_jerryscript_on_create(view_model_t* view_model, navigator_request_t* req) {
   jsvalue_t jsobj;
-  ret_t ret =  RET_FAIL;
+  ret_t ret = RET_FAIL;
   view_model_jerryscript_object_wrapper_t* vm = VIEW_MODEL_JERRYSCRIPT_OBJECT_WRAPPER(view_model);
   return_value_if_fail(vm != NULL, RET_BAD_PARAMS);
 
@@ -207,7 +207,7 @@ view_model_t* view_model_jerryscript_object_wrapper_create(jsvalue_t jsobj,
   view_model_t* view_model;
   view_model_jerryscript_object_wrapper_t* vm;
   object_js_factory_t* factory = object_js_factory();
-  tk_object_t* obj = object_js_factory_create_object(factory, jsvalue_ref(jsobj), TRUE);
+  tk_object_t* obj = object_js_factory_create_object(factory, jsvalue_ref(jsobj), TRUE, FALSE);
   return_value_if_fail(obj != NULL, NULL);
 
   view_model = VIEW_MODEL(tk_object_create(&s_obj_view_model_jerryscript_object_wrapper_vtable));

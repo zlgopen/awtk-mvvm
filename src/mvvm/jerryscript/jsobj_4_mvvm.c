@@ -70,7 +70,7 @@ jsvalue_t jsvalue_get_view_model(const char* name) {
   return jsvalue_get_model_from_mvvm_factory(name, "createViewModel");
 }
 
-static void view_model_free_callback(void* native_p, struct jerry_object_native_info_t *info_p) {
+static void view_model_free_callback(void* native_p, struct jerry_object_native_info_t* info_p) {
 }
 
 static const jerry_object_native_info_t s_view_model_info = {.free_cb = view_model_free_callback};
@@ -246,7 +246,7 @@ navigator_request_t* jsvalue_to_navigator_request(jsvalue_t obj) {
     tk_object_ref(TK_OBJECT(req));
   } else {
     object_js_factory_t* factory = object_js_factory();
-    tk_object_t* args = object_js_factory_create_object(factory, jsvalue_ref(obj), TRUE);
+    tk_object_t* args = object_js_factory_create_object(factory, jsvalue_ref(obj), TRUE, TRUE);
 
     if (args != NULL) {
       req = navigator_request_create("", js_navigater_request_on_result);

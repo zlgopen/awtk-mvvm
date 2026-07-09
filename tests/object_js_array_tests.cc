@@ -12,7 +12,7 @@ TEST(ObjectJsArray, fscript) {
   const char* code = NULL;
   jsvalue_t jsobj = JS_EMPTY_ARRAY;
   tk_object_t* obj = object_default_create();
-  tk_object_t* js_array = object_js_array_create(jsobj, TRUE);
+  tk_object_t* js_array = object_js_array_create(jsobj, TRUE, FALSE);
   tk_object_set_prop_object(obj, "js_array", js_array);
 
   code = "array_push(js_array, 1, 2, 3);";

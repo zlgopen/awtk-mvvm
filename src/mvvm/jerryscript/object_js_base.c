@@ -22,16 +22,23 @@
 #include "tkc/mem.h"
 #include "tkc/utils.h"
 #include "tkc/value.h"
+#include "tkc/object_default.h"
 #include "mvvm/base/utils.h"
 #include "mvvm/jerryscript/object_js_base.h"
 #include "mvvm/jerryscript/object_js_default.h"
 
-ret_t object_js_base_init(tk_object_t* obj, jsvalue_t jsobj, bool_t free_handle) {
+ret_t object_js_base_init(tk_object_t* obj, jsvalue_t jsobj, bool_t free_handle,
+                          bool_t need_cache_str_from_js) {
   object_js_base_t* o = OBJECT_JS_BASE(obj);
   return_value_if_fail(o != NULL, RET_BAD_PARAMS);
 
   o->jsobj = jsobj;
   o->free_handle = free_handle;
+
+  if (need_cache_str_from_js) {
+    o->js_str_cache = object_default_create();
+  }
+
   str_init(&(o->temp), 0);
 
   return RET_OK;
@@ -42,6 +49,8 @@ ret_t object_js_base_deinit(tk_object_t* obj) {
   return_value_if_fail(o != NULL, RET_BAD_PARAMS);
 
   str_reset(&(o->temp));
+
+  TK_OBJECT_UNREF(o->js_str_cache);
 
   if (o->free_handle) {
     jsvalue_unref(o->jsobj);
@@ -96,7 +105,12 @@ ret_t object_js_base_get_prop(tk_object_t* obj, const char* name, value_t* v) {
     }
 
     ret = jsobj_get_prop(o->jsobj, name, v, &(o->temp));
-    if (ret == RET_OK && v->type == VALUE_TYPE_OBJECT) {
+    if (ret == RET_OK && v->type == VALUE_TYPE_STRING) {
+      if (o->js_str_cache != NULL) {
+        tk_object_set_prop_str(o->js_str_cache, name, o->temp.str);
+        tk_object_get_prop(o->js_str_cache, name, v);
+      }
+    } else if (ret == RET_OK && v->type == VALUE_TYPE_OBJECT) {
       tk_object_t* val = value_object(v);
       if (!object_js_base_is_listener_registered(val, obj)) {
         object_js_base_register_listener(val, obj);
@@ -147,7 +161,7 @@ bool_t object_js_base_can_exec(tk_object_t* obj, const char* name, const char* a
     ret = jsobj_can_exec(o->jsobj, name, &v, &(o->temp));
   } else {
     jsvalue_t jsargs = JS_EMPTY_OBJ;
-    tk_object_t* a = object_js_default_create(jsargs, TRUE);
+    tk_object_t* a = object_js_default_create(jsargs, TRUE, FALSE);
 
     if (a != NULL) {
       if (tk_command_arguments_to_object(args, a) == RET_OK) {
@@ -178,7 +192,7 @@ ret_t object_js_base_exec(tk_object_t* obj, const char* name, const char* args) 
     ret = jsobj_exec(o->jsobj, name, &v, &(o->temp));
   } else {
     jsvalue_t jsargs = JS_EMPTY_OBJ;
-    tk_object_t* a = object_js_default_create(jsargs, TRUE);
+    tk_object_t* a = object_js_default_create(jsargs, TRUE, FALSE);
 
     if (a != NULL) {
       if (tk_command_arguments_to_object(args, a) == RET_OK) {

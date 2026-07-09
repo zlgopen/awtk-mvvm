@@ -46,10 +46,13 @@ typedef struct _object_js_array_t {
  * @annotation ["constructor"]
  * @param {jsvalue_t} jsobj jerryscript对象。
  * @param {bool_t} free_handle object销毁的同时释放jerryscript对象。
+ * @param {bool_t} need_cache_str_from_js 缓存get_prop时来自JS的字符串；
+ *                 为FALSE时get_prop的字符串缓存在object_js_base_t->temp，重复get_prop会被覆盖。
  *
  * @return {tk_object_t*} 返回object对象。
  */
-tk_object_t* object_js_array_create(jsvalue_t jsobj, bool_t free_handle);
+tk_object_t* object_js_array_create(jsvalue_t jsobj, bool_t free_handle,
+                                    bool_t need_cache_str_from_js);
 
 /**
  * @method object_is_object_js_array

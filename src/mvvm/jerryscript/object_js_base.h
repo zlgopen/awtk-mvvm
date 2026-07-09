@@ -49,9 +49,11 @@ typedef struct _object_js_base_t {
   /*private*/
   str_t temp;
   bool_t free_handle;
+  tk_object_t* js_str_cache;
 } object_js_base_t;
 
-ret_t object_js_base_init(tk_object_t* obj, jsvalue_t jsobj, bool_t free_handle);
+ret_t object_js_base_init(tk_object_t* obj, jsvalue_t jsobj, bool_t free_handle,
+                          bool_t need_cache_str_from_js);
 ret_t object_js_base_deinit(tk_object_t* obj);
 int32_t object_js_base_compare(tk_object_t* obj, tk_object_t* other);
 ret_t object_js_base_set_prop(tk_object_t* obj, const char* name, const value_t* v);

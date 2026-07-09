@@ -112,7 +112,14 @@ static ret_t object_js_array_get_prop(tk_object_t* obj, const char* name, value_
     }
 
     uint32_t index = tk_atoi(name + 1);
-    return object_js_array_get(obj, index, v);
+    ret_t ret = object_js_array_get(obj, index, v);
+    if (ret == RET_OK && v->type == VALUE_TYPE_STRING) {
+      if (o->js_str_cache != NULL) {
+        tk_object_set_prop_str(o->js_str_cache, name, o->temp.str);
+        tk_object_get_prop(o->js_str_cache, name, v);
+      }
+    }
+    return ret;
   }
 
   return object_js_base_get_prop(obj, name, v);
@@ -693,12 +700,13 @@ static const fscript_array_vtable_t s_js_fscript_array_vtable = {
     .array_is_empty = object_js_array_fscript_array_is_empty,
     .array_size = object_js_array_fscript_array_size};
 
-tk_object_t* object_js_array_create(jsvalue_t jsobj, bool_t free_handle) {
+tk_object_t* object_js_array_create(jsvalue_t jsobj, bool_t free_handle,
+                                    bool_t need_cache_str_from_js) {
   tk_object_t* obj = tk_object_create(&s_object_js_array_vtable);
   object_js_array_t* o = OBJECT_JS_ARRAY(obj);
   return_value_if_fail(o != NULL, NULL);
 
-  object_js_base_init(obj, jsobj, free_handle);
+  object_js_base_init(obj, jsobj, free_handle, need_cache_str_from_js);
   o->vt = &s_js_fscript_array_vtable;
 
   return obj;

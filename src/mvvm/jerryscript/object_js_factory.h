@@ -28,7 +28,8 @@
 
 BEGIN_C_DECLS
 
-typedef tk_object_t* (*object_js_create_t)(jsvalue_t jsobj, bool_t free_handle);
+typedef tk_object_t* (*object_js_create_t)(jsvalue_t jsobj, bool_t free_handle,
+                                           bool_t need_cache_str_from_js);
 
 /**
  * @class object_js_factory_t
@@ -84,11 +85,13 @@ ret_t object_js_factory_register(object_js_factory_t* factory, jsobj_type_t type
  * @param {object_js_factory_t*} factory object jerryscript工厂对象。
  * @param {jsvalue_t} jsobj jerryscript对象。
  * @param {bool_t} free_handle object销毁的同时释放jerryscript对象。
+ * @param {bool_t} need_cache_str_from_js 缓存get_prop时来自JS的字符串；
+ *                 为FALSE时get_prop的字符串缓存在object_js_base_t->temp，重复get_prop会被覆盖。
  *
  * @return {object_js_t*} 返回object对象。
  */
 tk_object_t* object_js_factory_create_object(object_js_factory_t* factory, jsvalue_t jsobj,
-                                             bool_t free_handle);
+                                             bool_t free_handle, bool_t need_cache_str_from_js);
 
 /**
  * @method object_js_factory_destroy

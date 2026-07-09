@@ -45,12 +45,13 @@ static const object_vtable_t s_object_js_default_vtable = {
     .can_exec = object_js_base_can_exec,
     .exec = object_js_base_exec};
 
-tk_object_t* object_js_default_create(jsvalue_t jsobj, bool_t free_handle) {
+tk_object_t* object_js_default_create(jsvalue_t jsobj, bool_t free_handle,
+                                      bool_t need_cache_str_from_js) {
   tk_object_t* obj = tk_object_create(&s_object_js_default_vtable);
   object_js_default_t* o = OBJECT_JS_DEFAULT(obj);
   return_value_if_fail(o != NULL, NULL);
 
-  object_js_base_init(obj, jsobj, free_handle);
+  object_js_base_init(obj, jsobj, free_handle, need_cache_str_from_js);
 
   return obj;
 }
