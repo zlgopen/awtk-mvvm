@@ -37,10 +37,12 @@ bool_t object_is_object_js_default (jsvalue_t obj);
 
 > <p id="object_js_default_t_object_js_default_create">创建jerry script object对象。
 
+为FALSE时get_prop的字符串缓存在object_js_base_t->temp，重复get_prop会被覆盖。
+
 * 函数原型：
 
 ```
-tk_object_t* object_js_default_create (jsvalue_t jsobj, bool_t free_handle);
+tk_object_t* object_js_default_create (jsvalue_t jsobj, bool_t free_handle, bool_t need_cache_str_from_js);
 ```
 
 * 参数说明：
@@ -50,3 +52,4 @@ tk_object_t* object_js_default_create (jsvalue_t jsobj, bool_t free_handle);
 | 返回值 | tk\_object\_t* | 返回object对象。 |
 | jsobj | jsvalue\_t | jerryscript对象。 |
 | free\_handle | bool\_t | object销毁的同时释放jerryscript对象。 |
+| need\_cache\_str\_from\_js | bool\_t | 缓存get\_prop时来自JS的字符串； |

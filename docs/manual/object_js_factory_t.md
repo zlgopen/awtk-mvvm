@@ -55,11 +55,12 @@ object_js_factory_t* object_js_factory_create ();
 * 函数功能：
 
 > <p id="object_js_factory_t_object_js_factory_create_object">创建指定类型的object jerryscript对象。
+为FALSE时get_prop的字符串缓存在object_js_base_t->temp，重复get_prop会被覆盖。
 
 * 函数原型：
 
 ```
-object_js_t* object_js_factory_create_object (object_js_factory_t* factory, jsvalue_t jsobj, bool_t free_handle);
+object_js_t* object_js_factory_create_object (object_js_factory_t* factory, jsvalue_t jsobj, bool_t free_handle, bool_t need_cache_str_from_js);
 ```
 
 * 参数说明：
@@ -70,6 +71,7 @@ object_js_t* object_js_factory_create_object (object_js_factory_t* factory, jsva
 | factory | object\_js\_factory\_t* | object jerryscript工厂对象。 |
 | jsobj | jsvalue\_t | jerryscript对象。 |
 | free\_handle | bool\_t | object销毁的同时释放jerryscript对象。 |
+| need\_cache\_str\_from\_js | bool\_t | 缓存get\_prop时来自JS的字符串； |
 #### object\_js\_factory\_destroy 函数
 -----------------------
 
