@@ -598,6 +598,7 @@ static ret_t ui_loader_mvvm_build_condition_widget(ui_loader_mvvm_t* loader, rbu
   const char* expr = NULL;
   uint32_t offset = 0;
   widget_t* parent;
+  fscript_t* fscript = NULL;
   binding_context_t* ctx = BINDING_RULE_CONTEXT(rule);
   condition_binding_t* binding = CONDITION_BINDING(rule);
   return_value_if_fail(binding != NULL, RET_BAD_PARAMS);
@@ -607,6 +608,9 @@ static ret_t ui_loader_mvvm_build_condition_widget(ui_loader_mvvm_t* loader, rbu
   return_value_if_fail(
       rbuffer_find_target_dynamic_binding_prop(rbuffer, BINDING_RULE_CONDITION_IF, &expr),
       RET_BAD_PARAMS);
+
+  fscript = fscript_create(TK_OBJECT(rule), "0");
+  return_value_if_fail(fscript != NULL, RET_FAIL);
 
   parent = WIDGET(BINDING_RULE_WIDGET(rule));
   widget_init_count_of_widget_before_1st_dynamic_rule(parent);
@@ -622,7 +626,8 @@ static ret_t ui_loader_mvvm_build_condition_widget(ui_loader_mvvm_t* loader, rbu
       str_init(&str, 0);
       str_set_with_len(&str, l_str, len);
       value_set_bool(&v, FALSE);
-      if (fscript_eval(TK_OBJECT(rule), str.str, &v) == RET_OK && value_bool(&v)) {
+      if (fscript_reload(fscript, str.str) == RET_OK && fscript_exec(fscript, &v) == RET_OK &&
+          fscript->error_code == RET_OK && value_bool(&v)) {
         is_ok = TRUE;
       }
       value_reset(&v);
@@ -631,7 +636,7 @@ static ret_t ui_loader_mvvm_build_condition_widget(ui_loader_mvvm_t* loader, rbu
 
     if (!is_ok) {
       // 条件为false，则跳过
-      return_value_if_fail(rbuffer_skip_a_widget(rbuffer, builder) == RET_OK, RET_FAIL);
+      goto_error_if_fail(rbuffer_skip_a_widget(rbuffer, builder) == RET_OK);
     } else {
       // 条件为true，且与上一次的不同，则新建对应的控件
       if (!tk_str_eq(expr, binding->current_expr)) {
@@ -646,7 +651,7 @@ static ret_t ui_loader_mvvm_build_condition_widget(ui_loader_mvvm_t* loader, rbu
         }
 
         widget = ui_loader_mvvm_build_widget(loader, rbuffer, builder, NULL, NULL);
-        return_value_if_fail(widget != NULL, RET_FAIL);
+        goto_error_if_fail(widget != NULL);
 
         if (index != widget_count_children(parent) - 1) {
           widget_restack(widget, index);
@@ -656,7 +661,8 @@ static ret_t ui_loader_mvvm_build_condition_widget(ui_loader_mvvm_t* loader, rbu
       }
 
       offset = binding->widget_data_pos + binding->widget_data_size;
-      return rbuffer_skip(rbuffer, offset - rbuffer->cursor);
+      rbuffer_skip(rbuffer, offset - rbuffer->cursor);
+      break;
     }
 
     if (!rbuffer_find_target_dynamic_binding_prop(rbuffer, BINDING_RULE_CONDITION_ELIF, &expr)) {
@@ -668,16 +674,26 @@ static ret_t ui_loader_mvvm_build_condition_widget(ui_loader_mvvm_t* loader, rbu
     }
   }
 
-  // 未找到条件为true的控件，销毁旧的控件
-  if (binding->current_expr != NULL) {
-    uint32_t index = binding_context_calc_widget_index_of_rule(ctx, rule);
-    widget_t* widget = widget_get_child(parent, index);
-    ENSURE(widget != NULL);
-    widget_destroy_and_clear_bindings(widget, ctx);
+  if (!is_ok) {
+    // 未找到条件为true的控件，销毁旧的控件
+    if (binding->current_expr != NULL) {
+      uint32_t index = binding_context_calc_widget_index_of_rule(ctx, rule);
+      widget_t* widget = widget_get_child(parent, index);
+      ENSURE(widget != NULL);
+      widget_destroy_and_clear_bindings(widget, ctx);
+    }
+
+    binding->current_expr = NULL;
   }
 
-  binding->current_expr = NULL;
+  fscript_destroy(fscript);
+
   return RET_OK;
+
+error:
+  fscript_destroy(fscript);
+
+  return RET_FAIL;
 }
 
 widget_t* widget_lookup_by_id(widget_t* widget, const value_t* id, int32_t begin_index,

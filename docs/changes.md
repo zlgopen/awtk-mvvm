@@ -2,6 +2,7 @@
 
 2026/08/07
   * 添加 API 文档。(感谢雨欣提供补丁)
+  * 修改条件渲染时如果 fscript 表达式发生错误（比如找不到变量）则认为表达式为 false。（感谢朝泽提供补丁）
 
 2026/07/09
   * 修复诸如在 JS 层调用 “navigateTo({ request: '_confirm_', title: 'information', content: 'Are you sure?' })” 时由于字符串参数被覆盖导致显示有误的问题。（感谢朝泽提供补丁）
