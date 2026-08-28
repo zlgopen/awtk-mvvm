@@ -39,6 +39,10 @@ static ret_t data_binding_on_destroy(tk_object_t* obj) {
   data_binding_t* rule = data_binding_cast(obj);
   return_value_if_fail(rule != NULL, RET_BAD_PARAMS);
 
+  if (rule->prop_cbs.free_ctx != NULL && rule->prop_cbs.ctx != NULL) {
+    rule->prop_cbs.free_ctx(rule->prop_cbs.ctx);
+  }
+
   TKMEM_FREE(rule->path);
   TKMEM_FREE(rule->prop);
   TKMEM_FREE(rule->validator);
@@ -261,6 +265,18 @@ data_binding_t* data_binding_create(void) {
   return rule;
 }
 
+ret_t data_binding_set_prop_cbs(data_binding_t* rule, data_binding_prop_cbs_t prop_cbs) {
+  return_value_if_fail(rule != NULL, RET_BAD_PARAMS);
+
+  if (rule->prop_cbs.free_ctx != NULL && rule->prop_cbs.ctx != NULL) {
+    rule->prop_cbs.free_ctx(rule->prop_cbs.ctx);
+  }
+
+  rule->prop_cbs = prop_cbs;
+
+  return RET_OK;
+}
+
 data_binding_t* data_binding_cast(void* rule) {
   return_value_if_fail(binding_rule_is_data_binding(rule), NULL);
 
@@ -363,6 +379,40 @@ static ret_t value_fix(tk_object_t* ctx, const char* name, value_t* value) {
   return ret;
 }
 
+static ret_t data_binding_on_get_prop(data_binding_t* rule, value_t* v) {
+  if (rule->prop_cbs.get_prop) {
+    value_t out;
+    memset(&out, 0x00, sizeof(value_t));
+
+    if (rule->prop_cbs.get_prop(BINDING_RULE(rule), rule->prop_cbs.ctx, v, &out) == RET_OK) {
+      *v = out;
+      return RET_OK;
+    }
+
+    value_reset(&out);
+    return RET_FAIL;
+  }
+
+  return RET_OK;
+}
+
+static ret_t data_binding_on_set_prop(data_binding_t* rule, value_t* v) {
+  if (rule->prop_cbs.set_prop) {
+    value_t out;
+    memset(&out, 0x00, sizeof(value_t));
+
+    if (rule->prop_cbs.set_prop(BINDING_RULE(rule), rule->prop_cbs.ctx, v, &out) == RET_OK) {
+      *v = out;
+      return RET_OK;
+    }
+
+    value_reset(&out);
+    return RET_FAIL;
+  }
+
+  return RET_OK;
+}
+
 ret_t data_binding_get_prop(data_binding_t* rule, value_t* v) {
   ret_t ret = RET_OK;
   value_t raw;
@@ -389,7 +439,7 @@ ret_t data_binding_get_prop(data_binding_t* rule, value_t* v) {
   if (rule->to_view_expr != NULL) {
     if (fscript_exec(rule->to_view_expr, &raw) == RET_OK) {
       *v = raw;
-      return RET_OK;
+      return data_binding_on_get_prop(rule, v);
     }
     return RET_FAIL;
   }
@@ -402,13 +452,15 @@ ret_t data_binding_get_prop(data_binding_t* rule, value_t* v) {
   ret = value_to_view(rule, &raw, v);
   value_reset(&raw);
 
-  return ret;
+  return data_binding_on_get_prop(rule, v);
 }
 
 ret_t data_binding_set_prop(data_binding_t* rule, const value_t* raw) {
   ret_t ret = RET_OK;
   tk_object_t* obj = TK_OBJECT(rule);
   view_model_t* view_model = NULL;
+  const value_t* input = raw;
+  value_t value;
   return_value_if_fail(rule != NULL && raw != NULL, RET_BAD_PARAMS);
 
   view_model = BINDING_RULE_VIEW_MODEL(rule);
@@ -422,24 +474,34 @@ ret_t data_binding_set_prop(data_binding_t* rule, const value_t* raw) {
     view_model_array_set_cursor(view_model, cursor);
   }
 
+  if (rule->prop_cbs.set_prop) {
+    value_set_int(&value, 0);
+    value_copy(&value, raw);
+    if (data_binding_on_set_prop(rule, &value) != RET_OK) {
+      value_reset(&value);
+      return RET_FAIL;
+    }
+    input = &value;
+  }
+
   if (rule->to_model_expr != NULL) {
     value_t v;
     value_set_int(&v, 0);
-    rule->value = raw;
+    rule->value = input;
     fscript_exec(rule->to_model_expr, &v);
     rule->value = NULL;
     ret = tk_object_set_prop(obj, rule->path, &v);
     value_reset(&v);
   } else {
-    const value_t* temp = raw;
+    const value_t* temp = input;
     value_t fix_value;
     value_t v;
 
     value_set_int(&fix_value, 0);
     value_set_int(&v, 0);
 
-    if (!value_is_valid(obj, rule->validator, raw, &(view_model->last_error))) {
-      value_deep_copy(&fix_value, raw);
+    if (!value_is_valid(obj, rule->validator, temp, &(view_model->last_error))) {
+      value_deep_copy(&fix_value, temp);
       ret = value_fix(obj, rule->validator, &fix_value);
       temp = &fix_value;
     }
@@ -455,6 +517,10 @@ ret_t data_binding_set_prop(data_binding_t* rule, const value_t* raw) {
 
     value_reset(&fix_value);
     value_reset(&v);
+  }
+
+  if (rule->prop_cbs.set_prop) {
+    value_reset(&value);
   }
 
   return ret;

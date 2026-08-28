@@ -87,6 +87,24 @@ typedef enum _binding_mode_t {
   BINDING_ONCE
 } binding_mode_t;
 
+typedef ret_t (*data_binding_get_prop_cb_t)(binding_rule_t* rule, void* ctx, value_t* in, value_t* out);
+typedef ret_t (*data_binding_set_prop_cb_t)(binding_rule_t* rule, void* ctx,
+                                            value_t* in, value_t* out);
+
+/**
+ * @class data_binding_prop_cbs_t
+ * 数据绑定的属性回调函数。
+ * > 如果设置了 get_prop，则同步模型数据到视图时，先根据设定的绑定规则获取值，再调用 get_prop 对该值进行二次处理，再将结果更新到视图。
+ * > 如果设置了 set_prop，则同步视图数据到模型时，先调用 set_prop 处理视图数据，处理后的值再根据设定的绑定规则更新数据到模型。
+ * > 如果在 data_binding 销毁时需同时销毁 ctx，可设置 free_ctx。
+ */
+typedef struct _data_binding_prop_cbs_t {
+  data_binding_get_prop_cb_t get_prop;
+  data_binding_set_prop_cb_t set_prop;
+  tk_destroy_t free_ctx;
+  void* ctx;
+} data_binding_prop_cbs_t;
+
 /**
  * @class data_binding_t
  * @parent binding_rule_t
@@ -160,11 +178,19 @@ typedef struct _data_binding_t {
    * 触发更新模型的时机。
    */
   update_model_trigger_t trigger;
-  /*private*/
+
+  /**
+   * @property {char*} expr
+   * @annotation ["readable"]
+   * 表达式。
+   */
   fscript_t* expr;
+
+  /*private*/
   fscript_t* to_model_expr;
   fscript_t* to_view_expr;
   const value_t* value;
+  data_binding_prop_cbs_t prop_cbs;
 } data_binding_t;
 
 /**
@@ -197,6 +223,17 @@ ret_t data_binding_get_prop(data_binding_t* rule, value_t* v);
  * @return {ret_t} 返回RET_OK表示成功，否则表示失败。
  */
 ret_t data_binding_set_prop(data_binding_t* rule, const value_t* v);
+
+/**
+ * @method data_binding_set_prop_cbs
+ * 设置 get_prop / set_prop 回调（通常由 custom_binder 在 bind 时调用）。
+ *
+ * @param {data_binding_t*} rule 绑定规则对象。
+ * @param {data_binding_prop_cbs_t} prop_cbs prop_cbs。
+ *
+ * @return {ret_t} 返回RET_OK表示成功。
+ */
+ret_t data_binding_set_prop_cbs(data_binding_t* rule, data_binding_prop_cbs_t prop_cbs);
 
 /**
  * @method binding_rule_is_data_binding
