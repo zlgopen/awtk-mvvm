@@ -121,6 +121,32 @@ static ret_t condition_binding_object_exec(tk_object_t* obj, const char* name, c
   return view_model_exec(view_model, name, args);
 }
 
+static tk_object_t* condition_binding_object_clone(tk_object_t* obj) {
+  condition_binding_t* result = NULL;
+  condition_binding_t* rule = CONDITION_BINDING(obj);
+  return_value_if_fail(rule != NULL, NULL);
+
+  result = condition_binding_create();
+  return_value_if_fail(result != NULL, NULL);
+
+  result->binding_rule.inited = rule->binding_rule.inited;
+  result->binding_rule.widget = rule->binding_rule.widget;
+  result->binding_rule.parent = rule->binding_rule.parent;
+  result->binding_rule.binding_context = rule->binding_rule.binding_context;
+  result->current_expr = rule->current_expr;
+  result->widget_data_pos = rule->widget_data_pos;
+  result->widget_data_size = rule->widget_data_size;
+  result->static_widget_before_next_dynamic_binding =
+      rule->static_widget_before_next_dynamic_binding;
+
+  if (rule->props != NULL) {
+    result->props = tk_object_clone(rule->props);
+    assert(result->props != NULL);
+  }
+
+  return TK_OBJECT(result);
+}
+
 static const object_vtable_t s_condition_binding_vtable = {
     .type = "condition_binding",
     .desc = "condition_binding",
@@ -131,6 +157,7 @@ static const object_vtable_t s_condition_binding_vtable = {
     .on_destroy = condition_binding_on_destroy,
     .get_prop = condition_binding_object_get_prop,
     .set_prop = condition_binding_object_set_prop,
+    .clone = condition_binding_object_clone,
 };
 
 condition_binding_t* condition_binding_create(void) {

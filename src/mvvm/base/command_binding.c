@@ -218,6 +218,37 @@ static ret_t command_binding_object_exec(tk_object_t* obj, const char* name, con
   return view_model_exec(view_model, name, args);
 }
 
+static tk_object_t* command_binding_object_clone(tk_object_t* obj) {
+  command_binding_t* result = NULL;
+  command_binding_t* rule = COMMAND_BINDING(obj);
+  return_value_if_fail(rule != NULL, NULL);
+
+  result = command_binding_create();
+  return_value_if_fail(result != NULL, NULL);
+
+  result->binding_rule.inited = rule->binding_rule.inited;
+  result->binding_rule.widget = rule->binding_rule.widget;
+  result->binding_rule.parent = rule->binding_rule.parent;
+  result->binding_rule.binding_context = rule->binding_rule.binding_context;
+  result->args = tk_str_copy(result->args, rule->args);
+  result->command = tk_str_copy(result->command, rule->command);
+  result->event = tk_str_copy(result->event, rule->event);
+  result->key_filter = tk_str_copy(result->key_filter, rule->key_filter);
+  result->close_window = rule->close_window;
+  result->quit_app = rule->quit_app;
+  result->is_continue = rule->is_continue;
+  result->update_model = rule->update_model;
+  result->auto_disable = rule->auto_disable;
+  result->filter = rule->filter;
+
+  if (rule->props != NULL) {
+    result->props = tk_object_clone(rule->props);
+    assert(result->props != NULL);
+  }
+
+  return TK_OBJECT(result);
+}
+
 static const object_vtable_t s_command_binding_vtable = {
     .type = "command_binding",
     .desc = "command_binding",
@@ -228,6 +259,7 @@ static const object_vtable_t s_command_binding_vtable = {
     .exec = command_binding_object_exec,
     .get_prop = command_binding_get_prop,
     .set_prop = command_binding_set_prop,
+    .clone = command_binding_object_clone,
 };
 
 command_binding_t* command_binding_create(void) {

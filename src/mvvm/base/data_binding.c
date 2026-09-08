@@ -243,6 +243,48 @@ static ret_t data_binding_object_exec(tk_object_t* obj, const char* name, const 
   return view_model_exec(view_model, name, args);
 }
 
+static tk_object_t* data_binding_object_clone(tk_object_t* obj) {
+  data_binding_t* result = NULL;
+  data_binding_t* rule = DATA_BINDING(obj);
+  return_value_if_fail(rule != NULL, NULL);
+
+  result = data_binding_create();
+  return_value_if_fail(result != NULL, NULL);
+
+  result->binding_rule.inited = rule->binding_rule.inited;
+  result->binding_rule.widget = rule->binding_rule.widget;
+  result->binding_rule.parent = rule->binding_rule.parent;
+  result->binding_rule.binding_context = rule->binding_rule.binding_context;
+  result->path = tk_str_copy(result->path, rule->path);
+  result->prop = tk_str_copy(result->prop, rule->prop);
+  result->validator = tk_str_copy(result->validator, rule->validator);
+  result->converter = tk_str_copy(result->converter, rule->converter);
+  result->converter_args = tk_str_copy(result->converter_args, rule->converter_args);
+  result->to_view = tk_str_copy(result->to_view, rule->to_view);
+  result->to_model = tk_str_copy(result->to_model, rule->to_model);
+  result->mode = rule->mode;
+  result->trigger = rule->trigger;
+
+  if (rule->props != NULL) {
+    result->props = tk_object_clone(rule->props);
+    assert(result->props != NULL);
+  }
+
+  if (rule->binding_rule.inited) {
+    result->expr = fscript_create_ex2(TK_OBJECT(result), result->path, FALSE, TK_OBJECT_LIFE_NONE);
+    if (result->to_view != NULL) {
+      result->to_view_expr =
+          fscript_create_ex2(TK_OBJECT(result), result->to_view, FALSE, TK_OBJECT_LIFE_NONE);
+    }
+    if (result->to_model != NULL) {
+      result->to_model_expr =
+          fscript_create_ex2(TK_OBJECT(result), result->to_model, FALSE, TK_OBJECT_LIFE_NONE);
+    }
+  }
+
+  return TK_OBJECT(result);
+}
+
 static const object_vtable_t s_data_binding_vtable = {
     .type = "data_binding",
     .desc = "data_binding",
@@ -253,6 +295,7 @@ static const object_vtable_t s_data_binding_vtable = {
     .on_destroy = data_binding_on_destroy,
     .get_prop = data_binding_object_get_prop,
     .set_prop = data_binding_object_set_prop,
+    .clone = data_binding_object_clone,
 };
 
 data_binding_t* data_binding_create(void) {

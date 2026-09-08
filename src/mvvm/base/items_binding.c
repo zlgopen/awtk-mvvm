@@ -138,6 +138,41 @@ static ret_t items_binding_object_exec(tk_object_t* obj, const char* name, const
   return view_model_exec(view_model, name, args);
 }
 
+static tk_object_t* items_binding_object_clone(tk_object_t* obj) {
+  items_binding_t* result = NULL;
+  items_binding_t* rule = ITEMS_BINDING(obj);
+  return_value_if_fail(rule != NULL, NULL);
+
+  result = items_binding_create();
+  return_value_if_fail(result != NULL, NULL);
+
+  result->binding_rule.inited = rule->binding_rule.inited;
+  result->binding_rule.widget = rule->binding_rule.widget;
+  result->binding_rule.parent = rule->binding_rule.parent;
+  result->binding_rule.binding_context = rule->binding_rule.binding_context;
+  result->items_name = tk_str_copy(result->items_name, rule->items_name);
+  result->item_name = tk_str_copy(result->item_name, rule->item_name);
+  result->index_name = tk_str_copy(result->index_name, rule->index_name);
+  result->id_name = tk_str_copy(result->id_name, rule->id_name);
+  result->widget_data_pos = rule->widget_data_pos;
+  result->widget_data_size = rule->widget_data_size;
+  result->static_widget_before_next_dynamic_binding =
+      rule->static_widget_before_next_dynamic_binding;
+  result->items_count = rule->items_count;
+  result->cursor = rule->cursor;
+  result->rebind_idle_id = TK_INVALID_ID;
+  result->bound = rule->bound;
+  result->fixed_widget_count = rule->fixed_widget_count;
+  result->start_item_index = rule->start_item_index;
+
+  if (rule->props != NULL) {
+    result->props = tk_object_clone(rule->props);
+    assert(result->props != NULL);
+  }
+
+  return TK_OBJECT(result);
+}
+
 static const object_vtable_t s_items_binding_vtable = {
     .type = "items_binding",
     .desc = "items_binding",
@@ -148,6 +183,7 @@ static const object_vtable_t s_items_binding_vtable = {
     .on_destroy = items_binding_on_destroy,
     .get_prop = items_binding_object_get_prop,
     .set_prop = items_binding_object_set_prop,
+    .clone = items_binding_object_clone,
 };
 
 items_binding_t* items_binding_create(void) {
