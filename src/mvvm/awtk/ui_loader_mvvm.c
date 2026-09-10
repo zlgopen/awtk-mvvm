@@ -26,7 +26,6 @@
 #include "tkc/fscript.h"
 #include "ui_loader/ui_binary_writer.h"
 #include "ui_loader/ui_loader_xml.h"
-
 #include "ui_loader/ui_builder_default.h"
 #include "mvvm/base/binding_rule_parser.h"
 #include "mvvm/base/data_binding.h"
@@ -38,8 +37,49 @@
 
 #define _HAS_WIDGET(r) (r->cursor + sizeof(widget_desc_t) <= r->capacity)
 
-static ret_t ui_loader_mvvm_load_a_snippet(ui_loader_mvvm_t* loader, rbuffer_t* rbuffer,
-                                           ui_builder_t* b, widget_t* target);
+static ui_loader_mvvm_builder_ctx_t* ui_loader_mvvm_builder_ctx_create(navigator_request_t* req,
+                                                                       binding_rule_t* rule,
+                                                                       binding_context_t* bctx) {
+  ui_loader_mvvm_builder_ctx_t* ctx = TKMEM_ZALLOC(ui_loader_mvvm_builder_ctx_t);
+  return_value_if_fail(ctx != NULL, NULL);
+
+  ctx->navigator_request = req;
+  ctx->rule = rule;
+  ctx->binding_context = bctx;
+  ctx->has_bind = bctx != NULL;
+
+  return ctx;
+}
+
+static ret_t ui_loader_mvvm_builder_ctx_destroy(ui_loader_mvvm_builder_ctx_t* ctx) {
+  if (ctx != NULL) {
+    TKMEM_FREE(ctx);
+  }
+  return RET_OK;
+}
+
+static ret_t ui_loader_mvvm_builder_ctx_update_binding_context(ui_loader_mvvm_builder_ctx_t* ctx,
+                                                               binding_context_t* bctx) {
+  return_value_if_fail(ctx != NULL, RET_BAD_PARAMS);
+  ctx->binding_context = bctx;
+  ctx->has_bind = ctx->has_bind || (bctx != NULL);
+  return RET_OK;
+}
+
+static ret_t ui_loader_mvvm_update_builder_ctx(ui_builder_t* builder, widget_t* widget,
+                                               const asset_info_t* ui, navigator_request_t* req,
+                                               binding_rule_t* rule) {
+  ui_loader_mvvm_builder_ctx_t* ctx =
+      ui_loader_mvvm_builder_ctx_create(req, rule, rule != NULL ? rule->binding_context : NULL);
+  return_value_if_fail(ctx != NULL, RET_OOM);
+  ui_builder_set_additional_context(builder, ctx, (tk_destroy_t)ui_loader_mvvm_builder_ctx_destroy);
+  builder->widget = widget;
+  builder->ui = ui;
+  return RET_OK;
+}
+
+static ret_t ui_loader_mvvm_load_a_snippet(ui_loader_t* loader, rbuffer_t* rbuffer,
+                                           ui_builder_t* builder, widget_t* target);
 
 static bool_t rbuffer_find_target_prop(rbuffer_t* rbuffer, const char* target, const char** value) {
   bool_t ret = FALSE;
@@ -202,7 +242,7 @@ static bool_t break_if_ref_0(void* ctx, ui_builder_t* builder) {
 }
 
 static ret_t rbuffer_skip_widget_end_mark(rbuffer_t* rbuffer, ui_builder_t* builder,
-                                          bool_t (*break_func)(void* ctx, ui_builder_t* b),
+                                          bool_t (*break_func)(void* ctx, ui_builder_t* builder),
                                           void* ctx) {
   uint8_t widget_end_mark = 0;
 
@@ -224,7 +264,7 @@ static ret_t rbuffer_skip_widget_end_mark(rbuffer_t* rbuffer, ui_builder_t* buil
   return RET_OK;
 }
 
-static ret_t rbuffer_skip_a_widget(rbuffer_t* rbuffer, ui_builder_t* b) {
+static ret_t rbuffer_skip_a_widget(rbuffer_t* rbuffer, ui_builder_t* builder) {
   widget_desc_t desc;
   uint32_t ref_count = 0;
   const char* key = NULL;
@@ -240,7 +280,8 @@ static ret_t rbuffer_skip_a_widget(rbuffer_t* rbuffer, ui_builder_t* b) {
       return_value_if_fail(rbuffer_read_string(rbuffer, &key) == RET_OK, RET_FAIL);
     }
     return_value_if_fail(
-        rbuffer_skip_widget_end_mark(rbuffer, b, break_if_ref_0, &ref_count) == RET_OK, RET_FAIL);
+        rbuffer_skip_widget_end_mark(rbuffer, builder, break_if_ref_0, &ref_count) == RET_OK,
+        RET_FAIL);
 
     if (ref_count == 0) {
       break;
@@ -250,15 +291,15 @@ static ret_t rbuffer_skip_a_widget(rbuffer_t* rbuffer, ui_builder_t* b) {
   return RET_OK;
 }
 
-static ret_t rbuffer_skip_a_condition_widget(rbuffer_t* rbuffer, ui_builder_t* b) {
+static ret_t rbuffer_skip_a_condition_widget(rbuffer_t* rbuffer, ui_builder_t* builder) {
   ret_t ret = RET_OK;
 
   do {
-    break_if_fail(rbuffer_skip_a_widget(rbuffer, b) == RET_OK);
+    break_if_fail(rbuffer_skip_a_widget(rbuffer, builder) == RET_OK);
   } while (rbuffer_find_target_dynamic_binding_prop(rbuffer, BINDING_RULE_CONDITION_ELIF, NULL));
 
   if (rbuffer_find_target_dynamic_binding_prop(rbuffer, BINDING_RULE_CONDITION_ELSE, NULL)) {
-    ret = rbuffer_skip_a_widget(rbuffer, b);
+    ret = rbuffer_skip_a_widget(rbuffer, builder);
   }
 
   return ret;
@@ -288,16 +329,18 @@ static ret_t rbuffer_get_data_range_of_a_condition_widget(rbuffer_t* rbuffer, ui
   return RET_OK;
 }
 
-static binding_rule_t* ui_loader_mvvm_bind_data(ui_loader_mvvm_t* loader, widget_t* widget,
-                                                const char* name, const char* value) {
+static binding_rule_t* ui_loader_mvvm_bind_data(ui_loader_t* loader, ui_builder_t* builder,
+                                                widget_t* widget, const char* name,
+                                                const char* value) {
   binding_rule_t* rule = binding_rule_parse(name, value, widget->vt->inputable);
   data_binding_t* binding = DATA_BINDING(rule);
-  return_value_if_fail(binding != NULL, NULL);
+  ui_loader_mvvm_builder_ctx_t* ctx = (ui_loader_mvvm_builder_ctx_t*)(builder->additional_ctx);
+  return_value_if_fail(binding != NULL && ctx != NULL, NULL);
 
-  rule->parent = loader->rule;
+  rule->parent = ctx->rule;
   rule->widget = widget;
 
-  if (binding_context_bind_data(loader->binding_context, rule) != RET_OK) {
+  if (binding_context_bind_data(ctx->binding_context, rule) != RET_OK) {
     TK_OBJECT_UNREF(rule);
     return NULL;
   }
@@ -307,16 +350,18 @@ static binding_rule_t* ui_loader_mvvm_bind_data(ui_loader_mvvm_t* loader, widget
   return rule;
 }
 
-static binding_rule_t* ui_loader_mvvm_bind_command(ui_loader_mvvm_t* loader, widget_t* widget,
-                                                   const char* name, const char* value) {
+static binding_rule_t* ui_loader_mvvm_bind_command(ui_loader_t* loader, ui_builder_t* builder,
+                                                   widget_t* widget, const char* name,
+                                                   const char* value) {
   binding_rule_t* rule = binding_rule_parse(name, value, widget->vt->inputable);
   command_binding_t* binding = COMMAND_BINDING(rule);
-  return_value_if_fail(binding != NULL, NULL);
+  ui_loader_mvvm_builder_ctx_t* ctx = (ui_loader_mvvm_builder_ctx_t*)(builder->additional_ctx);
+  return_value_if_fail(binding != NULL && ctx != NULL, NULL);
 
-  rule->parent = loader->rule;
+  rule->parent = ctx->rule;
   rule->widget = widget;
 
-  if (binding_context_bind_command(loader->binding_context, rule) != RET_OK) {
+  if (binding_context_bind_command(ctx->binding_context, rule) != RET_OK) {
     TK_OBJECT_UNREF(rule);
     return NULL;
   }
@@ -326,19 +371,21 @@ static binding_rule_t* ui_loader_mvvm_bind_command(ui_loader_mvvm_t* loader, wid
   return rule;
 }
 
-static binding_rule_t* ui_loader_mvvm_bind_items(ui_loader_mvvm_t* loader, widget_t* widget,
-                                                 const char* name, const char* value,
-                                                 uint32_t data_pos, uint32_t data_size) {
+static binding_rule_t* ui_loader_mvvm_bind_items(ui_loader_t* loader, ui_builder_t* builder,
+                                                 widget_t* widget, const char* name,
+                                                 const char* value, uint32_t data_pos,
+                                                 uint32_t data_size) {
   binding_rule_t* rule = binding_rule_parse(name, value, widget->vt->inputable);
   items_binding_t* binding = ITEMS_BINDING(rule);
-  return_value_if_fail(binding != NULL, NULL);
+  ui_loader_mvvm_builder_ctx_t* ctx = (ui_loader_mvvm_builder_ctx_t*)(builder->additional_ctx);
+  return_value_if_fail(binding != NULL && ctx != NULL, NULL);
 
-  rule->parent = loader->rule;
+  rule->parent = ctx->rule;
   rule->widget = widget;
   binding->widget_data_pos = data_pos;
   binding->widget_data_size = data_size;
 
-  if (binding_context_bind_items(loader->binding_context, rule) != RET_OK) {
+  if (binding_context_bind_items(ctx->binding_context, rule) != RET_OK) {
     TK_OBJECT_UNREF(rule);
     return NULL;
   }
@@ -348,19 +395,21 @@ static binding_rule_t* ui_loader_mvvm_bind_items(ui_loader_mvvm_t* loader, widge
   return rule;
 }
 
-static binding_rule_t* ui_loader_mvvm_bind_condition(ui_loader_mvvm_t* loader, widget_t* widget,
-                                                     const char* name, const char* value,
-                                                     uint32_t data_pos, uint32_t data_size) {
+static binding_rule_t* ui_loader_mvvm_bind_condition(ui_loader_t* loader, ui_builder_t* builder,
+                                                     widget_t* widget, const char* name,
+                                                     const char* value, uint32_t data_pos,
+                                                     uint32_t data_size) {
   binding_rule_t* rule = binding_rule_parse(name, value, widget->vt->inputable);
   condition_binding_t* binding = CONDITION_BINDING(rule);
-  return_value_if_fail(binding != NULL, NULL);
+  ui_loader_mvvm_builder_ctx_t* ctx = (ui_loader_mvvm_builder_ctx_t*)(builder->additional_ctx);
+  return_value_if_fail(binding != NULL && ctx != NULL, NULL);
 
-  rule->parent = loader->rule;
+  rule->parent = ctx->rule;
   rule->widget = widget;
   binding->widget_data_pos = data_pos;
   binding->widget_data_size = data_size;
 
-  if (binding_context_bind_condition(loader->binding_context, rule) != RET_OK) {
+  if (binding_context_bind_condition(ctx->binding_context, rule) != RET_OK) {
     TK_OBJECT_UNREF(rule);
     return NULL;
   }
@@ -404,6 +453,14 @@ static ret_t widget_set_custom_prop_pointer(widget_t* widget, const char* name, 
   return widget_set_custom_prop(widget, name, &v);
 }
 
+static ret_t widget_set_custom_prop_pointer_ex(widget_t* widget, const char* name, void* val,
+                                               tk_destroy_t destroy) {
+  value_t v;
+  value_set_pointer_ex(&v, val, destroy);
+
+  return widget_set_custom_prop(widget, name, &v);
+}
+
 static ret_t widget_init_count_of_widget_before_1st_dynamic_rule(widget_t* widget) {
   value_t v;
   const char* name = WIDGET_PROP_MVVM_COUNT_OF_WIDGET_BEFORE_FIRST_DYNAMIC_RULE;
@@ -430,19 +487,19 @@ static ret_t visit_clear_binding(void* ctx, const void* data) {
   return binding_context_clear_bindings_of_widget(ctx, widget);
 }
 
-static ret_t widget_destroy_children_and_clear_bindings(widget_t* widget, binding_context_t* ctx) {
+static ret_t widget_destroy_children_and_clear_bindings(widget_t* widget, binding_context_t* bctx) {
   /* 由于控件为异步销毁，无法立即清除绑定规则，故先强制清除，避免无效的绑定被执行 */
   WIDGET_FOR_EACH_CHILD_BEGIN(widget, iter, i)
-  widget_foreach(iter, visit_clear_binding, ctx);
+  widget_foreach(iter, visit_clear_binding, bctx);
   WIDGET_FOR_EACH_CHILD_END()
 
   widget_destroy_children(widget);
   return RET_OK;
 }
 
-static ret_t widget_destroy_and_clear_bindings(widget_t* widget, binding_context_t* ctx) {
+static ret_t widget_destroy_and_clear_bindings(widget_t* widget, binding_context_t* bctx) {
   /* 由于控件为异步销毁，无法立即清除绑定规则，故先强制清除，避免无效的绑定被执行 */
-  widget_foreach(widget, visit_clear_binding, ctx);
+  widget_foreach(widget, visit_clear_binding, bctx);
 
   widget_destroy(widget);
   return RET_OK;
@@ -450,6 +507,8 @@ static ret_t widget_destroy_and_clear_bindings(widget_t* widget, binding_context
 
 static ret_t ui_loader_mvvm_on_widget_destroy(void* ctx, event_t* e) {
   binding_context_t* bctx = BINDING_CONTEXT(ctx);
+
+  assert(bctx != NULL);
   binding_context_clear_bindings_of_widget(bctx, e->target);
   widget_off_by_ctx(bctx->widget, e->target);
 
@@ -466,14 +525,15 @@ static ret_t ui_loader_mvvm_on_widget_binding_context_destroy(void* ctx, event_t
   return RET_OK;
 }
 
-static ret_t ui_loader_mvvm_build_data_with_widget(ui_loader_mvvm_t* loader,
+static ret_t ui_loader_mvvm_build_data_with_widget(ui_loader_t* loader, ui_builder_t* builder,
                                                    darray_t* bind_data_rbuffer_offsets,
                                                    rbuffer_t* rbuffer, widget_t* widget) {
   const char* key = NULL;
   const char* val = NULL;
   uint32_t rbuffer_offset = 0;
-  binding_context_t* ctx = loader->binding_context;
-  if (ctx != NULL) {
+  ui_loader_mvvm_builder_ctx_t* ctx = (ui_loader_mvvm_builder_ctx_t*)(builder->additional_ctx);
+
+  if (ctx != NULL && ctx->binding_context != NULL) {
     uint32_t i = 0;
     rbuffer_offset = rbuffer->cursor;
     for (i = 0; i < bind_data_rbuffer_offsets->size; i++) {
@@ -481,7 +541,7 @@ static ret_t ui_loader_mvvm_build_data_with_widget(ui_loader_mvvm_t* loader,
       rbuffer_skip(rbuffer, tk_pointer_to_int(darray_get(bind_data_rbuffer_offsets, i)));
       break_if_fail(rbuffer_read_string(rbuffer, &key) == RET_OK);
       break_if_fail(rbuffer_read_string(rbuffer, &val) == RET_OK);
-      ui_loader_mvvm_bind_data(loader, widget, key, val);
+      ui_loader_mvvm_bind_data(loader, builder, widget, key, val);
     }
     rbuffer_rewind(rbuffer);
     rbuffer_skip(rbuffer, rbuffer_offset);
@@ -489,7 +549,7 @@ static ret_t ui_loader_mvvm_build_data_with_widget(ui_loader_mvvm_t* loader,
   return RET_OK;
 }
 
-static widget_t* ui_loader_mvvm_build_widget(ui_loader_mvvm_t* loader, rbuffer_t* rbuffer,
+static widget_t* ui_loader_mvvm_build_widget(ui_loader_t* loader, rbuffer_t* rbuffer,
                                              ui_builder_t* builder, uint32_t* cursor,
                                              const value_t* id) {
   widget_desc_t desc;
@@ -500,8 +560,9 @@ static widget_t* ui_loader_mvvm_build_widget(ui_loader_mvvm_t* loader, rbuffer_t
   uint32_t rbuffer_offset = 0;
   darray_t bind_data_rbuffer_offsets;
   bool_t should_create_binding_context = FALSE;
-  binding_context_t* ctx = loader->binding_context;
-  navigator_request_t* req = loader->navigator_request;
+  ui_loader_mvvm_builder_ctx_t* ctx = (ui_loader_mvvm_builder_ctx_t*)(builder->additional_ctx);
+  binding_context_t* bctx = ctx != NULL ? ctx->binding_context : NULL;
+  navigator_request_t* req = ctx != NULL ? ctx->navigator_request : NULL;
 
   if (rbuffer_find_target_prop(rbuffer, WIDGET_PROP_V_MODEL, &val)) {
     vmodel = val;
@@ -511,16 +572,13 @@ static widget_t* ui_loader_mvvm_build_widget(ui_loader_mvvm_t* loader, rbuffer_t
   return_value_if_fail(ui_builder_on_widget_start(builder, &desc) == RET_OK, NULL);
 
   widget = builder->widget;
-  should_create_binding_context = (vmodel != NULL) || (ctx == NULL && widget_is_window(widget));
+  should_create_binding_context =
+      (vmodel != NULL) || (bctx == NULL && req != NULL && widget_is_window(widget));
 
   if (should_create_binding_context) {
-    ctx = binding_context_awtk_create(ctx, vmodel, req, widget);
-    return_value_if_fail(ctx != NULL, NULL);
-
-    if (loader->binding_context == NULL) {
-      widget_set_custom_prop_pointer(widget, WIDGET_PROP_MVVM_ASSETS_INFO, (void*)(loader->ui));
-    }
-    loader->binding_context = ctx;
+    bctx = binding_context_awtk_create(bctx, vmodel, req, widget);
+    return_value_if_fail(bctx != NULL, NULL);
+    ui_loader_mvvm_builder_ctx_update_binding_context(ctx, bctx);
   }
 
   if (cursor != NULL) {
@@ -539,7 +597,7 @@ static widget_t* ui_loader_mvvm_build_widget(ui_loader_mvvm_t* loader, rbuffer_t
       }
     } else if (tk_str_start_with(key, BINDING_RULE_COMMAND_PREFIX)) {
       if (TK_STR_IS_NOT_EMPTY(val)) {
-        if (ctx != NULL) ui_loader_mvvm_bind_command(loader, widget, key, val);
+        if (bctx != NULL) ui_loader_mvvm_bind_command(loader, builder, widget, key, val);
       }
     } else if (tk_str_eq(key, BINDING_RULE_ITEMS)) {
     } else if (tk_str_eq(key, BINDING_RULE_CONDITION_IF)) {
@@ -560,7 +618,8 @@ static widget_t* ui_loader_mvvm_build_widget(ui_loader_mvvm_t* loader, rbuffer_t
   goto_error_if_fail(ui_builder_on_widget_prop_end(builder) == RET_OK);
 
   /* 统一绑定数据，用于确保先触发修改属性再触发相关个注册事件 */
-  ui_loader_mvvm_build_data_with_widget(loader, &bind_data_rbuffer_offsets, rbuffer, widget);
+  ui_loader_mvvm_build_data_with_widget(loader, builder, &bind_data_rbuffer_offsets, rbuffer,
+                                        widget);
   darray_deinit(&bind_data_rbuffer_offsets);
 
   // 跳过控件的结束标记，直到当前控件等于widget的父控件
@@ -574,14 +633,16 @@ static widget_t* ui_loader_mvvm_build_widget(ui_loader_mvvm_t* loader, rbuffer_t
   }
 
   if (should_create_binding_context) {
-    binding_context_set_bound(ctx, TRUE);
-    loader->binding_context = ctx->parent;
+    binding_context_set_bound(bctx, TRUE);
+    ui_loader_mvvm_builder_ctx_update_binding_context(ctx, bctx->parent);
   }
 
-  widget_on_with_tag(widget, EVT_DESTROY, ui_loader_mvvm_on_widget_destroy, ctx, EVENT_TAG);
-  if (ctx != NULL && ctx->widget != widget) {
-    widget_on_with_tag(WIDGET(ctx->widget), EVT_DESTROY,
-                       ui_loader_mvvm_on_widget_binding_context_destroy, widget, EVENT_TAG);
+  if (bctx != NULL) {
+    widget_on_with_tag(widget, EVT_DESTROY, ui_loader_mvvm_on_widget_destroy, bctx, EVENT_TAG);
+    if (bctx->widget != widget) {
+      widget_on_with_tag(WIDGET(bctx->widget), EVT_DESTROY,
+                         ui_loader_mvvm_on_widget_binding_context_destroy, widget, EVENT_TAG);
+    }
   }
 
   return widget;
@@ -592,14 +653,14 @@ error:
   return NULL;
 }
 
-static ret_t ui_loader_mvvm_build_condition_widget(ui_loader_mvvm_t* loader, rbuffer_t* rbuffer,
+static ret_t ui_loader_mvvm_build_condition_widget(ui_loader_t* loader, rbuffer_t* rbuffer,
                                                    ui_builder_t* builder, binding_rule_t* rule) {
   bool_t is_ok = FALSE;
   const char* expr = NULL;
   uint32_t offset = 0;
   widget_t* parent;
   fscript_t* fscript = NULL;
-  binding_context_t* ctx = BINDING_RULE_CONTEXT(rule);
+  binding_context_t* bctx = BINDING_RULE_CONTEXT(rule);
   condition_binding_t* binding = CONDITION_BINDING(rule);
   return_value_if_fail(binding != NULL, RET_BAD_PARAMS);
 
@@ -640,14 +701,14 @@ static ret_t ui_loader_mvvm_build_condition_widget(ui_loader_mvvm_t* loader, rbu
     } else {
       // 条件为true，且与上一次的不同，则新建对应的控件
       if (!tk_str_eq(expr, binding->current_expr)) {
-        uint32_t index = binding_context_calc_widget_index_of_rule(ctx, rule);
+        uint32_t index = binding_context_calc_widget_index_of_rule(bctx, rule);
         widget_t* widget = NULL;
 
         // 销毁旧的控件
         if (binding->current_expr != NULL) {
           widget = widget_get_child(parent, index);
           ENSURE(widget != NULL);
-          widget_destroy_and_clear_bindings(widget, ctx);
+          widget_destroy_and_clear_bindings(widget, bctx);
         }
 
         widget = ui_loader_mvvm_build_widget(loader, rbuffer, builder, NULL, NULL);
@@ -677,10 +738,10 @@ static ret_t ui_loader_mvvm_build_condition_widget(ui_loader_mvvm_t* loader, rbu
   if (!is_ok) {
     // 未找到条件为true的控件，销毁旧的控件
     if (binding->current_expr != NULL) {
-      uint32_t index = binding_context_calc_widget_index_of_rule(ctx, rule);
+      uint32_t index = binding_context_calc_widget_index_of_rule(bctx, rule);
       widget_t* widget = widget_get_child(parent, index);
       ENSURE(widget != NULL);
-      widget_destroy_and_clear_bindings(widget, ctx);
+      widget_destroy_and_clear_bindings(widget, bctx);
     }
 
     binding->current_expr = NULL;
@@ -727,10 +788,10 @@ widget_t* widget_lookup_by_id(widget_t* widget, const value_t* id, int32_t begin
   return NULL;
 }
 
-static ret_t ui_loader_mvvm_get_widget_id(binding_context_t* ctx, binding_rule_t* rule,
+static ret_t ui_loader_mvvm_get_widget_id(binding_context_t* bctx, binding_rule_t* rule,
                                           tk_object_t* obj, const char* id_name, value_t* v) {
   bool_t is_cursor = FALSE;
-  const char* id = binding_context_resolve_path_by_rule(ctx, rule, id_name, &is_cursor);
+  const char* id = binding_context_resolve_path_by_rule(bctx, rule, id_name, &is_cursor);
 
   if (is_cursor) {
     value_set_str(v, id);
@@ -740,11 +801,11 @@ static ret_t ui_loader_mvvm_get_widget_id(binding_context_t* ctx, binding_rule_t
   }
 }
 
-static ret_t ui_loader_mvvm_build_items_widget(ui_loader_mvvm_t* loader, rbuffer_t* rbuffer,
+static ret_t ui_loader_mvvm_build_items_widget(ui_loader_t* loader, rbuffer_t* rbuffer,
                                                ui_builder_t* builder, binding_rule_t* rule) {
   uint32_t offset = 0;
   widget_t* parent;
-  binding_context_t* ctx = BINDING_RULE_CONTEXT(rule);
+  binding_context_t* bctx = BINDING_RULE_CONTEXT(rule);
   items_binding_t* binding = ITEMS_BINDING(rule);
   view_model_t* view_model = BINDING_RULE_VIEW_MODEL(rule);
   return_value_if_fail(binding != NULL && view_model != NULL, RET_BAD_PARAMS);
@@ -758,7 +819,7 @@ static ret_t ui_loader_mvvm_build_items_widget(ui_loader_mvvm_t* loader, rbuffer
   binding->bound = FALSE;
 
   if (binding->fixed_widget_count >= 0) {
-    int32_t first_index = binding_context_calc_widget_index_of_rule(ctx, rule);
+    int32_t first_index = binding_context_calc_widget_index_of_rule(bctx, rule);
     int32_t nr = widget_count_children(parent);
 
     if (nr < first_index + binding->fixed_widget_count) {
@@ -779,7 +840,7 @@ static ret_t ui_loader_mvvm_build_items_widget(ui_loader_mvvm_t* loader, rbuffer
     const char* items_name = binding->items_name;
     const char* items_length_name = TK_OBJECT_PROP_SIZE;
 
-    if (binding_context_get_prop_by_rule(ctx, rule, items_name, &v) == RET_OK) {
+    if (binding_context_get_prop_by_rule(bctx, rule, items_name, &v) == RET_OK) {
       obj = value_object(&v);
     }
 
@@ -792,15 +853,15 @@ static ret_t ui_loader_mvvm_build_items_widget(ui_loader_mvvm_t* loader, rbuffer
       uint32_t old_count = binding->items_count;
 
       if (old_count == widget_count_children(parent)) {
-        widget_destroy_children_and_clear_bindings(parent, ctx);
+        widget_destroy_children_and_clear_bindings(parent, bctx);
       } else {
         uint32_t i;
-        uint32_t first_index = binding_context_calc_widget_index_of_rule(ctx, rule);
+        uint32_t first_index = binding_context_calc_widget_index_of_rule(bctx, rule);
 
         for (i = 0; i < old_count; i++) {
           widget = widget_get_child(parent, first_index + old_count - i - 1);
           ENSURE(widget != NULL);
-          widget_destroy_and_clear_bindings(widget, ctx);
+          widget_destroy_and_clear_bindings(widget, bctx);
         }
       }
 
@@ -808,7 +869,7 @@ static ret_t ui_loader_mvvm_build_items_widget(ui_loader_mvvm_t* loader, rbuffer
     } else {
       uint32_t i = 0;
       widget_t* widget = NULL;
-      uint32_t first_index = binding_context_calc_widget_index_of_rule(ctx, rule);
+      uint32_t first_index = binding_context_calc_widget_index_of_rule(bctx, rule);
       uint32_t new_count = tk_object_get_prop_uint32(obj, items_length_name, 0);
       uint32_t old_count = binding->items_count;
       const char* id_name = binding->id_name;
@@ -816,19 +877,19 @@ static ret_t ui_loader_mvvm_build_items_widget(ui_loader_mvvm_t* loader, rbuffer
       value_t id;
 
       if (new_count == 0 && old_count == widget_count_children(parent)) {
-        widget_destroy_children_and_clear_bindings(parent, ctx);
+        widget_destroy_children_and_clear_bindings(parent, bctx);
       } else if (id_name == NULL || old_count == 0) {
         for (i = new_count; i < old_count; i++) {
           widget = widget_get_child(parent, first_index + new_count + old_count - i - 1);
           ENSURE(widget != NULL);
-          widget_destroy_and_clear_bindings(widget, ctx);
+          widget_destroy_and_clear_bindings(widget, bctx);
         }
 
         for (i = old_count; i < new_count; i++) {
           pid = NULL;
           binding->cursor = i;
           if (id_name != NULL) {
-            if (ui_loader_mvvm_get_widget_id(ctx, rule, TK_OBJECT(view_model), id_name, &id) ==
+            if (ui_loader_mvvm_get_widget_id(bctx, rule, TK_OBJECT(view_model), id_name, &id) ==
                 RET_OK) {
               pid = &id;
             }
@@ -851,7 +912,7 @@ static ret_t ui_loader_mvvm_build_items_widget(ui_loader_mvvm_t* loader, rbuffer
         while (new_begin < new_end && old_begin < old_end) {
           pid = NULL;
           binding->cursor = new_begin;
-          if (ui_loader_mvvm_get_widget_id(ctx, rule, TK_OBJECT(view_model), id_name, &id) ==
+          if (ui_loader_mvvm_get_widget_id(bctx, rule, TK_OBJECT(view_model), id_name, &id) ==
               RET_OK) {
             pid = &id;
             widget = widget_lookup_by_id(parent, pid, old_begin, old_end, &i);
@@ -878,7 +939,7 @@ static ret_t ui_loader_mvvm_build_items_widget(ui_loader_mvvm_t* loader, rbuffer
 
           pid = NULL;
           binding->cursor = new_end;
-          if (ui_loader_mvvm_get_widget_id(ctx, rule, TK_OBJECT(view_model), id_name, &id) ==
+          if (ui_loader_mvvm_get_widget_id(bctx, rule, TK_OBJECT(view_model), id_name, &id) ==
               RET_OK) {
             pid = &id;
             widget = widget_lookup_by_id(parent, pid, old_end, old_begin, &i);
@@ -905,7 +966,7 @@ static ret_t ui_loader_mvvm_build_items_widget(ui_loader_mvvm_t* loader, rbuffer
         for (i = old_end; i >= old_begin; i--) {
           widget = widget_get_child(parent, i);
           ENSURE(widget != NULL);
-          widget_destroy_and_clear_bindings(widget, ctx);
+          widget_destroy_and_clear_bindings(widget, bctx);
           if (i == 0) {
             break;
           }
@@ -914,7 +975,7 @@ static ret_t ui_loader_mvvm_build_items_widget(ui_loader_mvvm_t* loader, rbuffer
         for (i = new_begin; i <= new_end; i++) {
           pid = NULL;
           binding->cursor = i;
-          if (ui_loader_mvvm_get_widget_id(ctx, rule, TK_OBJECT(view_model), id_name, &id) ==
+          if (ui_loader_mvvm_get_widget_id(bctx, rule, TK_OBJECT(view_model), id_name, &id) ==
               RET_OK) {
             pid = &id;
           }
@@ -951,24 +1012,25 @@ static uint32_t ui_loader_mvvm_count_bindings(slist_t* list, widget_t* widget) {
   return 0;
 }
 
-static ret_t ui_loader_mvvm_load_a_snippet(ui_loader_mvvm_t* loader, rbuffer_t* rbuffer,
+static ret_t ui_loader_mvvm_load_a_snippet(ui_loader_t* loader, rbuffer_t* rbuffer,
                                            ui_builder_t* builder, widget_t* end_widget) {
   const char* key = NULL;
   const char* val = NULL;
   binding_rule_t* rule;
   widget_t* widget;
-  binding_context_t* ctx;
+  binding_context_t* bctx;
+  ui_loader_mvvm_builder_ctx_t* ctx = (ui_loader_mvvm_builder_ctx_t*)(builder->additional_ctx);
 
   while ((rbuffer->cursor + sizeof(widget_desc_t)) <= rbuffer->capacity) {
     widget = builder->widget;
-    ctx = loader->binding_context;
+    bctx = ctx != NULL ? ctx->binding_context : NULL;
 
-    if (ctx != NULL) {
+    if (bctx != NULL) {
       key = rbuffer_find_dynamic_binding_prop(rbuffer, &val);
 
       if (key == NULL) {
         if (widget->custom_props != NULL && widget_count_children(widget) == 0 &&
-            ui_loader_mvvm_count_bindings(&(ctx->dynamic_bindings), widget) == 0 &&
+            ui_loader_mvvm_count_bindings(&(bctx->dynamic_bindings), widget) == 0 &&
             tk_object_get_prop_bool(widget->custom_props, WIDGET_PROP_V_FOR_ITEMS, FALSE)) {
           key = BINDING_RULE_ITEMS;
           val = "";
@@ -976,9 +1038,9 @@ static ret_t ui_loader_mvvm_load_a_snippet(ui_loader_mvvm_t* loader, rbuffer_t* 
       }
     }
 
-    if (key == NULL) {
-      if (ctx != NULL && widget != NULL) {
-        rule = loader->rule;
+    if (ctx == NULL || key == NULL) {
+      if (bctx != NULL && widget != NULL) {
+        rule = ctx != NULL ? ctx->rule : NULL;
         if (rule != NULL && rule->widget == widget) {
           if (binding_rule_is_items_binding(rule)) {
             items_binding_t* binding = ITEMS_BINDING(rule);
@@ -997,26 +1059,26 @@ static ret_t ui_loader_mvvm_load_a_snippet(ui_loader_mvvm_t* loader, rbuffer_t* 
       return_value_if_fail(
           rbuffer_get_data_range_of_a_widget(rbuffer, builder, &pos, &size) == RET_OK, RET_FAIL);
 
-      rule = ui_loader_mvvm_bind_items(loader, widget, key, val, pos, size);
+      rule = ui_loader_mvvm_bind_items(loader, builder, widget, key, val, pos, size);
       return_value_if_fail(rule != NULL, RET_FAIL);
 
-      loader->rule = rule;
+      ctx->rule = rule;
       return_value_if_fail(
           ui_loader_mvvm_build_items_widget(loader, rbuffer, builder, rule) == RET_OK, RET_FAIL);
-      loader->rule = rule->parent;
+      ctx->rule = rule->parent;
     } else if (tk_str_eq(key, BINDING_RULE_CONDITION_IF)) {
       uint32_t pos, size;
       return_value_if_fail(
           rbuffer_get_data_range_of_a_condition_widget(rbuffer, builder, &pos, &size) == RET_OK,
           RET_FAIL);
 
-      rule = ui_loader_mvvm_bind_condition(loader, widget, key, val, pos, size);
+      rule = ui_loader_mvvm_bind_condition(loader, builder, widget, key, val, pos, size);
       return_value_if_fail(rule != NULL, RET_FAIL);
-      loader->rule = rule;
+      ctx->rule = rule;
       return_value_if_fail(
           ui_loader_mvvm_build_condition_widget(loader, rbuffer, builder, rule) == RET_OK,
           RET_FAIL);
-      loader->rule = rule->parent;
+      ctx->rule = rule->parent;
     } else {
       if (rbuffer_skip_a_widget(rbuffer, builder) != RET_OK) {
         return RET_FAIL;
@@ -1033,35 +1095,36 @@ static ret_t ui_loader_mvvm_load_a_snippet(ui_loader_mvvm_t* loader, rbuffer_t* 
   return RET_OK;
 }
 
-static ret_t ui_loader_mvvm_load_bin(ui_loader_t* l, const uint8_t* data, uint32_t size,
-                                     ui_builder_t* b) {
-  ui_loader_mvvm_t* loader = UI_LOADER_MVVM(l);
+static ret_t ui_loader_mvvm_load_bin(ui_loader_t* loader, const uint8_t* data, uint32_t size,
+                                     ui_builder_t* builder) {
+  ui_loader_mvvm_builder_ctx_t* ctx = NULL;
   rbuffer_t rbuffer;
   uint32_t magic = 0;
   binding_rule_t* rule = NULL;
-
-  return_value_if_fail(loader != NULL && data != NULL && b != NULL, RET_BAD_PARAMS);
+  return_value_if_fail(loader != NULL && data != NULL && builder != NULL, RET_BAD_PARAMS);
   return_value_if_fail(rbuffer_init(&rbuffer, data, size) != NULL, RET_BAD_PARAMS);
   return_value_if_fail(rbuffer_read_uint32(&rbuffer, &magic) == RET_OK, RET_BAD_PARAMS);
   return_value_if_fail(magic == UI_DATA_MAGIC, RET_BAD_PARAMS);
 
-  rule = loader->rule;
+  ctx = (ui_loader_mvvm_builder_ctx_t*)(builder->additional_ctx);
+  rule = ctx != NULL ? ctx->rule : NULL;
+
   if (rule == NULL) {
-    ui_builder_on_start(b);
-    ui_loader_mvvm_load_a_snippet(loader, &rbuffer, b, b->widget);
-    ui_builder_on_end(b);
+    ui_builder_on_start(builder);
+    ui_loader_mvvm_load_a_snippet(loader, &rbuffer, builder, NULL);
+    ui_builder_on_end(builder);
   } else {
     widget_t* widget = WIDGET(BINDING_RULE_WIDGET(rule));
 
     if (binding_rule_is_items_binding(rule)) {
-      b->widget = widget;
-      ui_loader_mvvm_build_items_widget(loader, &rbuffer, b, rule);
+      builder->widget = widget;
+      ui_loader_mvvm_build_items_widget(loader, &rbuffer, builder, rule);
       if (ITEMS_BINDING(rule)->fixed_widget_count <= 0) {
         widget_layout(widget);
       }
     } else if (binding_rule_is_condition_binding(rule)) {
-      b->widget = widget;
-      ui_loader_mvvm_build_condition_widget(loader, &rbuffer, b, rule);
+      builder->widget = widget;
+      ui_loader_mvvm_build_condition_widget(loader, &rbuffer, builder, rule);
       widget_layout(widget);
     }
   }
@@ -1069,52 +1132,110 @@ static ret_t ui_loader_mvvm_load_bin(ui_loader_t* l, const uint8_t* data, uint32
   return RET_OK;
 }
 
-static ret_t ui_loader_mvvm_load_xml(ui_loader_t* l, const uint8_t* data, uint32_t size,
-                                     ui_builder_t* b) {
-  wbuffer_t wbuffer;
-  ret_t ret = RET_OK;
+static ret_t ui_loader_mvvm_load_xml(ui_loader_t* loader, const uint8_t* data, uint32_t size,
+                                     ui_builder_t* builder) {
+  wbuffer_t wbuffer = {0};
+  asset_info_t* ui = NULL;
   ui_binary_writer_t ui_binary_writer;
-  ui_loader_t* loader = xml_ui_loader();
-  ui_builder_t* builder =
+  ui_loader_t* xml_loader = xml_ui_loader();
+  ui_builder_t* xml_builder =
       ui_binary_writer_init(&ui_binary_writer, wbuffer_init_extendable(&wbuffer));
 
-  wbuffer_extend_capacity(&wbuffer, size);
-  ui_loader_load(loader, (const uint8_t*)data, size, builder);
-  ret = ui_loader_mvvm_load_bin(l, wbuffer.data, wbuffer.cursor, b);
+  goto_error_if_fail(wbuffer_extend_capacity(&wbuffer, size) == RET_OK);
+  goto_error_if_fail(ui_loader_load(xml_loader, (const uint8_t*)data, size, xml_builder) == RET_OK);
+
+  ui = asset_info_create(ASSET_TYPE_UI, ASSET_TYPE_UI_BIN, "", wbuffer.cursor);
+  goto_error_if_fail(ui != NULL);
+  memcpy(ui->data, wbuffer.data, wbuffer.cursor);
   wbuffer_deinit(&wbuffer);
+
+  builder->ui = ui;
+  goto_error_if_fail(ui_loader_mvvm_load_bin(loader, ui->data, ui->size, builder) == RET_OK);
+  asset_info_unref(ui);
+
+  return RET_OK;
+
+error:
+  if (ui != NULL) {
+    asset_info_unref(ui);
+  }
+  wbuffer_deinit(&wbuffer);
+
+  return RET_FAIL;
+}
+
+static ret_t ui_loader_mvvm_load(ui_loader_t* loader, const uint8_t* data, uint32_t size,
+                                 ui_builder_t* builder) {
+  ret_t ret = RET_OK;
+  widget_t* parent = builder->widget;
+  uint32_t old_nr = parent != NULL ? widget_count_children(parent) : 0;
+  ui_loader_mvvm_builder_ctx_t* ctx = (ui_loader_mvvm_builder_ctx_t*)(builder->additional_ctx);
+  bool_t not_ctx = ctx == NULL;
+
+  // 比如 tab_button、vpage 等调用 ui_loader_load_widget_with_parent
+  // 动态加载UI时，上下文信息为空，则尝试沿用父控件的上下文信息
+  if (not_ctx && builder != NULL && parent != NULL) {
+    value_t v;
+    widget_t* iter = parent;
+    while (iter != NULL) {
+      if (widget_get_custom_prop(iter, WIDGET_PROP_V_MODEL, &v) == RET_OK &&
+          v.type == VALUE_TYPE_POINTER) {
+        binding_context_t* bctx = (binding_context_t*)value_pointer(&v);
+        return_value_if_fail(bctx != NULL, RET_FAIL);
+
+        ctx = ui_loader_mvvm_builder_ctx_create(bctx->navigator_request, NULL, bctx);
+        return_value_if_fail(ctx != NULL, RET_OOM);
+        ui_builder_set_additional_context(builder, ctx,
+                                          (tk_destroy_t)ui_loader_mvvm_builder_ctx_destroy);
+        break;
+      }
+      iter = iter->parent;
+    }
+  }
+
+  if (*data == '<') {
+    ret = ui_loader_mvvm_load_xml(loader, data, size, builder);
+  } else {
+    ret = ui_loader_mvvm_load_bin(loader, data, size, builder);
+  }
+
+  // 有 MVVM 绑定，则记录关联的 UI 数据，以便动态渲染时重新根据 UI 生成控件
+  if (ctx != NULL && ctx->has_bind && builder->root != NULL && builder->ui != NULL) {
+    if (parent == NULL || old_nr == 0) {
+      asset_info_ref((asset_info_t*)(builder->ui));
+      widget_set_custom_prop_pointer_ex(builder->root, WIDGET_PROP_MVVM_ASSETS_INFO,
+                                        (void*)(builder->ui), (tk_destroy_t)asset_info_unref);
+    } else {
+      int32_t index = widget_index_of(builder->root);
+      uint32_t nr = widget_count_children(parent);
+      assert(index >= 0 && nr > old_nr);
+      for (uint32_t i = 0; i < nr - old_nr; i++) {
+        widget_t* child = widget_get_child(parent, index + i);
+        assert(child != NULL);
+        asset_info_ref((asset_info_t*)(builder->ui));
+        widget_set_custom_prop_pointer_ex(child, WIDGET_PROP_MVVM_ASSETS_INFO, (void*)(builder->ui),
+                                          (tk_destroy_t)asset_info_unref);
+      }
+    }
+  }
+
+  // 加载时未指定上下文，则加载完成后需手动触发视图更新
+  if (not_ctx && ctx != NULL && ctx->binding_context != NULL) {
+    binding_context_update_to_view(ctx->binding_context);
+  }
 
   return ret;
 }
 
-static ret_t ui_loader_mvvm_load(ui_loader_t* l, const uint8_t* data, uint32_t size,
-                                 ui_builder_t* b) {
-  if (*data == '<') {
-    return ui_loader_mvvm_load_xml(l, data, size, b);
-  } else {
-    return ui_loader_mvvm_load_bin(l, data, size, b);
-  }
-}
-
-static ret_t ui_loader_mvvm_init(ui_loader_t* loader, navigator_request_t* req,
-                                 const asset_info_t* ui, binding_rule_t* rule) {
-  ui_loader_mvvm_t* l = (ui_loader_mvvm_t*)loader;
-  assert(l != NULL);
-
-  memset(l, 0x00, sizeof(ui_loader_mvvm_t));
-  loader->load = ui_loader_mvvm_load;
-  l->navigator_request = req;
-  l->ui = ui;
-  l->rule = rule;
-  l->binding_context = rule != NULL ? rule->binding_context : NULL;
-
-  return RET_OK;
-}
-
-static ui_loader_mvvm_t s_ui_loader_mvvm;
+static ui_loader_mvvm_t s_ui_loader_mvvm = {
+    .base.load = ui_loader_mvvm_load,
+    .base.support_bin = TRUE,
+    .base.support_xml = TRUE,
+};
 
 ui_loader_t* ui_loader_mvvm(void) {
   ui_loader_t* loader = (ui_loader_t*)(&s_ui_loader_mvvm);
-  ui_loader_mvvm_init(loader, NULL, NULL, NULL);
+
   return loader;
 }
 
@@ -1149,23 +1270,20 @@ widget_t* ui_loader_mvvm_load_widget_with_parent(navigator_request_t* req, widge
   }
 
   ui = assets_manager_ref(am, ASSET_TYPE_UI, target);
-  if (ui != NULL && ui->size > 0) {
-    ui_builder_t* builder = ui_builder_default_create(target);
+  if (ui != NULL) {
+    if (ui->size > 0) {
+      ui_builder_t* builder = ui_builder_default_create(target);
 
-    if (builder != NULL) {
-      ui_loader_mvvm_t mvvm_loader = {0};
-      ui_loader_t* loader = (ui_loader_t*)(&mvvm_loader);
-
-      builder->widget = parent;
-      ui_loader_mvvm_init(loader, req, ui, NULL);
-      ui_loader_mvvm_load(loader, ui->data, ui->size, builder);
-      root = builder->root;
-      ui_builder_destroy(builder);
+      if (builder != NULL) {
+        ui_loader_t* loader = ui_loader_mvvm();
+        ui_loader_mvvm_update_builder_ctx(builder, parent, ui, req, NULL);
+        ui_loader_mvvm_load(loader, ui->data, ui->size, builder);
+        root = builder->root;
+        ui_builder_destroy(builder);
+      }
     }
 
-    if (root == NULL) {
-      assets_manager_unref(am, ui);
-    }
+    assets_manager_unref(am, ui);
   }
 
   if (applet_name[0]) {
@@ -1176,20 +1294,18 @@ widget_t* ui_loader_mvvm_load_widget_with_parent(navigator_request_t* req, widge
 }
 
 static const asset_info_t* ui_loader_mvvm_get_ui_from_rule(binding_rule_t* rule) {
-  binding_context_t* ctx = BINDING_RULE_CONTEXT(rule);
-  widget_t* widget = NULL;
+  widget_t* iter = WIDGET(rule->widget);
   asset_info_t* ui = NULL;
   value_t v;
 
-  while (ctx != NULL && ctx->widget != NULL) {
-    widget = WIDGET(ctx->widget);
-    if (widget_get_custom_prop(widget, WIDGET_PROP_MVVM_ASSETS_INFO, &v) == RET_OK) {
+  while (iter != NULL) {
+    if (widget_get_custom_prop(iter, WIDGET_PROP_MVVM_ASSETS_INFO, &v) == RET_OK) {
       ui = (asset_info_t*)value_pointer(&v);
       if (ui != NULL) {
         break;
       }
     }
-    ctx = ctx->parent;
+    iter = iter->parent;
   }
 
   return ui;
@@ -1198,19 +1314,18 @@ static const asset_info_t* ui_loader_mvvm_get_ui_from_rule(binding_rule_t* rule)
 ret_t ui_loader_mvvm_reload_widget(binding_rule_t* rule) {
   ret_t ret = RET_OK;
   const asset_info_t* ui = NULL;
-  ui_loader_mvvm_t mvvm_loader = {0};
-  ui_loader_t* loader = (ui_loader_t*)(&mvvm_loader);
+  ui_loader_t* loader = ui_loader_mvvm();
   ui_builder_t* builder = ui_builder_default_create(NULL);
-  binding_context_t* ctx;
+  binding_context_t* bctx;
   return_value_if_fail(rule != NULL && builder != NULL, RET_BAD_PARAMS);
 
-  ctx = BINDING_RULE_CONTEXT(rule);
-  return_value_if_fail(ctx != NULL && ctx->navigator_request != NULL, RET_BAD_PARAMS);
+  bctx = BINDING_RULE_CONTEXT(rule);
+  return_value_if_fail(bctx != NULL && bctx->navigator_request != NULL, RET_BAD_PARAMS);
 
   ui = ui_loader_mvvm_get_ui_from_rule(rule);
   return_value_if_fail(ui != NULL && ui->data != NULL && ui->size > 0, RET_BAD_PARAMS);
 
-  ui_loader_mvvm_init(loader, ctx->navigator_request, ui, rule);
+  ui_loader_mvvm_update_builder_ctx(builder, NULL, ui, bctx->navigator_request, rule);
   ret = ui_loader_mvvm_load(loader, ui->data, ui->size, builder);
   ui_builder_destroy(builder);
   return ret;

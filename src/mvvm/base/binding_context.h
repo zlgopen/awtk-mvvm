@@ -142,7 +142,6 @@ struct _binding_context_t {
   binding_context_t* parent;
 
   /*private*/
-  void* ui_data;
   str_t temp;
   const binding_context_vtable_t* vt;
 };

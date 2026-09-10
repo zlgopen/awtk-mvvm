@@ -1137,14 +1137,9 @@ static ret_t binding_context_awtk_unbind_widget(binding_context_t* ctx) {
       tk_object_t* props = widget->custom_props;
       darray_t* children =
           (darray_t*)tk_object_get_prop_pointer(props, WIDGET_PROP_V_MODEL_CHILDREN);
-      asset_info_t* ui = tk_object_get_prop_pointer(props, WIDGET_PROP_MVVM_ASSETS_INFO);
 
       if (children != NULL) {
         darray_destroy(children);
-      }
-
-      if (ui != NULL) {
-        assets_manager_unref(assets_manager(), ui);
       }
     }
 

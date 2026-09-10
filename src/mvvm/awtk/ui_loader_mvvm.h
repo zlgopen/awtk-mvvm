@@ -32,20 +32,11 @@ BEGIN_C_DECLS
 #define EVENT_TAG 0x11223300
 
 /**
- * @class ui_loader_mvvm_t
- * @parent ui_loader_t
- *
- * 支持MVVM绑定的UI加载器。
- *
+ * @class ui_loader_mvvm_builder_ctx_t
+ * 支持 MVVM 绑定的 UI 加载器额外的上下文信息，在加载 UI 时设置到 ui builder 上。
+ * 上下文信息设置到 ui builder 以避免被污染。
  */
-typedef struct _ui_loader_mvvm_t {
-  ui_loader_t base;
-  /**
-   * @property {asset_info_t*} ui
-   * @annotation ["readable"]
-   * 界面描述数据。
-   */
-  const asset_info_t* ui;
+typedef struct _ui_loader_mvvm_builder_ctx_t {
   /**
    * @property {navigator_request_t*} navigator_request
    * @annotation ["readable"]
@@ -64,6 +55,23 @@ typedef struct _ui_loader_mvvm_t {
    * 当前的动态规则。
    */
   binding_rule_t* rule;
+  /**
+   * @property {bool_t} has_bind
+   * @annotation ["readable"]
+   * 是否有 MVVM 绑定（binding_context）。
+   */
+  bool_t has_bind;
+} ui_loader_mvvm_builder_ctx_t;
+
+/**
+ * @class ui_loader_mvvm_t
+ * @parent ui_loader_t
+ *
+ * 支持 MVVM 绑定的 UI 加载器。
+ *
+ */
+typedef struct _ui_loader_mvvm_t {
+  ui_loader_t base;
 } ui_loader_mvvm_t;
 
 /**
