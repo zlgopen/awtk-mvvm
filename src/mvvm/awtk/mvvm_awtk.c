@@ -25,8 +25,10 @@
 #include "tkc/object_default.h"
 #include "tkc/object_array.h"
 #include "base/window_manager.h"
+#include "base/idle.h"
 #include "mvvm/base/utils.h"
 #include "mvvm/base/binding_rule.h"
+#include "mvvm/base/binding_context.h"
 #include "mvvm/awtk/mvvm_awtk.h"
 
 #define STR_WINDOW "window"
@@ -215,7 +217,13 @@ ret_t mvvm_awtk_init(void) {
   return RET_OK;
 }
 
+static int mvvm_awtk_idle_info_compare_by_func(const void* a, const void* b) {
+  const idle_info_t* info_a = (const idle_info_t*)a;
+  return (char*)(info_a->on_idle) - (char*)(b);
+}
+
 ret_t mvvm_awtk_deinit(void) {
+  idle_remove_ex(mvvm_awtk_idle_info_compare_by_func, binding_context_idle_update_to_view);
   s_mvvm_awtk_quited = TRUE;
   return RET_OK;
 }

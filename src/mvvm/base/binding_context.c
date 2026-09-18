@@ -261,6 +261,26 @@ ret_t binding_context_set_parent(binding_context_t* ctx, binding_context_t* pare
   return RET_OK;
 }
 
+ret_t binding_context_idle_update_to_view(const idle_info_t* info) {
+  binding_context_t* ctx = BINDING_CONTEXT(info->ctx);
+  return_value_if_fail(ctx != NULL, RET_BAD_PARAMS);
+
+  if (ctx->bound) {
+    if (ctx->widget != NULL && ctx->vt != NULL && ctx->vt->update_to_view != NULL) {
+      ctx->updating_view = TRUE;
+      ctx->vt->update_to_view(ctx);
+      ctx->updating_view = FALSE;
+    }
+  } else {
+    log_debug("Skip model-to-view update, due to binding context was unbound.\n");
+  }
+
+  // update 结束后再复位，以便 binding_context_update_to_view 判断是否循环调用
+  ctx->update_view_idle_id = TK_INVALID_ID;
+
+  return RET_REMOVE;
+}
+
 ret_t binding_context_update_to_view(binding_context_t* ctx) {
   ret_t ret = RET_OK;
   return_value_if_fail(ctx != NULL && ctx->vt != NULL && ctx->vt->update_to_view != NULL,
@@ -269,9 +289,18 @@ ret_t binding_context_update_to_view(binding_context_t* ctx) {
   // 如果 updating_view 为 TRUE 但无 idle，则尝试在 update_to_view 中 idle 执行 model-to-view；
   // 如果 idle 中发现 binding_context_update_to_view 再次调用，则认为发生循环
   if (ctx->update_view_idle_id == TK_INVALID_ID) {
-    ret = ctx->vt->update_to_view(ctx);
+    if (ctx->bound || ctx->updating_view) {
+      ctx->update_view_idle_id = idle_add(binding_context_idle_update_to_view, ctx);
+    } else {
+      if (ctx->widget != NULL) {
+        ctx->updating_view = TRUE;
+        ret = ctx->vt->update_to_view(ctx);
+        ctx->updating_view = FALSE;
+      }
+    }
   } else if (ctx->updating_view) {
     log_warn("A circular model-to-view update was detected.");
+    ret = RET_SKIP;
   }
 
   return ret;

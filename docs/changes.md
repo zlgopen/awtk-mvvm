@@ -1,8 +1,9 @@
 # 最新动态
 
 2026/09/18
-  * 修改 model-to-view 更新时检测到 circular 则中断这次更新并打印告警。
-  * 修改 model-to-view 的过程中不回写数据到模型。
+  * 修改 model-to-view 更新时检测到 circular 则中断这次更新并打印告警。（感谢朝泽提供补丁）
+  * 修改 model-to-view 的过程中不回写数据到模型。（感谢朝泽提供补丁）
+  * 完善 binding_context_update_to_view 的代码结构（AWTK >= 2908499d0ed5e205324bca5ef62bd327c3b85c62）。（感谢朝泽提供补丁）
 
 2026/09/10
   * 修复 UI 文件中未设置 v-model 时 ui_loader_mvvm 加载结果有误的问题。（感谢朝泽提供补丁）
