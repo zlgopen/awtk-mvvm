@@ -266,8 +266,12 @@ ret_t binding_context_update_to_view(binding_context_t* ctx) {
   return_value_if_fail(ctx != NULL && ctx->vt != NULL && ctx->vt->update_to_view != NULL,
                        RET_BAD_PARAMS);
 
-  if (!ctx->updating_view) {
+  // 如果 updating_view 为 TRUE 但无 idle，则尝试在 update_to_view 中 idle 执行 model-to-view；
+  // 如果 idle 中发现 binding_context_update_to_view 再次调用，则认为发生循环
+  if (ctx->update_view_idle_id == TK_INVALID_ID) {
     ret = ctx->vt->update_to_view(ctx);
+  } else if (ctx->updating_view) {
+    log_warn("A circular model-to-view update was detected.");
   }
 
   return ret;

@@ -1026,10 +1026,13 @@ static ret_t widget_visit_dynamic_binding_update_to_view(void* ctx, const void* 
 static ret_t binding_context_awtk_update_to_view_sync(binding_context_t* ctx) {
   return_value_if_fail(ctx != NULL, RET_BAD_PARAMS);
 
+  ctx->updating_view = TRUE;
+
   slist_foreach(&(ctx->dynamic_bindings), widget_visit_dynamic_binding_update_to_view, FALSE);
   slist_foreach(&(ctx->data_bindings), widget_visit_data_binding_update_to_view, NULL);
   slist_foreach(&(ctx->command_bindings), widget_visit_command_binding_update_to_view, NULL);
   widget_invalidate_force(WIDGET(ctx->widget), NULL);
+
   ctx->updating_view = FALSE;
   ctx->updating_view_by_ui = FALSE;
 
@@ -1041,11 +1044,13 @@ static ret_t idle_update_to_view(const idle_info_t* info) {
   return_value_if_fail(ctx != NULL, RET_BAD_PARAMS);
 
   if (ctx->bound && !mvvm_awtk_is_quited()) {
-    ctx->update_view_idle_id = TK_INVALID_ID;
     binding_context_awtk_update_to_view_sync(ctx);
   } else {
     log_debug("binding context is unbound, or mvvm awtk is quited.\n");
   }
+
+  // update 结束后再复位，以便 binding_context_update_to_view 判断是否循环调用
+  ctx->update_view_idle_id = TK_INVALID_ID;
 
   return RET_REMOVE;
 }
@@ -1053,9 +1058,7 @@ static ret_t idle_update_to_view(const idle_info_t* info) {
 static ret_t binding_context_awtk_update_to_view(binding_context_t* ctx) {
   return_value_if_fail(ctx != NULL && ctx->view_model != NULL, RET_BAD_PARAMS);
 
-  ctx->updating_view = TRUE;
-
-  if (ctx->bound) {
+  if (ctx->bound || ctx->updating_view) {
     if (ctx->update_view_idle_id == TK_INVALID_ID) {
       ctx->update_view_idle_id = idle_add(idle_update_to_view, ctx);
     }
