@@ -1025,10 +1025,12 @@ static ret_t widget_visit_dynamic_binding_update_to_view(void* ctx, const void* 
 static ret_t binding_context_awtk_update_to_view_sync(binding_context_t* ctx) {
   return_value_if_fail(ctx != NULL, RET_BAD_PARAMS);
 
-  slist_foreach(&(ctx->dynamic_bindings), widget_visit_dynamic_binding_update_to_view, FALSE);
-  slist_foreach(&(ctx->data_bindings), widget_visit_data_binding_update_to_view, NULL);
-  slist_foreach(&(ctx->command_bindings), widget_visit_command_binding_update_to_view, NULL);
-  widget_invalidate_force(WIDGET(ctx->widget), NULL);
+  if (!mvvm_awtk_is_quited()) {
+    slist_foreach(&(ctx->dynamic_bindings), widget_visit_dynamic_binding_update_to_view, FALSE);
+    slist_foreach(&(ctx->data_bindings), widget_visit_data_binding_update_to_view, NULL);
+    slist_foreach(&(ctx->command_bindings), widget_visit_command_binding_update_to_view, NULL);
+    widget_invalidate_force(WIDGET(ctx->widget), NULL);
+  }
 
   ctx->updating_view_by_ui = FALSE;
 

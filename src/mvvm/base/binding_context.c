@@ -261,7 +261,7 @@ ret_t binding_context_set_parent(binding_context_t* ctx, binding_context_t* pare
   return RET_OK;
 }
 
-ret_t binding_context_idle_update_to_view(const idle_info_t* info) {
+static ret_t binding_context_idle_update_to_view(const idle_info_t* info) {
   binding_context_t* ctx = BINDING_CONTEXT(info->ctx);
   return_value_if_fail(ctx != NULL, RET_BAD_PARAMS);
 

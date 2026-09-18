@@ -410,9 +410,6 @@ ret_t binding_context_get_prop_by_rule(binding_context_t* ctx, binding_rule_t* r
 ret_t binding_context_set_prop_by_rule(binding_context_t* ctx, binding_rule_t* rule,
                                        const char* name, const value_t* v);
 
-/*internal use*/
-ret_t binding_context_idle_update_to_view(const idle_info_t* info);
-
 #define BINDING_CONTEXT(ctx) ((binding_context_t*)(ctx))
 
 END_C_DECLS
