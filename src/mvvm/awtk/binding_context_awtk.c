@@ -154,10 +154,11 @@ static ret_t binding_context_update_error_of(data_binding_t* rule) {
 
 static ret_t on_widget_prop_change(void* ctx, event_t* e) {
   data_binding_t* rule = DATA_BINDING(ctx);
+  binding_context_t* bctx = BINDING_RULE_CONTEXT(rule);
   prop_change_event_t* evt = prop_change_event_cast(e);
   return_value_if_fail(evt != NULL && rule != NULL, RET_BAD_PARAMS);
 
-  if (tk_str_eq(evt->name, rule->prop)) {
+  if (!bctx->updating_view && tk_str_eq(evt->name, rule->prop)) {
     data_binding_set_prop(rule, evt->value);
     binding_context_update_error_of(rule);
   }
@@ -176,10 +177,9 @@ static ret_t on_widget_value_change(void* ctx, event_t* e) {
 
   if (!bctx->updating_view) {
     bctx->updating_view_by_ui = TRUE;
+    data_binding_set_prop(rule, &v);
+    binding_context_update_error_of(rule);
   }
-
-  data_binding_set_prop(rule, &v);
-  binding_context_update_error_of(rule);
 
   return RET_OK;
 }
@@ -246,11 +246,10 @@ static ret_t binding_context_awtk_update_data(data_binding_t* rule, bool_t force
       ENSURE(widget_set_prop_if_diff(widget, rule->prop, &v, !(ctx->bound)) != RET_FAIL);
       value_reset(&v);
     } else {
-      /*如果Model中对应的属性不存在，用widget中属性的值去初始化Model中的属性*/
-      if (rule->mode == BINDING_TWO_WAY) {
-        return_value_if_fail(widget_get_prop(widget, rule->prop, &v) == RET_OK, RET_OK);
-        data_binding_set_prop(rule, &v);
-      }
+      /*如果Model中对应的属性不存在，打印告警*/
+      log_warn(
+          "Failed to get the property value while evaluating the data binding. Path: %s, Prop: %s.",
+          rule->path, rule->prop);
     }
   }
 
