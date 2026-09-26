@@ -1,4 +1,6 @@
 # 最新动态
+2026/9/26
+  * 将 License 变更 为 Apache License。
 
 2026/09/18
   * 修改 model-to-view 更新时检测到 circular 则中断这次更新并打印告警。（感谢朝泽提供补丁）
