@@ -1,6 +1,7 @@
 # 最新动态
 2026/10/12
   * 添加 cmake 编译帮助文档。（感谢陈谭提供补丁）
+  * 添加 idl 和 def 文件，以便 cmake 编译时可以不用生成。
 
 2026/9/26
   * 将 License 变更 为 Apache License。

@@ -1,0 +1,356 @@
+[
+  {
+    "type": "class",
+    "methods": [],
+    "events": [],
+    "properties": [
+      {
+        "name": "path",
+        "desc": "使用属性路径。",
+        "type": "char*",
+        "annotation": {
+          "readable": true
+        }
+      },
+      {
+        "name": "is_array",
+        "desc": "是否是数组形式。",
+        "type": "bool_t",
+        "annotation": {
+          "readable": true
+        }
+      },
+      {
+        "name": "path_len",
+        "desc": "使用属性路径字串长度。",
+        "type": "uint32_t",
+        "annotation": {
+          "readable": true
+        }
+      },
+      {
+        "name": "next",
+        "desc": "下一个路径项。",
+        "type": "path_item_t*",
+        "annotation": {
+          "readable": true
+        }
+      }
+    ],
+    "header": "mvvm_prop_gen/mvvm_prop_gen.h",
+    "desc": "已用属性路径项。",
+    "name": "path_item_t",
+    "level": 1
+  },
+  {
+    "type": "class",
+    "methods": [
+      {
+        "params": [],
+        "annotation": {},
+        "desc": "构造mvvm_prop_gen_t对象。",
+        "name": "mvvm_prop_gen_create",
+        "return": {
+          "type": "mvvm_prop_gen_t*",
+          "desc": "mvvm_prop_gen_t对象。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "mvvm_prop_gen_t*",
+            "name": "mvvm_prop_gen",
+            "desc": "对象。"
+          }
+        ],
+        "annotation": {},
+        "desc": "析构mvvm_prop_gen_t对象。",
+        "name": "mvvm_prop_gen_destory",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "mvvm_prop_gen_t*",
+            "name": "mvvm_prop_gen",
+            "desc": "对象。"
+          },
+          {
+            "type": "const char*",
+            "name": "tag",
+            "desc": "执行器标签。"
+          }
+        ],
+        "annotation": {},
+        "desc": "执行器执行开始事件(scope_start)。",
+        "name": "mvvm_prop_gen_exec_start",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "mvvm_prop_gen_t*",
+            "name": "mvvm_prop_gen",
+            "desc": "对象。"
+          },
+          {
+            "type": "const char*",
+            "name": "tag",
+            "desc": "执行器标签。"
+          }
+        ],
+        "annotation": {},
+        "desc": "执行器执行完成事件(scope_end)。",
+        "name": "mvvm_prop_gen_exec_end",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "mvvm_prop_gen_t*",
+            "name": "mvvm_prop_gen",
+            "desc": "对象。"
+          },
+          {
+            "type": "const char*",
+            "name": "keyword",
+            "desc": "关键字。"
+          },
+          {
+            "type": "const char*",
+            "name": "prop",
+            "desc": "属性值。"
+          }
+        ],
+        "annotation": {},
+        "desc": "通过关键字尝试生成对应函数到执行器堆栈。如果关键字和属性值同时为NULL，则调用堆栈全部函数。",
+        "name": "mvvm_prop_gen_try_gen_exec_by_keyword",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "mvvm_prop_gen_t*",
+            "name": "mvvm_prop_gen",
+            "desc": "对象。"
+          },
+          {
+            "type": "uint32_t*",
+            "name": "result_size",
+            "desc": "已用属性路径组对象条数。"
+          }
+        ],
+        "annotation": {},
+        "desc": "生成已用属性路径组对象，从解析器中将结果转移出来，需要使用 mvvm_prop_gen_result_destory 析构。",
+        "name": "mvvm_prop_gen_result_create",
+        "return": {
+          "type": "mvvm_prop_result_t**",
+          "desc": "返回已用属性路径组对象。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "mvvm_prop_result_t**",
+            "name": "results",
+            "desc": "对象。"
+          },
+          {
+            "type": "uint32_t",
+            "name": "result_size",
+            "desc": "已用属性路径组对象条数。"
+          }
+        ],
+        "annotation": {},
+        "desc": "析构生成已用属性路径组对象。",
+        "name": "mvvm_prop_gen_result_destory",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "str_t*",
+            "name": "json",
+            "desc": "序列化后的已用属性路径组对象json字符串。"
+          },
+          {
+            "type": "uint32_t*",
+            "name": "result_size",
+            "desc": "已用属性路径组对象条数。"
+          }
+        ],
+        "annotation": {},
+        "desc": "将json字符串反序列化为已用属性路径组对象。",
+        "name": "mvvm_prop_gen_proto_result",
+        "return": {
+          "type": "mvvm_prop_result_t**",
+          "desc": "返回已用属性路径组对象。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "mvvm_prop_result_t**",
+            "name": "results",
+            "desc": "对象。"
+          },
+          {
+            "type": "uint32_t",
+            "name": "result_size",
+            "desc": "已用属性路径组对象条数。"
+          },
+          {
+            "type": "str_t*",
+            "name": "json",
+            "desc": "用于存放解析结果的json字符串。"
+          }
+        ],
+        "annotation": {},
+        "desc": "将已用属性路径组对象转化为json字符串。",
+        "name": "mvvm_prop_gen_save_result",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "const char*",
+            "name": "in_filename",
+            "desc": "标准xml文件。"
+          },
+          {
+            "type": "uint32_t*",
+            "name": "result_size",
+            "desc": "已用属性路径组条数。"
+          }
+        ],
+        "annotation": {},
+        "desc": "通过标准xml文件生成已用属性路径组。",
+        "name": "xml_mvvm_prop_file_to_array",
+        "return": {
+          "type": "mvvm_prop_result_t**",
+          "desc": "已用属性路径组对象。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "const char*",
+            "name": "in_filename",
+            "desc": "标准xml文件。"
+          },
+          {
+            "type": "const char*",
+            "name": "out_filename",
+            "desc": "已用属性路径组文件。"
+          }
+        ],
+        "annotation": {},
+        "desc": "通过标准xml文件打包生成已用属性路径组文件。",
+        "name": "xml_mvvm_prop_file_to_packfile",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "const char*",
+            "name": "in_filename",
+            "desc": "已用属性路径组文件。"
+          },
+          {
+            "type": "uint32_t*",
+            "name": "result_size",
+            "desc": "已用属性路径组条数。"
+          }
+        ],
+        "annotation": {},
+        "desc": "通过已用属性路径组文件解包生成已用属性路径组。",
+        "name": "xml_mvvm_prop_packfile_to_array",
+        "return": {
+          "type": "mvvm_prop_result_t**",
+          "desc": "已用属性路径组对象。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "const char*",
+            "name": "xml",
+            "desc": "已用属性路径组文件。"
+          },
+          {
+            "type": "uint32_t*",
+            "name": "result_size",
+            "desc": "已用属性路径组条数。"
+          }
+        ],
+        "annotation": {},
+        "desc": "通过原始xml字串生成已用属性路径组。",
+        "name": "xml_mvvm_prop_xml_to_array",
+        "return": {
+          "type": "mvvm_prop_result_t**",
+          "desc": "已用属性路径组对象。"
+        }
+      }
+    ],
+    "events": [],
+    "properties": [
+      {
+        "name": "prop",
+        "desc": "已用属性名称。",
+        "type": "char*",
+        "annotation": {
+          "readable": true
+        }
+      },
+      {
+        "name": "prop_len",
+        "desc": "已用属性名称字串长度。",
+        "type": "uint32_t",
+        "annotation": {
+          "readable": true
+        }
+      },
+      {
+        "name": "group_size",
+        "desc": "属性可能存在的路径条数。",
+        "type": "uint32_t",
+        "annotation": {
+          "readable": true
+        }
+      },
+      {
+        "name": "group_head",
+        "desc": "可能存在的路径链表头指针。",
+        "type": "path_item_t*",
+        "annotation": {
+          "readable": true
+        }
+      }
+    ],
+    "header": "mvvm_prop_gen/mvvm_prop_gen.h",
+    "desc": "已用属性路径组。",
+    "name": "mvvm_prop_result_t",
+    "level": 1
+  }
+]

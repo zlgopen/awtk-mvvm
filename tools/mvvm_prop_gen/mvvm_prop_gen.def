@@ -1,0 +1,15 @@
+LIBRARY   mvvm_prop_gen
+EXPORTS
+    mvvm_prop_gen_create
+    mvvm_prop_gen_destory
+    mvvm_prop_gen_exec_start
+    mvvm_prop_gen_exec_end
+    mvvm_prop_gen_try_gen_exec_by_keyword
+    mvvm_prop_gen_result_create
+    mvvm_prop_gen_result_destory
+    mvvm_prop_gen_proto_result
+    mvvm_prop_gen_save_result
+    xml_mvvm_prop_file_to_array
+    xml_mvvm_prop_file_to_packfile
+    xml_mvvm_prop_packfile_to_array
+    xml_mvvm_prop_xml_to_array
