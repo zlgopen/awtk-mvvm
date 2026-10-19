@@ -10,9 +10,9 @@ static ret_t humidity_view_model_set_prop(tk_object_t* obj, const char* name, co
   humidity_t* ahumidity = ((humidity_view_model_t*)(obj))->ahumidity;
 
   if (tk_str_ieq("humi", name)) {
-     ahumidity->humi = value_double(v);
+    ahumidity->humi = value_double(v);
 
-     return RET_OK;
+    return RET_OK;
   }
   
   return RET_NOT_FOUND;
@@ -23,8 +23,8 @@ static ret_t humidity_view_model_get_prop(tk_object_t* obj, const char* name, va
   humidity_t* ahumidity = ((humidity_view_model_t*)(obj))->ahumidity;
 
   if (tk_str_ieq("humi", name)) {
-     value_set_double(v, ahumidity->humi);
-     return RET_OK;
+    value_set_double(v, ahumidity->humi);
+    return RET_OK;
   }
 
   return RET_NOT_FOUND;
@@ -70,6 +70,7 @@ static const object_vtable_t s_humidity_view_model_vtable = {
   .compare = NULL,
   .get_prop = humidity_view_model_get_prop,
   .set_prop = humidity_view_model_set_prop,
+  .copy_props = NULL,
   .remove_prop = NULL,
   .foreach_prop = NULL,
   .clear_props = NULL,
@@ -77,6 +78,7 @@ static const object_vtable_t s_humidity_view_model_vtable = {
   .find_props = NULL,
   .can_exec = humidity_view_model_can_exec,
   .exec = humidity_view_model_exec,
+  .exec_ex = NULL,
   .clone = NULL
 };
 

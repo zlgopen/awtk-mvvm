@@ -20,14 +20,15 @@ view_model_t* book_store_view_model_attach(tk_object_t* obj, uint32_t index) {
 static ret_t book_store_view_model_set_prop(tk_object_t* obj, const char* name, const value_t* v) {
   uint32_t index = 0;
   view_model_t* view_model = VIEW_MODEL(obj);
+  book_store_t* abook_store = ((book_store_view_model_t*)(obj))->abook_store;
   
   if(view_model_array_default_set_prop(view_model, name, v) == RET_OK) {
     return RET_OK;
   }
 
   if (tk_str_ieq("items", name)) {
-     
-     return RET_OK;
+    
+    return RET_OK;
   }
 
   name = tk_destruct_array_prop_name(name, &index);
@@ -46,8 +47,8 @@ static ret_t book_store_view_model_get_prop(tk_object_t* obj, const char* name, 
   }
 
   if (tk_str_ieq("items", name)) {
-     value_set_uint32(v, book_store_get_items(abook_store));
-     return RET_OK;
+    value_set_uint32(v, book_store_get_items(abook_store));
+    return RET_OK;
   }
 
   name = tk_destruct_array_prop_name(name, &index);
@@ -122,6 +123,7 @@ static const object_vtable_t s_book_store_view_model_vtable = {
   .compare = NULL,
   .get_prop = book_store_view_model_get_prop,
   .set_prop = book_store_view_model_set_prop,
+  .copy_props = NULL,
   .remove_prop = NULL,
   .foreach_prop = NULL,
   .clear_props = NULL,
@@ -129,6 +131,7 @@ static const object_vtable_t s_book_store_view_model_vtable = {
   .find_props = NULL,
   .can_exec = book_store_view_model_can_exec,
   .exec = book_store_view_model_exec,
+  .exec_ex = NULL,
   .clone = NULL
 };
 

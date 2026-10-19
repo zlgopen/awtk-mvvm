@@ -10,9 +10,9 @@ static ret_t controller_view_model_set_prop(tk_object_t* obj, const char* name, 
   controller_t* acontroller = ((controller_view_model_t*)(obj))->acontroller;
 
   if (tk_str_ieq("close_current", name)) {
-     acontroller->close_current = value_bool(v);
+    acontroller->close_current = value_bool(v);
 
-     return RET_OK;
+    return RET_OK;
   }
   
   return RET_NOT_FOUND;
@@ -23,8 +23,8 @@ static ret_t controller_view_model_get_prop(tk_object_t* obj, const char* name, 
   controller_t* acontroller = ((controller_view_model_t*)(obj))->acontroller;
 
   if (tk_str_ieq("close_current", name)) {
-     value_set_bool(v, acontroller->close_current);
-     return RET_OK;
+    value_set_bool(v, acontroller->close_current);
+    return RET_OK;
   }
 
   return RET_NOT_FOUND;
@@ -60,6 +60,7 @@ static const object_vtable_t s_controller_view_model_vtable = {
   .compare = NULL,
   .get_prop = controller_view_model_get_prop,
   .set_prop = controller_view_model_set_prop,
+  .copy_props = NULL,
   .remove_prop = NULL,
   .foreach_prop = NULL,
   .clear_props = NULL,
@@ -67,6 +68,7 @@ static const object_vtable_t s_controller_view_model_vtable = {
   .find_props = NULL,
   .can_exec = controller_view_model_can_exec,
   .exec = controller_view_model_exec,
+  .exec_ex = NULL,
   .clone = NULL
 };
 

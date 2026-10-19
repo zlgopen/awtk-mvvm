@@ -47,6 +47,8 @@ static ret_t room_settings_view_model_get_prop(tk_object_t* obj, const char* nam
 
 static bool_t room_settings_view_model_can_exec(tk_object_t* obj, const char* name, const char* args) {
  
+  room_settings_view_model_t* vm = (room_settings_view_model_t*)(obj);
+  room_settings_t* aroom_settings = vm->aroom_settings;
   if (tk_str_ieq("return", name)) {
     return TRUE;
   }
@@ -82,6 +84,7 @@ static const object_vtable_t s_room_settings_view_model_vtable = {
   .compare = NULL,
   .get_prop = room_settings_view_model_get_prop,
   .set_prop = room_settings_view_model_set_prop,
+  .copy_props = NULL,
   .remove_prop = NULL,
   .foreach_prop = NULL,
   .clear_props = NULL,
@@ -89,6 +92,7 @@ static const object_vtable_t s_room_settings_view_model_vtable = {
   .find_props = NULL,
   .can_exec = room_settings_view_model_can_exec,
   .exec = room_settings_view_model_exec,
+  .exec_ex = NULL,
   .clone = NULL
 };
 

@@ -7,6 +7,8 @@
 #include "home_view_model.h"
 
 static ret_t home_view_model_set_prop(tk_object_t* obj, const char* name, const value_t* v) {
+  home_t* ahome = ((home_view_model_t*)(obj))->ahome;
+
   if (tk_str_ieq("bed_room_info", name)) {
     
     return RET_OK;
@@ -36,6 +38,8 @@ static ret_t home_view_model_get_prop(tk_object_t* obj, const char* name, value_
 
 static bool_t home_view_model_can_exec(tk_object_t* obj, const char* name, const char* args) {
  
+  home_view_model_t* vm = (home_view_model_t*)(obj);
+  home_t* ahome = vm->ahome;
   if (tk_str_ieq("adjustBedRoom", name)) {
     return TRUE;
 
@@ -77,6 +81,7 @@ static const object_vtable_t s_home_view_model_vtable = {
   .compare = NULL,
   .get_prop = home_view_model_get_prop,
   .set_prop = home_view_model_set_prop,
+  .copy_props = NULL,
   .remove_prop = NULL,
   .foreach_prop = NULL,
   .clear_props = NULL,
@@ -84,6 +89,7 @@ static const object_vtable_t s_home_view_model_vtable = {
   .find_props = NULL,
   .can_exec = home_view_model_can_exec,
   .exec = home_view_model_exec,
+  .exec_ex = NULL,
   .clone = NULL
 };
 

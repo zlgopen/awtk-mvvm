@@ -10,13 +10,13 @@ static ret_t book_view_model_set_prop(tk_object_t* obj, const char* name, const 
   book_t* abook = ((book_view_model_t*)(obj))->abook;
 
   if (tk_str_ieq("name", name)) {
-     str_set(&(abook->name), value_str(v));
+    str_set(&(abook->name), value_str(v));
 
-     return RET_OK;
+    return RET_OK;
   } else if (tk_str_ieq("stock", name)) {
-     abook->stock = value_uint32(v);
+    abook->stock = value_uint32(v);
 
-     return RET_OK;
+    return RET_OK;
   }
   
   return RET_NOT_FOUND;
@@ -27,11 +27,11 @@ static ret_t book_view_model_get_prop(tk_object_t* obj, const char* name, value_
   book_t* abook = ((book_view_model_t*)(obj))->abook;
 
   if (tk_str_ieq("name", name)) {
-     value_set_str(v, abook->name.str);
-     return RET_OK;
+    value_set_str(v, abook->name.str);
+    return RET_OK;
   } else if (tk_str_ieq("stock", name)) {
-     value_set_uint32(v, abook->stock);
-     return RET_OK;
+    value_set_uint32(v, abook->stock);
+    return RET_OK;
   }
 
   return RET_NOT_FOUND;
@@ -77,6 +77,7 @@ static const object_vtable_t s_book_view_model_vtable = {
   .compare = NULL,
   .get_prop = book_view_model_get_prop,
   .set_prop = book_view_model_set_prop,
+  .copy_props = NULL,
   .remove_prop = NULL,
   .foreach_prop = NULL,
   .clear_props = NULL,
@@ -84,6 +85,7 @@ static const object_vtable_t s_book_view_model_vtable = {
   .find_props = NULL,
   .can_exec = book_view_model_can_exec,
   .exec = book_view_model_exec,
+  .exec_ex = NULL,
   .clone = NULL
 };
 

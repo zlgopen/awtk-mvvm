@@ -60,6 +60,7 @@ static const object_vtable_t s_temperature_view_model_vtable = {
   .compare = NULL,
   .get_prop = temperature_view_model_get_prop,
   .set_prop = temperature_view_model_set_prop,
+  .copy_props = NULL,
   .remove_prop = NULL,
   .foreach_prop = NULL,
   .clear_props = NULL,
@@ -67,6 +68,7 @@ static const object_vtable_t s_temperature_view_model_vtable = {
   .find_props = NULL,
   .can_exec = temperature_view_model_can_exec,
   .exec = temperature_view_model_exec,
+  .exec_ex = NULL,
   .clone = NULL
 };
 
