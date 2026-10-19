@@ -1,4 +1,7 @@
 # 最新动态
+2026/10/19
+  * 修复 ViewModel 代码生成的 object vtable 缺少 copy_props 与 exec_ex，避免 -Wmissing-field-initializers。
+
 2026/10/12
   * 添加 cmake 编译帮助文档。（感谢陈谭提供补丁）
   * 添加 idl 和 def 文件，以便 cmake 编译时可以不用生成。

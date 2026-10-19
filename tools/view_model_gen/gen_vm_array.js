@@ -185,24 +185,7 @@ static ret_t ${vmClsName}_on_destroy(tk_object_t* obj) {
   return view_model_array_deinit(VIEW_MODEL(obj));
 }
 
-static const object_vtable_t s_${vmClsName}_vtable = {
-  .type = "${vmClsType}",
-  .desc = "${vmClsType}",
-  .size = sizeof(${vmClsType}),
-  .is_collection = TRUE,
-  .on_destroy = ${vmClsName}_on_destroy,
-  .compare = NULL,
-  .get_prop = ${vmClsName}_get_prop,
-  .set_prop = ${vmClsName}_set_prop,
-  .remove_prop = NULL,
-  .foreach_prop = NULL,
-  .clear_props = NULL,
-  .find_prop = NULL,
-  .find_props = NULL,
-  .can_exec = ${vmClsName}_can_exec,
-  .exec = ${vmClsName}_exec,
-  .clone = NULL
-};
+${this.genObjectVTable(vmClsName, vmClsType, true)}
 
 view_model_t* ${vmClsName}_create_with(${clsType}* ${objName}) {
   tk_object_t* obj = tk_object_create(&s_${vmClsName}_vtable);

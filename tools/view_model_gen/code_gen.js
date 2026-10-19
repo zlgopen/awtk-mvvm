@@ -585,6 +585,33 @@ class CodeGen {
     return result;
   }
 
+  // Keep this list aligned with tk_object_vtable_t in awtk src/tkc/object.h.
+  // A missing member warns under -Wmissing-field-initializers.
+  genObjectVTable(vmClsName, vmClsType, isCollection) {
+    const collection = isCollection ? 'TRUE' : 'FALSE';
+
+    return `static const object_vtable_t s_${vmClsName}_vtable = {
+  .type = "${vmClsType}",
+  .desc = "${vmClsType}",
+  .size = sizeof(${vmClsType}),
+  .is_collection = ${collection},
+  .on_destroy = ${vmClsName}_on_destroy,
+  .compare = NULL,
+  .get_prop = ${vmClsName}_get_prop,
+  .set_prop = ${vmClsName}_set_prop,
+  .copy_props = NULL,
+  .remove_prop = NULL,
+  .foreach_prop = NULL,
+  .clear_props = NULL,
+  .find_prop = NULL,
+  .find_props = NULL,
+  .can_exec = ${vmClsName}_can_exec,
+  .exec = ${vmClsName}_exec,
+  .exec_ex = NULL,
+  .clone = NULL
+};`;
+  }
+
   genFile(filename) {
     let json = JSON.parse(fs.readFileSync(filename).toString());
 
