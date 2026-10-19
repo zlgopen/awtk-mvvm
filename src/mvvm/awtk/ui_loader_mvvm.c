@@ -1151,12 +1151,15 @@ static ret_t ui_loader_mvvm_load_xml(ui_loader_t* loader, const uint8_t* data, u
 
   builder->ui = ui;
   goto_error_if_fail(ui_loader_mvvm_load_bin(loader, ui->data, ui->size, builder) == RET_OK);
-  asset_info_unref(ui);
+  /* Keep the create-ref on builder->ui for ui_loader_mvvm_load to attach or release. */
 
   return RET_OK;
 
 error:
   if (ui != NULL) {
+    if (builder != NULL && builder->ui == ui) {
+      builder->ui = NULL;
+    }
     asset_info_unref(ui);
   }
   wbuffer_deinit(&wbuffer);
@@ -1171,6 +1174,7 @@ static ret_t ui_loader_mvvm_load(ui_loader_t* loader, const uint8_t* data, uint3
   uint32_t old_nr = parent != NULL ? widget_count_children(parent) : 0;
   ui_loader_mvvm_builder_ctx_t* ctx = (ui_loader_mvvm_builder_ctx_t*)(builder->additional_ctx);
   bool_t not_ctx = ctx == NULL;
+  bool_t own_xml_ui = FALSE;
 
   // 比如 tab_button、vpage 等调用 ui_loader_load_widget_with_parent
   // 动态加载UI时，上下文信息为空，则尝试沿用父控件的上下文信息
@@ -1195,12 +1199,14 @@ static ret_t ui_loader_mvvm_load(ui_loader_t* loader, const uint8_t* data, uint3
 
   if (*data == '<') {
     ret = ui_loader_mvvm_load_xml(loader, data, size, builder);
+    own_xml_ui = (ret == RET_OK && builder->ui != NULL);
   } else {
     ret = ui_loader_mvvm_load_bin(loader, data, size, builder);
   }
 
   // 有 MVVM 绑定，则记录关联的 UI 数据，以便动态渲染时重新根据 UI 生成控件
-  if (ctx != NULL && ctx->has_bind && builder->root != NULL && builder->ui != NULL) {
+  if (ret == RET_OK && ctx != NULL && ctx->has_bind && builder->root != NULL &&
+      builder->ui != NULL) {
     if (parent == NULL || old_nr == 0) {
       asset_info_ref((asset_info_t*)(builder->ui));
       widget_set_custom_prop_pointer_ex(builder->root, WIDGET_PROP_MVVM_ASSETS_INFO,
@@ -1216,6 +1222,14 @@ static ret_t ui_loader_mvvm_load(ui_loader_t* loader, const uint8_t* data, uint3
         widget_set_custom_prop_pointer_ex(child, WIDGET_PROP_MVVM_ASSETS_INFO, (void*)(builder->ui),
                                           (tk_destroy_t)asset_info_unref);
       }
+    }
+  }
+
+  if (own_xml_ui) {
+    /* Drop the create-ref from load_xml. Widgets keep their own refs when has_bind. */
+    asset_info_unref((asset_info_t*)builder->ui);
+    if (ctx == NULL || !ctx->has_bind) {
+      builder->ui = NULL;
     }
   }
 

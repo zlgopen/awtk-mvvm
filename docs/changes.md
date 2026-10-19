@@ -4,6 +4,8 @@
   * demos/gen.sh 改为自动执行所有带 gen.sh 的 demo，不再维护手写目录列表。
   * demo30、demo_conf、demo_count_down、demo_file 改为直接解析 demo1/temperature.h。
   * 修复 demo9 重新生成时删掉手写 app_view_model，导致无法编译。
+  * 修复 XML 加载时过早释放 UI asset，导致 UILoaderMvvm.component_with_condition 崩溃。
+  * 修复 object_js_array 排序后未清除 JS native pointer，导致 jerry_cleanup 时重复 unref 崩溃。
 
 2026/10/12
   * 添加 cmake 编译帮助文档。（感谢陈谭提供补丁）

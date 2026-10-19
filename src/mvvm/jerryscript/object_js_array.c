@@ -510,9 +510,12 @@ static ret_t object_js_array_fscript_array_sort(fscript_t* fscript, fscript_args
 
     call_func = jsobj_get_prop_value(o->jsobj, JS_ARRAY_FUNC_SORT_COMPARE);
     if (jsvalue_is_function(call_func)) {
+      /* Temporary association for the compare callback; do not leave a free_cb
+       * that would unref obj again during jerry_cleanup after the test frees it. */
       jsobj_set_native_ptr(call_func, obj);
       jsret = jsobj_exec_ex_value(o->jsobj, "sort", &call_func, 1);
       jsvalue_unref(jsret);
+      jsobj_delete_native_ptr(call_func);
     }
     jsvalue_unref(call_func);
   }
