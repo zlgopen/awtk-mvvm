@@ -11,14 +11,13 @@ static ret_t temperature_view_model_set_prop(tk_object_t* obj, const char* name,
 
   if (tk_str_ieq("value", name)) {
     aTemperature->value = value_double(v);
-    return RET_OK;
-  } else if (tk_str_ieq("timer", name)) {
-    aTemperature->timer = value_uint32(v);
+
     return RET_OK;
   }
-
+  
   return RET_NOT_FOUND;
 }
+
 
 static ret_t temperature_view_model_get_prop(tk_object_t* obj, const char* name, value_t* v) {
   Temperature* aTemperature = ((temperature_view_model_t*)(obj))->aTemperature;
@@ -26,16 +25,14 @@ static ret_t temperature_view_model_get_prop(tk_object_t* obj, const char* name,
   if (tk_str_ieq("value", name)) {
     value_set_double(v, aTemperature->value);
     return RET_OK;
-  } else if (tk_str_ieq("timer", name)) {
-    value_set_uint32(v, aTemperature->timer);
-    return RET_OK;
   }
 
   return RET_NOT_FOUND;
 }
 
-static bool_t temperature_view_model_can_exec(tk_object_t* obj, const char* name,
-                                              const char* args) {
+
+static bool_t temperature_view_model_can_exec(tk_object_t* obj, const char* name, const char* args) {
+ 
   temperature_view_model_t* vm = (temperature_view_model_t*)(obj);
   Temperature* aTemperature = vm->aTemperature;
   if (tk_str_ieq("Apply", name)) {
@@ -45,6 +42,7 @@ static bool_t temperature_view_model_can_exec(tk_object_t* obj, const char* name
 }
 
 static ret_t temperature_view_model_exec(tk_object_t* obj, const char* name, const char* args) {
+ 
   temperature_view_model_t* vm = (temperature_view_model_t*)(obj);
   Temperature* aTemperature = vm->aTemperature;
   if (tk_str_ieq("Apply", name)) {
@@ -57,24 +55,32 @@ static ret_t temperature_view_model_on_destroy(tk_object_t* obj) {
   temperature_view_model_t* vm = (temperature_view_model_t*)(obj);
   return_value_if_fail(vm != NULL, RET_BAD_PARAMS);
 
+  
   delete (vm->aTemperature);
 
   return view_model_deinit(VIEW_MODEL(obj));
 }
 
-static const struct temperature_view_model_vtable_t : object_vtable_t {
-  temperature_view_model_vtable_t() {
-    type = "temperature_view_model_t";
-    desc = "temperature_view_model_t";
-    size = sizeof(temperature_view_model_t);
-    is_collection = FALSE;
-    on_destroy = temperature_view_model_on_destroy;
-    get_prop = temperature_view_model_get_prop;
-    set_prop = temperature_view_model_set_prop;
-    can_exec = temperature_view_model_can_exec;
-    exec = temperature_view_model_exec;
-  }
-} s_temperature_view_model_vtable;
+static const object_vtable_t s_temperature_view_model_vtable = {
+  .type = "temperature_view_model_t",
+  .desc = "temperature_view_model_t",
+  .size = sizeof(temperature_view_model_t),
+  .is_collection = FALSE,
+  .on_destroy = temperature_view_model_on_destroy,
+  .compare = NULL,
+  .get_prop = temperature_view_model_get_prop,
+  .set_prop = temperature_view_model_set_prop,
+  .copy_props = NULL,
+  .remove_prop = NULL,
+  .foreach_prop = NULL,
+  .clear_props = NULL,
+  .find_prop = NULL,
+  .find_props = NULL,
+  .can_exec = temperature_view_model_can_exec,
+  .exec = temperature_view_model_exec,
+  .exec_ex = NULL,
+  .clone = NULL
+};
 
 view_model_t* temperature_view_model_create_with(Temperature* aTemperature) {
   tk_object_t* obj = tk_object_create(&s_temperature_view_model_vtable);
@@ -84,6 +90,7 @@ view_model_t* temperature_view_model_create_with(Temperature* aTemperature) {
   return_value_if_fail(vm != NULL, NULL);
 
   temperature_view_model->aTemperature = aTemperature;
+  
 
   return vm;
 }

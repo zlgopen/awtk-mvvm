@@ -23,7 +23,7 @@
           }
         ],
         "annotation": {
-          "command": "change_type"
+          "command": "changeType"
         },
         "desc": "修改类型。",
         "name": "ChangeType",
@@ -122,8 +122,8 @@
         }
       },
       {
-        "name": "text_align",
-        "desc": "text_align。",
+        "name": "align",
+        "desc": "align。",
         "type": "int32_t",
         "annotation": {
           "readable": true,

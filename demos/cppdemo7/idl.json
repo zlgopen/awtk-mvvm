@@ -29,7 +29,7 @@
         "name": "AddChar",
         "return": {
           "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
+          "desc": "返回RET_OBJECT_CHANGED表示模型有变化，View需要刷新；返回其它表示失败。"
         }
       },
       {
@@ -41,7 +41,7 @@
         "name": "RemoveChar",
         "return": {
           "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
+          "desc": "返回RET_OBJECT_CHANGED表示模型有变化，View需要刷新；返回其它表示失败。"
         }
       },
       {
@@ -63,7 +63,7 @@
         "name": "Eval",
         "return": {
           "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
+          "desc": "返回RET_OBJECT_CHANGED表示模型有变化，View需要刷新；返回其它表示失败。"
         }
       },
       {

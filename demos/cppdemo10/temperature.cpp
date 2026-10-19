@@ -24,7 +24,6 @@
 
 Temperature::Temperature(void) {
   this->value = 20;
-  this->timer = 10;
   this->old_value = 0;
 }
 

@@ -18,9 +18,10 @@ static ret_t home_view_model_set_prop(tk_object_t* obj, const char* name, const 
 
     return RET_OK;
   }
-
+  
   return RET_NOT_FOUND;
 }
+
 
 static ret_t home_view_model_get_prop(tk_object_t* obj, const char* name, value_t* v) {
   Home* aHome = ((home_view_model_t*)(obj))->aHome;
@@ -36,7 +37,11 @@ static ret_t home_view_model_get_prop(tk_object_t* obj, const char* name, value_
   return RET_NOT_FOUND;
 }
 
+
 static bool_t home_view_model_can_exec(tk_object_t* obj, const char* name, const char* args) {
+ 
+  home_view_model_t* vm = (home_view_model_t*)(obj);
+  Home* aHome = vm->aHome;
   if (tk_str_ieq("AdjustBedRoom", name)) {
     return TRUE;
 
@@ -47,6 +52,7 @@ static bool_t home_view_model_can_exec(tk_object_t* obj, const char* name, const
 }
 
 static ret_t home_view_model_exec(tk_object_t* obj, const char* name, const char* args) {
+ 
   home_view_model_t* vm = (home_view_model_t*)(obj);
   Home* aHome = vm->aHome;
   if (tk_str_ieq("AdjustBedRoom", name)) {
@@ -68,19 +74,26 @@ static ret_t home_view_model_on_destroy(tk_object_t* obj) {
   return view_model_deinit(VIEW_MODEL(obj));
 }
 
-static const struct home_view_model_vtable_t : object_vtable_t {
-  home_view_model_vtable_t() {
-    type = "home_view_model_t";
-    desc = "home_view_model_t";
-    size = sizeof(home_view_model_t);
-    is_collection = FALSE;
-    on_destroy = home_view_model_on_destroy;
-    get_prop = home_view_model_get_prop;
-    set_prop = home_view_model_set_prop;
-    can_exec = home_view_model_can_exec;
-    exec = home_view_model_exec;
-  }
-} s_home_view_model_vtable;
+static const object_vtable_t s_home_view_model_vtable = {
+  .type = "home_view_model_t",
+  .desc = "home_view_model_t",
+  .size = sizeof(home_view_model_t),
+  .is_collection = FALSE,
+  .on_destroy = home_view_model_on_destroy,
+  .compare = NULL,
+  .get_prop = home_view_model_get_prop,
+  .set_prop = home_view_model_set_prop,
+  .copy_props = NULL,
+  .remove_prop = NULL,
+  .foreach_prop = NULL,
+  .clear_props = NULL,
+  .find_prop = NULL,
+  .find_props = NULL,
+  .can_exec = home_view_model_can_exec,
+  .exec = home_view_model_exec,
+  .exec_ex = NULL,
+  .clone = NULL
+};
 
 view_model_t* home_view_model_create_with(Home* aHome) {
   tk_object_t* obj = tk_object_create(&s_home_view_model_vtable);
@@ -90,8 +103,10 @@ view_model_t* home_view_model_create_with(Home* aHome) {
   return_value_if_fail(vm != NULL, NULL);
 
   home_view_model->aHome = aHome;
+  
+  emitter_on(EMITTER(aHome), EVT_PROPS_CHANGED, emitter_forward_retarget, vm);
+  emitter_on(EMITTER(aHome), EVT_ITEMS_CHANGED, emitter_forward_retarget, vm);
 
-  emitter_on(EMITTER(aHome), EVT_PROPS_CHANGED, emitter_forward, vm);
 
   return vm;
 }

@@ -92,7 +92,7 @@
         "annotation": {
           "command": true
         },
-        "desc": "设置客厅参数。",
+        "desc": "设置卧室参数。",
         "name": "AdjustBedRoom",
         "return": {
           "type": "ret_t",
