@@ -358,7 +358,7 @@ class CodeGen {
       return getProp;
     }).join('');
 
-    result += '\n  }';
+    result += props.length ? '\n  }' : '';
 
     return result;
   }
@@ -407,7 +407,7 @@ class CodeGen {
       return setProp;
     }).join('');
 
-    result += '\n  }';
+    result += props.length ? '\n  }' : '';
 
     return result;
   }
