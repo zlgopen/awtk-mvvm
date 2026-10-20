@@ -9,8 +9,12 @@ TEST(ViewModelFile, basic) {
     view_model_t* vm = view_model_factory_create_model("file(path=${app_dir}/tests/test_data/hello.txt, auto_load=true)", req);
     ASSERT_EQ(vm != NULL, true);
     tk_object_t* obj = TK_OBJECT(vm);
-
+#ifdef WIN32
+    ASSERT_EQ(tk_object_get_prop_int(obj, "size", 0), 14);
+#else
     ASSERT_EQ(tk_object_get_prop_int(obj, "size", 0), 13);
+#endif
+
     ASSERT_EQ(tk_str_start_with(tk_object_get_prop_str(obj, "content"), "Hello World!"), true);
     ASSERT_EQ(tk_object_get_prop_bool(obj, "auto_load", FALSE), true);
     ASSERT_EQ(tk_object_get_prop_bool(obj, "is_dirty", TRUE), false);
