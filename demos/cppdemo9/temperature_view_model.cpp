@@ -61,26 +61,28 @@ static ret_t temperature_view_model_on_destroy(tk_object_t* obj) {
   return view_model_deinit(VIEW_MODEL(obj));
 }
 
-static const object_vtable_t s_temperature_view_model_vtable = {
-  .type = "temperature_view_model_t",
-  .desc = "temperature_view_model_t",
-  .size = sizeof(temperature_view_model_t),
-  .is_collection = FALSE,
-  .on_destroy = temperature_view_model_on_destroy,
-  .compare = NULL,
-  .get_prop = temperature_view_model_get_prop,
-  .set_prop = temperature_view_model_set_prop,
-  .copy_props = NULL,
-  .remove_prop = NULL,
-  .foreach_prop = NULL,
-  .clear_props = NULL,
-  .find_prop = NULL,
-  .find_props = NULL,
-  .can_exec = temperature_view_model_can_exec,
-  .exec = temperature_view_model_exec,
-  .exec_ex = NULL,
-  .clone = NULL
-};
+static const struct temperature_view_model_vtable_t : object_vtable_t {
+  temperature_view_model_vtable_t() {
+    type = "temperature_view_model_t";
+    desc = "temperature_view_model_t";
+    size = sizeof(temperature_view_model_t);
+    is_collection = FALSE;
+    on_destroy = temperature_view_model_on_destroy;
+    compare = NULL;
+    get_prop = temperature_view_model_get_prop;
+    set_prop = temperature_view_model_set_prop;
+    copy_props = NULL;
+    remove_prop = NULL;
+    foreach_prop = NULL;
+    clear_props = NULL;
+    find_prop = NULL;
+    find_props = NULL;
+    can_exec = temperature_view_model_can_exec;
+    exec = temperature_view_model_exec;
+    exec_ex = NULL;
+    clone = NULL;
+  }
+} s_temperature_view_model_vtable;
 
 view_model_t* temperature_view_model_create_with(Temperature* aTemperature) {
   tk_object_t* obj = tk_object_create(&s_temperature_view_model_vtable);

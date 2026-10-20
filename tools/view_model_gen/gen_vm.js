@@ -140,7 +140,7 @@ static ret_t ${vmClsName}_on_destroy(tk_object_t* obj) {
   return view_model_deinit(VIEW_MODEL(obj));
 }
 
-${this.genObjectVTable(vmClsName, vmClsType, false)}
+${this.genObjectVTable(vmClsName, vmClsType, false, this.isCpp(json))}
 
 view_model_t* ${vmClsName}_create_with(${clsType}* ${objName}) {
   tk_object_t* obj = tk_object_create(&s_${vmClsName}_vtable);

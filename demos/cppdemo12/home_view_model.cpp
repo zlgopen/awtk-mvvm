@@ -74,26 +74,28 @@ static ret_t home_view_model_on_destroy(tk_object_t* obj) {
   return view_model_deinit(VIEW_MODEL(obj));
 }
 
-static const object_vtable_t s_home_view_model_vtable = {
-  .type = "home_view_model_t",
-  .desc = "home_view_model_t",
-  .size = sizeof(home_view_model_t),
-  .is_collection = FALSE,
-  .on_destroy = home_view_model_on_destroy,
-  .compare = NULL,
-  .get_prop = home_view_model_get_prop,
-  .set_prop = home_view_model_set_prop,
-  .copy_props = NULL,
-  .remove_prop = NULL,
-  .foreach_prop = NULL,
-  .clear_props = NULL,
-  .find_prop = NULL,
-  .find_props = NULL,
-  .can_exec = home_view_model_can_exec,
-  .exec = home_view_model_exec,
-  .exec_ex = NULL,
-  .clone = NULL
-};
+static const struct home_view_model_vtable_t : object_vtable_t {
+  home_view_model_vtable_t() {
+    type = "home_view_model_t";
+    desc = "home_view_model_t";
+    size = sizeof(home_view_model_t);
+    is_collection = FALSE;
+    on_destroy = home_view_model_on_destroy;
+    compare = NULL;
+    get_prop = home_view_model_get_prop;
+    set_prop = home_view_model_set_prop;
+    copy_props = NULL;
+    remove_prop = NULL;
+    foreach_prop = NULL;
+    clear_props = NULL;
+    find_prop = NULL;
+    find_props = NULL;
+    can_exec = home_view_model_can_exec;
+    exec = home_view_model_exec;
+    exec_ex = NULL;
+    clone = NULL;
+  }
+} s_home_view_model_vtable;
 
 view_model_t* home_view_model_create_with(Home* aHome) {
   tk_object_t* obj = tk_object_create(&s_home_view_model_vtable);

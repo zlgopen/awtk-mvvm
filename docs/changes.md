@@ -7,6 +7,7 @@
   * 修复 XML 加载时过早释放 UI asset，导致 UILoaderMvvm.component_with_condition 崩溃。
   * 修复 object_js_array 排序后未清除 JS native pointer，导致 jerry_cleanup 时重复 unref 崩溃。
   * 修复 ViewModel 无属性时生成的 get_prop/set_prop 多出一个 }（#76）。
+  * C++ ViewModel 的 object vtable 改为继承构造初始化，修复 MSVC 不支持 designated initializer 的编译错误。
 
 2026/10/12
   * 添加 cmake 编译帮助文档。（感谢陈谭提供补丁）

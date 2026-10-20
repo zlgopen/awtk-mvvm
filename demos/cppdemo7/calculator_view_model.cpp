@@ -73,26 +73,28 @@ static ret_t calculator_view_model_on_destroy(tk_object_t* obj) {
   return view_model_deinit(VIEW_MODEL(obj));
 }
 
-static const object_vtable_t s_calculator_view_model_vtable = {
-  .type = "calculator_view_model_t",
-  .desc = "calculator_view_model_t",
-  .size = sizeof(calculator_view_model_t),
-  .is_collection = FALSE,
-  .on_destroy = calculator_view_model_on_destroy,
-  .compare = NULL,
-  .get_prop = calculator_view_model_get_prop,
-  .set_prop = calculator_view_model_set_prop,
-  .copy_props = NULL,
-  .remove_prop = NULL,
-  .foreach_prop = NULL,
-  .clear_props = NULL,
-  .find_prop = NULL,
-  .find_props = NULL,
-  .can_exec = calculator_view_model_can_exec,
-  .exec = calculator_view_model_exec,
-  .exec_ex = NULL,
-  .clone = NULL
-};
+static const struct calculator_view_model_vtable_t : object_vtable_t {
+  calculator_view_model_vtable_t() {
+    type = "calculator_view_model_t";
+    desc = "calculator_view_model_t";
+    size = sizeof(calculator_view_model_t);
+    is_collection = FALSE;
+    on_destroy = calculator_view_model_on_destroy;
+    compare = NULL;
+    get_prop = calculator_view_model_get_prop;
+    set_prop = calculator_view_model_set_prop;
+    copy_props = NULL;
+    remove_prop = NULL;
+    foreach_prop = NULL;
+    clear_props = NULL;
+    find_prop = NULL;
+    find_props = NULL;
+    can_exec = calculator_view_model_can_exec;
+    exec = calculator_view_model_exec;
+    exec_ex = NULL;
+    clone = NULL;
+  }
+} s_calculator_view_model_vtable;
 
 view_model_t* calculator_view_model_create_with(Calculator* aCalculator) {
   tk_object_t* obj = tk_object_create(&s_calculator_view_model_vtable);

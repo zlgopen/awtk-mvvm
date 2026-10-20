@@ -41,6 +41,28 @@ const collectionModel = [
   },
 ];
 
+const cppObjectModel = [
+  {
+    type: 'class',
+    methods: [],
+    properties: [{ name: 'value', type: 'float' }],
+    header: 'temperature.hpp',
+    name: 'Temperature',
+    annotation: { model: true, cpp: true },
+  },
+];
+
+const cppCollectionModel = [
+  {
+    type: 'class',
+    methods: [],
+    properties: [],
+    header: 'book_store.hpp',
+    name: 'BookStore',
+    annotation: { model: true, cpp: true, collection: 'Book' },
+  },
+];
+
 test('collection view model vtable initializes copy_props and exec_ex', () => {
   const dir = generate('gen_vm_array.js', collectionModel);
   const source = fs.readFileSync(path.join(dir, 'book_store_view_model.c'), 'utf8');
@@ -111,4 +133,31 @@ test('collection view model with no properties does not emit orphan braces in ge
   assert.match(getProp, /return RET_OK;\s*}\s*name = tk_destruct_array_prop_name/);
   assert.doesNotMatch(setProp, /return RET_OK;\s*}\s*}\s*name = tk_destruct_array_prop_name/);
   assert.doesNotMatch(getProp, /return RET_OK;\s*}\s*}\s*name = tk_destruct_array_prop_name/);
+});
+
+test('cpp object view model vtable uses inheritance instead of designated initializers', () => {
+  const dir = generate('gen_vm.js', cppObjectModel);
+  const source = fs.readFileSync(path.join(dir, 'temperature_view_model.cpp'), 'utf8');
+
+  assert.match(
+    source,
+    /static const struct temperature_view_model_vtable_t\s*:\s*object_vtable_t\s*\{/,
+  );
+  assert.match(source, /temperature_view_model_vtable_t\(\)\s*\{/);
+  assert.match(source, /copy_props\s*=\s*NULL;/);
+  assert.match(source, /exec_ex\s*=\s*NULL;/);
+  assert.doesNotMatch(source, /\.type\s*=\s*"temperature_view_model_t"/);
+  assert.match(source, /\}\s*s_temperature_view_model_vtable;/);
+});
+
+test('cpp collection view model vtable uses inheritance instead of designated initializers', () => {
+  const dir = generate('gen_vm_array.js', cppCollectionModel);
+  const source = fs.readFileSync(path.join(dir, 'book_store_view_model.cpp'), 'utf8');
+
+  assert.match(
+    source,
+    /static const struct book_store_view_model_vtable_t\s*:\s*object_vtable_t\s*\{/,
+  );
+  assert.match(source, /is_collection\s*=\s*TRUE;/);
+  assert.doesNotMatch(source, /\.type\s*=\s*"book_store_view_model_t"/);
 });
