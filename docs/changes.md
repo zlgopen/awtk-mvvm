@@ -1,4 +1,7 @@
 # 最新动态
+2026/10/20
+  * C++ ViewModel 的 object vtable 改为继承构造初始化，修复 MSVC 不支持 designated initializer 的编译错误(感谢兆坤发现问题)。
+
 2026/10/19
   * 修复 ViewModel 代码生成的 object vtable 缺少 copy_props 与 exec_ex，避免 -Wmissing-field-initializers。
   * demos/gen.sh 改为自动执行所有带 gen.sh 的 demo，不再维护手写目录列表。
@@ -7,7 +10,6 @@
   * 修复 XML 加载时过早释放 UI asset，导致 UILoaderMvvm.component_with_condition 崩溃。
   * 修复 object_js_array 排序后未清除 JS native pointer，导致 jerry_cleanup 时重复 unref 崩溃。
   * 修复 ViewModel 无属性时生成的 get_prop/set_prop 多出一个 }（#76）。
-  * C++ ViewModel 的 object vtable 改为继承构造初始化，修复 MSVC 不支持 designated initializer 的编译错误。
 
 2026/10/12
   * 添加 cmake 编译帮助文档。（感谢陈谭提供补丁）
