@@ -1,4 +1,8 @@
 # 最新动态
+
+2026/10/23
+  * improve view_model_factory（感谢兆坤提供补丁） 
+
 2026/10/20
   * C++ ViewModel 的 object vtable 改为继承构造初始化，修复 MSVC 不支持 designated initializer 的编译错误(感谢兆坤发现问题)。
 

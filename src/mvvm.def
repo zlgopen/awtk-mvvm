@@ -118,6 +118,13 @@ EXPORTS
     mvvm_awtk_init
     mvvm_awtk_deinit
     mvvm_awtk_is_quited
+    view_model_array_dummy_create
+    view_model_array_dummy_clear
+    view_model_array_dummy_add
+    view_model_array_dummy_remove
+    view_model_array_dummy_get
+    view_model_array_dummy_size
+    view_model_get_items_size
     ui_loader_mvvm
     ui_loader_mvvm_load_widget
     ui_loader_mvvm_load_widget_with_parent
@@ -126,13 +133,6 @@ EXPORTS
     widget_hardware_create
     widget_hardware_cast
     widget_hardware_get_widget_vtable
-    view_model_array_dummy_create
-    view_model_array_dummy_clear
-    view_model_array_dummy_add
-    view_model_array_dummy_remove
-    view_model_array_dummy_get
-    view_model_array_dummy_size
-    view_model_get_items_size
     navigator_handler_create
     navigator_handler_on_request
     navigator_request_create

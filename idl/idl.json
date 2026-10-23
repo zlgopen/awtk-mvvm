@@ -2958,196 +2958,6 @@
     "type": "class",
     "methods": [
       {
-        "params": [],
-        "annotation": {
-          "constructor": true
-        },
-        "desc": "获取支持MVVM绑定的UI加载器对象。",
-        "name": "ui_loader_mvvm",
-        "return": {
-          "type": "ui_loader_t*",
-          "desc": "返回UI加载器对象。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "navigator_request_t*",
-            "name": "req",
-            "desc": "导航请求。"
-          }
-        ],
-        "annotation": {},
-        "desc": "加载导航请求指定的控件。",
-        "name": "ui_loader_mvvm_load_widget",
-        "return": {
-          "type": "widget_t*",
-          "desc": "控件对象。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "navigator_request_t*",
-            "name": "req",
-            "desc": "导航请求。"
-          },
-          {
-            "type": "widget_t*",
-            "name": "parent",
-            "desc": "父控件对象。"
-          }
-        ],
-        "annotation": {},
-        "desc": "加载导航请求指定的控件，并指定父控件对象。",
-        "name": "ui_loader_mvvm_load_widget_with_parent",
-        "return": {
-          "type": "widget_t*",
-          "desc": "控件对象。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "binding_rule_t*",
-            "name": "rule",
-            "desc": "动态渲染规则。"
-          }
-        ],
-        "annotation": {},
-        "desc": "重新加载动态渲染规则指定的控件。",
-        "name": "ui_loader_mvvm_reload_widget",
-        "return": {
-          "type": "ret_t",
-          "desc": "返回RET_OK表示成功，否则表示失败。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "ui_loader_t*",
-            "name": "loader",
-            "desc": "ui_loader对象。"
-          }
-        ],
-        "annotation": {
-          "cast": true
-        },
-        "desc": "转换为ui_loader_mvvm对象。",
-        "name": "ui_loader_mvvm_cast",
-        "return": {
-          "type": "ui_loader_mvvm_t*",
-          "desc": "ui_loader_mvvm对象。"
-        }
-      }
-    ],
-    "events": [],
-    "properties": [],
-    "header": "awtk/ui_loader_mvvm.h",
-    "desc": "支持 MVVM 绑定的 UI 加载器。",
-    "name": "ui_loader_mvvm_t",
-    "parent": "ui_loader_t",
-    "level": 2
-  },
-  {
-    "type": "class",
-    "methods": [
-      {
-        "params": [
-          {
-            "type": "widget_t*",
-            "name": "parent",
-            "desc": "父控件"
-          },
-          {
-            "type": "xy_t",
-            "name": "x",
-            "desc": "x坐标"
-          },
-          {
-            "type": "xy_t",
-            "name": "y",
-            "desc": "y坐标"
-          },
-          {
-            "type": "wh_t",
-            "name": "w",
-            "desc": "宽度"
-          },
-          {
-            "type": "wh_t",
-            "name": "h",
-            "desc": "高度"
-          },
-          {
-            "type": "const char*",
-            "name": "type",
-            "desc": "设备类型。"
-          },
-          {
-            "type": "const char*",
-            "name": "args",
-            "desc": "创建参数。"
-          }
-        ],
-        "annotation": {
-          "constructor": true,
-          "scriptable": true
-        },
-        "desc": "创建widget_hardware对象",
-        "name": "widget_hardware_create",
-        "return": {
-          "type": "widget_t*",
-          "desc": "对象。"
-        }
-      },
-      {
-        "params": [
-          {
-            "type": "widget_t*",
-            "name": "widget",
-            "desc": "widget_hardware对象。"
-          }
-        ],
-        "annotation": {
-          "cast": true,
-          "scriptable": true
-        },
-        "desc": "转换为widget_hardware对象(供脚本语言使用)。",
-        "name": "widget_hardware_cast",
-        "return": {
-          "type": "widget_t*",
-          "desc": "widget_hardware对象。"
-        }
-      },
-      {
-        "params": [],
-        "annotation": {},
-        "desc": "获取 widget_hardware 虚表。",
-        "name": "widget_hardware_get_widget_vtable",
-        "return": {
-          "type": "const widget_vtable_t*",
-          "desc": "成功返回 widget_hardware 虚表。"
-        }
-      }
-    ],
-    "events": [],
-    "properties": [],
-    "header": "awtk/widget_hardware.h",
-    "desc": "wrap hardware device to a widget",
-    "name": "widget_hardware_t",
-    "parent": "widget_t",
-    "annotation": {
-      "scriptable": true,
-      "design": true,
-      "widget": true
-    },
-    "level": 2
-  },
-  {
-    "type": "class",
-    "methods": [
-      {
         "params": [
           {
             "type": "navigator_request_t*",
@@ -3303,6 +3113,196 @@
   },
   {
     "type": "class",
+    "methods": [
+      {
+        "params": [],
+        "annotation": {
+          "constructor": true
+        },
+        "desc": "获取支持MVVM绑定的UI加载器对象。",
+        "name": "ui_loader_mvvm",
+        "return": {
+          "type": "ui_loader_t*",
+          "desc": "返回UI加载器对象。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "navigator_request_t*",
+            "name": "req",
+            "desc": "导航请求。"
+          }
+        ],
+        "annotation": {},
+        "desc": "加载导航请求指定的控件。",
+        "name": "ui_loader_mvvm_load_widget",
+        "return": {
+          "type": "widget_t*",
+          "desc": "控件对象。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "navigator_request_t*",
+            "name": "req",
+            "desc": "导航请求。"
+          },
+          {
+            "type": "widget_t*",
+            "name": "parent",
+            "desc": "父控件对象。"
+          }
+        ],
+        "annotation": {},
+        "desc": "加载导航请求指定的控件，并指定父控件对象。",
+        "name": "ui_loader_mvvm_load_widget_with_parent",
+        "return": {
+          "type": "widget_t*",
+          "desc": "控件对象。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "binding_rule_t*",
+            "name": "rule",
+            "desc": "动态渲染规则。"
+          }
+        ],
+        "annotation": {},
+        "desc": "重新加载动态渲染规则指定的控件。",
+        "name": "ui_loader_mvvm_reload_widget",
+        "return": {
+          "type": "ret_t",
+          "desc": "返回RET_OK表示成功，否则表示失败。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "ui_loader_t*",
+            "name": "loader",
+            "desc": "ui_loader对象。"
+          }
+        ],
+        "annotation": {
+          "cast": true
+        },
+        "desc": "转换为ui_loader_mvvm对象。",
+        "name": "ui_loader_mvvm_cast",
+        "return": {
+          "type": "ui_loader_mvvm_t*",
+          "desc": "ui_loader_mvvm对象。"
+        }
+      }
+    ],
+    "events": [],
+    "properties": [],
+    "header": "awtk/ui_loader_mvvm.h",
+    "desc": "支持 MVVM 绑定的 UI 加载器。",
+    "name": "ui_loader_mvvm_t",
+    "parent": "ui_loader_t",
+    "level": 5
+  },
+  {
+    "type": "class",
+    "methods": [
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "parent",
+            "desc": "父控件"
+          },
+          {
+            "type": "xy_t",
+            "name": "x",
+            "desc": "x坐标"
+          },
+          {
+            "type": "xy_t",
+            "name": "y",
+            "desc": "y坐标"
+          },
+          {
+            "type": "wh_t",
+            "name": "w",
+            "desc": "宽度"
+          },
+          {
+            "type": "wh_t",
+            "name": "h",
+            "desc": "高度"
+          },
+          {
+            "type": "const char*",
+            "name": "type",
+            "desc": "设备类型。"
+          },
+          {
+            "type": "const char*",
+            "name": "args",
+            "desc": "创建参数。"
+          }
+        ],
+        "annotation": {
+          "constructor": true,
+          "scriptable": true
+        },
+        "desc": "创建widget_hardware对象",
+        "name": "widget_hardware_create",
+        "return": {
+          "type": "widget_t*",
+          "desc": "对象。"
+        }
+      },
+      {
+        "params": [
+          {
+            "type": "widget_t*",
+            "name": "widget",
+            "desc": "widget_hardware对象。"
+          }
+        ],
+        "annotation": {
+          "cast": true,
+          "scriptable": true
+        },
+        "desc": "转换为widget_hardware对象(供脚本语言使用)。",
+        "name": "widget_hardware_cast",
+        "return": {
+          "type": "widget_t*",
+          "desc": "widget_hardware对象。"
+        }
+      },
+      {
+        "params": [],
+        "annotation": {},
+        "desc": "获取 widget_hardware 虚表。",
+        "name": "widget_hardware_get_widget_vtable",
+        "return": {
+          "type": "const widget_vtable_t*",
+          "desc": "成功返回 widget_hardware 虚表。"
+        }
+      }
+    ],
+    "events": [],
+    "properties": [],
+    "header": "awtk/widget_hardware.h",
+    "desc": "wrap hardware device to a widget",
+    "name": "widget_hardware_t",
+    "parent": "widget_t",
+    "annotation": {
+      "scriptable": true,
+      "design": true,
+      "widget": true
+    },
+    "level": 5
+  },
+  {
+    "type": "class",
     "methods": [],
     "events": [],
     "properties": [
@@ -3338,7 +3338,7 @@
     "annotation": {
       "scriptable": true
     },
-    "level": 3
+    "level": 5
   },
   {
     "type": "class",
@@ -3394,7 +3394,7 @@
     "desc": "处理导航请求。",
     "name": "navigator_handler_t",
     "parent": "tk_object_t",
-    "level": 3
+    "level": 5
   },
   {
     "type": "class",
@@ -3508,7 +3508,7 @@
     "desc": "导航请求。\n如果需要传递参数或自定义请求时，才需要本类，否则直接使用navigator的API即可。",
     "name": "navigator_request_t",
     "parent": "tk_object_t",
-    "level": 3
+    "level": 5
   },
   {
     "type": "class",
@@ -4248,7 +4248,7 @@
     "annotation": {
       "scriptable": true
     },
-    "level": 3
+    "level": 5
   },
   {
     "type": "class",
@@ -4418,7 +4418,7 @@
     "desc": "值转换器。\n\n如果数据在View上显示的格式和在Model中保存的格式不一样，value_converter负责在两者之间转换。",
     "name": "value_converter_t",
     "parent": "tk_object_t",
-    "level": 3
+    "level": 5
   },
   {
     "type": "class",
@@ -4581,7 +4581,7 @@
     "desc": "值校验器。\n\n用户在界面上输入的类型可能是无效的，value_validator负责将检查用户输入的有效性。",
     "name": "value_validator_t",
     "parent": "tk_object_t",
-    "level": 3
+    "level": 5
   },
   {
     "type": "class",
@@ -4940,7 +4940,7 @@
     "desc": "视图模型的基类。",
     "name": "view_model_t",
     "parent": "tk_object_t",
-    "level": 3
+    "level": 5
   },
   {
     "type": "class",
@@ -4962,7 +4962,7 @@
     "desc": "",
     "name": "buzzer_log_t",
     "parent": "tk_object_t",
-    "level": 3
+    "level": 5
   },
   {
     "type": "class",
@@ -4973,7 +4973,7 @@
     "desc": "外设。\n\n> 目前device\\_object并没有做实际的工作，引入device\\_object的目的是保持概念一致性。",
     "name": "device_object_t",
     "parent": "tk_object_t",
-    "level": 3
+    "level": 5
   },
   {
     "type": "class",
@@ -4995,7 +4995,7 @@
     "desc": "模拟的温度传感器，随机生成0-100之间的温度。",
     "name": "temperature_sensor_random_t",
     "parent": "tk_object_t",
-    "level": 3
+    "level": 5
   },
   {
     "type": "class",
@@ -5051,7 +5051,7 @@
     "desc": "将jerry script array object包装成tkc形式的object。",
     "name": "object_js_array_t",
     "parent": "tk_object_t",
-    "level": 3
+    "level": 5
   },
   {
     "type": "class",
@@ -5071,7 +5071,7 @@
     "desc": "将object_js相关的公共行为进行抽象，以便重用。",
     "name": "object_js_base_t",
     "parent": "tk_object_t",
-    "level": 3
+    "level": 5
   },
   {
     "type": "class",
@@ -5127,7 +5127,7 @@
     "desc": "将通用的jerry script object包装成tkc形式的object。",
     "name": "object_js_default_t",
     "parent": "tk_object_t",
-    "level": 3
+    "level": 5
   },
   {
     "type": "class",
@@ -5149,7 +5149,7 @@
     "desc": "基于AWTK实现的导航处理器，负责打开指定的窗口。",
     "name": "navigator_handler_awtk_t",
     "parent": "navigator_handler_t",
-    "level": 4
+    "level": 6
   },
   {
     "type": "class",
@@ -5312,7 +5312,7 @@
     "desc": "命令绑定规则。",
     "name": "command_binding_t",
     "parent": "binding_rule_t",
-    "level": 4
+    "level": 6
   },
   {
     "type": "class",
@@ -5406,7 +5406,7 @@
     "annotation": {
       "scriptable": true
     },
-    "level": 4
+    "level": 6
   },
   {
     "type": "class",
@@ -5611,7 +5611,7 @@
     "annotation": {
       "scriptable": true
     },
-    "level": 4
+    "level": 6
   },
   {
     "type": "class",
@@ -5797,7 +5797,7 @@
     "annotation": {
       "scriptable": true
     },
-    "level": 4
+    "level": 6
   },
   {
     "type": "class",
@@ -5832,7 +5832,7 @@
     "desc": "把两个转换函数包装成value_converter_t接口。",
     "name": "value_converter_delegate_t",
     "parent": "value_converter_t",
-    "level": 4
+    "level": 6
   },
   {
     "type": "class",
@@ -5867,7 +5867,7 @@
     "desc": "把两个转换函数包装成value_converter_t接口。",
     "name": "value_converter_with_args_delegate_t",
     "parent": "value_converter_t",
-    "level": 4
+    "level": 6
   },
   {
     "type": "class",
@@ -5902,7 +5902,7 @@
     "desc": "把有效性检查函数包装成value_validator_t接口。",
     "name": "value_validator_delegate_t",
     "parent": "value_validator_t",
-    "level": 4
+    "level": 6
   },
   {
     "type": "class",
@@ -6141,7 +6141,7 @@
     "desc": "array view_model",
     "name": "view_model_array_t",
     "parent": "view_model_t",
-    "level": 4
+    "level": 6
   },
   {
     "type": "class",
@@ -6190,7 +6190,7 @@
     "desc": "将多个view model组合起来，当一个view model使用。",
     "name": "view_model_compositor_t",
     "parent": "view_model_t",
-    "level": 4
+    "level": 6
   },
   {
     "type": "class",
@@ -6218,7 +6218,7 @@
     "desc": "dummy view_model",
     "name": "view_model_dummy_t",
     "parent": "view_model_t",
-    "level": 4
+    "level": 6
   },
   {
     "type": "class",
@@ -6267,7 +6267,7 @@
     "desc": "把object包装成view model。",
     "name": "view_model_object_wrapper_t",
     "parent": "view_model_t",
-    "level": 4
+    "level": 6
   },
   {
     "type": "class",
@@ -6315,7 +6315,7 @@
     "desc": "蜂鸣器。",
     "name": "buzzer_t",
     "parent": "device_object_t",
-    "level": 4
+    "level": 6
   },
   {
     "type": "class",
@@ -6451,7 +6451,7 @@
     "desc": "温度传感器。",
     "name": "temperature_sensor_t",
     "parent": "device_object_t",
-    "level": 4
+    "level": 6
   },
   {
     "type": "class",
@@ -6483,7 +6483,7 @@
     "desc": "将jerryscript包装成值转换对象。\n\nJS的全局对象ValueConverters，记录了所有的ValueConverter。",
     "name": "value_converter_jerryscript_t",
     "parent": "value_converter_t",
-    "level": 4
+    "level": 6
   },
   {
     "type": "class",
@@ -6515,7 +6515,7 @@
     "desc": "将jerryscript包装成值校验对象。\n\nJS的全局对象ValueValidators，记录了所有的ValueValidator。",
     "name": "value_validator_jerryscript_t",
     "parent": "value_validator_t",
-    "level": 4
+    "level": 6
   },
   {
     "type": "class",
@@ -6583,7 +6583,7 @@
     "desc": "wrap jerryscript object to a view_model",
     "name": "view_model_jerryscript_object_wrapper_t",
     "parent": "view_model_t",
-    "level": 4
+    "level": 6
   },
   {
     "type": "class",
@@ -6652,7 +6652,7 @@
     "desc": "提供XML/JSON/UBJSON/INI等配置信息的访问。",
     "name": "view_model_conf_t",
     "parent": "view_model_t",
-    "level": 4
+    "level": 6
   },
   {
     "type": "class",
@@ -6721,7 +6721,7 @@
     "desc": "提供读写文件，访问文件信息(可用于读写设备文件)，浏览(选择)文件等功能。",
     "name": "view_model_file_t",
     "parent": "view_model_t",
-    "level": 4
+    "level": 6
   },
   {
     "type": "class",
@@ -6770,6 +6770,6 @@
     "desc": "把object包装成view model array。",
     "name": "view_model_array_object_wrapper_t",
     "parent": "view_model_array_t",
-    "level": 5
+    "level": 7
   }
 ]
